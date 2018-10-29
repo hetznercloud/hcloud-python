@@ -5,17 +5,21 @@
 
 from setuptools import setup, find_packages
 
-with open('README.rst') as readme_file:
+with open('README.md') as readme_file:
     readme = readme_file.read()
 
-with open('HISTORY.rst') as history_file:
-    history = history_file.read()
+with open('CHANGELOG.md') as changelog_file:
+    changelog = changelog_file.read()
 
 requirements = [ ]
 
 setup_requirements = ['pytest-runner', ]
 
 test_requirements = ['pytest', ]
+
+version = {}
+with open("hcloud/version.py") as fp:
+    exec(fp.read(), version)
 
 setup(
     author="Hetzner Cloud GmbH",
@@ -36,15 +40,15 @@ setup(
     description="Official Hetzner Cloud python library",
     install_requires=requirements,
     license="MIT license",
-    long_description=readme + '\n\n' + history,
+    long_description=readme + '\n\n' + changelog,
     include_package_data=True,
-    keywords='hetznercloud',
-    name='hetznercloud',
-    packages=find_packages(include=['hetznercloud']),
+    keywords='hcloud',
+    name='hcloud',
+    packages=find_packages(include=['hcloud']),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/hetznercloud/hetznercloud-python',
-    version='0.1.0',
+    url='https://github.com/hcloud/hcloud-python',
+    version=version['VERSION'],
     zip_safe=False,
 )

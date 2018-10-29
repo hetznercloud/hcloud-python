@@ -1,5 +1,5 @@
 Welcome to Hetzner Cloud Python's documentation!
-======================================
+================================================
 
 .. toctree::
    :maxdepth: 2
@@ -11,7 +11,7 @@ Welcome to Hetzner Cloud Python's documentation!
    modules
    contributing
    authors
-   history
+   changelog
 
 Indices and tables
 ==================

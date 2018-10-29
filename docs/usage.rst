@@ -2,6 +2,136 @@
 Usage
 =====
 
-To use Hetzner Cloud Python in a project::
+To use Hetzner Cloud Python in a project(Procedural style)::
 
-    import hetznercloud
+    from hcloud import HcloudClient
+
+    # Create a client
+    from hcloud.servers.domain import Server
+    from hcloud.volumes.domain import Volume
+
+    client = HcloudClient(token="project-token")
+
+    # Create 2 servers
+    response1 = client.servers.create(
+        "Server1",
+        "cx11",
+        4711
+    )
+
+    response2 = client.servers.create(
+        "Server2",
+        "cx11",
+        4711
+    )
+
+    server1 = response1.server
+    server2 = response2.server
+
+    # Get all servers
+
+    servers = client.servers.get_all()
+
+    assert servers[0].id == server1.id
+    assert servers[1].id == server2.id
+
+    # Create 2 volumes
+
+    response1 = client.volumes.create(
+        30,
+        "Volume1"
+    )
+    response2 = client.volumes.create(
+        10,
+        "Volume2"
+    )
+
+    volume1 = response1.volume
+    volume2 = response2.volume
+
+    # Attach volume to server
+
+    client.volumes.attach(server1, volume1)
+    client.volumes.attach(server2, volume2)
+
+    # Detach second volume
+
+    client.volumes.detach(volume2)
+
+    # Poweroff 2nd server
+    client.servers.power_off(server2)
+
+    # Create one more volume and attach it to server with id=33
+
+    server33 = Server(id=33)
+    response = client.volumes.create(
+        33,
+        "Volume33",
+        server=server33
+    )
+
+    print(response.action.status)
+
+
+    # Create one more server and attach 2 volumes to it
+    client.servers.create(
+        "Server2",
+        "cx11",
+        4711,
+        volumes=[Volume(id=221), Volume(id=222)]
+    )
+
+
+To use Hetzner Cloud Python in a project(OO style)::
+
+    from hcloud import HcloudClient
+
+
+    # Create a client
+    client = HcloudClient(token="project-token")
+
+    # Create 2 servers
+    # Create 2 servers
+    response1 = client.servers.create(
+        "Server1",
+        "cx11",
+        4711
+    )
+
+    response2 = client.servers.create(
+        "Server2",
+        "cx11",
+        4711
+    )
+    # Get all servers
+
+    servers = client.servers.get_all()
+
+    assert servers[0].id == response1.server.id
+    assert servers[1].id == response2.server.id
+
+    # Create 2 volumes
+
+    response1 = client.volumes.create(
+        30,
+        "Volume1"
+    )
+    response2 = client.volumes.create(
+        10,
+        "Volume2"
+    )
+
+    volume1 = response1.volume
+    volume2 = response2.volume
+
+    # Attach volume to server
+
+    volume1.attach(server1)
+    volume2.attach(server2)
+
+    # Detach second volume
+
+    volume2.detach()
+
+    # Poweroff 2nd server
+    server2.power_off()

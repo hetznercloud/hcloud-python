@@ -1,0 +1,7 @@
+arrow==0.12.1
+future==0.17.1
+python-dateutil==2.7.5
+recommonmark==0.4.0
+requests==2.20.0
+Sphinx==1.8.1
+sphinx-rtd-theme==0.4.2

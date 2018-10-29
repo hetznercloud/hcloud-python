@@ -1,7 +1,7 @@
-hetznercloud
-============
+hcloud
+======
 
 .. toctree::
    :maxdepth: 4
 
-   hetznercloud
+   hcloud

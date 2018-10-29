@@ -1,0 +1,69 @@
+stages:
+- test
+
+.tests_template: &tests_template
+  before_script:
+  - pip install tox
+  stage: test
+  variables:
+    FAKE_API_ENDPOINT: "http://api_mock:8080"
+  services:
+    - name: "lkdevelopment/hetzner-cloud-api-mock"
+      alias: "api_mock"
+  script:
+    tox
+  tags:
+  - fast
+
+python27:
+  <<: *tests_template
+  image: python:2.7
+  script: tox -e py27
+
+python34:
+  <<: *tests_template
+  image: python:3.4
+  script: tox -e py34
+
+python35:
+  <<: *tests_template
+  image: python:3.5
+  script: tox -e py35
+
+python36:
+  <<: *tests_template
+  image: python:3.6
+  script: tox -e py36
+
+python37:
+  <<: *tests_template
+  image: python:3.7
+  script: tox -e py37
+
+test-style:
+  before_script:
+  - pip install tox
+  image: python:3.6
+  script: tox -e flake8
+  tags:
+  - fast
+
+pages:
+  script:
+  - apk --no-cache add make
+  - pip install arrow
+  - pip install sphinx
+  - pip install sphinx_rtd_theme
+  - pip install recommonmark
+  - rm -f docs/hcloud.rst
+  - rm -f docs/modules.rst
+  - sphinx-apidoc -o docs/ hcloud
+  - make -C docs clean
+  - make -C docs html
+  - mv docs/_build/html/ public
+  artifacts:
+    paths:
+    - public
+  image: python:3.6-alpine
+  tags:
+  - fast

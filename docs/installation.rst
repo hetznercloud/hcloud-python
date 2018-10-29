@@ -12,7 +12,7 @@ To install Hetzner Cloud Python, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install hetznercloud
+    $ pip install hcloud
 
 This is the preferred method to install Hetzner Cloud Python, as it will always install the most recent stable release.
 
@@ -32,13 +32,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/hetznercloud/hetznercloud
+    $ git clone git://github.com/hetznercloud/hcloud-python
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl  -OL https://github.com/hetznercloud/hetznercloud-python/tarball/master
+    $ curl  -OL https://github.com/hetznercloud/hcloud-python/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/hetznercloud/hetznercloud-python
-.. _tarball: https://github.com/hetznercloud/hetznercloud-python/tarball/master
+.. _Github repo: https://github.com/hetznercloud/hcloud-python
+.. _tarball: https://github.com/hetznercloud/hcloud-python/tarball/master
