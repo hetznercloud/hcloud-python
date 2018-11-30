@@ -3,8 +3,10 @@ from __future__ import absolute_import
 
 import requests
 
+from hcloud.actions.client import ActionsClient
 from hcloud.servers.client import ServersClient
 from hcloud.volumes.client import VolumesClient
+
 
 from .version import VERSION
 
@@ -25,6 +27,7 @@ class HcloudClient(object):
 
         self.servers = ServersClient(self)
         self.volumes = VolumesClient(self)
+        self.actions = ActionsClient(self)
 
     def _get_user_agent(self):
         return "hcloud-python/" + self.version
