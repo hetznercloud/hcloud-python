@@ -87,3 +87,51 @@ class CreateServerResponse(BaseDomain):
         self.action = action
         self.next_actions = next_actions
         self.root_password = root_password
+
+
+class ResetPasswordResponse(BaseDomain):
+    __slots__ = (
+        "action",
+        "root_password"
+    )
+
+    def __init__(
+            self,
+            action,          # type: Action
+            root_password    # type: str
+    ):
+        self.action = action
+        self.root_password = root_password
+
+
+class EnableRescueResponse(BaseDomain):
+    __slots__ = (
+        "action",
+        "root_password"
+    )
+
+    def __init__(
+            self,
+            action,          # type: Action
+            root_password    # type: str
+    ):
+        self.action = action
+        self.root_password = root_password
+
+
+class RequestConsoleResponse(BaseDomain):
+    __slots__ = (
+        "action",
+        "wss_url",
+        "password"
+    )
+
+    def __init__(
+            self,
+            action,     # type: Action
+            wss_url,    # type: str
+            password,   # type: str
+    ):
+        self.action = action
+        self.wss_url = wss_url
+        self.password = password

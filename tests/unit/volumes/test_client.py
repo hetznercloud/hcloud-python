@@ -8,8 +8,6 @@ from hcloud.servers.client import BoundServer
 from hcloud.servers.domain import Server
 from hcloud.volumes.client import VolumesClient, BoundVolume
 from hcloud.volumes.domain import Volume
-from tests.unit.actions.fixtures import generic_action
-from tests.unit.volumes.fixtures import volume_response, two_volumes_response, volume_create_response
 
 
 class TestBoundVolume(object):
@@ -26,7 +24,7 @@ class TestBoundVolume(object):
     def bound_volume(self, hetzner_client):
         return BoundVolume(client=hetzner_client.volumes, data=dict(id=14))
 
-    def test_bound_volume_init(self):
+    def test_bound_volume_init(self, volume_response):
         bound_volume = BoundVolume(
             client=mock.MagicMock(),
             data=volume_response['volume']
@@ -55,7 +53,7 @@ class TestBoundVolume(object):
 
     @pytest.mark.parametrize("server",
                              (Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))))
-    def test_attach(self, hetzner_client, bound_volume, server):
+    def test_attach(self, hetzner_client, bound_volume, server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_volume.attach(server)
         hetzner_client.request.assert_called_with(
@@ -66,7 +64,7 @@ class TestBoundVolume(object):
         assert action.id == 1
         assert action.progress == 0
 
-    def test_detach(self, hetzner_client, bound_volume):
+    def test_detach(self, hetzner_client, bound_volume, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_volume.detach()
         hetzner_client.request.assert_called_with(
@@ -83,7 +81,7 @@ class TestVolumesClient(object):
     def volumes_client(self):
         return VolumesClient(client=mock.MagicMock())
 
-    def test_get_by_id(self, volumes_client):
+    def test_get_by_id(self, volumes_client, volume_response):
         volumes_client._client.request.return_value = volume_response
         bound_volume = volumes_client.get_by_id(1)
         volumes_client._client.request.assert_called_with(url="/volumes/1", method="GET")
@@ -91,7 +89,7 @@ class TestVolumesClient(object):
         assert bound_volume.id == 1
         assert bound_volume.name == "database-storage"
 
-    def test_get_all_no_params(self, volumes_client):
+    def test_get_all_no_params(self, volumes_client, two_volumes_response):
         volumes_client._client.request.return_value = two_volumes_response
         bound_volumes = volumes_client.get_all()
         volumes_client._client.request.assert_called_with(url="/volumes", method="GET", params={})
@@ -114,7 +112,7 @@ class TestVolumesClient(object):
         volumes_client.get_all(**params)
         volumes_client._client.request.assert_called_with(url="/volumes", method="GET", params=params)
 
-    def test_create_with_location(self, volumes_client):
+    def test_create_with_location(self, volumes_client, volume_create_response):
         volumes_client._client.request.return_value = volume_create_response
         response = volumes_client.create(
             100,
@@ -143,7 +141,7 @@ class TestVolumesClient(object):
         assert next_actions[0].command == "start_server"
 
     @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
-    def test_create_with_server(self, volumes_client, server):
+    def test_create_with_server(self, volumes_client, server, volume_create_response):
         volumes_client._client.request.return_value = volume_create_response
         volumes_client.create(
             100,
@@ -185,7 +183,7 @@ class TestVolumesClient(object):
     @pytest.mark.parametrize("server,volume",
                              [(Server(id=1), Volume(id=12)),
                               (BoundServer(mock.MagicMock(), dict(id=1)), BoundVolume(mock.MagicMock(), dict(id=12)))])
-    def test_attach(self, volumes_client, server, volume):
+    def test_attach(self, volumes_client, server, volume, generic_action):
         volumes_client._client.request.return_value = generic_action
         action = volumes_client.attach(server, volume)
         volumes_client._client.request.assert_called_with(
@@ -197,7 +195,7 @@ class TestVolumesClient(object):
         assert action.progress == 0
 
     @pytest.mark.parametrize("volume", [Volume(id=12), BoundVolume(mock.MagicMock(), dict(id=12))])
-    def test_detach(self, volumes_client, volume):
+    def test_detach(self, volumes_client, volume, generic_action):
         volumes_client._client.request.return_value = generic_action
         action = volumes_client.detach(volume)
         volumes_client._client.request.assert_called_with(

@@ -5,7 +5,7 @@ from hcloud.actions.domain import Action
 from hcloud.volumes.domain import Volume, CreateVolumeResponse
 
 
-class BoundVolume(BoundModelBase, Volume):
+class BoundVolume(BoundModelBase):
     model = Volume
 
     def attach(self, server):
