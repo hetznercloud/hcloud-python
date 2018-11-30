@@ -2,7 +2,7 @@ import mock
 import pytest
 
 
-class TestVolumesClient(object):
+class TestActionsClient(object):
     def test_get_by_id(self, hetzner_client):
         action = hetzner_client.actions.get_by_id(13)
         assert action.id == 13
