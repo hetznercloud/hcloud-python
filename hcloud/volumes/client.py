@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from hcloud.core.client import ClientEntityBase, BoundModelBase
 
-from hcloud.actions.domain import Action
+from hcloud.actions.client import BoundAction
 from hcloud.volumes.domain import Volume, CreateVolumeResponse
 
 
@@ -13,7 +13,7 @@ class BoundVolume(BoundModelBase):
         return self._client.attach(server, self)
 
     def detach(self):
-        # type: () -> Action
+        # type: () -> BoundAction
         return self._client.detach(self)
 
 
@@ -64,17 +64,17 @@ class VolumesClient(ClientEntityBase):
 
         result = CreateVolumeResponse(
             volume=BoundVolume(self, response['volume']),
-            action=Action(**response['action']),
-            next_actions=[Action(**action) for action in response['next_actions']]
+            action=BoundAction(self._client.actions, response['action']),
+            next_actions=[BoundAction(self._client.actions, action) for action in response['next_actions']]
         )
         return result
 
     def attach(self, server, volume):
         # type: (Union[Server, BoundServer], Union[Volume, BoundVolume]) -> Action
         data = self._client.request(url="/volumes/{volume_id}/actions/attach".format(volume_id=volume.id), json={'server': server.id}, method="POST")
-        return Action(**data['action'])
+        return BoundAction(self._client.actions, data['action'])
 
     def detach(self, volume):
         # type: (Union[Volume, BoundVolume]) -> Action
         data = self._client.request(url="/volumes/{volume_id}/actions/detach".format(volume_id=volume.id), method="POST")
-        return Action(**data['action'])
+        return BoundAction(self._client.actions, data['action'])

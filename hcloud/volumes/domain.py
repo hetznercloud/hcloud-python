@@ -54,8 +54,8 @@ class CreateVolumeResponse(BaseDomain):
     def __init__(
             self,
             volume,          # type: BoundVolume
-            action,          # type: Action
-            next_actions,    # type: List[Action]
+            action,          # type: BoundAction
+            next_actions,    # type: List[BoundAction]
     ):
         self.volume = volume
         self.action = action
