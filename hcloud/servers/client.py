@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from hcloud.core.client import ClientEntityBase, BoundModelBase
 
-from hcloud.actions.domain import Action
+from hcloud.actions.client import BoundAction
 from hcloud.servers.domain import Server, CreateServerResponse, ResetPasswordResponse, EnableRescueResponse, RequestConsoleResponse
 from hcloud.volumes.client import BoundVolume
 from hcloud.images.domain import Image, CreateImageResponse
@@ -31,7 +31,7 @@ class BoundServer(BoundModelBase):
         super(BoundServer, self).__init__(client, data)
 
     def get_actions(self, status=None, sort=None):
-        # type: # type: (Optional[List[str], Optional[List[str]]) -> List[Action]
+        # type: # type: (Optional[List[str], Optional[List[str]]) -> List[BoundAction]
         return self._client.get_actions(self, status, sort)
 
     def update(self, name=None, labels=None):
@@ -39,27 +39,27 @@ class BoundServer(BoundModelBase):
         return self._client.update(self, name, labels)
 
     def delete(self):
-        # type: () -> Action
+        # type: () -> BoundAction
         return self._client.delete(self)
 
     def power_off(self):
-        # type: () -> Action
+        # type: () -> BoundAction
         return self._client.power_off(self)
 
     def power_on(self):
-        # type: () -> Action
+        # type: () -> BoundAction
         return self._client.power_on(self)
 
     def reboot(self):
-        # type: () -> Action
+        # type: () -> BoundAction
         return self._client.reboot(self)
 
     def reset(self):
-        # type: () -> Action
+        # type: () -> BoundAction
         return self._client.reset(self)
 
     def shutdown(self):
-        # type: () -> Action
+        # type: () -> BoundAction
         return self._client.shutdown(self)
 
     def reset_password(self):
@@ -71,44 +71,44 @@ class BoundServer(BoundModelBase):
         return self._client.enable_rescue(self, type=type, ssh_keys=ssh_keys)
 
     def disable_rescue(self):
-        # type: () -> Action
+        # type: () -> BoundAction
         return self._client.disable_rescue(self)
 
     def create_image(self, description=None, type=None, labels=None):
-        # type: (str, str, Optional[Dict[str, str]]) -> Action
+        # type: (str, str, Optional[Dict[str, str]]) -> BoundAction
         return self._client.create_image(self, description, type, labels)
 
     def rebuild(self, image):
-        # type: (Image) -> Action
+        # type: (Image) -> BoundAction
         return self._client.rebuild(self, image)
 
     def change_type(self):
-        # type: () -> Action
+        # type: () -> BoundAction
         # TODO: Add Parameter upgrade_disk, server_type (required)
         return self._client.change_type(self)
 
     def enable_backup(self):
-        # type: () -> Action
+        # type: () -> BoundAction
         return self._client.enable_backup(self)
 
     def disable_backup(self):
-        # type: () -> Action
+        # type: () -> BoundAction
         return self._client.disable_backup(self)
 
     def attach_iso(self, iso):
-        # type: (Iso) -> Action
+        # type: (Iso) -> BoundAction
         return self._client.attach_iso(self, iso)
 
     def detach_iso(self):
-        # type: () -> Action
+        # type: () -> BoundAction
         return self._client.detach_iso(self)
 
     def change_dns_ptr(self, ip, dns_ptr):
-        # type: (str, Optional[str]) -> Action
+        # type: (str, Optional[str]) -> BoundAction
         return self._client.change_dns_ptr(self, ip, dns_ptr)
 
     def change_protection(self, delete=None, rebuild=None):
-        # type: (Optional[bool],Optional[bool]) -> Action
+        # type: (Optional[bool],Optional[bool]) -> BoundAction
         return self._client.change_protection(self, delete, rebuild)
 
     def request_console(self):
@@ -190,21 +190,21 @@ class ServersClient(ClientEntityBase):
 
         result = CreateServerResponse(
             server=BoundServer(self, response['server']),
-            action=Action(**response['action']),
-            next_actions=[Action(**action) for action in response['next_actions']],
+            action=BoundAction(self._client.actions, response['action']),
+            next_actions=[BoundAction(self._client.actions, action) for action in response['next_actions']],
             root_password=response['root_password']
         )
         return result
 
     def get_actions(self, server, status=None, sort=None):
-        # type: (Server, Optional[List[str]], Optional[List[str]]) -> List[Action]
+        # type: (Server, Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
         params = {}
         if status is not None:
             params.update({"status": status})
         if sort is not None:
             params.update({"sort": sort})
         response = self._client.request(url="/servers/{server_id}/actions".format(server_id=server.id), method="GET", params=params)
-        return [Action(**action_data) for action_data in response['actions']]
+        return [BoundAction(self._client.actions, action_data) for action_data in response['actions']]
 
     def update(self, server, name=None, labels=None):
         # type:(Server,  Optional[str],  Optional[Dict[str, str]]) -> BoundServer
@@ -217,39 +217,39 @@ class ServersClient(ClientEntityBase):
         return BoundServer(self, response['server'])
 
     def delete(self, server):
-        # type: (Server) -> Action
+        # type: (Server) -> BoundAction
         response = self._client.request(url="/servers/{server_id}".format(server_id=server.id), method="DELETE")
-        return Action(**response['action'])
+        return BoundAction(self._client.actions, response['action'])
 
     def power_off(self, server):
         # type: (Server) -> Action
         response = self._client.request(url="/servers/{server_id}/actions/poweroff".format(server_id=server.id), method="POST")
-        return Action(**response['action'])
+        return BoundAction(self._client.actions, response['action'])
 
     def power_on(self, server):
         # type: (servers.domain.Server) -> actions.domain.Action
         response = self._client.request(url="/servers/{server_id}/actions/poweron".format(server_id=server.id), method="POST")
-        return Action(**response['action'])
+        return BoundAction(self._client.actions, response['action'])
 
     def reboot(self, server):
         # type: (servers.domain.Server) -> actions.domain.Action
         response = self._client.request(url="/servers/{server_id}/actions/reboot".format(server_id=server.id), method="POST")
-        return Action(**response['action'])
+        return BoundAction(self._client.actions, response['action'])
 
     def reset(self, server):
         # type: (servers.domain.Server) -> actions.domainAction
         response = self._client.request(url="/servers/{server_id}/actions/reset".format(server_id=server.id), method="POST")
-        return Action(**response['action'])
+        return BoundAction(self._client.actions, response['action'])
 
     def shutdown(self, server):
         # type: (servers.domain.Server) -> actions.domainAction
         response = self._client.request(url="/servers/{server_id}/actions/shutdown".format(server_id=server.id), method="POST")
-        return Action(**response['action'])
+        return BoundAction(self._client.actions, response['action'])
 
     def reset_password(self, server):
         # type: (servers.domain.Server) -> ResetPasswordResponse
         response = self._client.request(url="/servers/{server_id}/actions/reset_password".format(server_id=server.id), method="POST")
-        return ResetPasswordResponse(action=Action(**response['action']), root_password=response['root_password'])
+        return ResetPasswordResponse(action=BoundAction(self._client.actions, response['action']), root_password=response['root_password'])
 
     def enable_rescue(self, server, type=None, ssh_keys=None):
         # type: (servers.domain.Server, str, Optional[List[str]]) -> EnableRescueResponse
@@ -261,12 +261,12 @@ class ServersClient(ClientEntityBase):
             data.update({"ssh_keys": ssh_keys})
 
         response = self._client.request(url="/servers/{server_id}/actions/enable_rescue".format(server_id=server.id), method="POST", json=data)
-        return EnableRescueResponse(action=Action(**response['action']), root_password=response['root_password'])
+        return EnableRescueResponse(action=BoundAction(self._client.actions, response['action']), root_password=response['root_password'])
 
     def disable_rescue(self, server):
         # type: (servers.domain.Server) -> actions.domainAction
         response = self._client.request(url="/servers/{server_id}/actions/disable_rescue".format(server_id=server.id), method="POST")
-        return Action(**response['action'])
+        return BoundAction(self._client.actions, response['action'])
 
     def create_image(self, server, description=None, type=None, labels=None):
         # type: (servers.domain.Server, str, str, Optional[Dict[str, str]]) -> CreateImageResponse
@@ -282,7 +282,7 @@ class ServersClient(ClientEntityBase):
             data.update({"type": labels})
 
         response = self._client.request(url="/servers/{server_id}/actions/create_image".format(server_id=server.id), method="POST", json=data)
-        return CreateImageResponse(action=Action(**response['action']), image=Image(**response['image']))
+        return CreateImageResponse(action=BoundAction(self._client.actions, response['action']), image=Image(**response['image']))
 
     def rebuild(self, server, image):
         # type: (servers.domain.Server, Image) -> actions.domainAction
@@ -296,17 +296,17 @@ class ServersClient(ClientEntityBase):
             }
 
         response = self._client.request(url="/servers/{server_id}/actions/rebuild".format(server_id=server.id), method="POST", json=data)
-        return Action(**response['action'])
+        return BoundAction(self._client.actions, response['action'])
 
     def enable_backup(self, server):
         # type: (servers.domain.Server) -> actions.domainAction
         response = self._client.request(url="/servers/{server_id}/actions/enable_backup".format(server_id=server.id), method="POST")
-        return Action(**response['action'])
+        return BoundAction(self._client.actions, response['action'])
 
     def disable_backup(self, server):
         # type: (servers.domain.Server) -> actions.domainAction
         response = self._client.request(url="/servers/{server_id}/actions/disable_backup".format(server_id=server.id), method="POST")
-        return Action(**response['action'])
+        return BoundAction(self._client.actions, response['action'])
 
     def attach_iso(self, server, iso):
         # type: (servers.domain.Server, Iso) -> actions.domainAction
@@ -319,12 +319,12 @@ class ServersClient(ClientEntityBase):
                 "iso": iso.id
             }
         response = self._client.request(url="/servers/{server_id}/actions/attach_iso".format(server_id=server.id), method="POST", json=data)
-        return Action(**response['action'])
+        return BoundAction(self._client.actions, response['action'])
 
     def detach_iso(self, server):
         # type: (servers.domain.Server) -> actions.domainAction
         response = self._client.request(url="/servers/{server_id}/actions/detach_iso".format(server_id=server.id), method="POST")
-        return Action(**response['action'])
+        return BoundAction(self._client.actions, response['action'])
 
     def change_dns_ptr(self, server, ip, dns_ptr):
         # type: (servers.domain.Server, str, Optional[str]) -> actions.domainAction
@@ -333,7 +333,7 @@ class ServersClient(ClientEntityBase):
             "dns_ptr": dns_ptr
         }
         response = self._client.request(url="/servers/{server_id}/actions/change_dns_ptr".format(server_id=server.id), method="POST", json=data)
-        return Action(**response['action'])
+        return BoundAction(self._client.actions, response['action'])
 
     def change_protection(self, server, delete=None, rebuild=None):
         # type: (servers.domain.Server, Optional[bool], Optional[bool]) -> actions.domainAction
@@ -344,9 +344,9 @@ class ServersClient(ClientEntityBase):
             data.update({"rebuild": rebuild})
 
         response = self._client.request(url="/servers/{server_id}/actions/change_protection".format(server_id=server.id), method="POST", json=data)
-        return Action(**response['action'])
+        return BoundAction(self._client.actions, response['action'])
 
     def request_console(self, server):
         # type: (servers.domain.Server) -> RequestConsoleResponse
         response = self._client.request(url="/servers/{server_id}/actions/request_console".format(server_id=server.id), method="POST")
-        return RequestConsoleResponse(action=Action(**response['action']), wss_url=response['wss_url'], password=response['password'])
+        return RequestConsoleResponse(action=BoundAction(self._client.actions, response['action']), wss_url=response['wss_url'], password=response['password'])

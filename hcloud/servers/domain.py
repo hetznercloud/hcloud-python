@@ -79,7 +79,7 @@ class CreateServerResponse(BaseDomain):
     def __init__(
             self,
             server,          # type: BoundServer
-            action,          # type: Action
+            action,          # type: BoundAction
             next_actions,    # type: List[Action]
             root_password    # type: str
     ):
@@ -97,7 +97,7 @@ class ResetPasswordResponse(BaseDomain):
 
     def __init__(
             self,
-            action,          # type: Action
+            action,          # type: BoundAction
             root_password    # type: str
     ):
         self.action = action
@@ -112,7 +112,7 @@ class EnableRescueResponse(BaseDomain):
 
     def __init__(
             self,
-            action,          # type: Action
+            action,          # type: BoundAction
             root_password    # type: str
     ):
         self.action = action
@@ -128,7 +128,7 @@ class RequestConsoleResponse(BaseDomain):
 
     def __init__(
             self,
-            action,     # type: Action
+            action,     # type: BoundAction
             wss_url,    # type: str
             password,   # type: str
     ):

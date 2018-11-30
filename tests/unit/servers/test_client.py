@@ -9,7 +9,7 @@ from hcloud.volumes.client import BoundVolume
 from hcloud.volumes.domain import Volume
 from hcloud.images.domain import Image
 from hcloud.iso.domain import Iso
-from hcloud.actions.domain import Action
+from hcloud.actions.client import BoundAction
 
 
 class TestBoundServer(object):
@@ -66,7 +66,7 @@ class TestBoundServer(object):
         hetzner_client.request.assert_called_with(url="/servers/14/actions", method="GET", params={})
 
         assert len(actions) == 1
-        assert isinstance(actions[0], Action)
+        assert isinstance(actions[0], BoundAction)
         assert actions[0].id == 13
         assert actions[0].command == "start_server"
 
@@ -334,7 +334,7 @@ class TestServersClient(object):
         servers_client._client.request.assert_called_with(url="/servers/1/actions", method="GET", params={})
 
         assert len(actions) == 1
-        assert isinstance(actions[0], Action)
+        assert isinstance(actions[0], BoundAction)
         assert actions[0].id == 13
         assert actions[0].command == "start_server"
 
