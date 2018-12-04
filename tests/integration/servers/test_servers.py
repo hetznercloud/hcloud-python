@@ -6,7 +6,7 @@ from hcloud.servers.domain import Server
 from hcloud.volumes.domain import Volume
 from hcloud.images.domain import Image
 from hcloud.iso.domain import Iso
-
+from hcloud.server_types.domain import ServerType
 
 class TestBoundServer(object):
 
@@ -60,6 +60,11 @@ class TestBoundServer(object):
         assert response.action.id == 13
         assert response.action.command == "reset_password"
         assert response.root_password == "zCWbFhnu950dUTko5f40"
+
+    def test_change_type(self, bound_server):
+        action = bound_server.change_type(ServerType(name="cx11"), upgrade_disk=True)
+        assert action.id == 13
+        assert action.command == "change_server_type"
 
     def test_enable_rescue(self, bound_server):
         response = bound_server.enable_rescue(type="linux64", ssh_keys=[2323])
@@ -138,7 +143,7 @@ class TestServersClient(object):
         server = hetzner_client.servers.get_by_id(42)
         assert server.id == 42
         assert server.volumes == []
-        assert server.server_type['id'] == 1
+        assert server.server_type.id == 1
         assert server.datacenter['id'] == 1
         assert server.image.id == 4711
 
@@ -146,7 +151,7 @@ class TestServersClient(object):
         servers = hetzner_client.servers.get_all(42)
         assert servers[0].id == 42
         assert servers[0].volumes == []
-        assert servers[0].server_type['id'] == 1
+        assert servers[0].server_type.id == 1
         assert servers[0].datacenter['id'] == 1
         assert servers[0].image.id == 4711
 
@@ -169,7 +174,7 @@ class TestServersClient(object):
 
         assert server.id == 42
         assert server.volumes == []
-        assert server.server_type['id'] == 1
+        assert server.server_type.id == 1
         assert server.datacenter['id'] == 1
         assert server.image.id == 4711
 
@@ -246,6 +251,13 @@ class TestServersClient(object):
         assert response.action.id == 13
         assert response.action.command == "reset_password"
         assert response.root_password == "zCWbFhnu950dUTko5f40"
+
+    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    def test_change_type(self, hetzner_client, server):
+        action = hetzner_client.servers.change_type(server, ServerType(name="cx11"), upgrade_disk=True)
+
+        assert action.id == 13
+        assert action.command == "change_server_type"
 
     @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
     def test_enable_rescue(self, hetzner_client, server):

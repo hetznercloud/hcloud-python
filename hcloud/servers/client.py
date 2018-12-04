@@ -6,6 +6,7 @@ from hcloud.servers.domain import Server, CreateServerResponse, ResetPasswordRes
 from hcloud.volumes.client import BoundVolume
 from hcloud.images.domain import Image, CreateImageResponse
 from hcloud.iso.domain import Iso
+from hcloud.server_types.client import BoundServerType
 
 
 class BoundServer(BoundModelBase):
@@ -27,6 +28,10 @@ class BoundServer(BoundModelBase):
         if iso is not None:
             # data['iso'] = BoundIso(client._client.iso, iso, complete=True) # When ISO Client is implemented
             data['iso'] = Iso(**iso)
+
+        server_type = data.get("server_type")
+        if server_type is not None:
+            data['server_type'] = BoundServerType(client._client.server_types, server_type)
 
         super(BoundServer, self).__init__(client, data)
 
@@ -82,10 +87,9 @@ class BoundServer(BoundModelBase):
         # type: (Image) -> BoundAction
         return self._client.rebuild(self, image)
 
-    def change_type(self):
-        # type: () -> BoundAction
-        # TODO: Add Parameter upgrade_disk, server_type (required)
-        return self._client.change_type(self)
+    def change_type(self, server_type, upgrade_disk):
+        # type: (BoundServerType, bool) -> BoundAction
+        return self._client.change_type(self, server_type, upgrade_disk)
 
     def enable_backup(self):
         # type: () -> BoundAction
@@ -108,7 +112,7 @@ class BoundServer(BoundModelBase):
         return self._client.change_dns_ptr(self, ip, dns_ptr)
 
     def change_protection(self, delete=None, rebuild=None):
-        # type: (Optional[bool],Optional[bool]) -> BoundAction
+        # type: (Optional[bool], Optional[bool]) -> BoundAction
         return self._client.change_protection(self, delete, rebuild)
 
     def request_console(self):
@@ -250,6 +254,23 @@ class ServersClient(ClientEntityBase):
         # type: (servers.domain.Server) -> ResetPasswordResponse
         response = self._client.request(url="/servers/{server_id}/actions/reset_password".format(server_id=server.id), method="POST")
         return ResetPasswordResponse(action=BoundAction(self._client.actions, response['action']), root_password=response['root_password'])
+
+    def change_type(self, server, server_type, upgrade_disk):
+        # type: (servers.domain.Server, BoundServerType, bool) -> actions.domainAction
+        if server_type.id is not None:
+            data = {
+                "server_type": server_type.id
+            }
+        elif server_type.name is not None:
+            data = {
+                "server_type": server_type.name
+            }
+        else:
+            raise ValueError("missing server type")
+
+        data.update({"upgrade_disk": upgrade_disk})
+        response = self._client.request(url="/servers/{server_id}/actions/change_type".format(server_id=server.id), method="POST", json=data)
+        return BoundAction(self._client.actions, response['action'])
 
     def enable_rescue(self, server, type=None, ssh_keys=None):
         # type: (servers.domain.Server, str, Optional[List[str]]) -> EnableRescueResponse

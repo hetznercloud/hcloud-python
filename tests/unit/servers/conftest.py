@@ -10,7 +10,29 @@ def response_simple_server():
             "status": "running",
             "created": "2016-01-30T23:50+00:00",
             "public_net": {},
-            "server_type": {},
+            "server_type": {
+                "id": 1,
+                "name": "cx11",
+                "description": "CX11",
+                "cores": 1,
+                "memory": 1,
+                "disk": 25,
+                "prices": [
+                    {
+                        "location": "fsn1",
+                        "price_hourly": {
+                            "net": "1.0000000000",
+                            "gross": "1.1900000000000000"
+                        },
+                        "price_monthly": {
+                            "net": "1.0000000000",
+                            "gross": "1.1900000000000000"
+                        }
+                    }
+                ],
+                "storage_type": "local",
+                "cpu_type": "shared"
+            },
             "datacenter": {},
             "image": {
                 "id": 4711,
@@ -59,7 +81,29 @@ def response_create_simple_server():
             "status": "running",
             "created": "2016-01-30T23:50+00:00",
             "public_net": {},
-            "server_type": {},
+            "server_type": {
+                "id": 1,
+                "name": "cx11",
+                "description": "CX11",
+                "cores": 1,
+                "memory": 1,
+                "disk": 25,
+                "prices": [
+                    {
+                        "location": "fsn1",
+                        "price_hourly": {
+                            "net": "1.0000000000",
+                            "gross": "1.1900000000000000"
+                        },
+                        "price_monthly": {
+                            "net": "1.0000000000",
+                            "gross": "1.1900000000000000"
+                        }
+                    }
+                ],
+                "storage_type": "local",
+                "cpu_type": "shared"
+            },
             "datacenter": {},
             "image": {
                 "id": 4711,
@@ -277,7 +321,29 @@ def response_simple_servers():
             "status": "running",
             "created": "2016-01-30T23:50+00:00",
             "public_net": {},
-            "server_type": {},
+            "server_type": {
+                "id": 1,
+                "name": "cx11",
+                "description": "CX11",
+                "cores": 1,
+                "memory": 1,
+                "disk": 25,
+                "prices": [
+                    {
+                        "location": "fsn1",
+                        "price_hourly": {
+                            "net": "1.0000000000",
+                            "gross": "1.1900000000000000"
+                        },
+                        "price_monthly": {
+                            "net": "1.0000000000",
+                            "gross": "1.1900000000000000"
+                        }
+                    }
+                ],
+                "storage_type": "local",
+                "cpu_type": "shared"
+            },
             "datacenter": {},
             "image": {
                 "id": 4711,
@@ -320,7 +386,29 @@ def response_simple_servers():
                 "status": "running",
                 "created": "2016-03-30T23:50+00:00",
                 "public_net": {},
-                "server_type": {},
+                "server_type": {
+                    "id": 1,
+                    "name": "cx11",
+                    "description": "CX11",
+                    "cores": 1,
+                    "memory": 1,
+                    "disk": 25,
+                    "prices": [
+                        {
+                            "location": "fsn1",
+                            "price_hourly": {
+                                "net": "1.0000000000",
+                                "gross": "1.1900000000000000"
+                            },
+                            "price_monthly": {
+                                "net": "1.0000000000",
+                                "gross": "1.1900000000000000"
+                            }
+                        }
+                    ],
+                    "storage_type": "local",
+                    "cpu_type": "shared"
+                },
                 "datacenter": {},
                 "image": {
                     "id": 4711,
@@ -590,6 +678,7 @@ def response_server_request_console():
             }
         }
     }
+
 
 @pytest.fixture()
 def response_get_actions():

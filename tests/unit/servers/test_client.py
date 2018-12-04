@@ -10,6 +10,8 @@ from hcloud.volumes.domain import Volume
 from hcloud.images.domain import Image
 from hcloud.iso.domain import Iso
 from hcloud.actions.client import BoundAction
+from hcloud.server_types.client import BoundServerType
+from hcloud.server_types.domain import ServerType
 
 
 class TestBoundServer(object):
@@ -41,6 +43,11 @@ class TestBoundServer(object):
         assert bound_server.iso == response_full_server['server']['iso']
 
         assert len(bound_server.volumes) == 2
+
+        assert isinstance(bound_server.server_type, BoundServerType)
+        assert bound_server.server_type._client == bound_server._client._client.server_types
+        assert bound_server.server_type.id == 1
+        assert bound_server.server_type.complete is True
 
         assert isinstance(bound_server.volumes[0], BoundVolume)
         assert bound_server.volumes[0]._client == bound_server._client._client.volumes
@@ -134,6 +141,14 @@ class TestBoundServer(object):
         assert response.action.id == 1
         assert response.action.progress == 0
         assert response.root_password == "YItygq1v3GYjjMomLaKc"
+
+    def test_change_type(self, hetzner_client, bound_server, generic_action):
+        hetzner_client.request.return_value = generic_action
+        action = bound_server.change_type(ServerType(name="cx11"), upgrade_disk=True)
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/change_type", method="POST", json={"server_type": "cx11", "upgrade_disk": True})
+
+        assert action.id == 1
+        assert action.progress == 0
 
     def test_enable_rescue(self, hetzner_client, bound_server, response_server_enable_rescue):
         hetzner_client.request.return_value = response_server_enable_rescue
@@ -420,6 +435,32 @@ class TestServersClient(object):
         assert response.action.id == 1
         assert response.action.progress == 0
         assert response.root_password == "YItygq1v3GYjjMomLaKc"
+
+    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    def test_change_type_with_server_type_name(self, servers_client, server, generic_action):
+        servers_client._client.request.return_value = generic_action
+        action = servers_client.change_type(server, ServerType(name="cx11"), upgrade_disk=True)
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_type", method="POST", json={"server_type": "cx11", "upgrade_disk": True})
+
+        assert action.id == 1
+        assert action.progress == 0
+
+    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    def test_change_type_with_server_type_id(self, servers_client, server, generic_action):
+        servers_client._client.request.return_value = generic_action
+        action = servers_client.change_type(server, ServerType(id=1), upgrade_disk=True)
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_type", method="POST",
+                                                          json={"server_type": 1, "upgrade_disk": True})
+
+        assert action.id == 1
+        assert action.progress == 0
+
+    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    def test_change_type_with_blank_server_type(self, servers_client, server):
+        with pytest.raises(ValueError) as e:
+            servers_client.change_type(server, ServerType(), upgrade_disk=True)
+        assert str(e.value) == "missing server type"
+        servers_client._client.request.assert_not_called()
 
     @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
     def test_enable_rescue(self, servers_client, server, response_server_enable_rescue):
