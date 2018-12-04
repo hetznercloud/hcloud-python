@@ -286,10 +286,16 @@ class TestServersClient(object):
         )
 
         bound_server = response.server
+        bound_action = response.action
 
         assert bound_server._client is servers_client
         assert bound_server.id == 1
         assert bound_server.name == "my-server"
+
+        assert isinstance(bound_action, BoundAction)
+        assert bound_action._client == servers_client._client.actions
+        assert bound_action.id == 1
+        assert bound_action.command == "create_server"
 
     def test_create_with_volumes(self, servers_client, response_create_simple_server):
         servers_client._client.request.return_value = response_create_simple_server
@@ -314,7 +320,7 @@ class TestServersClient(object):
         )
 
         bound_server = response.server
-        action = response.action
+        bound_action = response.action
         next_actions = response.next_actions
         root_password = response.root_password
 
@@ -322,8 +328,10 @@ class TestServersClient(object):
         assert bound_server.id == 1
         assert bound_server.name == "my-server"
 
-        assert action.id == 1
-        assert action.command == "create_server"
+        assert isinstance(bound_action, BoundAction)
+        assert bound_action._client == servers_client._client.actions
+        assert bound_action.id == 1
+        assert bound_action.command == "create_server"
 
         assert next_actions[0].id == 13
 
@@ -335,6 +343,8 @@ class TestServersClient(object):
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
+
+        assert actions[0]._client == servers_client._client.actions
         assert actions[0].id == 13
         assert actions[0].command == "start_server"
 
