@@ -9,6 +9,7 @@ def mocked_requests():
     yield mocked_requests
     patcher.stop()
 
+
 @pytest.fixture()
 def generic_action():
     return {

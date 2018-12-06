@@ -53,11 +53,9 @@ class TestBoundModelBase():
         assert id == 101
         assert bound_model.complete is False
 
-
     def test_get_non_exists_model_attribute_incomplete_model(self, bound_model_class, client):
         bound_model = bound_model_class(client=client, data={"id": 1}, complete=False)
         with pytest.raises(AttributeError):
             bound_model.content
         client.get_by_id.assert_not_called()
         assert bound_model.complete is False
-

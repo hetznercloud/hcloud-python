@@ -80,7 +80,7 @@ class TestBoundServer(object):
     def test_update(self, hetzner_client, bound_server, response_update_server):
         hetzner_client.request.return_value = response_update_server
         server = bound_server.update(name="new-name", labels={})
-        hetzner_client.request.assert_called_with(url="/servers/14", method="PUT",json={"name": "new-name", "labels": {}})
+        hetzner_client.request.assert_called_with(url="/servers/14", method="PUT", json={"name": "new-name", "labels": {}})
 
         assert server.id == 14
         assert server.name == "new-name"
@@ -338,6 +338,8 @@ class TestServersClient(object):
         bound_action = response.action
         next_actions = response.next_actions
         root_password = response.root_password
+
+        assert root_password == "YItygq1v3GYjjMomLaKc"
 
         assert bound_server._client is servers_client
         assert bound_server.id == 1

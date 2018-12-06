@@ -35,4 +35,3 @@ class TestActionsClient(object):
         assert action2._client is actions_client
         assert action2.id == 2
         assert action2.command == "stop_server"
-

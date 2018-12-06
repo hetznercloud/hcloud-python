@@ -1,6 +1,3 @@
-import mock
-import pytest
-
 
 class TestActionsClient(object):
     def test_get_by_id(self, hetzner_client):

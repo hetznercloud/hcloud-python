@@ -41,4 +41,3 @@ class TestServerTypesClient(object):
     def test_get_all_with_params(self, server_types_client, params):
         server_types_client.get_all(**params)
         server_types_client._client.request.assert_called_with(url="/server_types", method="GET", params=params)
-

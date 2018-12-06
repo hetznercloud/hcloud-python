@@ -1,6 +1,3 @@
-import pytest
-import mock
-
 
 class TestServerTypesClient(object):
 

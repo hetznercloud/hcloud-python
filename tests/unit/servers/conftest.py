@@ -379,73 +379,71 @@ def response_simple_servers():
             "protection": {},
             "labels": {},
             "volumes": []
-        },
-            {
-                "id": 2,
-                "name": "my-server2",
-                "status": "running",
-                "created": "2016-03-30T23:50+00:00",
-                "public_net": {},
-                "server_type": {
-                    "id": 1,
-                    "name": "cx11",
-                    "description": "CX11",
-                    "cores": 1,
-                    "memory": 1,
-                    "disk": 25,
-                    "prices": [
-                        {
-                            "location": "fsn1",
-                            "price_hourly": {
-                                "net": "1.0000000000",
-                                "gross": "1.1900000000000000"
-                            },
-                            "price_monthly": {
-                                "net": "1.0000000000",
-                                "gross": "1.1900000000000000"
-                            }
+        }, {
+            "id": 2,
+            "name": "my-server2",
+            "status": "running",
+            "created": "2016-03-30T23:50+00:00",
+            "public_net": {},
+            "server_type": {
+                "id": 1,
+                "name": "cx11",
+                "description": "CX11",
+                "cores": 1,
+                "memory": 1,
+                "disk": 25,
+                "prices": [
+                    {
+                        "location": "fsn1",
+                        "price_hourly": {
+                            "net": "1.0000000000",
+                            "gross": "1.1900000000000000"
+                        },
+                        "price_monthly": {
+                            "net": "1.0000000000",
+                            "gross": "1.1900000000000000"
                         }
-                    ],
-                    "storage_type": "local",
-                    "cpu_type": "shared"
-                },
-                "datacenter": {},
-                "image": {
-                    "id": 4711,
-                    "type": "snapshot",
-                    "status": "available",
-                    "name": "ubuntu-16.04",
-                    "description": "Ubuntu 16.04 Standard 64 bit",
-                    "image_size": 2.3,
-                    "disk_size": 10,
-                    "created": "2016-01-30T23:50+00:00",
-                    "created_from": {
-                        "id": 1,
-                        "name": "Server"
-                    },
-                    "bound_to": None,
-                    "os_flavor": "ubuntu",
-                    "os_version": "16.04",
-                    "rapid_deploy": False,
-                    "protection": {
-                        "delete": False,
-                        "rebuild": False
-                    },
-                    "deprecated": "2018-02-28T00:00:00+00:00",
-                    "labels": {}
-                },
-                "iso": None,
-                "rescue_enabled": False,
-                "locked": False,
-                "backup_window": "22-02",
-                "outgoing_traffic": 123456,
-                "ingoing_traffic": 123456,
-                "included_traffic": 654321,
-                "protection": {},
-                "labels": {},
-                "volumes": []
+                    }
+                ],
+                "storage_type": "local",
+                "cpu_type": "shared"
             },
-        ]
+            "datacenter": {},
+            "image": {
+                "id": 4711,
+                "type": "snapshot",
+                "status": "available",
+                "name": "ubuntu-16.04",
+                "description": "Ubuntu 16.04 Standard 64 bit",
+                "image_size": 2.3,
+                "disk_size": 10,
+                "created": "2016-01-30T23:50+00:00",
+                "created_from": {
+                    "id": 1,
+                    "name": "Server"
+                },
+                "bound_to": None,
+                "os_flavor": "ubuntu",
+                "os_version": "16.04",
+                "rapid_deploy": False,
+                "protection": {
+                    "delete": False,
+                    "rebuild": False
+                },
+                "deprecated": "2018-02-28T00:00:00+00:00",
+                "labels": {}
+            },
+            "iso": None,
+            "rescue_enabled": False,
+            "locked": False,
+            "backup_window": "22-02",
+            "outgoing_traffic": 123456,
+            "ingoing_traffic": 123456,
+            "included_traffic": 654321,
+            "protection": {},
+            "labels": {},
+            "volumes": []
+        }]
     }
 
 

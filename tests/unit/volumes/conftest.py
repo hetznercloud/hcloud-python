@@ -28,6 +28,7 @@ def volume_response():
         }
     }
 
+
 @pytest.fixture()
 def two_volumes_response():
     return {
@@ -78,6 +79,7 @@ def two_volumes_response():
             }
         ]
     }
+
 
 @pytest.fixture()
 def volume_create_response():

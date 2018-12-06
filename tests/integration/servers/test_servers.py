@@ -8,6 +8,7 @@ from hcloud.images.domain import Image
 from hcloud.iso.domain import Iso
 from hcloud.server_types.domain import ServerType
 
+
 class TestBoundServer(object):
 
     @pytest.fixture()
@@ -283,7 +284,7 @@ class TestServersClient(object):
         assert response.image.description == "my image"
 
     @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
-    def test_enable_backup(self, hetzner_client, server):
+    def test_rebuild(self, hetzner_client, server):
         action = hetzner_client.servers.rebuild(server, Image(name="ubuntu-16.04"))
 
         assert action.id == 13
