@@ -257,18 +257,11 @@ class ServersClient(ClientEntityBase):
 
     def change_type(self, server, server_type, upgrade_disk):
         # type: (servers.domain.Server, BoundServerType, bool) -> actions.domainAction
-        if server_type.id is not None:
-            data = {
-                "server_type": server_type.id
-            }
-        elif server_type.name is not None:
-            data = {
-                "server_type": server_type.name
-            }
-        else:
-            raise ValueError("missing server type")
 
-        data.update({"upgrade_disk": upgrade_disk})
+        data = {
+            "server_type": server_type.id_or_name,
+            "upgrade_disk": upgrade_disk
+        }
         response = self._client.request(url="/servers/{server_id}/actions/change_type".format(server_id=server.id), method="POST", json=data)
         return BoundAction(self._client.actions, response['action'])
 
@@ -307,15 +300,10 @@ class ServersClient(ClientEntityBase):
 
     def rebuild(self, server, image):
         # type: (servers.domain.Server, Image) -> actions.domainAction
-        if image.id is None:
-            data = {
-                "image": image.name
-            }
-        else:
-            data = {
-                "image": image.id
-            }
 
+        data = {
+            "image": image.id_or_name
+        }
         response = self._client.request(url="/servers/{server_id}/actions/rebuild".format(server_id=server.id), method="POST", json=data)
         return BoundAction(self._client.actions, response['action'])
 
@@ -331,14 +319,9 @@ class ServersClient(ClientEntityBase):
 
     def attach_iso(self, server, iso):
         # type: (servers.domain.Server, Iso) -> actions.domainAction
-        if iso.id is None:
-            data = {
-                "iso": iso.name
-            }
-        else:
-            data = {
-                "iso": iso.id
-            }
+        data = {
+            "iso": iso.id_or_name
+        }
         response = self._client.request(url="/servers/{server_id}/actions/attach_iso".format(server_id=server.id), method="POST", json=data)
         return BoundAction(self._client.actions, response['action'])
 

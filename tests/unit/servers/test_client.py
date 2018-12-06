@@ -459,7 +459,7 @@ class TestServersClient(object):
     def test_change_type_with_blank_server_type(self, servers_client, server):
         with pytest.raises(ValueError) as e:
             servers_client.change_type(server, ServerType(), upgrade_disk=True)
-        assert str(e.value) == "missing server type"
+        assert str(e.value) == "id or name must be set"
         servers_client._client.request.assert_not_called()
 
     @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
