@@ -1,7 +1,6 @@
 import mock
 import pytest
 
-from hcloud import HcloudClient
 from hcloud.servers.client import ServersClient, BoundServer
 
 from hcloud.servers.domain import Server
@@ -9,20 +8,15 @@ from hcloud.volumes.client import BoundVolume
 from hcloud.volumes.domain import Volume
 from hcloud.images.domain import Image
 from hcloud.iso.domain import Iso
+from hcloud.datacenters.client import BoundDatacenter
+from hcloud.datacenters.domain import Datacenter
+from hcloud.locations.domain import Location
 from hcloud.actions.client import BoundAction
 from hcloud.server_types.client import BoundServerType
 from hcloud.server_types.domain import ServerType
 
 
 class TestBoundServer(object):
-
-    @pytest.fixture()
-    def hetzner_client(self):
-        client = HcloudClient(token="token")
-        patcher = mock.patch.object(client, "request")
-        patcher.start()
-        yield client
-        patcher.stop()
 
     @pytest.fixture()
     def bound_server(self, hetzner_client):
@@ -37,18 +31,18 @@ class TestBoundServer(object):
         assert bound_server.id == 42
         assert bound_server.name == "my-server"
         assert bound_server.public_net["floating_ips"] == [478]
-        assert bound_server.server_type == response_full_server['server']['server_type']
-        assert bound_server.datacenter == response_full_server['server']['datacenter']
-        assert bound_server.image == response_full_server['server']['image']
-        assert bound_server.iso == response_full_server['server']['iso']
 
-        assert len(bound_server.volumes) == 2
+        assert isinstance(bound_server.datacenter, BoundDatacenter)
+        assert bound_server.datacenter._client == bound_server._client._client.datacenters
+        assert bound_server.datacenter.id == 1
+        assert bound_server.datacenter.complete is True
 
         assert isinstance(bound_server.server_type, BoundServerType)
         assert bound_server.server_type._client == bound_server._client._client.server_types
         assert bound_server.server_type.id == 1
         assert bound_server.server_type.complete is True
 
+        assert len(bound_server.volumes) == 2
         assert isinstance(bound_server.volumes[0], BoundVolume)
         assert bound_server.volumes[0]._client == bound_server._client._client.volumes
         assert bound_server.volumes[0].id == 1
@@ -280,13 +274,13 @@ class TestServersClient(object):
         servers_client.get_all(**params)
         servers_client._client.request.assert_called_with(url="/servers", method="GET", params=params)
 
-    def test_create(self, servers_client, response_create_simple_server):
+    def test_create_with_datacenter(self, servers_client, response_create_simple_server):
         servers_client._client.request.return_value = response_create_simple_server
         response = servers_client.create(
             "my-server",
             "cx11",
             image=Image(id=4711),
-            datacenter="datacenter1"
+            datacenter=Datacenter(id=1)
         )
         servers_client._client.request.assert_called_with(
             url="/servers",
@@ -295,7 +289,33 @@ class TestServersClient(object):
                 'name': "my-server",
                 'server_type': "cx11",
                 'image': 4711,
-                'datacenter': 'datacenter1',
+                'datacenter': 1,
+                "start_after_create": True
+            }
+        )
+
+        bound_server = response.server
+
+        assert bound_server._client is servers_client
+        assert bound_server.id == 1
+        assert bound_server.name == "my-server"
+
+    def test_create_with_location(self, servers_client, response_create_simple_server):
+        servers_client._client.request.return_value = response_create_simple_server
+        response = servers_client.create(
+            "my-server",
+            "cx11",
+            image=Image(name="ubuntu-18.04"),
+            location=Location(name="fsn1")
+        )
+        servers_client._client.request.assert_called_with(
+            url="/servers",
+            method="POST",
+            json={
+                'name': "my-server",
+                'server_type': "cx11",
+                'image': "ubuntu-18.04",
+                'location': "fsn1",
                 "start_after_create": True
             }
         )

@@ -7,6 +7,7 @@ from hcloud.volumes.domain import Volume
 from hcloud.images.domain import Image
 from hcloud.iso.domain import Iso
 from hcloud.server_types.domain import ServerType
+from hcloud.locations.domain import Location
 
 
 class TestBoundServer(object):
@@ -145,7 +146,7 @@ class TestServersClient(object):
         assert server.id == 42
         assert server.volumes == []
         assert server.server_type.id == 1
-        assert server.datacenter['id'] == 1
+        assert server.datacenter.id == 1
         assert server.image.id == 4711
 
     def test_get_all(self, hetzner_client):
@@ -153,7 +154,7 @@ class TestServersClient(object):
         assert servers[0].id == 42
         assert servers[0].volumes == []
         assert servers[0].server_type.id == 1
-        assert servers[0].datacenter['id'] == 1
+        assert servers[0].datacenter.id == 1
         assert servers[0].image.id == 4711
 
     def test_create(self, hetzner_client):
@@ -165,7 +166,8 @@ class TestServersClient(object):
             ssh_keys=["my-ssh-key"],
             volumes=[Volume(id=1)],
             user_data="#cloud-config\\nruncmd:\\n- [touch, /root/cloud-init-worked]\\n",
-            location="nbg1"
+            location=Location(name="nbg1"),
+            automount=False
 
         )
         server = response.server
@@ -176,7 +178,7 @@ class TestServersClient(object):
         assert server.id == 42
         assert server.volumes == []
         assert server.server_type.id == 1
-        assert server.datacenter['id'] == 1
+        assert server.datacenter.id == 1
         assert server.image.id == 4711
 
         assert action.id == 1

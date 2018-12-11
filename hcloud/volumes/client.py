@@ -3,10 +3,17 @@ from hcloud.core.client import ClientEntityBase, BoundModelBase
 
 from hcloud.actions.client import BoundAction
 from hcloud.volumes.domain import Volume, CreateVolumeResponse
+from hcloud.locations.client import BoundLocation
 
 
 class BoundVolume(BoundModelBase):
     model = Volume
+
+    def __init__(self, client, data, complete=True):
+        location = data.get("location")
+        if location is not None:
+            data['location'] = BoundLocation(client._client.locations, location)
+        super(BoundVolume, self).__init__(client, data, complete)
 
     def attach(self, server):
         # type: (Union[Server, BoundServer]) -> Action
@@ -34,14 +41,15 @@ class VolumesClient(ClientEntityBase):
         return [BoundVolume(self, volume_data) for volume_data in response['volumes']]
 
     def create(self,
-               size,           # type: int
-               name,           # type: str
-               labels=None,    # type: Optional[str]
-               location=None,  # type: Optional[str]
-               server=None     # type: Optional[Server]
+               size,            # type: int
+               name,            # type: str
+               labels=None,     # type: Optional[str]
+               location=None,   # type: Optional[Location]
+               server=None,     # type: Optional[Server],
+               automount=None,  # type: Optional[bool],
+               format=None,     # type: Optional[str],
                ):
         # type: (...) -> CreateVolumeResponse
-        # TODO: convert location str type to locations.domain.Location type, when implementation is ready
 
         if size <= 0:
             raise ValueError("size must be greater than 0")
@@ -56,9 +64,14 @@ class VolumesClient(ClientEntityBase):
         if labels is not None:
             data['labels'] = labels
         if location is not None:
-            data['location'] = location
+            data['location'] = location.id_or_name
+
         if server is not None:
             data['server'] = server.id
+        if automount is not None:
+            data['automount'] = automount
+        if format is not None:
+            data['format'] = format
 
         response = self._client.request(url="/volumes", json=data, method="POST")
 

@@ -5,6 +5,7 @@ from hcloud.servers.client import BoundServer
 from hcloud.servers.domain import Server
 from hcloud.volumes.client import BoundVolume
 from hcloud.volumes.domain import Volume
+from hcloud.locations.domain import Location
 
 
 class TestBoundVolume(object):
@@ -47,7 +48,9 @@ class TestVolumesClient(object):
         response = hetzner_client.volumes.create(
             42,
             "test-database",
-            location="nbg1",
+            location=Location(name="nbg1"),
+            automount=False,
+            format="xfs"
         )
 
         volume = response.volume

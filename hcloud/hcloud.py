@@ -7,6 +7,8 @@ from hcloud.actions.client import ActionsClient
 from hcloud.servers.client import ServersClient
 from hcloud.server_types.client import ServerTypesClient
 from hcloud.volumes.client import VolumesClient
+from hcloud.locations.client import LocationsClient
+from hcloud.datacenters.client import DatacentersClient
 
 
 from .version import VERSION
@@ -26,6 +28,8 @@ class HcloudClient(object):
         self.token = token
         self.api_endpoint = "https://api.hetzner.cloud/v1"
 
+        self.datacenters = DatacentersClient(self)
+        self.locations = LocationsClient(self)
         self.servers = ServersClient(self)
         self.server_types = ServerTypesClient(self)
         self.volumes = VolumesClient(self)

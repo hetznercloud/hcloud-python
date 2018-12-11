@@ -7,12 +7,18 @@ from hcloud.volumes.client import BoundVolume
 from hcloud.images.domain import Image, CreateImageResponse
 from hcloud.iso.domain import Iso
 from hcloud.server_types.client import BoundServerType
+from hcloud.datacenters.client import BoundDatacenter
 
 
 class BoundServer(BoundModelBase):
     model = Server
 
     def __init__(self, client, data):
+
+        datacenter = data.get('datacenter')
+        if datacenter is not None:
+            data['datacenter'] = BoundDatacenter(client._client.datacenters, datacenter)
+
         volumes = data.get('volumes', [])
         if volumes:
             volumes = [BoundVolume(client._client.volumes, {"id": volume}, complete=False) for volume in volumes]
@@ -22,7 +28,6 @@ class BoundServer(BoundModelBase):
         if image is not None:
             # data['image'] = BoundImage(client._client.images, image, complete=True) # When Image Client is implemented
             data['image'] = Image(**image)
-            print(data['image'].id)
 
         iso = data.get("iso", None)
         if iso is not None:
@@ -139,20 +144,19 @@ class ServersClient(ClientEntityBase):
         return [BoundServer(self, server_data) for server_data in response['servers']]
 
     def create(self,
-               name,                     # type: str
-               server_type,              # type: str
-               image,                    # type: Image
-               ssh_keys=None,            # type: Optional[List[str]]
-               volumes=None,             # type: Optional[List[Volume]]
-               user_data=None,           # type: Optional[str]
-               labels=None,              # type: Optional[Dict[str, str]]
-               location=None,            # type: Optional[str]
-               datacenter=None,          # type: Optional[str]
-               start_after_create=True   # type: Optional[bool]
+               name,                      # type: str
+               server_type,               # type: str
+               image,                     # type: Image
+               ssh_keys=None,             # type: Optional[List[str]]
+               volumes=None,              # type: Optional[List[Volume]]
+               user_data=None,            # type: Optional[str]
+               labels=None,               # type: Optional[Dict[str, str]]
+               location=None,             # type: Optional[Location]
+               datacenter=None,           # type: Optional[Datacenter]
+               start_after_create=True,   # type: Optional[bool]
+               automount=None             # type: Optional[bool]
                ):
         # type: (...) -> CreateServerResponse
-        # TODO: convert location str type to locations.domain.Location type, when implementation is ready
-        # TODO: convert datacenter str type to datacenters.domain.Datacenter type, when implementation is ready
         """
         Should be visible in docs
         :param name:
@@ -170,12 +174,15 @@ class ServersClient(ClientEntityBase):
         data = {
             'name': name,
             'server_type': server_type,
-            "start_after_create": start_after_create
+            "start_after_create": start_after_create,
+            "image": image.id_or_name
         }
-        if image.id is not None:
-            data['image'] = image.id
-        else:
-            data['image'] = image.name
+
+        if location is not None:
+            data['location'] = location.id_or_name
+
+        if datacenter is not None:
+            data['datacenter'] = datacenter.id_or_name
 
         if ssh_keys is not None:
             data['ssh_keys'] = ssh_keys
@@ -185,10 +192,8 @@ class ServersClient(ClientEntityBase):
             data['user_data'] = user_data
         if labels is not None:
             data['labels'] = labels
-        if location is not None:
-            data['location'] = location
-        if datacenter is not None:
-            data["datacenter"] = datacenter
+        if automount is not None:
+            data["automount"] = automount
 
         response = self._client.request(url="/servers", method="POST", json=data)
 

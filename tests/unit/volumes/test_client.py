@@ -2,22 +2,15 @@ import pytest
 import arrow
 import mock
 
-from hcloud import HcloudClient
 from hcloud.servers.client import BoundServer
 from hcloud.servers.domain import Server
 from hcloud.volumes.client import VolumesClient, BoundVolume
 from hcloud.volumes.domain import Volume
+from hcloud.locations.client import BoundLocation
+from hcloud.locations.domain import Location
 
 
 class TestBoundVolume(object):
-
-    @pytest.fixture()
-    def hetzner_client(self):
-        client = HcloudClient(token="token")
-        patcher = mock.patch.object(client, "request")
-        patcher.start()
-        yield client
-        patcher.stop()
 
     @pytest.fixture()
     def bound_volume(self, hetzner_client):
@@ -29,26 +22,24 @@ class TestBoundVolume(object):
             data=volume_response['volume']
         )
 
-        location = {
-            "id": 1,
-            "name": "fsn1",
-            "description": "Falkenstein DC Park 1",
-            "country": "DE",
-            "city": "Falkenstein",
-            "latitude": 50.47612,
-            "longitude": 12.370071
-        }
-
         assert bound_volume.id == 1
         assert bound_volume.created == arrow.get("2016-01-30T23:50:11+00:00").datetime
         assert bound_volume.name == "database-storage"
         assert bound_volume.server == 12
-        assert bound_volume.location == location
         assert bound_volume.size == 42
         assert bound_volume.linux_device == "/dev/disk/by-id/scsi-0HC_Volume_4711"
         assert bound_volume.protection == {"delete": False}
         assert bound_volume.labels == {}
         assert bound_volume.status == "available"
+
+        assert isinstance(bound_volume.location, BoundLocation)
+        assert bound_volume.location.id == 1
+        assert bound_volume.location.name == "fsn1"
+        assert bound_volume.location.description == "Falkenstein DC Park 1"
+        assert bound_volume.location.country == "DE"
+        assert bound_volume.location.city == "Falkenstein"
+        assert bound_volume.location.latitude == 50.47612
+        assert bound_volume.location.longitude == 12.370071
 
     @pytest.mark.parametrize("server",
                              (Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))))
@@ -116,7 +107,9 @@ class TestVolumesClient(object):
         response = volumes_client.create(
             100,
             "database-storage",
-            location="location"
+            location=Location(name="location"),
+            automount=False,
+            format="xfs"
         )
         volumes_client._client.request.assert_called_with(
             url="/volumes",
@@ -124,7 +117,9 @@ class TestVolumesClient(object):
             json={
                 'name': "database-storage",
                 'size': 100,
-                'location': "location"
+                'location': "location",
+                'automount': False,
+                'format': "xfs"
             }
         )
 
@@ -145,7 +140,9 @@ class TestVolumesClient(object):
         volumes_client.create(
             100,
             "database-storage",
-            server=server
+            server=server,
+            automount=False,
+            format="xfs"
         )
         volumes_client._client.request.assert_called_with(
             url="/volumes",
@@ -153,7 +150,9 @@ class TestVolumesClient(object):
             json={
                 'name': "database-storage",
                 'size': 100,
-                'server': 1
+                'server': 1,
+                'automount': False,
+                'format': "xfs"
             }
         )
 
@@ -162,7 +161,7 @@ class TestVolumesClient(object):
             volumes_client.create(
                 -100,
                 "database-storage",
-                location="location"
+                location=Location(name="location")
             )
         assert str(e.value) == "size must be greater than 0"
         volumes_client._client.request.assert_not_called()

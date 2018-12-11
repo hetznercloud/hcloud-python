@@ -33,7 +33,37 @@ def response_simple_server():
                 "storage_type": "local",
                 "cpu_type": "shared"
             },
-            "datacenter": {},
+            "datacenter": {
+                "id": 1,
+                "name": "fsn1-dc8",
+                "description": "Falkenstein 1 DC 8",
+                "location": {
+                    "id": 1,
+                    "name": "fsn1",
+                    "description": "Falkenstein DC Park 1",
+                    "country": "DE",
+                    "city": "Falkenstein",
+                    "latitude": 50.47612,
+                    "longitude": 12.370071
+                },
+                "server_types": {
+                    "supported": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "available": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "available_for_migration": [
+                        1,
+                        2,
+                        3
+                    ]
+                }
+            },
             "image": {
                 "id": 4711,
                 "type": "snapshot",
@@ -104,7 +134,37 @@ def response_create_simple_server():
                 "storage_type": "local",
                 "cpu_type": "shared"
             },
-            "datacenter": {},
+            "datacenter": {
+                "id": 1,
+                "name": "fsn1-dc8",
+                "description": "Falkenstein 1 DC 8",
+                "location": {
+                    "id": 1,
+                    "name": "fsn1",
+                    "description": "Falkenstein DC Park 1",
+                    "country": "DE",
+                    "city": "Falkenstein",
+                    "latitude": 50.47612,
+                    "longitude": 12.370071
+                },
+                "server_types": {
+                    "supported": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "available": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "available_for_migration": [
+                        1,
+                        2,
+                        3
+                    ]
+                }
+            },
             "image": {
                 "id": 4711,
                 "type": "snapshot",
@@ -344,7 +404,37 @@ def response_simple_servers():
                 "storage_type": "local",
                 "cpu_type": "shared"
             },
-            "datacenter": {},
+            "datacenter": {
+                "id": 1,
+                "name": "fsn1-dc8",
+                "description": "Falkenstein 1 DC 8",
+                "location": {
+                    "id": 1,
+                    "name": "fsn1",
+                    "description": "Falkenstein DC Park 1",
+                    "country": "DE",
+                    "city": "Falkenstein",
+                    "latitude": 50.47612,
+                    "longitude": 12.370071
+                },
+                "server_types": {
+                    "supported": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "available": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "available_for_migration": [
+                        1,
+                        2,
+                        3
+                    ]
+                }
+            },
             "image": {
                 "id": 4711,
                 "type": "snapshot",
@@ -408,7 +498,37 @@ def response_simple_servers():
                 "storage_type": "local",
                 "cpu_type": "shared"
             },
-            "datacenter": {},
+            "datacenter": {
+                "id": 1,
+                "name": "fsn1-dc8",
+                "description": "Falkenstein 1 DC 8",
+                "location": {
+                    "id": 1,
+                    "name": "fsn1",
+                    "description": "Falkenstein DC Park 1",
+                    "country": "DE",
+                    "city": "Falkenstein",
+                    "latitude": 50.47612,
+                    "longitude": 12.370071
+                },
+                "server_types": {
+                    "supported": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "available": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "available_for_migration": [
+                        1,
+                        2,
+                        3
+                    ]
+                }
+            },
             "image": {
                 "id": 4711,
                 "type": "snapshot",
@@ -506,6 +626,11 @@ def response_full_server():
                         3
                     ],
                     "available": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "available_for_migration": [
                         1,
                         2,
                         3
