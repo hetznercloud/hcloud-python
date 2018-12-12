@@ -2,11 +2,11 @@
 from hcloud.core.client import ClientEntityBase, BoundModelBase
 
 from hcloud.actions.client import BoundAction
+from hcloud.isos.client import BoundIso
 from hcloud.servers.domain import Server, CreateServerResponse, ResetPasswordResponse, EnableRescueResponse, RequestConsoleResponse
 from hcloud.volumes.client import BoundVolume
 from hcloud.images.domain import CreateImageResponse
 from hcloud.images.client import BoundImage
-from hcloud.iso.domain import Iso
 from hcloud.server_types.client import BoundServerType
 from hcloud.datacenters.client import BoundDatacenter
 
@@ -31,8 +31,7 @@ class BoundServer(BoundModelBase):
 
         iso = data.get("iso", None)
         if iso is not None:
-            # data['iso'] = BoundIso(client._client.iso, iso, complete=True) # When ISO Client is implemented
-            data['iso'] = Iso(**iso)
+            data['iso'] = BoundIso(client._client.isos, iso)
 
         server_type = data.get("server_type")
         if server_type is not None:

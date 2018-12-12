@@ -5,7 +5,7 @@ from hcloud.servers.client import BoundServer
 from hcloud.servers.domain import Server
 from hcloud.volumes.domain import Volume
 from hcloud.images.domain import Image
-from hcloud.iso.domain import Iso
+from hcloud.isos.domain import Iso
 from hcloud.server_types.domain import ServerType
 from hcloud.locations.domain import Location
 

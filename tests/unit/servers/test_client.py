@@ -1,6 +1,7 @@
 import mock
 import pytest
 
+from hcloud.isos.client import BoundIso
 from hcloud.servers.client import ServersClient, BoundServer
 
 from hcloud.servers.domain import Server
@@ -8,7 +9,7 @@ from hcloud.volumes.client import BoundVolume
 from hcloud.volumes.domain import Volume
 from hcloud.images.domain import Image
 from hcloud.images.client import BoundImage
-from hcloud.iso.domain import Iso
+from hcloud.isos.domain import Iso
 from hcloud.datacenters.client import BoundDatacenter
 from hcloud.datacenters.domain import Datacenter
 from hcloud.locations.domain import Location
@@ -55,12 +56,16 @@ class TestBoundServer(object):
         assert bound_server.volumes[1].complete is False
 
         assert isinstance(bound_server.image, BoundImage)
+        assert bound_server.image._client == bound_server._client._client.images
         assert bound_server.image.id == 4711
         assert bound_server.image.name == "ubuntu-16.04"
+        assert bound_server.image.complete is True
 
-        assert isinstance(bound_server.iso, Iso)
+        assert isinstance(bound_server.iso, BoundIso)
+        assert bound_server.iso._client == bound_server._client._client.isos
         assert bound_server.iso.id == 4711
         assert bound_server.iso.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
+        assert bound_server.iso.complete is True
 
     def test_get_actions(self, hetzner_client, bound_server, response_get_actions):
         hetzner_client.request.return_value = response_get_actions

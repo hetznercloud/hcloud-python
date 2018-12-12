@@ -1,7 +1,7 @@
 import datetime
 from dateutil.tz import tzoffset
 
-from hcloud.iso.domain import Iso
+from hcloud.isos.domain import Iso
 
 
 class TestIso(object):
