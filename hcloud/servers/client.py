@@ -4,7 +4,8 @@ from hcloud.core.client import ClientEntityBase, BoundModelBase
 from hcloud.actions.client import BoundAction
 from hcloud.servers.domain import Server, CreateServerResponse, ResetPasswordResponse, EnableRescueResponse, RequestConsoleResponse
 from hcloud.volumes.client import BoundVolume
-from hcloud.images.domain import Image, CreateImageResponse
+from hcloud.images.domain import CreateImageResponse
+from hcloud.images.client import BoundImage
 from hcloud.iso.domain import Iso
 from hcloud.server_types.client import BoundServerType
 from hcloud.datacenters.client import BoundDatacenter
@@ -13,7 +14,7 @@ from hcloud.datacenters.client import BoundDatacenter
 class BoundServer(BoundModelBase):
     model = Server
 
-    def __init__(self, client, data):
+    def __init__(self, client, data, complete=False):
 
         datacenter = data.get('datacenter')
         if datacenter is not None:
@@ -26,8 +27,7 @@ class BoundServer(BoundModelBase):
 
         image = data.get("image", None)
         if image is not None:
-            # data['image'] = BoundImage(client._client.images, image, complete=True) # When Image Client is implemented
-            data['image'] = Image(**image)
+            data['image'] = BoundImage(client._client.images, image)
 
         iso = data.get("iso", None)
         if iso is not None:
@@ -38,10 +38,10 @@ class BoundServer(BoundModelBase):
         if server_type is not None:
             data['server_type'] = BoundServerType(client._client.server_types, server_type)
 
-        super(BoundServer, self).__init__(client, data)
+        super(BoundServer, self).__init__(client, data, complete)
 
     def get_actions(self, status=None, sort=None):
-        # type: # type: (Optional[List[str], Optional[List[str]]) -> List[BoundAction]
+        # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
         return self._client.get_actions(self, status, sort)
 
     def update(self, name=None, labels=None):
@@ -301,7 +301,7 @@ class ServersClient(ClientEntityBase):
             data.update({"type": labels})
 
         response = self._client.request(url="/servers/{server_id}/actions/create_image".format(server_id=server.id), method="POST", json=data)
-        return CreateImageResponse(action=BoundAction(self._client.actions, response['action']), image=Image(**response['image']))
+        return CreateImageResponse(action=BoundAction(self._client.actions, response['action']), image=BoundImage(self._client.images, response['image']))
 
     def rebuild(self, server, image):
         # type: (servers.domain.Server, Image) -> actions.domainAction

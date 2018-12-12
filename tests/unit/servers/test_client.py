@@ -7,6 +7,7 @@ from hcloud.servers.domain import Server
 from hcloud.volumes.client import BoundVolume
 from hcloud.volumes.domain import Volume
 from hcloud.images.domain import Image
+from hcloud.images.client import BoundImage
 from hcloud.iso.domain import Iso
 from hcloud.datacenters.client import BoundDatacenter
 from hcloud.datacenters.domain import Datacenter
@@ -53,7 +54,7 @@ class TestBoundServer(object):
         assert bound_server.volumes[1].id == 2
         assert bound_server.volumes[1].complete is False
 
-        assert isinstance(bound_server.image, Image)
+        assert isinstance(bound_server.image, BoundImage)
         assert bound_server.image.id == 4711
         assert bound_server.image.name == "ubuntu-16.04"
 

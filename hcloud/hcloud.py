@@ -7,9 +7,9 @@ from hcloud.actions.client import ActionsClient
 from hcloud.servers.client import ServersClient
 from hcloud.server_types.client import ServerTypesClient
 from hcloud.volumes.client import VolumesClient
+from hcloud.images.client import ImagesClient
 from hcloud.locations.client import LocationsClient
 from hcloud.datacenters.client import DatacentersClient
-
 
 from .version import VERSION
 
@@ -34,6 +34,7 @@ class HcloudClient(object):
         self.server_types = ServerTypesClient(self)
         self.volumes = VolumesClient(self)
         self.actions = ActionsClient(self)
+        self.images = ImagesClient(self)
 
     def _get_user_agent(self):
         return "hcloud-python/" + self.version
@@ -52,9 +53,10 @@ class HcloudClient(object):
             headers=self._get_headers(),
             **kwargs
         )
-
+        result = response.content
         try:
-            result = response.json()
+            if len(response.content) > 0:
+                result = response.json()
         except (TypeError, ValueError):
             raise HcloudAPIException(
                 code=response.status_code,
@@ -65,11 +67,17 @@ class HcloudClient(object):
             )
 
         if not response.ok:
-
-            raise HcloudAPIException(
-                code=result['error']['code'],
-                message=result['error']['message'],
-                details=result['error']['details']
-            )
+            if len(response.content) > 0:
+                raise HcloudAPIException(
+                    code=result['error']['code'],
+                    message=result['error']['message'],
+                    details=result['error']['details']
+                )
+            else:
+                raise HcloudAPIException(
+                    code="unknown_error",
+                    message="An unknown error occurred.",
+                    details=""
+                )
 
         return result

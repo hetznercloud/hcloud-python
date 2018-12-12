@@ -70,8 +70,8 @@ class CreateImageResponse(BaseDomain):
 
     def __init__(
             self,
-            action,  # type: Action
-            image    # type: Image
+            action,  # type: BoundAction
+            image    # type: BoundImage
     ):
         self.action = action
         self.image = image

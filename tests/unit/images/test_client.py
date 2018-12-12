@@ -1,0 +1,154 @@
+import pytest
+import mock
+import datetime
+from dateutil.tz import tzoffset
+
+from hcloud.images.client import ImagesClient, BoundImage
+from hcloud.actions.client import BoundAction
+from hcloud.images.domain import Image
+from hcloud.servers.client import BoundServer
+
+
+class TestBoundImage(object):
+
+    @pytest.fixture()
+    def bound_image(self, hetzner_client):
+        return BoundImage(client=hetzner_client.images, data=dict(id=14))
+
+    def test_bound_image_init(self, image_response):
+        bound_image = BoundImage(
+            client=mock.MagicMock(),
+            data=image_response['image']
+        )
+
+        assert bound_image.id == 4711
+        assert bound_image.type == "snapshot"
+        assert bound_image.status == "available"
+        assert bound_image.name == "ubuntu-16.04"
+        assert bound_image.description == "Ubuntu 16.04 Standard 64 bit"
+        assert bound_image.image_size == 2.3
+        assert bound_image.disk_size == 10
+        assert bound_image.created == datetime.datetime(2016, 1, 30, 23, 50, tzinfo=tzoffset(None, 0))
+        assert bound_image.os_flavor == "ubuntu"
+        assert bound_image.os_version == "16.04"
+        assert bound_image.rapid_deploy is False
+        assert bound_image.deprecated == datetime.datetime(2018, 2, 28, 0, 0, tzinfo=tzoffset(None, 0))
+
+        assert isinstance(bound_image.created_from, BoundServer)
+        assert bound_image.created_from.id == 1
+        assert bound_image.created_from.name == "Server"
+        assert bound_image.created_from.complete is False
+
+        assert isinstance(bound_image.bound_to, BoundServer)
+        assert bound_image.bound_to.id == 1
+        assert bound_image.bound_to.complete is False
+
+    def test_get_actions(self, hetzner_client, bound_image, response_get_actions):
+        hetzner_client.request.return_value = response_get_actions
+        actions = bound_image.get_actions(sort="id")
+        hetzner_client.request.assert_called_with(url="/images/14/actions", method="GET", params={"sort": "id"})
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0].id == 13
+        assert actions[0].command == "change_protection"
+
+    def test_update(self, hetzner_client, bound_image, response_update_image):
+        hetzner_client.request.return_value = response_update_image
+        image = bound_image.update(description="My new Image description", type="the new image type", labels={})
+        hetzner_client.request.assert_called_with(url="/images/14", method="PUT", json={"description": "My new Image description", "type": "the new image type", "labels": {}})
+
+        assert image.id == 4711
+        assert image.description == "My new Image description"
+
+    def test_delete(self, hetzner_client, bound_image, generic_action):
+        hetzner_client.request.return_value = generic_action
+        delete_success = bound_image.delete()
+        hetzner_client.request.assert_called_with(url="/images/14", method="DELETE")
+
+        assert delete_success is True
+
+    def test_change_protection(self, hetzner_client, bound_image, generic_action):
+        hetzner_client.request.return_value = generic_action
+        action = bound_image.change_protection(True)
+        hetzner_client.request.assert_called_with(url="/images/14/actions/change_protection", method="POST", json={"delete": True})
+
+        assert action.id == 1
+        assert action.progress == 0
+
+
+class TestImagesClient(object):
+
+    @pytest.fixture()
+    def images_client(self):
+        return ImagesClient(client=mock.MagicMock())
+
+    def test_get_by_id(self, images_client, image_response):
+        images_client._client.request.return_value = image_response
+        image = images_client.get_by_id(1)
+        images_client._client.request.assert_called_with(url="/images/1", method="GET")
+        assert image._client is images_client
+        assert image.id == 4711
+        assert image.name == "ubuntu-16.04"
+
+    def test_get_all_no_params(self, images_client, two_images_response):
+        images_client._client.request.return_value = two_images_response
+        images = images_client.get_all()
+        images_client._client.request.assert_called_with(url="/images", method="GET", params={})
+
+        assert len(images) == 2
+
+        images1 = images[0]
+        images2 = images[1]
+
+        assert images1._client is images_client
+        assert images1.id == 4711
+        assert images1.name == "ubuntu-16.04"
+
+        assert images2._client is images_client
+        assert images2.id == 4712
+        assert images2.name == "ubuntu-18.10"
+
+    def test_get_all_with_params(self, images_client):
+        params = {'name': "ubuntu-16.04", "type": "system", "sort": "id", "bound_to": "1", "label_selector": "k==v"}
+        images_client.get_all(**params)
+        images_client._client.request.assert_called_with(url="/images", method="GET", params=params)
+
+    @pytest.mark.parametrize("image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))])
+    def test_get_actions(self, images_client, image, response_get_actions):
+        images_client._client.request.return_value = response_get_actions
+        actions = images_client.get_actions(image)
+        images_client._client.request.assert_called_with(url="/images/1/actions", method="GET", params={})
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+
+        assert actions[0]._client == images_client._client.actions
+        assert actions[0].id == 13
+        assert actions[0].command == "change_protection"
+
+    @pytest.mark.parametrize("image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))])
+    def test_update(self, images_client, image, response_update_image):
+        images_client._client.request.return_value = response_update_image
+        image = images_client.update(image, description="My new Image description", type="the new image type", labels={})
+        images_client._client.request.assert_called_with(url="/images/1", method="PUT", json={"description": "My new Image description", "type": "the new image type", "labels": {}})
+
+        assert image.id == 4711
+        assert image.description == "My new Image description"
+
+    @pytest.mark.parametrize("image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))])
+    def test_change_protection(self, images_client, image, generic_action):
+        images_client._client.request.return_value = generic_action
+        action = images_client.change_protection(image, True)
+        images_client._client.request.assert_called_with(url="/images/1/actions/change_protection", method="POST", json={"delete": True})
+
+        assert action.id == 1
+        assert action.progress == 0
+
+    @pytest.mark.parametrize("image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))])
+    def test_delete(self, images_client, image, generic_action):
+        images_client._client.request.return_value = generic_action
+        delete_success = images_client.delete(image)
+        images_client._client.request.assert_called_with(url="/images/1", method="DELETE")
+
+        assert delete_success is True

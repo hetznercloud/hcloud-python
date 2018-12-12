@@ -94,3 +94,23 @@ class TestHetznerClient(object):
         assert error.code == 200
         assert error.message == "OK"
         assert error.details['content'] == content
+
+    def test_request_empty_content_200(self, mocked_requests, client, response):
+        content = ""
+        response.reason = "OK"
+        response._content = content
+        mocked_requests.request.return_value = response
+        response = client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
+        assert response == ""
+
+    def test_request_500_empty_content(self, mocked_requests, client, fail_response):
+        fail_response.status_code = 500
+        fail_response.reason = "Internal Server Error"
+        fail_response._content = ""
+        mocked_requests.request.return_value = fail_response
+        with pytest.raises(HcloudAPIException) as exception_info:
+            client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
+        error = exception_info.value
+        assert error.code == "unknown_error"
+        assert error.message == "An unknown error occurred."
+        assert error.details == ""
