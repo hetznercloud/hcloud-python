@@ -50,6 +50,22 @@ class HcloudClient(object):
         }
         return headers
 
+    def _raise_exception_from_response(self, response):
+        raise HcloudAPIException(
+            code=response.status_code,
+            message=response.reason,
+            details={
+                'content': response.content
+            }
+        )
+
+    def _raise_exception_from_json_content(self, json_content):
+        raise HcloudAPIException(
+            code=json_content['error']['code'],
+            message=json_content['error']['message'],
+            details=json_content['error']['details']
+        )
+
     def request(self, method, url, **kwargs):
         response = requests.request(
             method,
@@ -57,31 +73,18 @@ class HcloudClient(object):
             headers=self._get_headers(),
             **kwargs
         )
-        result = response.content
+
+        json_content = response.content
         try:
-            if len(response.content) > 0:
-                result = response.json()
+            if len(json_content) > 0:
+                json_content = response.json()
         except (TypeError, ValueError):
-            raise HcloudAPIException(
-                code=response.status_code,
-                message=response.reason,
-                details={
-                    'content': response.content
-                }
-            )
+            self._raise_exception_from_response(response)
 
         if not response.ok:
-            if len(response.content) > 0:
-                raise HcloudAPIException(
-                    code=result['error']['code'],
-                    message=result['error']['message'],
-                    details=result['error']['details']
-                )
+            if json_content:
+                self._raise_exception_from_json_content(json_content)
             else:
-                raise HcloudAPIException(
-                    code="unknown_error",
-                    message="An unknown error occurred.",
-                    details=""
-                )
+                self._raise_exception_from_response(response)
 
-        return result
+        return json_content

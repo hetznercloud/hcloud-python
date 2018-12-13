@@ -25,8 +25,9 @@ class TestServerTypesClient(object):
         assert server_type.storage_type == "local"
         assert server_type.cpu_type == "shared"
 
-    def test_get_all(self, hetzner_client):
-        server_types = hetzner_client.server_types.get_all()
+    def test_get_list(self, hetzner_client):
+        result = hetzner_client.server_types.get_list()
+        server_types = result.server_types
         assert server_types[0].id == 1
         assert server_types[0].name == "cx11"
         assert server_types[0].description == "CX11"

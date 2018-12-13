@@ -137,10 +137,14 @@ class TestVolumesClient(object):
         assert bound_volume.id == 1
         assert bound_volume.name == "database-storage"
 
-    def test_get_all_no_params(self, volumes_client, two_volumes_response):
+    @pytest.mark.parametrize("params", [{'label_selector': "label1", 'page': 1, 'per_page': 10}])
+    def test_get_list(self, volumes_client, two_volumes_response, params):
         volumes_client._client.request.return_value = two_volumes_response
-        bound_volumes = volumes_client.get_all()
-        volumes_client._client.request.assert_called_with(url="/volumes", method="GET", params={})
+        result = volumes_client.get_list(**params)
+        volumes_client._client.request.assert_called_with(url="/volumes", method="GET", params=params)
+
+        bound_volumes = result.volumes
+        assert result.meta is None
 
         assert len(bound_volumes) == 2
 
@@ -156,9 +160,26 @@ class TestVolumesClient(object):
         assert bound_volume2.name == "vault-storage"
 
     @pytest.mark.parametrize("params", [{'label_selector': "label1"}])
-    def test_get_all_with_params(self, volumes_client, params):
-        volumes_client.get_all(**params)
+    def test_get_all(self, volumes_client, two_volumes_response, params):
+        volumes_client._client.request.return_value = two_volumes_response
+        bound_volumes = volumes_client.get_all(**params)
+
+        params.update({'page': 1, 'per_page': 50})
+
         volumes_client._client.request.assert_called_with(url="/volumes", method="GET", params=params)
+
+        assert len(bound_volumes) == 2
+
+        bound_volume1 = bound_volumes[0]
+        bound_volume2 = bound_volumes[1]
+
+        assert bound_volume1._client is volumes_client
+        assert bound_volume1.id == 1
+        assert bound_volume1.name == "database-storage"
+
+        assert bound_volume2._client is volumes_client
+        assert bound_volume2.id == 2
+        assert bound_volume2.name == "vault-storage"
 
     def test_create_with_location(self, volumes_client, volume_create_response):
         volumes_client._client.request.return_value = volume_create_response

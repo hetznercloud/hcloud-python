@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from hcloud.core.domain import BaseDomain
+from hcloud.core.domain import BaseDomain, DomainIdentityMixin
 
 
-class Datacenter(BaseDomain):
+class Datacenter(BaseDomain, DomainIdentityMixin):
 
     __slots__ = (
         "id",

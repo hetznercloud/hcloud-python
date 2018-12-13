@@ -17,8 +17,9 @@ class TestBoundServer(object):
     def bound_server(self, hetzner_client):
         return BoundServer(client=hetzner_client.servers, data=dict(id=42))
 
-    def test_get_actions(self, bound_server):
-        actions = bound_server.get_actions()
+    def test_get_actions_list(self, bound_server):
+        result = bound_server.get_actions_list()
+        actions = result.actions
 
         assert len(actions) == 1
         assert actions[0].id == 13
@@ -150,8 +151,9 @@ class TestServersClient(object):
         assert server.datacenter.id == 1
         assert server.image.id == 4711
 
-    def test_get_all(self, hetzner_client):
-        servers = hetzner_client.servers.get_all(42)
+    def test_get_list(self, hetzner_client):
+        result = hetzner_client.servers.get_list(42)
+        servers = result.servers
         assert servers[0].id == 42
         assert servers[0].volumes == []
         assert servers[0].server_type.id == 1
@@ -192,8 +194,9 @@ class TestServersClient(object):
         assert root_password == "YItygq1v3GYjjMomLaKc"
 
     @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
-    def test_get_actions(self, hetzner_client, server):
-        actions = hetzner_client.servers.get_actions(server)
+    def test_get_actions_list(self, hetzner_client, server):
+        result = hetzner_client.servers.get_actions_list(server)
+        actions = result.actions
 
         assert len(actions) == 1
         assert actions[0].id == 13

@@ -6,8 +6,9 @@ class TestIsosClient(object):
         assert iso.description == "FreeBSD 11.0 x64"
         assert iso.type == "public"
 
-    def test_get_all(self, hetzner_client):
-        isos = hetzner_client.isos.get_all()
+    def test_get_list(self, hetzner_client):
+        result = hetzner_client.isos.get_list()
+        isos = result.isos
         assert isos[0].id == 4711
         assert isos[0].name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
         assert isos[0].description == "FreeBSD 11.0 x64"

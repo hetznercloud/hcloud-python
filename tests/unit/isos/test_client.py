@@ -39,10 +39,22 @@ class TestIsosClient(object):
         assert iso.id == 4711
         assert iso.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
 
-    def test_get_all_no_params(self, isos_client, two_isos_response):
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {},
+            {'name': "FreeBSD-11.0-RELEASE-amd64-dvd1",
+             'page': 1,
+             'per_page': 2}
+        ]
+    )
+    def test_get_list(self, isos_client, two_isos_response, params):
         isos_client._client.request.return_value = two_isos_response
-        isos = isos_client.get_all()
-        isos_client._client.request.assert_called_with(url="/isos", method="GET", params={})
+        result = isos_client.get_list(**params)
+        isos_client._client.request.assert_called_with(url="/isos", method="GET", params=params)
+
+        isos = result.isos
+        assert result.meta is None
 
         assert len(isos) == 2
 
@@ -57,7 +69,30 @@ class TestIsosClient(object):
         assert isos2.id == 4712
         assert isos2.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
 
-    def test_get_all_with_params(self, isos_client):
-        params = {'name': "FreeBSD-11.0-RELEASE-amd64-dvd1"}
-        isos_client.get_all(**params)
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {},
+            {'name': "FreeBSD-11.0-RELEASE-amd64-dvd1"}
+        ]
+    )
+    def test_get_all(self, isos_client, two_isos_response, params):
+        isos_client._client.request.return_value = two_isos_response
+        isos = isos_client.get_all(**params)
+
+        params.update({'page': 1, 'per_page': 50})
+
         isos_client._client.request.assert_called_with(url="/isos", method="GET", params=params)
+
+        assert len(isos) == 2
+
+        isos1 = isos[0]
+        isos2 = isos[1]
+
+        assert isos1._client is isos_client
+        assert isos1.id == 4711
+        assert isos1.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
+
+        assert isos2._client is isos_client
+        assert isos2.id == 4712
+        assert isos2.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"

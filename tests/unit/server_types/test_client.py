@@ -19,10 +19,14 @@ class TestServerTypesClient(object):
         assert server_type.id == 1
         assert server_type.name == "cx11"
 
-    def test_get_all_no_params(self, server_types_client, two_server_types_response):
+    @pytest.mark.parametrize("params", [{'name': "cx11", 'page': 1, 'per_page': 10}])
+    def test_get_list(self, server_types_client, two_server_types_response, params):
         server_types_client._client.request.return_value = two_server_types_response
-        server_types = server_types_client.get_all()
-        server_types_client._client.request.assert_called_with(url="/server_types", method="GET", params={})
+        result = server_types_client.get_list(**params)
+        server_types_client._client.request.assert_called_with(url="/server_types", method="GET", params=params)
+
+        server_types = result.server_types
+        assert result.meta is None
 
         assert len(server_types) == 2
 
@@ -38,6 +42,23 @@ class TestServerTypesClient(object):
         assert server_types2.name == "cx21"
 
     @pytest.mark.parametrize("params", [{'name': "cx11"}])
-    def test_get_all_with_params(self, server_types_client, params):
-        server_types_client.get_all(**params)
+    def test_get_all(self, server_types_client, two_server_types_response, params):
+        server_types_client._client.request.return_value = two_server_types_response
+        server_types = server_types_client.get_all(**params)
+
+        params.update({'page': 1, 'per_page': 50})
+
         server_types_client._client.request.assert_called_with(url="/server_types", method="GET", params=params)
+
+        assert len(server_types) == 2
+
+        server_types1 = server_types[0]
+        server_types2 = server_types[1]
+
+        assert server_types1._client is server_types_client
+        assert server_types1.id == 1
+        assert server_types1.name == "cx11"
+
+        assert server_types2._client is server_types_client
+        assert server_types2.id == 2
+        assert server_types2.name == "cx21"

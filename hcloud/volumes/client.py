@@ -45,20 +45,30 @@ class BoundVolume(BoundModelBase):
 
 
 class VolumesClient(ClientEntityBase):
+    results_list_attribute_name = 'volumes'
 
     def get_by_id(self, id):
         # type: (int) -> volumes.client.BoundVolume
         response = self._client.request(url="/volumes/{volume_id}".format(volume_id=id), method="GET")
         return BoundVolume(self, response['volume'])
 
-    def get_all(self, label_selector=None):
-        # type: (Optional[str]) -> List[volumes.client.BoundVolume]
+    def get_list(self, label_selector=None, page=None, per_page=None):
+        # type: (Optional[str], Optional[int], Optional[int]) -> PageResults[List[BoundVolume], Meta]
         params = {}
         if label_selector:
             params['label_selector'] = label_selector
+        if page is not None:
+            params['page'] = page
+        if per_page is not None:
+            params['per_page'] = per_page
 
         response = self._client.request(url="/volumes", method="GET", params=params)
-        return [BoundVolume(self, volume_data) for volume_data in response['volumes']]
+        volumes = [BoundVolume(self, volume_data) for volume_data in response['volumes']]
+        return self.add_meta_to_result(volumes, response)
+
+    def get_all(self, label_selector=None):
+        # type: (Optional[str]) -> List[BoundVolume]
+        return super(VolumesClient, self).get_all(label_selector=label_selector)
 
     def create(self,
                size,            # type: int

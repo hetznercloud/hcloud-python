@@ -43,10 +43,42 @@ class TestBoundImage(object):
         assert bound_image.bound_to.id == 1
         assert bound_image.bound_to.complete is False
 
-    def test_get_actions(self, hetzner_client, bound_image, response_get_actions):
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {},
+            {"sort": ["status"],
+             "page": 1,
+             "per_page": 2}
+        ]
+    )
+    def test_get_actions_list(self, hetzner_client, bound_image, response_get_actions, params):
         hetzner_client.request.return_value = response_get_actions
-        actions = bound_image.get_actions(sort="id")
-        hetzner_client.request.assert_called_with(url="/images/14/actions", method="GET", params={"sort": "id"})
+        result = bound_image.get_actions_list(**params)
+        hetzner_client.request.assert_called_with(url="/images/14/actions", method="GET", params=params)
+
+        actions = result.actions
+        assert result.meta is None
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0].id == 13
+        assert actions[0].command == "change_protection"
+
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {},
+            {"sort": ["status"]}
+        ]
+    )
+    def test_get_actions(self, hetzner_client, bound_image, response_get_actions, params):
+        hetzner_client.request.return_value = response_get_actions
+        actions = bound_image.get_actions(**params)
+
+        params.update({'page': 1, "per_page": 50})
+
+        hetzner_client.request.assert_called_with(url="/images/14/actions", method="GET", params=params)
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
@@ -91,10 +123,28 @@ class TestImagesClient(object):
         assert image.id == 4711
         assert image.name == "ubuntu-16.04"
 
-    def test_get_all_no_params(self, images_client, two_images_response):
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {
+                'name': "ubuntu-16.04",
+                "type": "system",
+                "sort": "id",
+                "bound_to": "1",
+                "label_selector": "k==v",
+                "page": 1,
+                "per_page": 10
+            },
+            {}
+        ]
+    )
+    def test_get_list(self, images_client, two_images_response, params):
         images_client._client.request.return_value = two_images_response
-        images = images_client.get_all()
-        images_client._client.request.assert_called_with(url="/images", method="GET", params={})
+        result = images_client.get_list(**params)
+        images_client._client.request.assert_called_with(url="/images", method="GET", params=params)
+
+        images = result.images
+        assert result.meta is None
 
         assert len(images) == 2
 
@@ -109,16 +159,48 @@ class TestImagesClient(object):
         assert images2.id == 4712
         assert images2.name == "ubuntu-18.10"
 
-    def test_get_all_with_params(self, images_client):
-        params = {'name': "ubuntu-16.04", "type": "system", "sort": "id", "bound_to": "1", "label_selector": "k==v"}
-        images_client.get_all(**params)
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {
+                'name': "ubuntu-16.04",
+                "type": "system",
+                "sort": "id",
+                "bound_to": "1",
+                "label_selector": "k==v",
+            },
+            {}
+        ]
+    )
+    def test_get_all(self, images_client, two_images_response, params):
+        images_client._client.request.return_value = two_images_response
+        images = images_client.get_all(**params)
+
+        params.update({"page": 1, "per_page": 50})
+
         images_client._client.request.assert_called_with(url="/images", method="GET", params=params)
 
+        assert len(images) == 2
+
+        images1 = images[0]
+        images2 = images[1]
+
+        assert images1._client is images_client
+        assert images1.id == 4711
+        assert images1.name == "ubuntu-16.04"
+
+        assert images2._client is images_client
+        assert images2.id == 4712
+        assert images2.name == "ubuntu-18.10"
+
     @pytest.mark.parametrize("image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))])
-    def test_get_actions(self, images_client, image, response_get_actions):
+    def test_get_actions_list(self, images_client, image, response_get_actions):
         images_client._client.request.return_value = response_get_actions
-        actions = images_client.get_actions(image)
+        result = images_client.get_actions_list(image)
         images_client._client.request.assert_called_with(url="/images/1/actions", method="GET", params={})
+
+        actions = result.actions
+        assert result.meta is None
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)

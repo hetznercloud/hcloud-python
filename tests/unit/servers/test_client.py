@@ -67,10 +67,46 @@ class TestBoundServer(object):
         assert bound_server.iso.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
         assert bound_server.iso.complete is True
 
-    def test_get_actions(self, hetzner_client, bound_server, response_get_actions):
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {"status": ["running"],
+             "sort": "status",
+             "page": 1,
+             "per_page": 10},
+            {}
+
+        ]
+    )
+    def test_get_actions_list(self, hetzner_client, bound_server, response_get_actions, params):
         hetzner_client.request.return_value = response_get_actions
-        actions = bound_server.get_actions()
-        hetzner_client.request.assert_called_with(url="/servers/14/actions", method="GET", params={})
+        result = bound_server.get_actions_list(**params)
+        hetzner_client.request.assert_called_with(url="/servers/14/actions", method="GET", params=params)
+
+        actions = result.actions
+        assert result.meta is None
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0].id == 13
+        assert actions[0].command == "start_server"
+
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {"status": ["running"],
+             "sort": "status"},
+            {}
+
+        ]
+    )
+    def test_get_actions(self, hetzner_client, bound_server, response_get_actions, params):
+        hetzner_client.request.return_value = response_get_actions
+        actions = bound_server.get_actions(**params)
+
+        params.update({'page': 1, 'per_page': 50})
+
+        hetzner_client.request.assert_called_with(url="/servers/14/actions", method="GET", params=params)
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
@@ -257,10 +293,20 @@ class TestServersClient(object):
         assert bound_server.id == 1
         assert bound_server.name == "my-server"
 
-    def test_get_all_no_params(self, servers_client, response_simple_servers):
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {'name': "server1", 'label_selector': "label1", 'page': 1, 'per_page': 10},
+            {}
+        ]
+    )
+    def test_get_list(self, servers_client, response_simple_servers, params):
         servers_client._client.request.return_value = response_simple_servers
-        bound_servers = servers_client.get_all()
-        servers_client._client.request.assert_called_with(url="/servers", method="GET", params={})
+        result = servers_client.get_list(**params)
+        servers_client._client.request.assert_called_with(url="/servers", method="GET", params=params)
+
+        bound_servers = result.servers
+        assert result.meta is None
 
         assert len(bound_servers) == 2
 
@@ -275,10 +321,33 @@ class TestServersClient(object):
         assert bound_server2.id == 2
         assert bound_server2.name == "my-server2"
 
-    @pytest.mark.parametrize("params", [{'name': "server1"}, {'name': "server1", 'label_selector': "label1"}, {'label_selector': "label1"}])
-    def test_get_all_with_params(self, servers_client, params):
-        servers_client.get_all(**params)
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {'name': "server1", 'label_selector': "label1"},
+            {}
+        ]
+    )
+    def test_get_all(self, servers_client, response_simple_servers, params):
+        servers_client._client.request.return_value = response_simple_servers
+        bound_servers = servers_client.get_all(**params)
+
+        params.update({'page': 1, 'per_page': 50})
+
         servers_client._client.request.assert_called_with(url="/servers", method="GET", params=params)
+
+        assert len(bound_servers) == 2
+
+        bound_server1 = bound_servers[0]
+        bound_server2 = bound_servers[1]
+
+        assert bound_server1._client is servers_client
+        assert bound_server1.id == 1
+        assert bound_server1.name == "my-server"
+
+        assert bound_server2._client is servers_client
+        assert bound_server2.id == 2
+        assert bound_server2.name == "my-server2"
 
     def test_create_with_datacenter(self, servers_client, response_create_simple_server):
         servers_client._client.request.return_value = response_create_simple_server
@@ -379,10 +448,13 @@ class TestServersClient(object):
         assert next_actions[0].id == 13
 
     @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
-    def test_get_actions(self, servers_client, server, response_get_actions):
+    def test_get_actions_list(self, servers_client, server, response_get_actions):
         servers_client._client.request.return_value = response_get_actions
-        actions = servers_client.get_actions(server)
+        result = servers_client.get_actions_list(server)
         servers_client._client.request.assert_called_with(url="/servers/1/actions", method="GET", params={})
+
+        actions = result.actions
+        assert result.meta is None
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)

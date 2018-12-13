@@ -18,10 +18,14 @@ class TestLocationsClient(object):
         assert location.id == 1
         assert location.name == "fsn1"
 
-    def test_get_all_no_params(self, locations_client, two_locations_response):
+    @pytest.mark.parametrize("params", [{'name': "fsn1", "page": 1, "per_page": 10}, {}])
+    def test_get_list(self, locations_client, two_locations_response, params):
         locations_client._client.request.return_value = two_locations_response
-        locations = locations_client.get_all()
-        locations_client._client.request.assert_called_with(url="/locations", method="GET", params={})
+        result = locations_client.get_list(**params)
+        locations_client._client.request.assert_called_with(url="/locations", method="GET", params=params)
+
+        locations = result.locations
+        assert result.meta is None
 
         assert len(locations) == 2
 
@@ -36,7 +40,24 @@ class TestLocationsClient(object):
         assert location2.id == 2
         assert location2.name == "nbg1"
 
-    @pytest.mark.parametrize("params", [{'name': "fsn1"}])
-    def test_get_all_with_params(self, locations_client, params):
-        locations_client.get_all(**params)
+    @pytest.mark.parametrize("params", [{'name': "fsn1"}, {}])
+    def test_get_all(self, locations_client, two_locations_response, params):
+        locations_client._client.request.return_value = two_locations_response
+        locations = locations_client.get_all(**params)
+
+        params.update({'page': 1, 'per_page': 50})
+
         locations_client._client.request.assert_called_with(url="/locations", method="GET", params=params)
+
+        assert len(locations) == 2
+
+        location1 = locations[0]
+        location2 = locations[1]
+
+        assert location1._client is locations_client
+        assert location1.id == 1
+        assert location1.name == "fsn1"
+
+        assert location2._client is locations_client
+        assert location2.id == 2
+        assert location2.name == "nbg1"

@@ -2,6 +2,7 @@
 from hcloud.core.client import ClientEntityBase, BoundModelBase
 
 from hcloud.actions.client import BoundAction
+from hcloud.core.domain import add_meta_to_result
 from hcloud.isos.client import BoundIso
 from hcloud.servers.domain import Server, CreateServerResponse, ResetPasswordResponse, EnableRescueResponse, RequestConsoleResponse
 from hcloud.volumes.client import BoundVolume
@@ -38,6 +39,10 @@ class BoundServer(BoundModelBase):
             data['server_type'] = BoundServerType(client._client.server_types, server_type)
 
         super(BoundServer, self).__init__(client, data, complete)
+
+    def get_actions_list(self, status=None, sort=None, page=None, per_page=None):
+        # type: (Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction, Meta]]
+        return self._client.get_actions_list(self, status, sort, page, per_page)
 
     def get_actions(self, status=None, sort=None):
         # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
@@ -125,22 +130,38 @@ class BoundServer(BoundModelBase):
 
 
 class ServersClient(ClientEntityBase):
+    results_list_attribute_name = 'servers'
 
     def get_by_id(self, id):
         # type: (int) -> BoundServer
         response = self._client.request(url="/servers/{server_id}".format(server_id=id), method="GET")
         return BoundServer(self, response['server'])
 
-    def get_all(self, name=None, label_selector=None):
-        # type: (Optional[str], Optional[str]) -> List[BoundServer]
+    def get_list(self,
+                 name=None,            # type: Optional[str]
+                 label_selector=None,  # type: Optional[str]
+                 page=None,            # type: Optional[int]
+                 per_page=None         # type: Optional[int]
+                 ):
+        # type: (...) -> PageResults[List[BoundServer], Meta]
         params = {}
         if name:
             params['name'] = name
         if label_selector:
             params['label_selector'] = label_selector
+        if page:
+            params['page'] = page
+        if per_page:
+            params['per_page'] = per_page
 
         response = self._client.request(url="/servers", method="GET", params=params)
-        return [BoundServer(self, server_data) for server_data in response['servers']]
+
+        ass_servers = [BoundServer(self, server_data) for server_data in response['servers']]
+        return self.add_meta_to_result(ass_servers, response)
+
+    def get_all(self, name=None, label_selector=None):
+        # type: (Optional[str], Optional[str]) -> List[BoundServer]
+        return super(ServersClient, self).get_all(name=name, label_selector=label_selector)
 
     def create(self,
                name,                      # type: str
@@ -204,15 +225,25 @@ class ServersClient(ClientEntityBase):
         )
         return result
 
-    def get_actions(self, server, status=None, sort=None):
-        # type: (Server, Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
+    def get_actions_list(self, server, status=None, sort=None, page=None, per_page=None):
+        # type: (Server, Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction], Meta]
         params = {}
         if status is not None:
-            params.update({"status": status})
+            params["status"] = status
         if sort is not None:
-            params.update({"sort": sort})
+            params["sort"] = sort
+        if page is not None:
+            params["page"] = page
+        if per_page is not None:
+            params["per_page"] = per_page
+
         response = self._client.request(url="/servers/{server_id}/actions".format(server_id=server.id), method="GET", params=params)
-        return [BoundAction(self._client.actions, action_data) for action_data in response['actions']]
+        actions = [BoundAction(self._client.actions, action_data) for action_data in response['actions']]
+        return add_meta_to_result(actions, response, 'actions')
+
+    def get_actions(self, server, status=None, sort=None):
+        # type: (Server, Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
+        return super(ServersClient, self).get_actions(server, status=status, sort=sort)
 
     def update(self, server, name=None, labels=None):
         # type:(Server,  Optional[str],  Optional[Dict[str, str]]) -> BoundServer

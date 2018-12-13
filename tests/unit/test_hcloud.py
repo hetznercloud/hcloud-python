@@ -111,6 +111,6 @@ class TestHetznerClient(object):
         with pytest.raises(HcloudAPIException) as exception_info:
             client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
         error = exception_info.value
-        assert error.code == "unknown_error"
-        assert error.message == "An unknown error occurred."
-        assert error.details == ""
+        assert error.code == 500
+        assert error.message == "Internal Server Error"
+        assert error.details["content"] == ""

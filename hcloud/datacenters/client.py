@@ -16,7 +16,6 @@ class BoundDatacenter(BoundModelBase):
 
         server_types = data.get("server_types")
         if server_types is not None:
-            DatacenterServerTypes
             available = [BoundServerType(client._client.server_types, {"id": server_type}, complete=False) for server_type in server_types['available']]
             supported = [BoundServerType(client._client.server_types, {"id": server_type}, complete=False) for server_type in server_types['supported']]
             available_for_migration = [BoundServerType(client._client.server_types, {"id": server_type}, complete=False) for server_type in server_types['available_for_migration']]
@@ -26,17 +25,35 @@ class BoundDatacenter(BoundModelBase):
 
 
 class DatacentersClient(ClientEntityBase):
+    results_list_attribute_name = 'datacenters'
 
     def get_by_id(self, id):
-        # type: (int) -> datacenters.client.BoundDatacenter
+        # type: (int) -> BoundDatacenter
         response = self._client.request(url="/datacenters/{datacenter_id}".format(datacenter_id=id), method="GET")
         return BoundDatacenter(self, response['datacenter'])
 
-    def get_all(self, name=None):
-        # type: (Optional[str]) -> List[BoundAction]
+    def get_list(self,
+                 name=None,     # type: Optional[str]
+                 page=None,     # type: Optional[int]
+                 per_page=None  # type: Optional[int]
+                 ):
+        # type: (...) -> PageResults[List[BoundDatacenter], Meta]
         params = {}
         if name is not None:
-            params.update({"name": name})
+            params["name"] = name
+
+        if page is not None:
+            params['page'] = page
+
+        if per_page is not None:
+            params['per_page'] = per_page
 
         response = self._client.request(url="/datacenters", method="GET", params=params)
-        return [BoundDatacenter(self, datacenter_data) for datacenter_data in response['datacenters']]
+
+        datacenters = [BoundDatacenter(self, datacenter_data) for datacenter_data in response['datacenters']]
+
+        return self.add_meta_to_result(datacenters, response)
+
+    def get_all(self, name=None):
+        # type: (Optional[str]) -> List[BoundDatacenter]
+        return super(DatacentersClient, self).get_all(name=name)

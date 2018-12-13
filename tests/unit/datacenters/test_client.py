@@ -64,10 +64,14 @@ class TestDatacentersClient(object):
         assert datacenter.id == 1
         assert datacenter.name == "fsn1-dc8"
 
-    def test_get_all_no_params(self, datacenters_client, two_datacenters_response):
+    @pytest.mark.parametrize("params", [{'name': "fsn1", "page": 1, "per_page": 10}, {}])
+    def test_get_list(self, datacenters_client, two_datacenters_response, params):
         datacenters_client._client.request.return_value = two_datacenters_response
-        datacenters = datacenters_client.get_all()
-        datacenters_client._client.request.assert_called_with(url="/datacenters", method="GET", params={})
+        result = datacenters_client.get_list(**params)
+        datacenters_client._client.request.assert_called_with(url="/datacenters", method="GET", params=params)
+
+        datacenters = result.datacenters
+        assert result.meta is None
 
         assert len(datacenters) == 2
 
@@ -84,7 +88,25 @@ class TestDatacentersClient(object):
         assert datacenter2.name == "nbg1-dc3"
         assert isinstance(datacenter2.location, BoundLocation)
 
-    @pytest.mark.parametrize("params", [{'name': "fsn1"}])
-    def test_get_all_with_params(self, datacenters_client, params):
-        datacenters_client.get_all(**params)
+    @pytest.mark.parametrize("params", [{'name': "fsn1"}, {}])
+    def test_get_all(self, datacenters_client, two_datacenters_response, params):
+        datacenters_client._client.request.return_value = two_datacenters_response
+        datacenters = datacenters_client.get_all(**params)
+
+        params.update({"page": 1, "per_page": 50})
         datacenters_client._client.request.assert_called_with(url="/datacenters", method="GET", params=params)
+
+        assert len(datacenters) == 2
+
+        datacenter1 = datacenters[0]
+        datacenter2 = datacenters[1]
+
+        assert datacenter1._client is datacenters_client
+        assert datacenter1.id == 1
+        assert datacenter1.name == "fsn1-dc8"
+        assert isinstance(datacenter1.location, BoundLocation)
+
+        assert datacenter2._client is datacenters_client
+        assert datacenter2.id == 2
+        assert datacenter2.name == "nbg1-dc3"
+        assert isinstance(datacenter2.location, BoundLocation)

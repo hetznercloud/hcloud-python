@@ -10,8 +10,9 @@ class TestBoundImage(object):
     def bound_image(self, hetzner_client):
         return BoundImage(client=hetzner_client.images, data=dict(id=42))
 
-    def test_get_actions(self, bound_image):
-        actions = bound_image.get_actions()
+    def test_get_actions_list(self, bound_image):
+        result = bound_image.get_actions_list()
+        actions = result.actions
 
         assert len(actions) == 1
         assert actions[0].id == 13
@@ -42,15 +43,17 @@ class TestImagesClient(object):
         assert image.name == "ubuntu-16.04"
         assert image.description == "Ubuntu 16.04 Standard 64 bit"
 
-    def test_get_all(self, hetzner_client):
-        images = hetzner_client.images.get_all()
+    def test_get_list(self, hetzner_client):
+        result = hetzner_client.images.get_list()
+        images = result.images
         assert images[0].id == 4711
         assert images[0].name == "ubuntu-16.04"
         assert images[0].description == "Ubuntu 16.04 Standard 64 bit"
 
     @pytest.mark.parametrize("image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))])
-    def test_get_actions(self, hetzner_client, image):
-        actions = hetzner_client.images.get_actions(image)
+    def test_get_actions_list(self, hetzner_client, image):
+        result = hetzner_client.images.get_actions_list(image)
+        actions = result.actions
 
         assert len(actions) == 1
         assert actions[0].id == 13

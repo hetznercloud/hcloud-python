@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from hcloud.core.domain import BaseDomain
+from hcloud.core.domain import BaseDomain, DomainIdentityMixin
 from hcloud.helpers.descriptors import ISODateTime
 
 
-class Volume(BaseDomain):
+class Volume(BaseDomain, DomainIdentityMixin):
     created = ISODateTime()
 
     __slots__ = (
