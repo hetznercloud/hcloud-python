@@ -55,8 +55,8 @@ class TestBoundImage(object):
 
     def test_update(self, hetzner_client, bound_image, response_update_image):
         hetzner_client.request.return_value = response_update_image
-        image = bound_image.update(description="My new Image description", type="the new image type", labels={})
-        hetzner_client.request.assert_called_with(url="/images/14", method="PUT", json={"description": "My new Image description", "type": "the new image type", "labels": {}})
+        image = bound_image.update(description="My new Image description", type="snapshot", labels={})
+        hetzner_client.request.assert_called_with(url="/images/14", method="PUT", json={"description": "My new Image description", "type": "snapshot", "labels": {}})
 
         assert image.id == 4711
         assert image.description == "My new Image description"
@@ -130,8 +130,8 @@ class TestImagesClient(object):
     @pytest.mark.parametrize("image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))])
     def test_update(self, images_client, image, response_update_image):
         images_client._client.request.return_value = response_update_image
-        image = images_client.update(image, description="My new Image description", type="the new image type", labels={})
-        images_client._client.request.assert_called_with(url="/images/1", method="PUT", json={"description": "My new Image description", "type": "the new image type", "labels": {}})
+        image = images_client.update(image, description="My new Image description", type="snapshot", labels={})
+        images_client._client.request.assert_called_with(url="/images/1", method="PUT", json={"description": "My new Image description", "type": "snapshot", "labels": {}})
 
         assert image.id == 4711
         assert image.description == "My new Image description"

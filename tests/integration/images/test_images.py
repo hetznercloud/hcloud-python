@@ -18,7 +18,7 @@ class TestBoundImage(object):
         assert actions[0].command == "change_protection"
 
     def test_update(self, bound_image):
-        image = bound_image.update(description="My new Image description", type="the new image type", labels={})
+        image = bound_image.update(description="My new Image description", type="snapshot", labels={})
 
         assert image.id == 4711
         assert image.description == "My new Image description"
@@ -58,7 +58,7 @@ class TestImagesClient(object):
 
     @pytest.mark.parametrize("image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))])
     def test_update(self, hetzner_client, image):
-        image = hetzner_client.images.update(image, description="My new Image description", type="the new image type", labels={})
+        image = hetzner_client.images.update(image, description="My new Image description", type="snapshot", labels={})
 
         assert image.id == 4711
         assert image.description == "My new Image description"
