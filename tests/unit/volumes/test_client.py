@@ -2,6 +2,7 @@ import pytest
 import arrow
 import mock
 
+from hcloud.actions.client import BoundAction
 from hcloud.servers.client import BoundServer
 from hcloud.servers.domain import Server
 from hcloud.volumes.client import VolumesClient, BoundVolume
@@ -41,6 +42,39 @@ class TestBoundVolume(object):
         assert bound_volume.location.latitude == 50.47612
         assert bound_volume.location.longitude == 12.370071
 
+    def test_get_actions(self, hetzner_client, bound_volume, response_get_actions):
+        hetzner_client.request.return_value = response_get_actions
+        actions = bound_volume.get_actions(sort="id")
+        hetzner_client.request.assert_called_with(url="/volumes/14/actions", method="GET", params={"sort": "id"})
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0].id == 13
+        assert actions[0].command == "attach_volume"
+
+    def test_update(self, hetzner_client, bound_volume, response_update_volume):
+        hetzner_client.request.return_value = response_update_volume
+        volume = bound_volume.update(name="new-name")
+        hetzner_client.request.assert_called_with(url="/volumes/14", method="PUT", json={"name": "new-name"})
+
+        assert volume.id == 4711
+        assert volume.name == "new-name"
+
+    def test_delete(self, hetzner_client, bound_volume, generic_action):
+        hetzner_client.request.return_value = generic_action
+        delete_success = bound_volume.delete()
+        hetzner_client.request.assert_called_with(url="/volumes/14", method="DELETE")
+
+        assert delete_success is True
+
+    def test_change_protection(self, hetzner_client, bound_volume, generic_action):
+        hetzner_client.request.return_value = generic_action
+        action = bound_volume.change_protection(True)
+        hetzner_client.request.assert_called_with(url="/volumes/14/actions/change_protection", method="POST", json={"delete": True})
+
+        assert action.id == 1
+        assert action.progress == 0
+
     @pytest.mark.parametrize("server",
                              (Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))))
     def test_attach(self, hetzner_client, bound_volume, server, generic_action):
@@ -54,12 +88,36 @@ class TestBoundVolume(object):
         assert action.id == 1
         assert action.progress == 0
 
+    @pytest.mark.parametrize("server",
+                             (Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))))
+    def test_attach_with_automount(self, hetzner_client, bound_volume, server, generic_action):
+        hetzner_client.request.return_value = generic_action
+        action = bound_volume.attach(server, False)
+        hetzner_client.request.assert_called_with(
+            url="/volumes/14/actions/attach",
+            method="POST",
+            json={"server": 1, "automount": False}
+        )
+        assert action.id == 1
+        assert action.progress == 0
+
     def test_detach(self, hetzner_client, bound_volume, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_volume.detach()
         hetzner_client.request.assert_called_with(
             url="/volumes/14/actions/detach",
             method="POST"
+        )
+        assert action.id == 1
+        assert action.progress == 0
+
+    def test_resize(self, hetzner_client, bound_volume, generic_action):
+        hetzner_client.request.return_value = generic_action
+        action = bound_volume.resize(50)
+        hetzner_client.request.assert_called_with(
+            url="/volumes/14/actions/resize",
+            method="POST",
+            json={"size": 50}
         )
         assert action.id == 1
         assert action.progress == 0
@@ -178,12 +236,51 @@ class TestVolumesClient(object):
         assert str(e.value) == "only one of server or location must be provided"
         volumes_client._client.request.assert_not_called()
 
+    @pytest.mark.parametrize("volume", [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=1))])
+    def test_get_actions(self, volumes_client, volume, response_get_actions):
+        volumes_client._client.request.return_value = response_get_actions
+        actions = volumes_client.get_actions(volume)
+        volumes_client._client.request.assert_called_with(url="/volumes/1/actions", method="GET", params={})
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+
+        assert actions[0]._client == volumes_client._client.actions
+        assert actions[0].id == 13
+        assert actions[0].command == "attach_volume"
+
+    @pytest.mark.parametrize("volume", [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=1))])
+    def test_update(self, volumes_client, volume, response_update_volume):
+        volumes_client._client.request.return_value = response_update_volume
+        volume = volumes_client.update(volume, name="new-name")
+        volumes_client._client.request.assert_called_with(url="/volumes/1", method="PUT", json={"name": "new-name"})
+
+        assert volume.id == 4711
+        assert volume.name == "new-name"
+
+    @pytest.mark.parametrize("volume", [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=1))])
+    def test_change_protection(self, volumes_client, volume, generic_action):
+        volumes_client._client.request.return_value = generic_action
+        action = volumes_client.change_protection(volume, True)
+        volumes_client._client.request.assert_called_with(url="/volumes/1/actions/change_protection", method="POST", json={"delete": True})
+
+        assert action.id == 1
+        assert action.progress == 0
+
+    @pytest.mark.parametrize("volume", [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=1))])
+    def test_delete(self, volumes_client, volume, generic_action):
+        volumes_client._client.request.return_value = generic_action
+        delete_success = volumes_client.delete(volume)
+        volumes_client._client.request.assert_called_with(url="/volumes/1", method="DELETE")
+
+        assert delete_success is True
+
     @pytest.mark.parametrize("server,volume",
                              [(Server(id=1), Volume(id=12)),
                               (BoundServer(mock.MagicMock(), dict(id=1)), BoundVolume(mock.MagicMock(), dict(id=12)))])
     def test_attach(self, volumes_client, server, volume, generic_action):
         volumes_client._client.request.return_value = generic_action
-        action = volumes_client.attach(server, volume)
+        action = volumes_client.attach(volume, server)
         volumes_client._client.request.assert_called_with(
             url="/volumes/12/actions/attach",
             method="POST",
@@ -199,6 +296,18 @@ class TestVolumesClient(object):
         volumes_client._client.request.assert_called_with(
             url="/volumes/12/actions/detach",
             method="POST"
+        )
+        assert action.id == 1
+        assert action.progress == 0
+
+    @pytest.mark.parametrize("volume", [Volume(id=12), BoundVolume(mock.MagicMock(), dict(id=12))])
+    def test_resize(self, volumes_client, volume, generic_action):
+        volumes_client._client.request.return_value = generic_action
+        action = volumes_client.resize(volume, 50)
+        volumes_client._client.request.assert_called_with(
+            url="/volumes/12/actions/resize",
+            method="POST",
+            json={"size": 50}
         )
         assert action.id == 1
         assert action.progress == 0

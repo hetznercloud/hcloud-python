@@ -146,7 +146,7 @@ class ServersClient(ClientEntityBase):
                name,                      # type: str
                server_type,               # type: str
                image,                     # type: Image
-               ssh_keys=None,             # type: Optional[List[str]]
+               ssh_keys=None,             # type: Optional[List[SSHKey]]
                volumes=None,              # type: Optional[List[Volume]]
                user_data=None,            # type: Optional[str]
                labels=None,               # type: Optional[Dict[str, str]]
@@ -184,7 +184,7 @@ class ServersClient(ClientEntityBase):
             data['datacenter'] = datacenter.id_or_name
 
         if ssh_keys is not None:
-            data['ssh_keys'] = ssh_keys
+            data['ssh_keys'] = [str(ssh_key.id_or_name) for ssh_key in ssh_keys]
         if volumes is not None:
             data['volumes'] = [str(volume.id) for volume in volumes]
         if user_data is not None:

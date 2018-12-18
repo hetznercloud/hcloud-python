@@ -7,6 +7,7 @@ from hcloud.actions.client import ActionsClient
 from hcloud.isos.client import IsosClient
 from hcloud.servers.client import ServersClient
 from hcloud.server_types.client import ServerTypesClient
+from hcloud.ssh_keys.client import SSHKeysClient
 from hcloud.volumes.client import VolumesClient
 from hcloud.images.client import ImagesClient
 from hcloud.locations.client import LocationsClient
@@ -37,6 +38,7 @@ class HcloudClient(object):
         self.actions = ActionsClient(self)
         self.images = ImagesClient(self)
         self.isos = IsosClient(self)
+        self.ssh_keys = SSHKeysClient(self)
 
     def _get_user_agent(self):
         return "hcloud-python/" + self.version

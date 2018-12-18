@@ -3,6 +3,7 @@ import pytest
 
 from hcloud.servers.client import BoundServer
 from hcloud.servers.domain import Server
+from hcloud.ssh_keys.domain import SSHKey
 from hcloud.volumes.domain import Volume
 from hcloud.images.domain import Image
 from hcloud.isos.domain import Iso
@@ -163,7 +164,7 @@ class TestServersClient(object):
             "my-server",
             "cx11",
             image=Image(name="ubuntu-16.04"),
-            ssh_keys=["my-ssh-key"],
+            ssh_keys=[SSHKey(name="my-ssh-key")],
             volumes=[Volume(id=1)],
             user_data="#cloud-config\\nruncmd:\\n- [touch, /root/cloud-init-worked]\\n",
             location=Location(name="nbg1"),

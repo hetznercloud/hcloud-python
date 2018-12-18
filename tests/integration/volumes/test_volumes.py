@@ -14,6 +14,22 @@ class TestBoundVolume(object):
     def bound_volume(self, hetzner_client):
         return BoundVolume(client=hetzner_client.volumes, data=dict(id=4711))
 
+    def test_get_actions(self, bound_volume):
+        actions = bound_volume.get_actions()
+
+        assert len(actions) == 1
+        assert actions[0].id == 13
+        assert actions[0].command == "attach_volume"
+
+    def test_update(self, bound_volume):
+        volume = bound_volume.update(name="new-name", labels={})
+        assert volume.id == 4711
+        assert volume.name == "new-name"
+
+    def test_delete(self, bound_volume):
+        delete_success = bound_volume.delete()
+        assert delete_success is True
+
     @pytest.mark.parametrize("server",
                              (Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))))
     def test_attach(self, hetzner_client, bound_volume, server):
@@ -27,6 +43,12 @@ class TestBoundVolume(object):
         assert action.id == 13
         assert action.progress == 0
         assert action.command == "detach_volume"
+
+    def test_resize(self, hetzner_client, bound_volume):
+        action = bound_volume.resize(50)
+        assert action.id == 13
+        assert action.progress == 0
+        assert action.command == "resize_volume"
 
 
 class TestVolumesClient(object):
@@ -68,11 +90,32 @@ class TestVolumesClient(object):
         assert next_actions[0].id == 13
         assert next_actions[0].command == "start_server"
 
+    @pytest.mark.parametrize("volume", [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=1))])
+    def test_get_actions(self, hetzner_client, volume):
+        actions = hetzner_client.volumes.get_actions(volume)
+
+        assert len(actions) == 1
+        assert actions[0].id == 13
+        assert actions[0].command == "attach_volume"
+
+    @pytest.mark.parametrize("volume", [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=1))])
+    def test_update(self, hetzner_client, volume):
+        volume = hetzner_client.volumes.update(volume, name="new-name", labels={})
+
+        assert volume.id == 4711
+        assert volume.name == "new-name"
+
+    @pytest.mark.parametrize("volume", [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=1))])
+    def test_delete(self, hetzner_client, volume):
+        delete_success = hetzner_client.volumes.delete(volume)
+
+        assert delete_success is True
+
     @pytest.mark.parametrize("server,volume",
                              [(Server(id=43), Volume(id=4711)),
                               (BoundServer(mock.MagicMock(), dict(id=43)), BoundVolume(mock.MagicMock(), dict(id=4711)))])
     def test_attach(self, hetzner_client, server, volume):
-        action = hetzner_client.volumes.attach(server, volume)
+        action = hetzner_client.volumes.attach(volume, server)
         assert action.id == 13
         assert action.progress == 0
         assert action.command == "attach_volume"
@@ -83,3 +126,10 @@ class TestVolumesClient(object):
         assert action.id == 13
         assert action.progress == 0
         assert action.command == "detach_volume"
+
+    @pytest.mark.parametrize("volume", [Volume(id=4711), BoundVolume(mock.MagicMock(), dict(id=4711))])
+    def test_resize(self, hetzner_client, volume):
+        action = hetzner_client.volumes.resize(volume, 50)
+        assert action.id == 13
+        assert action.progress == 0
+        assert action.command == "resize_volume"

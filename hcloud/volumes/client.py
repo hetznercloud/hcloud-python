@@ -15,13 +15,33 @@ class BoundVolume(BoundModelBase):
             data['location'] = BoundLocation(client._client.locations, location)
         super(BoundVolume, self).__init__(client, data, complete)
 
-    def attach(self, server):
-        # type: (Union[Server, BoundServer]) -> Action
-        return self._client.attach(server, self)
+    def get_actions(self, sort=None):
+        # type: (Optional[List[str]]) -> List[BoundAction]
+        return self._client.get_actions(self, sort)
+
+    def update(self, name=None, labels=None):
+        # type: (Optional[str], Optional[Dict[str, str]]) -> BoundAction
+        return self._client.update(self, name, labels)
+
+    def delete(self):
+        # type: () -> BoundAction
+        return self._client.delete(self)
+
+    def attach(self, server, automount=None):
+        # type: (Union[Server, BoundServer]) -> BoundAction
+        return self._client.attach(self, server, automount)
 
     def detach(self):
         # type: () -> BoundAction
         return self._client.detach(self)
+
+    def resize(self, size):
+        # type: (int) -> BoundAction
+        return self._client.resize(self, size)
+
+    def change_protection(self, delete=None):
+        # type: (Optional[bool]) -> BoundAction
+        return self._client.change_protection(self, delete)
 
 
 class VolumesClient(ClientEntityBase):
@@ -82,12 +102,55 @@ class VolumesClient(ClientEntityBase):
         )
         return result
 
-    def attach(self, server, volume):
-        # type: (Union[Server, BoundServer], Union[Volume, BoundVolume]) -> Action
-        data = self._client.request(url="/volumes/{volume_id}/actions/attach".format(volume_id=volume.id), json={'server': server.id}, method="POST")
+    def get_actions(self, volume, sort=None):
+        # type: (Union[Volume, BoundVolume], Optional[List[str]]) -> List[BoundAction]
+        params = {}
+
+        if sort is not None:
+            params.update({"sort": sort})
+        response = self._client.request(url="/volumes/{volume_id}/actions".format(volume_id=volume.id), method="GET", params=params)
+        return [BoundAction(self._client.actions, action_data) for action_data in response['actions']]
+
+    def update(self, volume, name=None, labels=None):
+        # type:(Union[Volume, BoundVolume],  Optional[str],  Optional[Dict[str, str]]) -> BoundVolume
+        data = {}
+        if name is not None:
+            data.update({"name": name})
+        if labels is not None:
+            data.update({"labels": labels})
+        response = self._client.request(url="/volumes/{volume_id}".format(volume_id=volume.id), method="PUT", json=data)
+        return BoundVolume(self, response['volume'])
+
+    def delete(self, volume):
+        # type: (Union[Volume, BoundVolume]) -> BoundAction
+        self._client.request(url="/volumes/{volume_id}".format(volume_id=volume.id), method="DELETE")
+        return True
+
+    def resize(self, volume, size):
+        # type: (Union[Volume, BoundVolume], int) -> BoundAction
+        data = self._client.request(url="/volumes/{volume_id}/actions/resize".format(volume_id=volume.id), json={'size': size}, method="POST")
+        return BoundAction(self._client.actions, data['action'])
+
+    def attach(self, volume, server, automount=None):
+        # type: (Union[Volume, BoundVolume], Union[Server, BoundServer], Optional[bool]) -> BoundAction
+        data = {'server': server.id}
+        if automount is not None:
+            data["automount"] = automount
+
+        data = self._client.request(url="/volumes/{volume_id}/actions/attach".format(volume_id=volume.id), json=data, method="POST")
         return BoundAction(self._client.actions, data['action'])
 
     def detach(self, volume):
-        # type: (Union[Volume, BoundVolume]) -> Action
+        # type: (Union[Volume, BoundVolume]) -> BoundAction
         data = self._client.request(url="/volumes/{volume_id}/actions/detach".format(volume_id=volume.id), method="POST")
         return BoundAction(self._client.actions, data['action'])
+
+    def change_protection(self, volume, delete=None):
+        # type: (Union[Volume, BoundVolume], Optional[bool], Optional[bool]) -> BoundAction
+        data = {}
+        if delete is not None:
+            data.update({"delete": delete})
+
+        response = self._client.request(url="/volumes/{volume_id}/actions/change_protection".format(volume_id=volume.id),
+                                        method="POST", json=data)
+        return BoundAction(self._client.actions, response['action'])
