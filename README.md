@@ -42,4 +42,4 @@ Or open `docs/usage.rst`
 
 Style Guide
 -------------
-* **Type Hints**: If the type hint line is to long use inline hinting. Maximum inline type hint line should be 150 chars.
+* **Type Hints**: If the type hint line is too long use inline hinting. Maximum inline type hint line should be 150 chars.
