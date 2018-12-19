@@ -45,7 +45,7 @@ class TestBoundVolume(object):
     def test_get_actions(self, hetzner_client, bound_volume, response_get_actions):
         hetzner_client.request.return_value = response_get_actions
         actions = bound_volume.get_actions(sort="id")
-        hetzner_client.request.assert_called_with(url="/volumes/14/actions", method="GET", params={"sort": "id"})
+        hetzner_client.request.assert_called_with(url="/volumes/14/actions", method="GET", params={"page": 1, "per_page": 50, "sort": "id"})
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
@@ -137,7 +137,13 @@ class TestVolumesClient(object):
         assert bound_volume.id == 1
         assert bound_volume.name == "database-storage"
 
-    @pytest.mark.parametrize("params", [{'label_selector': "label1", 'page': 1, 'per_page': 10}])
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {'label_selector': "label1", 'page': 1, 'per_page': 10},
+            {}
+        ]
+    )
     def test_get_list(self, volumes_client, two_volumes_response, params):
         volumes_client._client.request.return_value = two_volumes_response
         result = volumes_client.get_list(**params)
@@ -258,11 +264,12 @@ class TestVolumesClient(object):
         volumes_client._client.request.assert_not_called()
 
     @pytest.mark.parametrize("volume", [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=1))])
-    def test_get_actions(self, volumes_client, volume, response_get_actions):
+    def test_get_actions_list(self, volumes_client, volume, response_get_actions):
         volumes_client._client.request.return_value = response_get_actions
-        actions = volumes_client.get_actions(volume)
-        volumes_client._client.request.assert_called_with(url="/volumes/1/actions", method="GET", params={})
+        result = volumes_client.get_actions_list(volume, sort="id")
+        volumes_client._client.request.assert_called_with(url="/volumes/1/actions", method="GET", params={"sort": "id"})
 
+        actions = result.actions
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
 

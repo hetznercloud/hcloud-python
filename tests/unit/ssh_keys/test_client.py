@@ -52,11 +52,19 @@ class TestSSHKeysClient(object):
         assert ssh_key.id == 2323
         assert ssh_key.name == "My ssh key"
 
-    def test_get_all_no_params(self, ssh_keys_client, two_ssh_keys_response):
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {'name': "My ssh key", "fingerprint": "b7:2f:30:a0:2f:6c:58:6c:21:04:58:61:ba:06:3b:2f", "label_selector": "k==v", 'page': 1, 'per_page': 10},
+            {}
+        ]
+    )
+    def test_get_list(self, ssh_keys_client, two_ssh_keys_response, params):
         ssh_keys_client._client.request.return_value = two_ssh_keys_response
-        ssh_keys = ssh_keys_client.get_all()
-        ssh_keys_client._client.request.assert_called_with(url="/ssh_keys", method="GET", params={})
+        result = ssh_keys_client.get_list(**params)
+        ssh_keys_client._client.request.assert_called_with(url="/ssh_keys", method="GET", params=params)
 
+        ssh_keys = result.ssh_keys
         assert len(ssh_keys) == 2
 
         ssh_keys1 = ssh_keys[0]
@@ -70,10 +78,32 @@ class TestSSHKeysClient(object):
         assert ssh_keys2.id == 2324
         assert ssh_keys2.name == "SSH-Key"
 
-    def test_get_all_with_params(self, ssh_keys_client):
-        params = {'name': "My ssh key", "fingerprint": "b7:2f:30:a0:2f:6c:58:6c:21:04:58:61:ba:06:3b:2f", "label_selector": "k==v"}
-        ssh_keys_client.get_all(**params)
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {'name': "My ssh key", 'label_selector': "label1"},
+            {}
+        ]
+    )
+    def test_get_all(self, ssh_keys_client, two_ssh_keys_response, params):
+        ssh_keys_client._client.request.return_value = two_ssh_keys_response
+        ssh_keys = ssh_keys_client.get_all(**params)
+
+        params.update({'page': 1, 'per_page': 50})
         ssh_keys_client._client.request.assert_called_with(url="/ssh_keys", method="GET", params=params)
+
+        assert len(ssh_keys) == 2
+
+        ssh_keys1 = ssh_keys[0]
+        ssh_keys2 = ssh_keys[1]
+
+        assert ssh_keys1._client is ssh_keys_client
+        assert ssh_keys1.id == 2323
+        assert ssh_keys1.name == "SSH-Key"
+
+        assert ssh_keys2._client is ssh_keys_client
+        assert ssh_keys2.id == 2324
+        assert ssh_keys2.name == "SSH-Key"
 
     def test_create(self, ssh_keys_client, ssh_key_response):
         ssh_keys_client._client.request.return_value = ssh_key_response
