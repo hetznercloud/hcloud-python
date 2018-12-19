@@ -4,6 +4,7 @@ from __future__ import absolute_import
 import requests
 
 from hcloud.actions.client import ActionsClient
+from hcloud.floating_ips.client import FloatingIPsClient
 from hcloud.isos.client import IsosClient
 from hcloud.servers.client import ServersClient
 from hcloud.server_types.client import ServerTypesClient
@@ -39,6 +40,7 @@ class HcloudClient(object):
         self.images = ImagesClient(self)
         self.isos = IsosClient(self)
         self.ssh_keys = SSHKeysClient(self)
+        self.floating_ips = FloatingIPsClient(self)
 
     def _get_user_agent(self):
         return "hcloud-python/" + self.version
