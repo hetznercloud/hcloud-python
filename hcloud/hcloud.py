@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+import time
 import requests
 
 from hcloud.actions.client import ActionsClient
@@ -26,6 +27,7 @@ class HcloudAPIException(Exception):
 
 class HcloudClient(object):
     version = VERSION
+    retry_wait_time = 0.5
 
     def __init__(self, token):
         self.token = token
@@ -68,7 +70,7 @@ class HcloudClient(object):
             details=json_content['error']['details']
         )
 
-    def request(self, method, url, **kwargs):
+    def request(self, method, url, tries=1, **kwargs):
         response = requests.request(
             method,
             self.api_endpoint + url,
@@ -85,7 +87,12 @@ class HcloudClient(object):
 
         if not response.ok:
             if json_content:
-                self._raise_exception_from_json_content(json_content)
+                if json_content['error']['code'] == "rate_limit_exceeded" and tries < 5:
+                    time.sleep(tries * self.retry_wait_time)
+                    tries = tries + 1
+                    return self.request(method, url, tries, **kwargs)
+                else:
+                    self._raise_exception_from_json_content(json_content)
             else:
                 self._raise_exception_from_response(response)
 

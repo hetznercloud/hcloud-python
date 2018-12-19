@@ -38,6 +38,19 @@ class TestHetznerClient(object):
         response._content = json.dumps({"error": error}).encode('utf-8')
         return response
 
+    @pytest.fixture()
+    def rate_limit_response(self, response):
+        response.status_code = 422
+        error = {
+            "code": "rate_limit_exceeded",
+            "message": "limit of 10 requests per hour reached",
+            "details": {
+
+            }
+        }
+        response._content = json.dumps({"error": error}).encode('utf-8')
+        return response
+
     def test__get_user_agent(self, client):
         user_agent = client._get_user_agent()
         assert user_agent == "hcloud-python/0.0.0"
@@ -114,3 +127,23 @@ class TestHetznerClient(object):
         assert error.code == 500
         assert error.message == "Internal Server Error"
         assert error.details["content"] == ""
+
+    def test_request_limit(self, mocked_requests, client, rate_limit_response):
+        client.retry_wait_time = 0
+        mocked_requests.request.return_value = rate_limit_response
+        with pytest.raises(HcloudAPIException) as exception_info:
+            client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
+        error = exception_info.value
+        assert mocked_requests.request.call_count == 5
+        assert error.code == "rate_limit_exceeded"
+        assert error.message == "limit of 10 requests per hour reached"
+
+    def test_request_limit_then_success(self, mocked_requests, client, rate_limit_response):
+        client.retry_wait_time = 0
+        response = requests.Response()
+        response.status_code = 200
+        response._content = json.dumps({"result": "data"}).encode('utf-8')
+        mocked_requests.request.side_effect = [rate_limit_response, response]
+
+        client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
+        assert mocked_requests.request.call_count == 2
