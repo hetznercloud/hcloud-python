@@ -1,15 +1,13 @@
 Hetzner Cloud Python
 ====================
-
-
-* Place for status
-
+**IMPORTANT: This project is still in development and not ready production yet!**
 
 Official Hetzner Cloud python library
 
 
 * Free software: MIT license
 * Documentation: https://hcloud.readthedocs.io.
+* API Reference: https://docs.hetzner.cloud.
 
 
 Setup Dev environment

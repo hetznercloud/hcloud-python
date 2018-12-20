@@ -11,7 +11,7 @@ with open('README.md') as readme_file:
 with open('CHANGELOG.md') as changelog_file:
     changelog = changelog_file.read()
 
-requirements = [ ]
+requirements = []
 
 setup_requirements = ['pytest-runner', ]
 
@@ -44,11 +44,11 @@ setup(
     include_package_data=True,
     keywords='hcloud',
     name='hcloud',
-    packages=find_packages(include=['hcloud']),
+    packages=find_packages(exclude=["examples", "tests"]),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/hcloud/hcloud-python',
+    url='https://github.com/hetznercloud/hcloud-python',
     version=version['VERSION'],
     zip_safe=False,
 )

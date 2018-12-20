@@ -8,8 +8,15 @@ Subpackages
 
     hcloud.actions
     hcloud.core
+    hcloud.datacenters
+    hcloud.floating_ips
     hcloud.helpers
+    hcloud.images
+    hcloud.isos
+    hcloud.locations
+    hcloud.server_types
     hcloud.servers
+    hcloud.ssh_keys
     hcloud.volumes
 
 Submodules
