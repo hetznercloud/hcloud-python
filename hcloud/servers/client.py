@@ -165,7 +165,7 @@ class ServersClient(ClientEntityBase):
 
     def create(self,
                name,                      # type: str
-               server_type,               # type: str
+               server_type,               # type: ServerType
                image,                     # type: Image
                ssh_keys=None,             # type: Optional[List[SSHKey]]
                volumes=None,              # type: Optional[List[Volume]]
@@ -193,7 +193,7 @@ class ServersClient(ClientEntityBase):
         """
         data = {
             'name': name,
-            'server_type': server_type,
+            'server_type': server_type.id_or_name,
             "start_after_create": start_after_create,
             "image": image.id_or_name
         }

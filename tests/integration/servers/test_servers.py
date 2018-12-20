@@ -164,7 +164,7 @@ class TestServersClient(object):
 
         response = hetzner_client.servers.create(
             "my-server",
-            "cx11",
+            server_type=ServerType(name="cx11"),
             image=Image(name="ubuntu-16.04"),
             ssh_keys=[SSHKey(name="my-ssh-key")],
             volumes=[Volume(id=1)],

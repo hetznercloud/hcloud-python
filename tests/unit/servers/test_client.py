@@ -353,7 +353,7 @@ class TestServersClient(object):
         servers_client._client.request.return_value = response_create_simple_server
         response = servers_client.create(
             "my-server",
-            "cx11",
+            server_type=ServerType(name="cx11"),
             image=Image(id=4711),
             datacenter=Datacenter(id=1)
         )
@@ -379,7 +379,7 @@ class TestServersClient(object):
         servers_client._client.request.return_value = response_create_simple_server
         response = servers_client.create(
             "my-server",
-            "cx11",
+            server_type=ServerType(name="cx11"),
             image=Image(name="ubuntu-18.04"),
             location=Location(name="fsn1")
         )
@@ -412,7 +412,7 @@ class TestServersClient(object):
         volumes = [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=2))]
         response = servers_client.create(
             "my-server",
-            "cx11",
+            server_type=ServerType(name="cx11"),
             image=Image(id=4711),
             volumes=volumes,
             start_after_create=False
