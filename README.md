@@ -39,6 +39,8 @@ After the documentation has been created, click on `Usage` section
 
 Or open `docs/usage.rst`
 
+You can find some examples under `examples/`.
+
 
 Style Guide
 -------------
