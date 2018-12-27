@@ -4,7 +4,11 @@ python:
   - "3.4"
   - "3.5"
   - "3.6"
-  - "3.7"
+matrix:
+  include:
+    - python: 3.7
+      dist: xenial
+      sudo: true
 before_script:
   - docker pull lkdevelopment/hetzner-cloud-api-mock
   - docker run -d -p 127.0.0.1:4000:8080 lkdevelopment/hetzner-cloud-api-mock
