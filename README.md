@@ -6,7 +6,7 @@ Official Hetzner Cloud python library
 
 
 * Free software: MIT license
-* Documentation: https://hcloud.readthedocs.io.
+* Documentation: https://hcloud-python.readthedocs.io.
 * API Reference: https://docs.hetzner.cloud.
 
 
@@ -37,7 +37,7 @@ After the documentation has been created, click on `Usage` section
 
 Or open `docs/usage.rst`
 
-You can find some examples under `examples/`.
+You can find some more examples under `examples/`.
 
 
 Style Guide
