@@ -13,7 +13,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/hetznercloud/hetznercloud-python/issues.
+Report bugs at https://github.com/hetznercloud/hcloud-python/issues.
 
 If you are reporting a bug, please include:
 
@@ -55,17 +55,17 @@ If you are proposing a feature:
 Get Started!
 ------------
 
-Ready to contribute? Here's how to set up `hetznercloud-python` for local development.
+Ready to contribute? Here's how to set up `hcloud-python` for local development.
 
-1. Fork the `hetznercloud-python` repo on GitHub.
+1. Fork the `hcloud-python` repo on GitHub.
 2. Clone your fork locally::
 
-    $ git clone git@github.com:your_name_here/hetznercloud-python.git
+    $ git clone git@github.com:your_name_here/hcloud-python.git
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
 
-    $ mkvirtualenv hetznercloud-python
-    $ cd hetznercloud-python/
+    $ mkvirtualenv hcloud-python
+    $ cd hcloud-python/
     $ python setup.py develop
 
 4. Create a branch for local development::
@@ -101,7 +101,7 @@ Before you submit a pull request, check that it meets these guidelines:
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
 3. The pull request should work for Python 2.7, 3.5 and 3.6, and for PyPy. Check
-   https://travis-ci.org/hetznercloud/hetznercloud-python/pull_requests
+   https://travis-ci.org/hetznercloud/hcloud-python/pull_requests
    and make sure that the tests pass for all supported Python versions.
 
 Tips
