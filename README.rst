@@ -1,5 +1,11 @@
 Hetzner Cloud Python
 ====================
+
+
+.. image:: https://travis-ci.com/hetznercloud/hcloud-python.svg?branch=master
+    :target: https://travis-ci.com/hetznercloud/hcloud-python
+  
+    
 **IMPORTANT: This project is still in development and not ready production yet!**
 
 Official Hetzner Cloud python library
