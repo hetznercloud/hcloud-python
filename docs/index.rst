@@ -4,9 +4,10 @@
 
    self
    installation
+   samples
    usage
-   Api Documentation <https://docs.hetzner.cloud>
-   modules
+   domain
+   Hetzner Cloud API Documentation <https://docs.hetzner.cloud>
    contributing
    changelog
 

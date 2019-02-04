@@ -1,8 +1,8 @@
-Usage
+Domain
 ======
 
 .. toctree::
    :maxdepth: 2
    :glob:
 
-   usage/*
+   domain/*

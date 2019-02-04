@@ -48,6 +48,7 @@ class Server(BaseDomain):
             labels=None,
             volumes=None,
     ):
+
         self.id = id
         self.name = name
         self.status = status

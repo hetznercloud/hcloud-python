@@ -49,7 +49,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Hetzner Cloud Python'
-copyright = u"2018, Hetzner Cloud GmbH"
+copyright = u"2019, Hetzner Cloud GmbH"
 author = u"Hetzner Cloud GmbH"
 
 # The version info for the project you're documenting, acts as replacement
