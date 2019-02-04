@@ -18,25 +18,41 @@ Server Type Domain
      - Sample
    * - id
      - int
-     - ID of server
+     - ID of server type
      - `123`
    * - name
      - str
-     - Name of the server
-     - `my-server`
+     - 	Unique identifier of the server type
+     - `cx11`
    * - status
      - str
      - Status of the server
      - `running`
-   * - created
+   * - description
      - str
-     - Timestamp when server was created
-     - `2016-01-30T23:50+00:00`
-   * - public_net
-     - tuple
-     - Public network information
+     - Description of the server type
+     - `CX11`
+   * - cores
+     - int
+     - Number of cpu cores a server of this type will have
+     - `1`
+   * - memory
+     - int
+     - Memory a server of this type will have in GB
+     - `1`
+   * - disk
+     - int
+     - Disk size a server of this type will have in GB
+     - `25`
+   * - prices
+     - List
+     - Prices in different Locations
      - -
-   * - server_type
-     - tuple
-     - Public network information
-     - -
+   * - storage_type
+     - str
+     - Type of server boot drive
+     - `local`
+   * - storage_type
+     - str
+     - Type of cpu
+     - `shared`

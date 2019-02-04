@@ -79,3 +79,30 @@ Create Server Response Domain
      - str, null
      - Root password of the server, if no ssh key was given at creation.
      - `YItygq1v3GYjjMomLaKc`
+
+.. _server_reset_root_password_response_domain:
+
+Reset Password Response Domain
+******************************
+
+.. code-block:: python
+
+    from hcloud.servers.domain import ResetPasswordResponse
+
+
+.. list-table:: Properties
+   :widths: 15 15 10 10
+   :header-rows: 1
+
+   * - Property
+     - Type
+     - Description
+     - Sample
+   * - action
+     - :ref:`action_domain`
+     - Action that shows the progress
+     - -
+   * - root_password
+     - str, null
+     - The new root password
+     - `YItygq1v3GYjjMomLaKc`

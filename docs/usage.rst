@@ -5,4 +5,6 @@ Usage
    :maxdepth: 2
    :glob:
 
-   usage/*
+   usage/client
+   usage/servers
+   usage/server_actions
