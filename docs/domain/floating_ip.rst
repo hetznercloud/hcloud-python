@@ -33,7 +33,7 @@ Floating IP Domain
      - Type of the Floating IP
      - `ipv4`
    * - server
-     - ref:`server_domain`, `None`
+     - :ref:`server_domain`, `None`
      - Server the Floating IP is assigned to, `None` if it is not assigned at all.
      - -
    * - dns_ptr
@@ -41,7 +41,7 @@ Floating IP Domain
      - Array of reverse DNS entries
      - -
    * - home_location
-     - ref:`location_domain`
+     - :ref:`location_domain`
      - Location the Floating IP was created in.
      - -
    * - blocked
