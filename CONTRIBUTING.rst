@@ -43,7 +43,7 @@ articles, and such.
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/hetznercloud/hetznercloud/issues.
+The best way to send feedback is to file an issue at https://github.com/hetznercloud/hcloud-python/issues.
 
 If you are proposing a feature:
 
@@ -116,7 +116,7 @@ Deploying
 ---------
 
 A reminder for the maintainers on how to deploy.
-Make sure all your changes are committed (including an entry in HISTORY.rst).
+Make sure all your changes are committed (including an entry in CHANGELOG.rst).
 Then run::
 
 $ bumpversion patch # possible: major / minor / patch

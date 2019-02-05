@@ -6,5 +6,9 @@ Usage
    :glob:
 
    usage/client
-   usage/servers
-   usage/server_actions
+   usage/servers/servers
+   usage/servers/actions
+   usage/server_types/server_types
+   usage/locations/locations
+   usage/datacenters/datacenters
+   usage/isos/isos
