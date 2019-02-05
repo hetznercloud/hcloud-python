@@ -23,7 +23,6 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 
 from hcloud.version import VERSION
-from recommonmark.parser import CommonMarkParser
 
 # -- General configuration ---------------------------------------------
 
@@ -161,14 +160,8 @@ texinfo_documents = [
      u'Hetzner Cloud Python Documentation',
      author,
      'hcloud',
-     'One line description of project.',
+     'HCloud-python is a library for the Hetzner Cloud API.',
      'Miscellaneous'),
 ]
 
-from recommonmark.parser import CommonMarkParser
-
-source_parsers = {
-    '.md': CommonMarkParser,
-}
-
-source_suffix = ['.rst', '.md']
+source_suffix = ['.rst']

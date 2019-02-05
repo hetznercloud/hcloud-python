@@ -39,8 +39,10 @@ Location Domain
    * - latitude
      - float
      - Latitude of the city closest to the location
-     - 50.47612
+     - `50.47612`
    * - longitude
      - float
      - Longitude of the city closest to the location
-     - 12.370071
+     - `12.370071`
+
+You can find more information about this resource in our `API Documentation <https://docs.hetzner.cloud/#locations>`_.

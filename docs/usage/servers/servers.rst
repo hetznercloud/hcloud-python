@@ -5,14 +5,14 @@ Servers
 Get all servers
 ----------------
 
-Get all servers from within the account of the API token.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
    client.servers.get_all()
 
 **Return:** List[:ref:`server_domain`]
+
+`API Documentation <https://docs.hetzner.cloud/#servers-get-all-servers>`_
 
 .. list-table::
    :widths: 15 10 10 30
@@ -43,6 +43,8 @@ List all servers with more granular control over how many servers will be return
 
 **Return:** List[:ref:`server_domain`]
 
+`API Documentation <https://docs.hetzner.cloud/#servers-get-all-servers>`_
+
 .. list-table::
    :widths: 15 10 10 30
    :header-rows: 1
@@ -71,8 +73,6 @@ List all servers with more granular control over how many servers will be return
 Get a specific server
 ---------------------
 
-Returns a specific server object. The server must exist inside the project.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -81,10 +81,10 @@ Returns a specific server object. The server must exist inside the project.
 **Return:** :ref:`server_domain`
 
 
+`API Documentation <https://docs.hetzner.cloud/#servers-get-a-server>`_
+
 Create a server
 -----------------
-
-Creates a new server. Returns preliminary information about the server as well as an action that covers progress of creation.
 
 .. code-block:: python
 
@@ -93,6 +93,7 @@ Creates a new server. Returns preliminary information about the server as well a
 
 **Return:** :ref:`server_create_response_domain`
 
+`API Documentation <https://docs.hetzner.cloud/#servers-create-a-server>`_
 
 .. list-table::
    :widths: 15 10 10 30
@@ -141,17 +142,15 @@ Creates a new server. Returns preliminary information about the server as well a
    * - automount
      - boolean (optional)
      - Auto mount volumes after attach.
-     - `true`
+     - ``True``
    * - start_after_create
      - boolean (optional)
-     - Start Server right after creation. Defaults to true.
-     - `true`
+     - Start Server right after creation. Defaults to `True`.
+     - ``True``
 
 
 Update a server
 -----------------
-
-Updates a server. Returns preliminary information about the server as well as an action that covers progress of creation.
 
 .. code-block:: python
 
@@ -161,6 +160,7 @@ Updates a server. Returns preliminary information about the server as well as an
 
 **Return:** :ref:`server_domain`
 
+`API Documentation <https://docs.hetzner.cloud/#servers-update-a-server>`_
 
 .. list-table::
    :widths: 15 10 10 30
@@ -182,8 +182,6 @@ Updates a server. Returns preliminary information about the server as well as an
 Delete a server
 -----------------
 
-Deletes a server. This immediately removes the server from your account, and it is no longer accessible.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -191,3 +189,5 @@ Deletes a server. This immediately removes the server from your account, and it 
    server.delete()
 
 **Return:** :ref:`action_domain`
+
+`API Documentation <https://docs.hetzner.cloud/#servers-delete-a-server>`_

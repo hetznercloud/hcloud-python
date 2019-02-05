@@ -36,3 +36,5 @@ Datacenter Domain
      - tuple
      - The server types the datacenter can handle
      - -
+
+You can find more information about this resource in our `API Documentation <https://docs.hetzner.cloud/#datacenters>`_.

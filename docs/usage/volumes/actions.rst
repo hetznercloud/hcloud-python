@@ -4,7 +4,7 @@ Volumes Actions
 List Actions
 ------------------
 
-Returns a list of action domains for a Volume.
+List Actions from the Volume with more granular control over how many Actions will be returned.
 
 .. code-block:: python
 
@@ -32,11 +32,17 @@ Returns a list of action domains for a Volume.
      - `List[str]` (optional)
      - Can be used multiple times.
      - -
+   * - page
+     - string (optional)
+     - Get all actions listed at a specific page.
+     - `1`
+   * - per_page
+     - string (optional)
+     - Specify the number of actions listed per page. Default: `25` Max: `50`
+     - `25`
 
 Get all Actions
 ------------------
-
-Returns all action objects for a Volume.
 
 .. code-block:: python
 
@@ -68,8 +74,6 @@ Returns all action objects for a Volume.
 Attach Volume to a Server
 -------------------------------
 
-Attaches a volume to a server. Works only if the server is in the same location as the volume.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -100,8 +104,6 @@ Attaches a volume to a server. Works only if the server is in the same location 
 Detach Volume to a Server
 -------------------------------
 
-Detaches a volume from the server it’s attached to. You may attach it to a server again at a later time.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -114,8 +116,6 @@ Detaches a volume from the server it’s attached to. You may attach it to a ser
 
 Detach Volume to a Server
 -------------------------------
-
-Detaches a volume from the server it’s attached to. You may attach it to a server again at a later time.
 
 .. code-block:: python
 
@@ -143,8 +143,6 @@ Detaches a volume from the server it’s attached to. You may attach it to a ser
 Change protection for a Volume
 -------------------------------
 
-Changes the protection configuration of the Volume.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -165,5 +163,5 @@ Changes the protection configuration of the Volume.
      - Sample
    * - delete
      - boolean
-     - If true, prevents the Volume from being deleted
+     - If `True`, prevents the Volume from being deleted
      - `True`

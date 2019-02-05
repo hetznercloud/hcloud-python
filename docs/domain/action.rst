@@ -37,14 +37,16 @@ Action Domain
      - Point in time when the action was started (in ISO-8601 format)
      - `2016-01-30T23:50+00:00`
    * - finished
-     - str, null
-     - Point in time when the action was finished (in ISO-8601 format). Only set if the action is finished otherwise null.
+     - str, `None`
+     - Point in time when the action was finished (in ISO-8601 format). Only set if the action is finished otherwise `None`.
      - `2016-01-30T23:50+00:00`
    * - resources
      - tuple
      - Resources the action relates to
      - -
    * - error
-     - tuple, null
-     - Error message for the action if error occured, otherwise null.
+     - tuple, `None`
+     - Error message for the action if error occured, otherwise `None`.
      - -
+
+You can find more information about this resource in our `API Documentation <https://docs.hetzner.cloud/#actions>`_.

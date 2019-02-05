@@ -62,7 +62,7 @@ Server Domain
      - `False`
    * - backup_window
      - str, `None`
-     - Time window (UTC) in which the backup will run, or null if the backups are not enabled
+     - Time window (UTC) in which the backup will run, or `None` if the backups are not enabled
      - `22-02`
    * - outgoing_traffic
      - int, `None`
@@ -88,6 +88,8 @@ Server Domain
      - List[:ref:`volume_domain`]
      - Volumes assigned to this server.
      - -
+
+You can find more information about this resource in our `API Documentation <https://docs.hetzner.cloud/#servers>`_.
 
 .. _server_create_response_domain:
 

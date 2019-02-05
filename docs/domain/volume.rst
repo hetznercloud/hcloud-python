@@ -56,3 +56,5 @@ Volume Domain
      - str
      - Current status of the volume
      - `available`
+
+You can find more information about this resource in our `API Documentation <https://docs.hetzner.cloud/#volumes>`_.

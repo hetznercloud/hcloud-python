@@ -5,8 +5,6 @@ Floating IPs
 Get all Floating IPs
 ---------------------
 
-Get all Floating IPs from within the account of the API token.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -67,8 +65,6 @@ List all Floating IPs with more granular control over how many Floating IPs will
 Get a specific Floating IP
 ---------------------------
 
-Returns a specific Floating IP object. The Floating IP must exist inside the project.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -80,8 +76,6 @@ Returns a specific Floating IP object. The Floating IP must exist inside the pro
 
 Create a Floating IP
 ---------------------
-
-Creates a new Floating IP. Returns preliminary information about the Floating IP as well as an action that covers progress of creation.
 
 .. code-block:: python
 
@@ -120,8 +114,6 @@ Creates a new Floating IP. Returns preliminary information about the Floating IP
 Update a Floating IP
 ---------------------
 
-Updates a Floating IP.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -151,8 +143,6 @@ Updates a Floating IP.
 
 Delete a Floating IP
 ---------------------
-
-Deletes a Floating IP. It cannot be used anymore.
 
 .. code-block:: python
 

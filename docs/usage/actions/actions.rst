@@ -12,6 +12,8 @@ Get all Actions
 
 **Return:** List[:ref:`action_domain`]
 
+`API Documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_
+
 .. list-table::
    :widths: 15 10 10 30
    :header-rows: 1
@@ -41,6 +43,8 @@ List Actions with more granular control over how many Actions will be returned.
 
 **Return:** List[:ref:`action_domain`]
 
+`API Documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_
+
 .. list-table::
    :widths: 15 10 10 30
    :header-rows: 1
@@ -59,17 +63,15 @@ List Actions with more granular control over how many Actions will be returned.
      - -
    * - page
      - string (optional)
-     - Get all servers listed at a specific page.
+     - Get all actions listed at a specific page.
      - `1`
    * - per_page
      - string (optional)
-     - Specify the number of servers listed per page. Default: `25` Max: `50`
+     - Specify the number of actions listed per page. Default: `25` Max: `50`
      - `25`
 
 Get a specific Action
 -----------------------
-
-Returns a specific Action object.
 
 .. code-block:: python
 
@@ -77,3 +79,5 @@ Returns a specific Action object.
    client.actions.get_by_id(1234)
 
 **Return:** :ref:`action_domain`
+
+`API Documentation <https://docs.hetzner.cloud/#actions-get-one-action>`_

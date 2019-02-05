@@ -5,14 +5,14 @@ SSH-Keys
 Get all ssh keys
 -----------------
 
-Get all SSH keys from within the account of the API token.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
    client.ssh_keys.get_all()
 
 **Return:** List[:ref:`ssh_key_domain`]
+
+`API Documentation <https://docs.hetzner.cloud/#ssh-keys-get-all-ssh-keys>`_
 
 .. list-table::
    :widths: 15 10 10 30
@@ -47,6 +47,8 @@ List all ssh keys with more granular control over how many ssh keys will be retu
 
 **Return:** List[:ref:`ssh_key_domain`]
 
+`API Documentation <https://docs.hetzner.cloud/#ssh-keys-get-all-ssh-keys>`_
+
 .. list-table::
    :widths: 15 10 10 30
    :header-rows: 1
@@ -79,8 +81,6 @@ List all ssh keys with more granular control over how many ssh keys will be retu
 Get a specific ssh key
 -----------------------
 
-Returns a specific ssh key object. The ssh key must exist inside the project.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -88,11 +88,10 @@ Returns a specific ssh key object. The ssh key must exist inside the project.
 
 **Return:** :ref:`ssh_key_domain`
 
+`API Documentation <https://docs.hetzner.cloud/#ssh-keys-get-an-ssh-key>`_
 
-Create a ssh key
+Create an ssh key
 -----------------
-
-Creates a new ssh key. Returns preliminary information about the ssh key as well as an action that covers progress of creation.
 
 .. code-block:: python
 
@@ -101,6 +100,7 @@ Creates a new ssh key. Returns preliminary information about the ssh key as well
 
 **Return:** :ref:`ssh_key_domain`
 
+`API Documentation <https://docs.hetzner.cloud/#ssh-keys-create-an-ssh-key>`_
 
 .. list-table::
    :widths: 15 10 10 30
@@ -120,10 +120,8 @@ Creates a new ssh key. Returns preliminary information about the ssh key as well
      - `ssh-rsa AAAjjk76kgf...Xt`
 
 
-Update a ssh key
+Update an ssh key
 -----------------
-
-Updates a ssh key.
 
 .. code-block:: python
 
@@ -133,6 +131,7 @@ Updates a ssh key.
 
 **Return:** :ref:`ssh_key_domain`
 
+`API Documentation <https://docs.hetzner.cloud/#ssh-keys-update-an-ssh-key>`_
 
 .. list-table::
    :widths: 15 10 10 30
@@ -151,10 +150,8 @@ Updates a ssh key.
      - New labels
      - -
 
-Delete a ssh key
+Delete an ssh key
 -----------------
-
-Deletes an SSH key. It cannot be used anymore.
 
 .. code-block:: python
 
@@ -163,3 +160,5 @@ Deletes an SSH key. It cannot be used anymore.
    ssh_key.delete()
 
 **Return:** `boolean`
+
+`API Documentation <https://docs.hetzner.cloud/#ssh-keys-delete-an-ssh-key>`_

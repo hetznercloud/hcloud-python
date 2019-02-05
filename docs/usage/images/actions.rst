@@ -4,7 +4,7 @@ Image Actions
 List Actions
 ------------------
 
-Returns a list of action domains for an Image.
+List Actions from the Image with more granular control over how many Actions will be returned.
 
 .. code-block:: python
 
@@ -32,11 +32,17 @@ Returns a list of action domains for an Image.
      - `List[str]` (optional)
      - Can be used multiple times.
      - -
+   * - page
+     - string (optional)
+     - Get all actions listed at a specific page.
+     - `1`
+   * - per_page
+     - string (optional)
+     - Specify the number of actions listed per page. Default: `25` Max: `50`
+     - `25`
 
 Get all Actions
 ------------------
-
-Returns all action objects for an Image.
 
 .. code-block:: python
 
@@ -68,8 +74,6 @@ Returns all action objects for an Image.
 Change protection for an Image
 -------------------------------
 
-Changes the protection configuration of the Image.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -90,5 +94,5 @@ Changes the protection configuration of the Image.
      - Sample
    * - delete
      - boolean
-     - If true, prevents the Image from being deleted
+     - If `True`, prevents the Image from being deleted
      - `True`

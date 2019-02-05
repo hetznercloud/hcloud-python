@@ -56,3 +56,5 @@ Server Type Domain
      - str
      - Type of cpu
      - `shared`
+
+You can find more information about this resource in our `API Documentation <https://docs.hetzner.cloud/#server-types>`_.

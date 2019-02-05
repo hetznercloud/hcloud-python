@@ -29,7 +29,7 @@ Image Domain
      - Whether the image can be used or if it’s still being created
      - `running`
    * - name
-     - str, null
+     - str, `None`
      - Unique identifier of the image. This value is only set for system images.
      - `ubuntu-16.04`
    * - description
@@ -37,7 +37,7 @@ Image Domain
      - Description of the image
      - `Ubuntu 16.04 Standard 64 bit`
    * - image_size
-     - float, null
+     - float, `None`
      - Size of the image file in our storage in GB
      - `2.3`
    * - disk_size
@@ -49,11 +49,11 @@ Image Domain
      - Point in time when the image was created (in ISO-8601 format)
      - `2016-01-30T23:50+00:00`
    * - created_from
-     - :ref:`server_domain`, null
+     - :ref:`server_domain`, `None`
      - Information about the server the image was created from
      - -
    * - bound_to
-     - :ref:`server_domain`, null
+     - :ref:`server_domain`, `None`
      - ID of server the image is bound to
      - -
    * - os_flavor
@@ -61,15 +61,15 @@ Image Domain
      - Flavor of operating system contained in the image
      - `ubuntu`
    * - os_flavor
-     - str, null
+     - str, `None`
      - Operating system version
      - `16.04`
    * - rapid_deploy
      - boolean
      - Indicates that rapid deploy of the image is available
-     - `true`
+     - ``True``
    * - deprecated
-     - string, null
+     - string, `None`
      - Point in time when the image is considered to be deprecated (in ISO-8601 format)
      - `2016-01-30T23:50+00:00`
    * - protection
@@ -81,6 +81,7 @@ Image Domain
      - User-defined labels (key-value pairs)
      - -
 
+You can find more information about this resource in our `API Documentation <https://docs.hetzner.cloud/#images>`_.
 
 .. _image_create_response_domain:
 

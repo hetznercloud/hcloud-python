@@ -33,7 +33,9 @@ ISO Domain
      - Type of the ISO
      - `public`
    * - deprecated
-     - string, null
-     - ISO 8601 timestamp of deprecation, null if ISO is still available.
+     - string, `None`
+     - ISO 8601 timestamp of deprecation, `None` if ISO is still available.
      - `2016-01-30T23:50+00:00`
+
+You can find more information about this resource in our `API Documentation <https://docs.hetzner.cloud/#isos>`_.
 

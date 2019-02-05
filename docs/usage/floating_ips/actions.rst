@@ -4,7 +4,7 @@ Floating IP Actions
 List Actions
 ------------------
 
-Returns a list of action domains for a Floating IP.
+List Actions from the Image with more granular control over how many Actions will be returned.
 
 .. code-block:: python
 
@@ -32,11 +32,17 @@ Returns a list of action domains for a Floating IP.
      - `List[str]` (optional)
      - Can be used multiple times.
      - -
+   * - page
+     - string (optional)
+     - Get all actions listed at a specific page.
+     - `1`
+   * - per_page
+     - string (optional)
+     - Specify the number of actions listed per page. Default: `25` Max: `50`
+     - `25`
 
 Get all Actions
 ------------------
-
-Returns all action objects for a Floating IP.
 
 .. code-block:: python
 
@@ -68,8 +74,6 @@ Returns all action objects for a Floating IP.
 Assign a Floating IP
 -------------------------------
 
-Assigns a Floating IP to a server.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -97,8 +101,6 @@ Assigns a Floating IP to a server.
 Unassign a Floating IP
 -------------------------------
 
-Unassigns a Floating IP, resulting in it being unreachable. You may assign it to a server again at a later time.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -111,8 +113,6 @@ Unassigns a Floating IP, resulting in it being unreachable. You may assign it to
 
 Change reverse DNS entry for a Floating IP
 -------------------------------------------
-
-Changes the hostname that will appear when getting the hostname belonging to this Floating IP.
 
 .. code-block:: python
 
@@ -137,14 +137,12 @@ Changes the hostname that will appear when getting the hostname belonging to thi
      - IP address for which to set the reverse DNS entry
      - `1.2.3.4`
    * - dns_ptr
-     - str, null
+     - str, `None`
      - Hostname to set as a reverse DNS PTR entry, will reset to original default value if `None`
      - `server01.example.com`
 
 Change protection for a Floating IP
 ------------------------------------
-
-Changes the protection configuration of the Floating IP.
 
 .. code-block:: python
 
@@ -166,5 +164,5 @@ Changes the protection configuration of the Floating IP.
      - Sample
    * - delete
      - boolean
-     - If true, prevents the Floating IP from being deleted
+     - If `True`, prevents the Floating IP from being deleted
      - `True`

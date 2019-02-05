@@ -5,8 +5,6 @@ Images
 Get all Images
 ----------------
 
-Returns all image objects.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -90,8 +88,6 @@ List all Images with more granular control over how many Images will be returned
 
 Get a specific Image
 ---------------------
-
-Returns a specific Image object. The Image must exist inside the project.
 
 .. code-block:: python
 

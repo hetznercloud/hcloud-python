@@ -5,8 +5,6 @@ Volumes
 Get all Volumes
 ----------------
 
-Returns all volume objects.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -39,7 +37,7 @@ List all Volumes with more granular control over how many Volumes will be return
   #client = HcloudClient(token="Your-Project-Token")
    client.volumes.get_list()
 
-**Return:** List[:ref:`ssh_key_domain`]
+**Return:** List[:ref:`volume_domain`]
 
 `API Documentation <https://docs.hetzner.cloud/#volumes-get-all-volumes>`_
 
@@ -67,8 +65,6 @@ List all Volumes with more granular control over how many Volumes will be return
 Get a specific Volume
 ---------------------
 
-Returns a specific Volume object. The Volume must exist inside the project.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -80,8 +76,6 @@ Returns a specific Volume object. The Volume must exist inside the project.
 
 Create a Volume
 ---------------------
-
-Creates a new volume attached to a server.
 
 .. code-block:: python
 
@@ -160,8 +154,6 @@ Update a Volume
 
 Delete a Volume
 -----------------
-
-Deletes a Volume. It cannot be used anymore.
 
 .. code-block:: python
 

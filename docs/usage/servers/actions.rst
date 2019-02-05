@@ -4,7 +4,7 @@ Server Actions
 List Actions
 ------------------
 
-Returns a list of action domains for a server.
+List Actions from the Server with more granular control over how many Actions will be returned.
 
 .. code-block:: python
 
@@ -32,11 +32,17 @@ Returns a list of action domains for a server.
      - `List[str]` (optional)
      - Can be used multiple times.
      - -
+   * - page
+     - string (optional)
+     - Get all actions listed at a specific page.
+     - `1`
+   * - per_page
+     - string (optional)
+     - Specify the number of actions listed per page. Default: `25` Max: `50`
+     - `25`
 
 Get all Actions
 ------------------
-
-Returns all action objects for a server.
 
 .. code-block:: python
 
@@ -68,8 +74,6 @@ Returns all action objects for a server.
 Power on a server
 ------------------
 
-Starts a server by turning its power on.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -82,8 +86,6 @@ Starts a server by turning its power on.
 
 Power off a server
 ------------------
-
-Cuts power to the server
 
 .. code-block:: python
 
@@ -143,8 +145,6 @@ Shuts down a server gracefully by sending an ACPI shutdown request.
 Reset root password of a server
 --------------------------------
 
-Resets the root password.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -157,8 +157,6 @@ Resets the root password.
 
 Enable Rescue Mode for a server
 --------------------------------
-
-Enable the Hetzner Rescue System for this server.
 
 .. code-block:: python
 
@@ -190,8 +188,6 @@ Enable the Hetzner Rescue System for this server.
 Disable Rescue Mode for a server
 ---------------------------------
 
-Disables the Hetzner Rescue System for a server.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -204,8 +200,6 @@ Disables the Hetzner Rescue System for a server.
 
 Create Image from a Server
 ---------------------------
-
-Creates an image (snapshot) from a server by copying the contents of its disks.
 
 .. code-block:: python
 
@@ -241,8 +235,6 @@ Creates an image (snapshot) from a server by copying the contents of its disks.
 Rebuild a Server from an Image
 -------------------------------
 
-Rebuilds a server overwriting its disk with the content of an image, thereby destroying all data on the target server.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -266,10 +258,9 @@ Rebuilds a server overwriting its disk with the content of an image, thereby des
      - Image to rebuilt from.
      - -
 
-Change the Type of a Server
-----------------------------
+Change the Type of a Server (Resize)
+-------------------------------------
 
-Changes the type (Cores, RAM and disk sizes) of a server.
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -294,13 +285,11 @@ Changes the type (Cores, RAM and disk sizes) of a server.
      - -
    * - upgrade_disk
      - boolean
-     - If false, do not upgrade the disk.
+     - If `False`, do not upgrade the disk.
      - `False`
 
 Enable Backups for a server
 ----------------------------
-
-Enables the automatic daily backup option for the server.
 
 .. code-block:: python
 
@@ -315,8 +304,6 @@ Enables the automatic daily backup option for the server.
 Disable Backups for a server
 -----------------------------
 
-Disable the automatic daily backup option for the server.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -330,7 +317,6 @@ Disable the automatic daily backup option for the server.
 Attach an ISO to a Server
 --------------------------
 
-Attaches an ISO to a server.
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -357,8 +343,6 @@ Attaches an ISO to a server.
 Detach an ISO from a Server
 ----------------------------
 
-Detaches an ISO from a server.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
@@ -372,8 +356,6 @@ Detaches an ISO from a server.
 
 Change reverse DNS entry for this server
 -----------------------------------------
-
-Changes the hostname that will appear when getting the hostname belonging to the primary IPs (ipv4 and ipv6) of this server.
 
 .. code-block:: python
 
@@ -398,14 +380,12 @@ Changes the hostname that will appear when getting the hostname belonging to the
      - Primary IP address for which the reverse DNS entry should be set.
      - `1.2.3.4`
    * - dns_ptr
-     - str, null
+     - str, `None`
      - Hostname to set as a reverse DNS PTR entry. Will reset to original value if `None`
      - `server01.example.com`
 
 Change protection for a Server
 -------------------------------
-
-Changes the protection configuration of the server.
 
 .. code-block:: python
 
@@ -427,17 +407,15 @@ Changes the protection configuration of the server.
      - Sample
    * - delete
      - boolean
-     - If true, prevents the server from being deleted (currently delete and rebuild attribute needs to have the same value)
+     - If `True`, prevents the server from being deleted (currently delete and rebuild attribute needs to have the same value)
      - `True`
    * - rebuild
      - boolean
-     - If true, prevents the server from being rebuilt (currently delete and rebuild attribute needs to have the same value)
+     - If `True`, prevents the server from being rebuilt (currently delete and rebuild attribute needs to have the same value)
      - `True`
 
 Request Console for a Server
 -------------------------------
-
-Requests credentials for remote access via vnc over websocket to keyboard, monitor, and mouse for a server.
 
 .. code-block:: python
 

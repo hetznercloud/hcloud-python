@@ -12,6 +12,8 @@ Get all Server Types
 
 **Return:** List[:ref:`server_type_domain`]
 
+`API Documentation <https://docs.hetzner.cloud/#server-types-get-all-server-types>`_
+
 .. list-table::
    :widths: 15 10 10 30
    :header-rows: 1
@@ -33,9 +35,11 @@ List Server Types with more granular control over how many Server Types will be 
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
-   client.locations.get_list()
+   client.server_types.get_list()
 
 **Return:** List[:ref:`server_type_domain`]
+
+`API Documentation <https://docs.hetzner.cloud/#server-types-get-all-server-types>`_
 
 .. list-table::
    :widths: 15 10 10 30
@@ -57,3 +61,16 @@ List Server Types with more granular control over how many Server Types will be 
      - string (optional)
      - Specify the number of servers listed per page. Default: `25` Max: `50`
      - `25`
+
+
+Get a specific Server Type
+---------------------------
+
+.. code-block:: python
+
+  #client = HcloudClient(token="Your-Project-Token")
+   client.server_types.get_by_id(id=123)
+
+**Return:** :ref:`server_type_domain`
+
+`API Documentation <https://docs.hetzner.cloud/#server-types-get-a-server-type>`_

@@ -4,15 +4,14 @@ Datacenters
 
 Get all datacenters
 --------------------
-
-Get all datacenters.
-
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
    client.datacenters.get_all()
 
 **Return:** List[:ref:`datacenter_domain`]
+
+`API Documentation <#datacenters-get-all-datacenters>`_
 
 .. list-table::
    :widths: 15 10 10 30
@@ -39,6 +38,8 @@ List datacenters with more granular control over how many datacenters will be re
 
 **Return:** List[:ref:`datacenter_domain`]
 
+`API Documentation <https://docs.hetzner.cloud/#datacenters-get-all-datacenters>`_
+
 .. list-table::
    :widths: 15 10 10 30
    :header-rows: 1
@@ -59,3 +60,15 @@ List datacenters with more granular control over how many datacenters will be re
      - string (optional)
      - Specify the number of servers listed per page. Default: `25` Max: `50`
      - `25`
+
+Get a datacenter
+-----------------
+
+.. code-block:: python
+
+  #client = HcloudClient(token="Your-Project-Token")
+   client.datacenters.get_by_id(id=123)
+
+**Return:** :ref:`datacenter_domain`]
+
+`API Documentation <https://docs.hetzner.cloud/#datacenters-get-a-datacenter>`_

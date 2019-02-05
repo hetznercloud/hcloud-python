@@ -36,3 +36,5 @@ SSH Key Domain
      - List[:ref:`labels_domain`]
      - User-defined labels (key-value pairs)
      - -
+
+You can find more information about this resource in our `API Documentation <https://docs.hetzner.cloud/#ssh-keys>`_.
