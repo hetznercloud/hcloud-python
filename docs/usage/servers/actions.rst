@@ -12,7 +12,7 @@ Returns a list of action domains for a server.
   #server = client.servers.get_by_id(123)
    server.get_actions_list(status=["running"],sort=["id","progress:desc"])
 
-**Response:** List[:ref:`action_domain`]
+**Return:** List[:ref:`action_domain`]
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-get-all-actions-for-a-server>`_
 
@@ -44,7 +44,7 @@ Returns all action objects for a server.
   #server = client.servers.get_by_id(123)
    server.get_actions(status=["running"],sort=["id","progress:desc"])
 
-**Response:** List[:ref:`action_domain`]
+**Return:** List[:ref:`action_domain`]
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-get-all-actions-for-a-server>`_
 
@@ -76,7 +76,7 @@ Starts a server by turning its power on.
   #server = client.servers.get_by_id(123)
    server.power_on()
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-power-on-a-server>`_
 
@@ -91,7 +91,7 @@ Cuts power to the server
   #server = client.servers.get_by_id(123)
    server.power_off()
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-power-off-a-server>`_
 
@@ -106,7 +106,7 @@ Reboots a server gracefully by sending an ACPI request.
   #server = client.servers.get_by_id(123)
    server.reboot()
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-soft-reboot-a-server>`_
 
@@ -121,7 +121,7 @@ Cuts power to a server and starts it again.
   #server = client.servers.get_by_id(123)
    server.reset()
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-reset-a-server>`_
 
@@ -136,7 +136,7 @@ Shuts down a server gracefully by sending an ACPI shutdown request.
   #server = client.servers.get_by_id(123)
    server.shutdown()
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-shutdown-a-server>`_
 
@@ -151,7 +151,7 @@ Resets the root password.
   #server = client.servers.get_by_id(123)
    server.reset_password()
 
-**Response:** :ref:`server_reset_root_password_response_domain`
+**Return:** :ref:`server_reset_root_password_response_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-reset-root-password-of-a-server>`_
 
@@ -166,7 +166,7 @@ Enable the Hetzner Rescue System for this server.
   #server = client.servers.get_by_id(123)
    server.enable_rescue()
 
-**Response:** :ref:`server_reset_root_password_response_domain`
+**Return:** :ref:`server_reset_root_password_response_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-enable-rescue-mode-for-a-server>`_
 
@@ -198,7 +198,7 @@ Disables the Hetzner Rescue System for a server.
   #server = client.servers.get_by_id(123)
    server.disable_rescue()
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-disable-rescue-mode-for-a-server>`_
 
@@ -213,7 +213,7 @@ Creates an image (snapshot) from a server by copying the contents of its disks.
   #server = client.servers.get_by_id(123)
    server.create_image(description="my-image")
 
-**Response:** :ref:`image_create_response_domain`
+**Return:** :ref:`image_create_response_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-create-image-from-a-server>`_
 
@@ -249,7 +249,7 @@ Rebuilds a server overwriting its disk with the content of an image, thereby des
   #server = client.servers.get_by_id(123)
    server.rebuild(image=Image(name="my-image"))
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-rebuild-a-server-from-an-image>`_
 
@@ -274,9 +274,9 @@ Changes the type (Cores, RAM and disk sizes) of a server.
 
   #client = HcloudClient(token="Your-Project-Token")
   #server = client.servers.get_by_id(123)
-   server.resize(server_type=ServerType(name="cx21"), upgrade_disk=False)
+  server.resize(server_type=ServerType(name="cx21"), upgrade_disk=False)
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-change-the-type-of-a-server>`_
 
@@ -308,7 +308,7 @@ Enables the automatic daily backup option for the server.
   #server = client.servers.get_by_id(123)
    server.enable_backup()
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-enable-and-configure-backups-for-a-server>`_
 
@@ -323,7 +323,7 @@ Disable the automatic daily backup option for the server.
   #server = client.servers.get_by_id(123)
    server.disable_backup()
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-disable-backups-for-a-server>`_
 
@@ -335,9 +335,9 @@ Attaches an ISO to a server.
 
   #client = HcloudClient(token="Your-Project-Token")
   #server = client.servers.get_by_id(123)
-   server.attach_iso(iso=Iso(name="FreeBSD-11.0-RELEASE-amd64-dvd1"))
+  server.attach_iso(iso=Iso(name="FreeBSD-11.0-RELEASE-amd64-dvd1"))
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-attach-an-iso-to-a-server>`_
 
@@ -365,7 +365,7 @@ Detaches an ISO from a server.
   #server = client.servers.get_by_id(123)
    server.detach_iso()
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-detach-an-iso-from-a-server>`_
 
@@ -381,7 +381,7 @@ Changes the hostname that will appear when getting the hostname belonging to the
   #server = client.servers.get_by_id(123)
    server.change_dns_ptr(ip="1.2.3.4",dns_ptr="server01.example.com")
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-change-reverse-dns-entry-for-this-server>`_
 
@@ -413,7 +413,7 @@ Changes the protection configuration of the server.
   #server = client.servers.get_by_id(123)
    server.change_protection(delete=True,rebuild=True)
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-change-protection-for-a-server>`_
 
@@ -445,6 +445,6 @@ Requests credentials for remote access via vnc over websocket to keyboard, monit
   #server = client.servers.get_by_id(123)
    server.request_console()
 
-**Response:** :ref:`server_request_console_response_domain`
+**Return:** :ref:`server_request_console_response_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#server-actions-request-console-for-a-server>`_

@@ -3,7 +3,7 @@ Datacenters
 
 
 Get all datacenters
-----------------
+--------------------
 
 Get all datacenters.
 
@@ -12,7 +12,7 @@ Get all datacenters.
   #client = HcloudClient(token="Your-Project-Token")
    client.datacenters.get_all()
 
-**Response:** List[:ref:`datacenter_domain`]
+**Return:** List[:ref:`datacenter_domain`]
 
 .. list-table::
    :widths: 15 10 10 30
@@ -37,7 +37,7 @@ List datacenters with more granular control over how many datacenters will be re
   #client = HcloudClient(token="Your-Project-Token")
    client.datacenters.get_list()
 
-**Response:** List[:ref:`datacenter_domain`]
+**Return:** List[:ref:`datacenter_domain`]
 
 .. list-table::
    :widths: 15 10 10 30

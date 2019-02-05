@@ -1,7 +1,7 @@
 .. _floating_ip_domain:
 
 Floating IP Domain
-**************
+*******************
 
 .. code-block:: python
 

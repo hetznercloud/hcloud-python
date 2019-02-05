@@ -14,4 +14,5 @@ Domain
    domain/datacenter
    domain/image
    domain/iso
+   domain/volume
    domain/global

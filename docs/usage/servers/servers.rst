@@ -12,7 +12,7 @@ Get all servers from within the account of the API token.
   #client = HcloudClient(token="Your-Project-Token")
    client.servers.get_all()
 
-**Response:** List[:ref:`server_domain`]
+**Return:** List[:ref:`server_domain`]
 
 .. list-table::
    :widths: 15 10 10 30
@@ -41,7 +41,7 @@ List all servers with more granular control over how many servers will be return
   #client = HcloudClient(token="Your-Project-Token")
    client.servers.get_list()
 
-**Response:** List[:ref:`server_domain`]
+**Return:** List[:ref:`server_domain`]
 
 .. list-table::
    :widths: 15 10 10 30
@@ -69,7 +69,7 @@ List all servers with more granular control over how many servers will be return
      - `25`
 
 Get a specific server
------------------
+---------------------
 
 Returns a specific server object. The server must exist inside the project.
 
@@ -78,7 +78,7 @@ Returns a specific server object. The server must exist inside the project.
   #client = HcloudClient(token="Your-Project-Token")
    client.servers.get_by_id(1234)
 
-**Response:** :ref:`server_domain`
+**Return:** :ref:`server_domain`
 
 
 Create a server
@@ -91,7 +91,7 @@ Creates a new server. Returns preliminary information about the server as well a
   #client = HcloudClient(token="Your-Project-Token")
    client.servers.create(name="my-server", server_type=ServerType(name="cx11"))
 
-**Response:** :ref:`server_create_response_domain`
+**Return:** :ref:`server_create_response_domain`
 
 
 .. list-table::
@@ -159,7 +159,7 @@ Updates a server. Returns preliminary information about the server as well as an
   #server = client.servers.get_by_id(123)
    server.update(name="new-name")
 
-**Response:** :ref:`server_domain`
+**Return:** :ref:`server_domain`
 
 
 .. list-table::
@@ -190,4 +190,4 @@ Deletes a server. This immediately removes the server from your account, and it 
   #server = client.servers.get_by_id(123)
    server.delete()
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`

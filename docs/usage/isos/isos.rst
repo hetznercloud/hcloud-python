@@ -10,7 +10,7 @@ Get all ISOs
   #client = HcloudClient(token="Your-Project-Token")
    client.isos.get_all()
 
-**Response:** List[:ref:`iso_domain`]
+**Return:** List[:ref:`iso_domain`]
 
 .. list-table::
    :widths: 15 10 10 30
@@ -35,7 +35,7 @@ List ISOs with more granular control over how many ISOs will be returned.
   #client = HcloudClient(token="Your-Project-Token")
    client.isos.get_list()
 
-**Response:** List[:ref:`iso_domain`]
+**Return:** List[:ref:`iso_domain`]
 
 .. list-table::
    :widths: 15 10 10 30

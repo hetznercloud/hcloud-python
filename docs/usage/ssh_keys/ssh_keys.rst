@@ -3,7 +3,7 @@ SSH-Keys
 
 
 Get all ssh keys
-----------------
+-----------------
 
 Get all SSH keys from within the account of the API token.
 
@@ -12,7 +12,7 @@ Get all SSH keys from within the account of the API token.
   #client = HcloudClient(token="Your-Project-Token")
    client.ssh_keys.get_all()
 
-**Response:** List[:ref:`ssh_key_domain`]
+**Return:** List[:ref:`ssh_key_domain`]
 
 .. list-table::
    :widths: 15 10 10 30
@@ -36,7 +36,7 @@ Get all SSH keys from within the account of the API token.
      - `k==v`
 
 List all ssh keys
------------------
+------------------
 
 List all ssh keys with more granular control over how many ssh keys will be returned.
 
@@ -45,7 +45,7 @@ List all ssh keys with more granular control over how many ssh keys will be retu
   #client = HcloudClient(token="Your-Project-Token")
    client.ssh_keys.get_list()
 
-**Response:** List[:ref:`ssh_key_domain`]
+**Return:** List[:ref:`ssh_key_domain`]
 
 .. list-table::
    :widths: 15 10 10 30
@@ -77,7 +77,7 @@ List all ssh keys with more granular control over how many ssh keys will be retu
      - `25`
 
 Get a specific ssh key
------------------
+-----------------------
 
 Returns a specific ssh key object. The ssh key must exist inside the project.
 
@@ -86,7 +86,7 @@ Returns a specific ssh key object. The ssh key must exist inside the project.
   #client = HcloudClient(token="Your-Project-Token")
    client.ssh_keys.get_by_id(1234)
 
-**Response:** :ref:`ssh_key_domain`
+**Return:** :ref:`ssh_key_domain`
 
 
 Create a ssh key
@@ -99,7 +99,7 @@ Creates a new ssh key. Returns preliminary information about the ssh key as well
   #client = HcloudClient(token="Your-Project-Token")
    client.ssh_keys.create(name="my-ssh key", public_key="ssh-rsa AAAjjk76kgf...Xt")
 
-**Response:** :ref:`ssh_key_domain`
+**Return:** :ref:`ssh_key_domain`
 
 
 .. list-table::
@@ -131,7 +131,7 @@ Updates a ssh key.
   #ssh_key = client.ssh_key.get_by_id(123)
    ssh_key.update(name="new-name")
 
-**Response:** :ref:`ssh_key_domain`
+**Return:** :ref:`ssh_key_domain`
 
 
 .. list-table::
@@ -162,4 +162,4 @@ Deletes an SSH key. It cannot be used anymore.
   #ssh_key = client.ssh_key.get_by_id(123)
    ssh_key.delete()
 
-**Response:** `boolean`
+**Return:** `boolean`

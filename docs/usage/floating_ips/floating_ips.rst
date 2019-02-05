@@ -3,7 +3,7 @@ Floating IPs
 
 
 Get all Floating IPs
-----------------
+---------------------
 
 Get all Floating IPs from within the account of the API token.
 
@@ -12,7 +12,7 @@ Get all Floating IPs from within the account of the API token.
   #client = HcloudClient(token="Your-Project-Token")
    client.floating_ips.get_all()
 
-**Response:** List[:ref:`floating_ip_domain`]
+**Return:** List[:ref:`floating_ip_domain`]
 
 `API Documentation <https://docs.hetzner.cloud/#floating-ips-get-all-floating-ips>`_
 
@@ -30,7 +30,7 @@ Get all Floating IPs from within the account of the API token.
      - `k==v`
 
 List all Floating IPs
------------------
+----------------------
 
 List all Floating IPs with more granular control over how many Floating IPs will be returned.
 
@@ -39,7 +39,7 @@ List all Floating IPs with more granular control over how many Floating IPs will
   #client = HcloudClient(token="Your-Project-Token")
    client.floating_ips.get_list()
 
-**Response:** List[:ref:`ssh_key_domain`]
+**Return:** List[:ref:`floating_ip_domain`]
 
 `API Documentation <https://docs.hetzner.cloud/#floating-ips-get-all-floating-ips>`_
 
@@ -65,7 +65,7 @@ List all Floating IPs with more granular control over how many Floating IPs will
      - `25`
 
 Get a specific Floating IP
------------------
+---------------------------
 
 Returns a specific Floating IP object. The Floating IP must exist inside the project.
 
@@ -74,12 +74,12 @@ Returns a specific Floating IP object. The Floating IP must exist inside the pro
   #client = HcloudClient(token="Your-Project-Token")
    client.floating_ips.get_by_id(1234)
 
-**Response:** :ref:`floating_ip_domain`
+**Return:** :ref:`floating_ip_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#floating-ips-get-a-specific-floating-ip>`_
 
 Create a Floating IP
------------------
+---------------------
 
 Creates a new Floating IP. Returns preliminary information about the Floating IP as well as an action that covers progress of creation.
 
@@ -88,7 +88,7 @@ Creates a new Floating IP. Returns preliminary information about the Floating IP
   #client = HcloudClient(token="Your-Project-Token")
    client.floating_ips.create(type="ipv4", home_location=Location(name="fsn1"))
 
-**Response:** :ref:`floating_ip_domain`
+**Return:** :ref:`floating_ip_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#floating-ips-create-a-floating-ip>`_
 
@@ -118,7 +118,7 @@ Creates a new Floating IP. Returns preliminary information about the Floating IP
      - -
 
 Update a Floating IP
------------------
+---------------------
 
 Updates a Floating IP.
 
@@ -128,7 +128,7 @@ Updates a Floating IP.
   #floating_ip = client.floating_ips.get_by_id(123)
    floating_ip.update(description="new-description")
 
-**Response:** :ref:`floating_ip_domain`
+**Return:** :ref:`floating_ip_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#floating-ips-update-a-floating-ip>`_
 
@@ -150,7 +150,7 @@ Updates a Floating IP.
      - -
 
 Delete a Floating IP
------------------
+---------------------
 
 Deletes a Floating IP. It cannot be used anymore.
 
@@ -160,6 +160,6 @@ Deletes a Floating IP. It cannot be used anymore.
   #floating_ip = client.floating_ips.get_by_id(123)
    floating_ip.delete()
 
-**Response:** `boolean`
+**Return:** `boolean`
 
 `API Documentation <https://docs.hetzner.cloud/#floating-ips-delete-a-floating-ip>`_

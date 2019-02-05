@@ -15,7 +15,7 @@ See our `API Documentation <https://docs.hetzner.cloud/#overview-labels>`_ for m
 .. _protection_domain:
 
 Protection Domain
-**************
+******************
 
 Servers, snapshots and Floating IPs can now be protected from accidental deletion and rebuild via the protection configuration.
 

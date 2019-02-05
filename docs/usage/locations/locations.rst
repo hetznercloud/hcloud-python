@@ -3,7 +3,7 @@ Locations
 
 
 Get all locations
-----------------
+------------------
 
 Get all locations.
 
@@ -12,7 +12,7 @@ Get all locations.
   #client = HcloudClient(token="Your-Project-Token")
    client.locations.get_all()
 
-**Response:** List[:ref:`location_domain`]
+**Return:** List[:ref:`location_domain`]
 
 .. list-table::
    :widths: 15 10 10 30
@@ -37,7 +37,7 @@ List locations with more granular control over how many locations will be return
   #client = HcloudClient(token="Your-Project-Token")
    client.locations.get_list()
 
-**Response:** List[:ref:`location_domain`]
+**Return:** List[:ref:`location_domain`]
 
 .. list-table::
    :widths: 15 10 10 30

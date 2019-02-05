@@ -4,15 +4,15 @@ Floating IP Actions
 List Actions
 ------------------
 
-Returns a list of action domains for a server.
+Returns a list of action domains for a Floating IP.
 
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
-  #server = client.servers.get_by_id(123)
-   server.get_actions_list(status=["running"],sort=["id","progress:desc"])
+  #floating_ip = client.floating_ips.get_by_id(123)
+  floating_ip.get_actions_list(status=["running"],sort=["id","progress:desc"])
 
-**Response:** List[:ref:`action_domain`]
+**Return:** List[:ref:`action_domain`]
 
 `API Documentation <https://docs.hetzner.cloud/#floating-ip-actions-get-all-actions-for-a-floating-ip>`_
 
@@ -36,15 +36,15 @@ Returns a list of action domains for a server.
 Get all Actions
 ------------------
 
-Returns all action objects for a server.
+Returns all action objects for a Floating IP.
 
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
-  #server = client.servers.get_by_id(123)
-   server.get_actions(status=["running"],sort=["id","progress:desc"])
+  #floating_ip = client.floating_ips.get_by_id(123)
+   floating_ip.get_actions(status=["running"],sort=["id","progress:desc"])
 
-**Response:** List[:ref:`action_domain`]
+**Return:** List[:ref:`action_domain`]
 
 `API Documentation <https://docs.hetzner.cloud/#floating-ip-actions-get-all-actions-for-a-floating-ip>`_
 
@@ -69,13 +69,14 @@ Assign a Floating IP
 -------------------------------
 
 Assigns a Floating IP to a server.
+
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
   #floating_ip = client.floating_ips.get_by_id(123)
    floating_ip.assign(server=Server(id=123))
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#floating-ip-actions-assign-a-floating-ip-to-a-server>`_
 
@@ -104,12 +105,12 @@ Unassigns a Floating IP, resulting in it being unreachable. You may assign it to
   #floating_ip = client.floating_ips.get_by_id(123)
    floating_ip.unassign()
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#floating-ip-actions-unassign-a-floating-ip>`_
 
 Change reverse DNS entry for a Floating IP
------------------------------------------
+-------------------------------------------
 
 Changes the hostname that will appear when getting the hostname belonging to this Floating IP.
 
@@ -119,7 +120,7 @@ Changes the hostname that will appear when getting the hostname belonging to thi
   #floating_ip = client.floating_ips.get_by_id(123)
    floating_ip.change_dns_ptr(ip="1.2.3.4", dns_ptr="server01.example.com")
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#floating-ip-actions-change-reverse-dns-entry-for-this-server>`_
 
@@ -141,9 +142,9 @@ Changes the hostname that will appear when getting the hostname belonging to thi
      - `server01.example.com`
 
 Change protection for a Floating IP
--------------------------------
+------------------------------------
 
-Changes the protection configuration of the server.
+Changes the protection configuration of the Floating IP.
 
 .. code-block:: python
 
@@ -151,9 +152,9 @@ Changes the protection configuration of the server.
   #floating_ip = client.floating_ips.get_by_id(123)
    floating_ip.change_protection(delete=True)
 
-**Response:** :ref:`action_domain`
+**Return:** :ref:`action_domain`
 
-`API Documentation <https://docs.hetzner.cloud/#floating-ip-actions-change-protection-for-a-server>`_
+`API Documentation <https://docs.hetzner.cloud/#image-actions-get-all-actions-for-an-image>`_
 
 .. list-table::
    :widths: 15 10 10 30
@@ -165,5 +166,5 @@ Changes the protection configuration of the server.
      - Sample
    * - delete
      - boolean
-     - If true, prevents the Floating IP from being deleted (currently delete and rebuild attribute needs to have the same value)
+     - If true, prevents the Floating IP from being deleted
      - `True`

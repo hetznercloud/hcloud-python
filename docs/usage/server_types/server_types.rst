@@ -3,14 +3,14 @@ Server Types
 
 
 Get all Server Types
-----------------
+---------------------
 
 .. code-block:: python
 
   #client = HcloudClient(token="Your-Project-Token")
    client.server_types.get_all()
 
-**Response:** List[:ref:`server_type_domain`]
+**Return:** List[:ref:`server_type_domain`]
 
 .. list-table::
    :widths: 15 10 10 30
@@ -26,7 +26,7 @@ Get all Server Types
      - `cx11`
 
 List Server Types
------------------
+------------------
 
 List Server Types with more granular control over how many Server Types will be returned.
 
@@ -35,7 +35,7 @@ List Server Types with more granular control over how many Server Types will be 
   #client = HcloudClient(token="Your-Project-Token")
    client.locations.get_list()
 
-**Response:** List[:ref:`server_type_domain`]
+**Return:** List[:ref:`server_type_domain`]
 
 .. list-table::
    :widths: 15 10 10 30
