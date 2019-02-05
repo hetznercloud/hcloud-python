@@ -73,11 +73,11 @@ Image Domain
      - Point in time when the image is considered to be deprecated (in ISO-8601 format)
      - `2016-01-30T23:50+00:00`
    * - protection
-     - tuple
+     - List[:ref:`protection_domain`]
      - Protection configuration for the image
      - -
    * - labels
-     - tuple
+     - List[:ref:`labels_domain`]
      - User-defined labels (key-value pairs)
      - -
 

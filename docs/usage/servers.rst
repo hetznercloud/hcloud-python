@@ -68,6 +68,19 @@ List all servers with more granular control over how many servers will be return
      - Specify the number of servers listed per page. Default: `25` Max: `50`
      - `25`
 
+Get a specific server
+-----------------
+
+Returns a specific server object. The server must exist inside the project.
+
+.. code-block:: python
+
+  #client = HcloudClient(token="Your-Project-Token")
+   client.servers.get_by_id(1234)
+
+**Response:** :ref:`server_domain`
+
+
 Create a server
 -----------------
 
@@ -110,7 +123,7 @@ Creates a new server. Returns preliminary information about the server as well a
      - Server Datacenter (Specify only one of `location` or `datacenter`)
      - -
    * - ssh_keys
-     - List[:ref:`sshkey_domain`] (optional)
+     - List[:ref:`ssh_key_domain`] (optional)
      - SSH keys which should injected into the server at creation time
      - -
    * - volumes
@@ -122,7 +135,7 @@ Creates a new server. Returns preliminary information about the server as well a
      - Cloud-Init user data to use during server creation. This field is limited to 32KiB.
      - -
    * - labels
-     - :ref:`labels_domain` (optional)
+     - List[:ref:`labels_domain`] (optional)
      - User-defined labels (key-value pairs)
      - -
    * - automount
@@ -162,7 +175,7 @@ Updates a server. Returns preliminary information about the server as well as an
      - New name to set
      - `new-name`
    * - labels
-     - :ref:`labels_domain` (optional)
+     - List[:ref:`labels_domain`] (optional)
      - New labels
      - -
 

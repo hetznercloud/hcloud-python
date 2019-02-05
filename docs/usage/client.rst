@@ -18,7 +18,7 @@ Advanced Configuration
 .. code-block:: python
 
    from hcloud import HcloudClient
-   client = HcloudClient(token="Your-Project-Token", poll_interval=0.5)
+   client = HcloudClient(token="Your-Project-Token")
 
 
 .. list-table:: Parameters
@@ -31,6 +31,3 @@ Advanced Configuration
    * - token
      - (required) Hetzner Cloud API Token
      - `jmvQpvMeEQsTtdpFhzMnkqCafNSUqMKqufFgrQcsxcJuQmxLmQacHGuXAyyRMYhT`
-   * - poll_interval
-     - (optional) Configure the polling interval
-     - `0.5`
