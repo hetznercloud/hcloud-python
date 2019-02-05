@@ -1,6 +1,6 @@
 .. _labels_domain:
 
-Labels Domain
+Label Domain
 **************
 
 Labels are Key Value pairs.
