@@ -6,6 +6,7 @@ Usage
    :glob:
 
    usage/client
+   usage/errors
    usage/actions/actions
    usage/servers/servers
    usage/servers/actions
