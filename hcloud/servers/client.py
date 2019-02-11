@@ -4,7 +4,7 @@ from hcloud.core.client import ClientEntityBase, BoundModelBase
 from hcloud.actions.client import BoundAction
 from hcloud.core.domain import add_meta_to_result
 from hcloud.isos.client import BoundIso
-from hcloud.servers.domain import Server, CreateServerResponse, ResetPasswordResponse, EnableRescueResponse, RequestConsoleResponse
+from hcloud.servers.domain import Server, CreateServerResponse, ResetPasswordResponse, EnableRescueResponse, RequestConsoleResponse, IPv4Address, IPv6Network
 from hcloud.volumes.client import BoundVolume
 from hcloud.images.domain import CreateImageResponse
 from hcloud.images.client import BoundImage
@@ -37,6 +37,18 @@ class BoundServer(BoundModelBase):
         server_type = data.get("server_type")
         if server_type is not None:
             data['server_type'] = BoundServerType(client._client.server_types, server_type)
+
+        public_net = data.get("public_net")
+        if public_net is not None:
+
+            ipv4_address = IPv4Address(**public_net['ipv4'])
+            ipv6_network = IPv6Network(**public_net['ipv6'])
+            floating_ips = public_net['floating_ips']
+            data['public_net'] = {
+                "ipv4": ipv4_address,
+                "ipv6": ipv6_network,
+                "floating_ips": floating_ips
+            }
 
         super(BoundServer, self).__init__(client, data, complete)
 

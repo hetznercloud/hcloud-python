@@ -28,25 +28,25 @@ class Server(BaseDomain):
     created = ISODateTime()
 
     def __init__(
-        self,
-        id,
-        name=None,
-        status=None,
-        created=None,
-        public_net=None,
-        server_type=None,
-        datacenter=None,
-        image=None,
-        iso=None,
-        rescue_enabled=None,
-        locked=None,
-        backup_window=None,
-        outgoing_traffic=None,
-        ingoing_traffic=None,
-        included_traffic=None,
-        protection=None,
-        labels=None,
-        volumes=None,
+            self,
+            id,
+            name=None,
+            status=None,
+            created=None,
+            public_net=None,
+            server_type=None,
+            datacenter=None,
+            image=None,
+            iso=None,
+            rescue_enabled=None,
+            locked=None,
+            backup_window=None,
+            outgoing_traffic=None,
+            ingoing_traffic=None,
+            included_traffic=None,
+            protection=None,
+            labels=None,
+            volumes=None,
     ):
         self.id = id
         self.name = name
@@ -78,10 +78,10 @@ class CreateServerResponse(BaseDomain):
 
     def __init__(
             self,
-            server,          # type: BoundServer
-            action,          # type: BoundAction
-            next_actions,    # type: List[Action]
-            root_password    # type: str
+            server,  # type: BoundServer
+            action,  # type: BoundAction
+            next_actions,  # type: List[Action]
+            root_password  # type: str
     ):
         self.server = server
         self.action = action
@@ -97,8 +97,8 @@ class ResetPasswordResponse(BaseDomain):
 
     def __init__(
             self,
-            action,          # type: BoundAction
-            root_password    # type: str
+            action,  # type: BoundAction
+            root_password  # type: str
     ):
         self.action = action
         self.root_password = root_password
@@ -112,8 +112,8 @@ class EnableRescueResponse(BaseDomain):
 
     def __init__(
             self,
-            action,          # type: BoundAction
-            root_password    # type: str
+            action,  # type: BoundAction
+            root_password  # type: str
     ):
         self.action = action
         self.root_password = root_password
@@ -128,10 +128,50 @@ class RequestConsoleResponse(BaseDomain):
 
     def __init__(
             self,
-            action,     # type: BoundAction
-            wss_url,    # type: str
-            password,   # type: str
+            action,  # type: BoundAction
+            wss_url,  # type: str
+            password,  # type: str
     ):
         self.action = action
         self.wss_url = wss_url
         self.password = password
+
+
+class IPv4Address(BaseDomain):
+    __slots__ = (
+        "ip",
+        "blocked",
+        "dns_ptr"
+    )
+
+    def __init__(self,
+                 ip,  # type: str
+                 blocked,  # type: bool
+                 dns_ptr,  # type: str
+                 ):
+        self.ip = ip
+        self.blocked = blocked
+        self.dns_ptr = dns_ptr
+
+
+class IPv6Network(BaseDomain):
+    __slots__ = (
+        "ip",
+        "blocked",
+        "dns_ptr",
+        "network",
+        "network_mask"
+    )
+
+    def __init__(self,
+                 ip,  # type: str
+                 blocked,  # type: bool
+                 dns_ptr,  # type: list
+                 ):
+        self.ip = ip
+        self.blocked = blocked
+        self.dns_ptr = dns_ptr
+        # TODO: We should find a better solution for this in the future. As of python 3.3 we could use https://docs.python.org/3/library/ipaddress.html
+        ip_parts = self.ip.split("/")  # 2001:db8::/64 to 2001:db8:: and 64
+        self.network = ip_parts[0]
+        self.network_mask = ip_parts[1]

@@ -9,7 +9,26 @@ def response_simple_server():
             "name": "my-server",
             "status": "running",
             "created": "2016-01-30T23:50+00:00",
-            "public_net": {},
+            "public_net": {
+                "ipv4": {
+                    "ip": "1.2.3.4",
+                    "blocked": False,
+                    "dns_ptr": "server01.example.com"
+                },
+                "ipv6": {
+                    "ip": "2001:db8::/64",
+                    "blocked": False,
+                    "dns_ptr": [
+                        {
+                            "ip": "2001:db8::1",
+                            "dns_ptr": "server.example.com"
+                        }
+                    ]
+                },
+                "floating_ips": [
+                    478
+                ]
+            },
             "server_type": {
                 "id": 1,
                 "name": "cx11",
@@ -110,7 +129,25 @@ def response_create_simple_server():
             "name": "my-server",
             "status": "running",
             "created": "2016-01-30T23:50+00:00",
-            "public_net": {},
+            "public_net": {
+                "ipv4": {
+                    "ip": "1.2.3.4",
+                    "blocked": False,
+                    "dns_ptr": "server01.example.com"
+                },
+                "ipv6": {
+                    "ip": "2001:db8::/64",
+                    "blocked": False,
+                    "dns_ptr": [
+                        {
+                            "ip": "2001:db8::1",
+                            "dns_ptr": "server.example.com"
+                        }
+                    ]
+                },
+                "floating_ips": [
+                ]
+            },
             "server_type": {
                 "id": 1,
                 "name": "cx11",
@@ -380,7 +417,26 @@ def response_simple_servers():
             "name": "my-server",
             "status": "running",
             "created": "2016-01-30T23:50+00:00",
-            "public_net": {},
+            "public_net": {
+                "ipv4": {
+                    "ip": "1.2.3.4",
+                    "blocked": False,
+                    "dns_ptr": "server01.example.com"
+                },
+                "ipv6": {
+                    "ip": "2001:db8::/64",
+                    "blocked": False,
+                    "dns_ptr": [
+                        {
+                            "ip": "2001:db8::1",
+                            "dns_ptr": "server.example.com"
+                        }
+                    ]
+                },
+                "floating_ips": [
+                    478
+                ]
+            },
             "server_type": {
                 "id": 1,
                 "name": "cx11",
@@ -474,7 +530,26 @@ def response_simple_servers():
             "name": "my-server2",
             "status": "running",
             "created": "2016-03-30T23:50+00:00",
-            "public_net": {},
+            "public_net": {
+                "ipv4": {
+                    "ip": "1.2.3.4",
+                    "blocked": False,
+                    "dns_ptr": "server01.example.com"
+                },
+                "ipv6": {
+                    "ip": "2001:db8::/64",
+                    "blocked": False,
+                    "dns_ptr": [
+                        {
+                            "ip": "2001:db8::1",
+                            "dns_ptr": "server.example.com"
+                        }
+                    ]
+                },
+                "floating_ips": [
+                    478
+                ]
+            },
             "server_type": {
                 "id": 1,
                 "name": "cx11",
