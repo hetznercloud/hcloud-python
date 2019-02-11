@@ -15,7 +15,7 @@ from hcloud.images.client import ImagesClient
 from hcloud.locations.client import LocationsClient
 from hcloud.datacenters.client import DatacentersClient
 
-from .version import VERSION
+from .version import VERSION, USER_AGENT
 
 
 class HcloudAPIException(Exception):
@@ -32,6 +32,8 @@ class HcloudClient(object):
     def __init__(self, token):
         self.token = token
         self.api_endpoint = "https://api.hetzner.cloud/v1"
+        self.application_name = ""
+        self.application_version = ""
 
         self.datacenters = DatacentersClient(self)
         self.locations = LocationsClient(self)
@@ -45,7 +47,12 @@ class HcloudClient(object):
         self.floating_ips = FloatingIPsClient(self)
 
     def _get_user_agent(self):
-        return "hcloud-python/" + self.version
+        if self.application_name != "" and self.application_version == "":
+            return self.application_name + " " + USER_AGENT + self.version
+        elif self.application_name != "" and self.application_version != "":
+            return self.application_name + "/" + self.application_version + " " + USER_AGENT + self.version
+        else:
+            return USER_AGENT + self.version
 
     def _get_headers(self):
         headers = {
@@ -53,6 +60,13 @@ class HcloudClient(object):
             "Authorization": "Bearer {token}".format(token=self.token)
         }
         return headers
+
+    def with_endpoint(self, api_endpoint):
+        self.api_endpoint = api_endpoint
+
+    def with_application(self, name, version=""):
+        self.application_name = name
+        self.application_version = version
 
     def _raise_exception_from_response(self, response):
         raise HcloudAPIException(
