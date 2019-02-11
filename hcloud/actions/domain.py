@@ -5,6 +5,10 @@ from hcloud.helpers.descriptors import ISODateTime
 
 
 class Action(BaseDomain):
+    STATE_RUNNING = "running"
+    STATE_SUCCESS = "success"
+    STATE_ERROR = "error"
+
     started = ISODateTime()
     finished = ISODateTime()
 
@@ -36,3 +40,8 @@ class Action(BaseDomain):
         self.finished = finished
         self.resources = resources
         self.error = error
+
+
+class ActionFailedException(Exception):
+    def __init__(self, action):
+        self.action = action
