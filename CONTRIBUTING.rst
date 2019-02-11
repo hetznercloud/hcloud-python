@@ -112,15 +112,14 @@ To run a subset of tests::
 $ py.test tests.test_hetznercloud
 
 
-Deploying
+How to release
 ---------
 
-A reminder for the maintainers on how to deploy.
+A reminder for the maintainers on how to release a new version.
 Make sure all your changes are committed (including an entry in CHANGELOG.rst).
 Then run::
 
-$ bumpversion patch # possible: major / minor / patch
-$ git push
-$ git push --tags
+1. Change the version under /hcloud/version.py
+2. Push the change to the `master` branch and tag an new release through the `Github UI <https://github.com/hetznercloud/hcloud-python/releases>`_.
 
 Travis will then deploy to PyPI if tests pass.
