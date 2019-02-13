@@ -28,10 +28,10 @@ class HcloudAPIException(Exception):
 class HcloudClient(object):
     version = VERSION
     retry_wait_time = 0.5
-    poll_interval = 1
 
-    def __init__(self, token):
+    def __init__(self, token, poll_interval=1):
         self.token = token
+        self.poll_interval = poll_interval
         self.api_endpoint = "https://api.hetzner.cloud/v1"
 
         self.datacenters = DatacentersClient(self)
@@ -54,10 +54,6 @@ class HcloudClient(object):
             "Authorization": "Bearer {token}".format(token=self.token)
         }
         return headers
-
-    def with_poll_interval(self, poll_interval):
-        self.poll_interval = poll_interval
-        return self
 
     def _raise_exception_from_response(self, response):
         raise HcloudAPIException(
