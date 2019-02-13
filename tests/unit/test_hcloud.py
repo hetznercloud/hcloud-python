@@ -73,9 +73,9 @@ class TestHetznerClient(object):
         }
 
     def test_with_endpoint(self, client):
-        assert client.api_endpoint == "https://api.hetzner.cloud/v1"
+        assert client._api_endpoint == "https://api.hetzner.cloud/v1"
         client.with_endpoint("https://another.endpoint.cloud/v1")
-        assert client.api_endpoint == "https://another.endpoint.cloud/v1"
+        assert client._api_endpoint == "https://another.endpoint.cloud/v1"
 
     def test_request_library_mocked(self, client):
         response = client.request("POST", "url", params={"1": 2})

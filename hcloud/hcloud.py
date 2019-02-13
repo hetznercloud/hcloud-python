@@ -15,7 +15,7 @@ from hcloud.images.client import ImagesClient
 from hcloud.locations.client import LocationsClient
 from hcloud.datacenters.client import DatacentersClient
 
-from .version import VERSION, USER_AGENT
+from .version import VERSION, USER_AGENT_PREFIX
 
 
 class HcloudAPIException(Exception):
@@ -31,9 +31,9 @@ class HcloudClient(object):
 
     def __init__(self, token):
         self.token = token
-        self.api_endpoint = "https://api.hetzner.cloud/v1"
-        self.application_name = ""
-        self.application_version = ""
+        self._api_endpoint = "https://api.hetzner.cloud/v1"
+        self._application_name = None
+        self._application_version = None
 
         self.datacenters = DatacentersClient(self)
         self.locations = LocationsClient(self)
@@ -47,12 +47,18 @@ class HcloudClient(object):
         self.floating_ips = FloatingIPsClient(self)
 
     def _get_user_agent(self):
-        if self.application_name != "" and self.application_version == "":
-            return self.application_name + " " + USER_AGENT + self.version
-        elif self.application_name != "" and self.application_version != "":
-            return self.application_name + "/" + self.application_version + " " + USER_AGENT + self.version
+        if self.application_name is not None and self.application_version is None:
+            return "{application_name} {prefix}/{version}".format(application_name=self._application_name,
+                                                                  prefix=USER_AGENT_PREFIX,
+                                                                  version=self.version)
+        elif self.application_name is not None and self.application_version is not None:
+            return "{application_name}/{application_version} {prefix}/{version}".format(
+                application_name=self._application_name,
+                application_version=self._application_version,
+                prefix=USER_AGENT_PREFIX,
+                version=self.version)
         else:
-            return USER_AGENT + self.version
+            return "{prefix}/{version}".format(prefix=USER_AGENT_PREFIX, version=self.version)
 
     def _get_headers(self):
         headers = {
@@ -62,11 +68,13 @@ class HcloudClient(object):
         return headers
 
     def with_endpoint(self, api_endpoint):
-        self.api_endpoint = api_endpoint
+        self._api_endpoint = api_endpoint
+        return self
 
-    def with_application(self, name, version=""):
-        self.application_name = name
-        self.application_version = version
+    def with_application(self, name, version=None):
+        self._application_name = name
+        self._application_version = version
+        return self
 
     def _raise_exception_from_response(self, response):
         raise HcloudAPIException(
@@ -87,7 +95,7 @@ class HcloudClient(object):
     def request(self, method, url, tries=1, **kwargs):
         response = requests.request(
             method,
-            self.api_endpoint + url,
+            self._api_endpoint + url,
             headers=self._get_headers(),
             **kwargs
         )
