@@ -47,11 +47,11 @@ class HcloudClient(object):
         self.floating_ips = FloatingIPsClient(self)
 
     def _get_user_agent(self):
-        if self.application_name is not None and self.application_version is None:
+        if self._application_name is not None and self._application_version is None:
             return "{application_name} {prefix}/{version}".format(application_name=self._application_name,
                                                                   prefix=USER_AGENT_PREFIX,
                                                                   version=self.version)
-        elif self.application_name is not None and self.application_version is not None:
+        elif self._application_name is not None and self._application_version is not None:
             return "{application_name}/{application_version} {prefix}/{version}".format(
                 application_name=self._application_name,
                 application_version=self._application_version,
