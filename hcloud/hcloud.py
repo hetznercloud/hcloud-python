@@ -57,6 +57,7 @@ class HcloudClient(object):
 
     def with_poll_interval(self, poll_interval):
         self.poll_interval = poll_interval
+        return self
 
     def _raise_exception_from_response(self, response):
         raise HcloudAPIException(

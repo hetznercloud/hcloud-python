@@ -55,6 +55,11 @@ class TestHetznerClient(object):
         user_agent = client._get_user_agent()
         assert user_agent == "hcloud-python/0.0.0"
 
+    def test_with_poll_interval(self, client):
+        assert client.poll_interval == 1
+        client.with_poll_interval(0.5)
+        assert client.poll_interval == 0.5
+
     def test__get_headers(self, client):
         headers = client._get_headers()
         assert headers == {

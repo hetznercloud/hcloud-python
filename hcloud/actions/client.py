@@ -9,10 +9,9 @@ class BoundAction(BoundModelBase):
     model = Action
 
     def wait_until_finished(self):
-        from hcloud import HcloudClient
         while self.status == Action.STATE_RUNNING:
             self.reload()
-            time.sleep(HcloudClient.poll_interval)
+            time.sleep(self._client._client.poll_interval)
         if self.status == Action.STATE_ERROR:
             raise ActionFailedException(action=self)
 
