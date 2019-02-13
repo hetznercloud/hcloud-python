@@ -56,12 +56,12 @@ class TestHetznerClient(object):
         assert user_agent == "hcloud-python/0.0.0"
 
     def test__get_user_agent_with_application_name(self, client):
-        client.with_application(name="my-app")
+        client = HcloudClient(token="project_token", application_name="my-app")
         user_agent = client._get_user_agent()
         assert user_agent == "my-app hcloud-python/0.0.0"
 
     def test__get_user_agent_with_application_name_and_version(self, client):
-        client.with_application(name="my-app", version="1.0.0")
+        client = HcloudClient(token="project_token", application_name="my-app", application_version="1.0.0")
         user_agent = client._get_user_agent()
         assert user_agent == "my-app/1.0.0 hcloud-python/0.0.0"
 
@@ -72,9 +72,8 @@ class TestHetznerClient(object):
             "Authorization": "Bearer project_token"
         }
 
-    def test_with_endpoint(self, client):
-        assert client._api_endpoint == "https://api.hetzner.cloud/v1"
-        client.with_endpoint("https://another.endpoint.cloud/v1")
+    def test_with_endpoint(self):
+        client = HcloudClient(token="project_token", api_endpoint="https://another.endpoint.cloud/v1")
         assert client._api_endpoint == "https://another.endpoint.cloud/v1"
 
     def test_request_library_mocked(self, client):

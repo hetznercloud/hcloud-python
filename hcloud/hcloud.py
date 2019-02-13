@@ -29,11 +29,11 @@ class HcloudClient(object):
     version = VERSION
     retry_wait_time = 0.5
 
-    def __init__(self, token):
+    def __init__(self, token, api_endpoint="https://api.hetzner.cloud/v1", application_name=None, application_version=None):
         self.token = token
-        self._api_endpoint = "https://api.hetzner.cloud/v1"
-        self._application_name = None
-        self._application_version = None
+        self._api_endpoint = api_endpoint
+        self._application_name = application_name
+        self._application_version = application_version
 
         self.datacenters = DatacentersClient(self)
         self.locations = LocationsClient(self)
@@ -66,15 +66,6 @@ class HcloudClient(object):
             "Authorization": "Bearer {token}".format(token=self.token)
         }
         return headers
-
-    def with_endpoint(self, api_endpoint):
-        self._api_endpoint = api_endpoint
-        return self
-
-    def with_application(self, name, version=None):
-        self._application_name = name
-        self._application_version = version
-        return self
 
     def _raise_exception_from_response(self, response):
         raise HcloudAPIException(
