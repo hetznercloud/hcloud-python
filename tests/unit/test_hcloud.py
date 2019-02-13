@@ -55,6 +55,16 @@ class TestHetznerClient(object):
         user_agent = client._get_user_agent()
         assert user_agent == "hcloud-python/0.0.0"
 
+    def test__get_user_agent_with_application_name(self, client):
+        client = HcloudClient(token="project_token", application_name="my-app")
+        user_agent = client._get_user_agent()
+        assert user_agent == "my-app hcloud-python/0.0.0"
+
+    def test__get_user_agent_with_application_name_and_version(self, client):
+        client = HcloudClient(token="project_token", application_name="my-app", application_version="1.0.0")
+        user_agent = client._get_user_agent()
+        assert user_agent == "my-app/1.0.0 hcloud-python/0.0.0"
+
     def test__get_headers(self, client):
         headers = client._get_headers()
         assert headers == {

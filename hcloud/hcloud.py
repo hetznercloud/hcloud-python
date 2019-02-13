@@ -15,7 +15,7 @@ from hcloud.images.client import ImagesClient
 from hcloud.locations.client import LocationsClient
 from hcloud.datacenters.client import DatacentersClient
 
-from .version import VERSION
+from .version import VERSION, USER_AGENT_PREFIX
 
 
 class HcloudAPIException(Exception):
@@ -29,9 +29,11 @@ class HcloudClient(object):
     version = VERSION
     retry_wait_time = 0.5
 
-    def __init__(self, token):
+    def __init__(self, token, api_endpoint="https://api.hetzner.cloud/v1", application_name=None, application_version=None):
         self.token = token
-        self.api_endpoint = "https://api.hetzner.cloud/v1"
+        self._api_endpoint = api_endpoint
+        self._application_name = application_name
+        self._application_version = application_version
 
         self.datacenters = DatacentersClient(self)
         self.locations = LocationsClient(self)
@@ -45,7 +47,18 @@ class HcloudClient(object):
         self.floating_ips = FloatingIPsClient(self)
 
     def _get_user_agent(self):
-        return "hcloud-python/" + self.version
+        if self._application_name is not None and self._application_version is None:
+            return "{application_name} {prefix}/{version}".format(application_name=self._application_name,
+                                                                  prefix=USER_AGENT_PREFIX,
+                                                                  version=self.version)
+        elif self._application_name is not None and self._application_version is not None:
+            return "{application_name}/{application_version} {prefix}/{version}".format(
+                application_name=self._application_name,
+                application_version=self._application_version,
+                prefix=USER_AGENT_PREFIX,
+                version=self.version)
+        else:
+            return "{prefix}/{version}".format(prefix=USER_AGENT_PREFIX, version=self.version)
 
     def _get_headers(self):
         headers = {
@@ -73,7 +86,7 @@ class HcloudClient(object):
     def request(self, method, url, tries=1, **kwargs):
         response = requests.request(
             method,
-            self.api_endpoint + url,
+            self._api_endpoint + url,
             headers=self._get_headers(),
             **kwargs
         )
