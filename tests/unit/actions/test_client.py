@@ -8,7 +8,7 @@ from hcloud.actions.domain import Action, ActionFailedException
 class TestBoundAction(object):
     @pytest.fixture()
     def bound_running_action(self, mocked_requests):
-        return BoundAction(client=ActionsClient(client=mocked_requests), data=dict(id=14, status=Action.STATE_RUNNING))
+        return BoundAction(client=ActionsClient(client=mocked_requests), data=dict(id=14, status=Action.STATUS_RUNNING))
 
     def test_wait_until_finished(self, bound_running_action, mocked_requests, running_action, successfully_action):
         mocked_requests.request.side_effect = [running_action, successfully_action]

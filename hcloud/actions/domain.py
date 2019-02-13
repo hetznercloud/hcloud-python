@@ -5,9 +5,9 @@ from hcloud.helpers.descriptors import ISODateTime
 
 
 class Action(BaseDomain):
-    STATE_RUNNING = "running"
-    STATE_SUCCESS = "success"
-    STATE_ERROR = "error"
+    STATUS_RUNNING = "running"
+    STATUS_SUCCESS = "success"
+    STATUS_ERROR = "error"
 
     started = ISODateTime()
     finished = ISODateTime()

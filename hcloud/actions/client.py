@@ -9,10 +9,10 @@ class BoundAction(BoundModelBase):
     model = Action
 
     def wait_until_finished(self):
-        while self.status == Action.STATE_RUNNING:
+        while self.status == Action.STATUS_RUNNING:
             self.reload()
             time.sleep(self._client._client.poll_interval)
-        if self.status == Action.STATE_ERROR:
+        if self.status == Action.STATUS_ERROR:
             raise ActionFailedException(action=self)
 
 
