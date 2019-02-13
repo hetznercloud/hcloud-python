@@ -1,6 +1,5 @@
 import mock
 import pytest
-import time
 
 from hcloud.actions.client import ActionsClient, BoundAction
 from hcloud.actions.domain import Action, ActionFailedException
@@ -13,11 +12,9 @@ class TestBoundAction(object):
 
     def test_wait_until_finished(self, bound_running_action, mocked_requests, running_action, successfully_action):
         mocked_requests.request.side_effect = [running_action, successfully_action]
-        start_time = round(time.time())
         bound_running_action.wait_until_finished()
-        end_time = round(time.time())
         assert bound_running_action.status == "success"
-        assert end_time - start_time == 2  # We should only have a wait timeout from 1 sec
+        assert mocked_requests.request.call_count == 2
 
     def test_wait_until_finished_with_error(self, bound_running_action, mocked_requests, running_action, failed_action):
         mocked_requests.request.side_effect = [running_action, failed_action]
