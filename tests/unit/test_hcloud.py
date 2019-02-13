@@ -72,10 +72,6 @@ class TestHetznerClient(object):
             "Authorization": "Bearer project_token"
         }
 
-    def test_with_endpoint(self):
-        client = HcloudClient(token="project_token", api_endpoint="https://another.endpoint.cloud/v1")
-        assert client._api_endpoint == "https://another.endpoint.cloud/v1"
-
     def test_request_library_mocked(self, client):
         response = client.request("POST", "url", params={"1": 2})
         assert response.__class__.__name__ == 'MagicMock'
