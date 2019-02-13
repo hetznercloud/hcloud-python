@@ -2,16 +2,21 @@
 import time
 
 from hcloud.core.client import ClientEntityBase, BoundModelBase
-from hcloud.actions.domain import Action, ActionFailedException
+from hcloud.actions.domain import Action, ActionFailedException, ActionTimeoutException
 
 
 class BoundAction(BoundModelBase):
     model = Action
 
-    def wait_until_finished(self):
+    def wait_until_finished(self, timeout=100):
         while self.status == Action.STATUS_RUNNING:
-            self.reload()
-            time.sleep(self._client._client.poll_interval)
+            if timeout > 0:
+                self.reload()
+                time.sleep(self._client._client.poll_interval)
+                timeout = timeout - 1
+            else:
+                raise ActionTimeoutException(action=self)
+
         if self.status == Action.STATUS_ERROR:
             raise ActionFailedException(action=self)
 

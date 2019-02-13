@@ -2,7 +2,7 @@ import mock
 import pytest
 
 from hcloud.actions.client import ActionsClient, BoundAction
-from hcloud.actions.domain import Action, ActionFailedException
+from hcloud.actions.domain import Action, ActionFailedException, ActionTimeoutException
 
 
 class TestBoundAction(object):
@@ -23,6 +23,15 @@ class TestBoundAction(object):
 
         assert bound_running_action.status == "error"
         assert exception_info.value.action.id == 2
+
+    def test_wait_until_finished_timeout(self, bound_running_action, mocked_requests, running_action, successfully_action):
+        mocked_requests.request.side_effect = [running_action, running_action, successfully_action]
+        with pytest.raises(ActionTimeoutException) as exception_info:
+            bound_running_action.wait_until_finished(timeout=1)
+
+        assert bound_running_action.status == "running"
+        assert exception_info.value.action.id == 2
+        assert mocked_requests.request.call_count == 1
 
 
 class TestActionsClient(object):

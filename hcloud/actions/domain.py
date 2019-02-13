@@ -45,3 +45,8 @@ class Action(BaseDomain):
 class ActionFailedException(Exception):
     def __init__(self, action):
         self.action = action
+
+
+class ActionTimeoutException(Exception):
+    def __init__(self, action):
+        self.action = action
