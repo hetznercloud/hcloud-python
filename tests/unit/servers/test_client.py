@@ -1,6 +1,7 @@
 import mock
 import pytest
 
+from hcloud.floating_ips.client import BoundFloatingIP
 from hcloud.isos.client import BoundIso
 from hcloud.servers.client import ServersClient, BoundServer
 
@@ -44,7 +45,9 @@ class TestBoundServer(object):
         assert bound_server.public_net.ipv6.network == "2001:db8::"
         assert bound_server.public_net.ipv6.network_mask == "64"
 
-        bound_server.public_net.floating_ips = [478]
+        assert isinstance(bound_server.public_net.floating_ips[0], BoundFloatingIP)
+        assert bound_server.public_net.floating_ips[0].id == 478
+        assert bound_server.public_net.floating_ips[0].complete is False
 
         assert isinstance(bound_server.datacenter, BoundDatacenter)
         assert bound_server.datacenter._client == bound_server._client._client.datacenters

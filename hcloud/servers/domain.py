@@ -188,7 +188,6 @@ class IPv6Network(BaseDomain):
         self.ip = ip
         self.blocked = blocked
         self.dns_ptr = dns_ptr
-        # TODO: We should find a better solution for this in the future. As of python 3.3 we could use https://docs.python.org/3/library/ipaddress.html
         ip_parts = self.ip.split("/")  # 2001:db8::/64 to 2001:db8:: and 64
         self.network = ip_parts[0]
         self.network_mask = ip_parts[1]
