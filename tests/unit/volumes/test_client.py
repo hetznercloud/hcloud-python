@@ -1,5 +1,5 @@
 import pytest
-import arrow
+from dateutil.parser import isoparse
 import mock
 
 from hcloud.actions.client import BoundAction
@@ -24,7 +24,7 @@ class TestBoundVolume(object):
         )
 
         assert bound_volume.id == 1
-        assert bound_volume.created == arrow.get("2016-01-30T23:50:11+00:00").datetime
+        assert bound_volume.created == isoparse("2016-01-30T23:50:11+00:00")
         assert bound_volume.name == "database-storage"
         assert bound_volume.server == 12
         assert bound_volume.size == 42
