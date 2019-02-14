@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import arrow
+from dateutil.parser import isoparse
 
 
 class ISODateTime(object):
@@ -13,7 +13,5 @@ class ISODateTime(object):
         if string_date is None:
             self.val = None
         else:
-            try:
-                self.val = arrow.get(string_date).datetime
-            except arrow.parser.ParserError:
-                raise ValueError('invalid date format')
+            # 2016-01-30T23:50+00:00
+            self.val = isoparse(string_date)
