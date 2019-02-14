@@ -137,6 +137,23 @@ class RequestConsoleResponse(BaseDomain):
         self.password = password
 
 
+class PublicNetwork(BaseDomain):
+    __slots__ = (
+        "ipv4",
+        "ipv6",
+        "floating_ips"
+    )
+
+    def __init__(self,
+                 ipv4,  # type: IPv4Address
+                 ipv6,  # type: IPv6Network
+                 floating_ips,  # type: List[BoundFloatingIP]
+                 ):
+        self.ipv4 = ipv4
+        self.ipv6 = ipv6
+        self.floating_ips = floating_ips
+
+
 class IPv4Address(BaseDomain):
     __slots__ = (
         "ip",
