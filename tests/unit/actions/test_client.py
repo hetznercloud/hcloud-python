@@ -1,7 +1,37 @@
 import mock
 import pytest
 
-from hcloud.actions.client import ActionsClient
+from hcloud.actions.client import ActionsClient, BoundAction
+from hcloud.actions.domain import Action, ActionFailedException, ActionTimeoutException
+
+
+class TestBoundAction(object):
+    @pytest.fixture()
+    def bound_running_action(self, mocked_requests):
+        return BoundAction(client=ActionsClient(client=mocked_requests), data=dict(id=14, status=Action.STATUS_RUNNING))
+
+    def test_wait_until_finished(self, bound_running_action, mocked_requests, running_action, successfully_action):
+        mocked_requests.request.side_effect = [running_action, successfully_action]
+        bound_running_action.wait_until_finished()
+        assert bound_running_action.status == "success"
+        assert mocked_requests.request.call_count == 2
+
+    def test_wait_until_finished_with_error(self, bound_running_action, mocked_requests, running_action, failed_action):
+        mocked_requests.request.side_effect = [running_action, failed_action]
+        with pytest.raises(ActionFailedException) as exception_info:
+            bound_running_action.wait_until_finished()
+
+        assert bound_running_action.status == "error"
+        assert exception_info.value.action.id == 2
+
+    def test_wait_until_finished_max_retries(self, bound_running_action, mocked_requests, running_action, successfully_action):
+        mocked_requests.request.side_effect = [running_action, running_action, successfully_action]
+        with pytest.raises(ActionTimeoutException) as exception_info:
+            bound_running_action.wait_until_finished(max_retries=1)
+
+        assert bound_running_action.status == "running"
+        assert exception_info.value.action.id == 2
+        assert mocked_requests.request.call_count == 1
 
 
 class TestActionsClient(object):

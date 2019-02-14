@@ -1,11 +1,24 @@
 # -*- coding: utf-8 -*-
-from hcloud.core.client import ClientEntityBase, BoundModelBase
+import time
 
-from hcloud.actions.domain import Action
+from hcloud.core.client import ClientEntityBase, BoundModelBase
+from hcloud.actions.domain import Action, ActionFailedException, ActionTimeoutException
 
 
 class BoundAction(BoundModelBase):
     model = Action
+
+    def wait_until_finished(self, max_retries=100):
+        while self.status == Action.STATUS_RUNNING:
+            if max_retries > 0:
+                self.reload()
+                time.sleep(self._client._client.poll_interval)
+                max_retries = max_retries - 1
+            else:
+                raise ActionTimeoutException(action=self)
+
+        if self.status == Action.STATUS_ERROR:
+            raise ActionFailedException(action=self)
 
 
 class ActionsClient(ClientEntityBase):
@@ -17,9 +30,9 @@ class ActionsClient(ClientEntityBase):
         return BoundAction(self, response['action'])
 
     def get_list(self,
-                 status=None,    # type: Optional[List[str]]
-                 sort=None,      # type: Optional[List[str]]
-                 page=None,      # type: Optional[int]
+                 status=None,  # type: Optional[List[str]]
+                 sort=None,  # type: Optional[List[str]]
+                 page=None,  # type: Optional[int]
                  per_page=None,  # type: Optional[int]
                  ):
         # type: (...) -> PageResults[List[BoundAction]]

@@ -29,11 +29,12 @@ class HcloudClient(object):
     version = VERSION
     retry_wait_time = 0.5
 
-    def __init__(self, token, api_endpoint="https://api.hetzner.cloud/v1", application_name=None, application_version=None):
+    def __init__(self, token, api_endpoint="https://api.hetzner.cloud/v1", application_name=None, application_version=None, poll_interval=1):
         self.token = token
         self._api_endpoint = api_endpoint
         self._application_name = application_name
         self._application_version = application_version
+        self.poll_interval = poll_interval
 
         self.datacenters = DatacentersClient(self)
         self.locations = LocationsClient(self)
