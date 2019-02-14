@@ -13,6 +13,7 @@ class Volume(BaseDomain, DomainIdentityMixin):
         "location",
         "size",
         "linux_device",
+        "format",
         "protection",
         "labels",
         "status"
@@ -27,6 +28,7 @@ class Volume(BaseDomain, DomainIdentityMixin):
         location=None,
         size=None,
         linux_device=None,
+        format=None,
         protection=None,
         labels=None,
         status=None
@@ -39,6 +41,7 @@ class Volume(BaseDomain, DomainIdentityMixin):
         self.location = location
         self.size = size
         self.linux_device = linux_device
+        self.format = format
         self.protection = protection
         self.labels = labels
         self.status = status

@@ -23,6 +23,7 @@ def volume_response():
             "protection": {
                 "delete": False
             },
+            "format": "xfs",
             "labels": {},
             "status": "available"
         }
@@ -52,6 +53,7 @@ def two_volumes_response():
                 "protection": {
                     "delete": False
                 },
+                "format": "xfs",
                 "labels": {},
                 "status": "available"
             },
@@ -74,6 +76,7 @@ def two_volumes_response():
                 "protection": {
                     "delete": False
                 },
+                "format": "xfs",
                 "labels": {},
                 "status": "available"
             }
@@ -103,6 +106,7 @@ def volume_create_response():
             "protection": {
                 "delete": False
             },
+            "format": "xfs",
             "labels": {},
             "status": "available"
         },
@@ -164,6 +168,7 @@ def response_update_volume():
                 "latitude": 50.47612,
                 "longitude": 12.370071
             },
+            "format": "xfs",
             "size": 42,
             "linux_device": "/dev/disk/by-id/scsi-0HC_Volume_4711",
             "protection": {
