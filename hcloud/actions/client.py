@@ -8,12 +8,12 @@ from hcloud.actions.domain import Action, ActionFailedException, ActionTimeoutEx
 class BoundAction(BoundModelBase):
     model = Action
 
-    def wait_until_finished(self, timeout=100):
+    def wait_until_finished(self, max_retries=100):
         while self.status == Action.STATUS_RUNNING:
-            if timeout > 0:
+            if max_retries > 0:
                 self.reload()
                 time.sleep(self._client._client.poll_interval)
-                timeout = timeout - 1
+                max_retries = max_retries - 1
             else:
                 raise ActionTimeoutException(action=self)
 

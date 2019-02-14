@@ -24,10 +24,10 @@ class TestBoundAction(object):
         assert bound_running_action.status == "error"
         assert exception_info.value.action.id == 2
 
-    def test_wait_until_finished_timeout(self, bound_running_action, mocked_requests, running_action, successfully_action):
+    def test_wait_until_finished_max_retries(self, bound_running_action, mocked_requests, running_action, successfully_action):
         mocked_requests.request.side_effect = [running_action, running_action, successfully_action]
         with pytest.raises(ActionTimeoutException) as exception_info:
-            bound_running_action.wait_until_finished(timeout=1)
+            bound_running_action.wait_until_finished(max_retries=1)
 
         assert bound_running_action.status == "running"
         assert exception_info.value.action.id == 2
