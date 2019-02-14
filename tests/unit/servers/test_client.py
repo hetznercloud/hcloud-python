@@ -1,10 +1,11 @@
 import mock
 import pytest
 
+from hcloud.floating_ips.client import BoundFloatingIP
 from hcloud.isos.client import BoundIso
 from hcloud.servers.client import ServersClient, BoundServer
 
-from hcloud.servers.domain import Server
+from hcloud.servers.domain import Server, PublicNetwork, IPv4Address, IPv6Network
 from hcloud.volumes.client import BoundVolume
 from hcloud.volumes.domain import Volume
 from hcloud.images.domain import Image
@@ -32,7 +33,21 @@ class TestBoundServer(object):
 
         assert bound_server.id == 42
         assert bound_server.name == "my-server"
-        assert bound_server.public_net["floating_ips"] == [478]
+        assert isinstance(bound_server.public_net, PublicNetwork)
+        assert isinstance(bound_server.public_net.ipv4, IPv4Address)
+        assert bound_server.public_net.ipv4.ip == "1.2.3.4"
+        assert bound_server.public_net.ipv4.blocked is False
+        assert bound_server.public_net.ipv4.dns_ptr == "server01.example.com"
+
+        assert isinstance(bound_server.public_net.ipv6, IPv6Network)
+        assert bound_server.public_net.ipv6.ip == "2001:db8::/64"
+        assert bound_server.public_net.ipv6.blocked is False
+        assert bound_server.public_net.ipv6.network == "2001:db8::"
+        assert bound_server.public_net.ipv6.network_mask == "64"
+
+        assert isinstance(bound_server.public_net.floating_ips[0], BoundFloatingIP)
+        assert bound_server.public_net.floating_ips[0].id == 478
+        assert bound_server.public_net.floating_ips[0].complete is False
 
         assert isinstance(bound_server.datacenter, BoundDatacenter)
         assert bound_server.datacenter._client == bound_server._client._client.datacenters

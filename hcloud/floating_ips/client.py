@@ -10,7 +10,7 @@ from hcloud.locations.client import BoundLocation
 class BoundFloatingIP(BoundModelBase):
     model = FloatingIP
 
-    def __init__(self, client, data):
+    def __init__(self, client, data, complete=True):
         from hcloud.servers.client import BoundServer
         server = data.get("server")
         if server is not None:
@@ -20,7 +20,7 @@ class BoundFloatingIP(BoundModelBase):
         if home_location is not None:
             data['home_location'] = BoundLocation(client._client.locations, home_location)
 
-        super(BoundFloatingIP, self).__init__(client, data)
+        super(BoundFloatingIP, self).__init__(client, data, complete)
 
     def get_actions_list(self, sort=None, page=None, per_page=None):
         # type: (Optional[List[str]], Optional[int], Optional[int]) -> PageResult[BoundAction, Meta]
