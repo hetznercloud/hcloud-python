@@ -1,5 +1,5 @@
 Error Handling
-*******
+***************
 
 On every request that was not successfully a `HcloudAPIException` will be raised.
 

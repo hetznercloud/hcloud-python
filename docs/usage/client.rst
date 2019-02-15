@@ -31,3 +31,15 @@ Advanced Configuration
    * - token
      - (required) Hetzner Cloud API Token
      - `jmvQpvMeEQsTtdpFhzMnkqCafNSUqMKqufFgrQcsxcJuQmxLmQacHGuXAyyRMYhT`
+   * - endpoint
+     - (optional) Hetzner Cloud API Endpoint
+     - `https://api.hetzner.cloud/v1`
+   * - application_name
+     - (optional) Your application name
+     - `my-app`
+   * - application_version
+     - (optional) Your application version
+     - `1.0.0`
+   * - poll_interval
+     - (optional) Interval when polling information from the API
+     - `1`

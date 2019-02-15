@@ -33,7 +33,7 @@ Server Domain
      - Timestamp when server was created
      - `2016-01-30T23:50+00:00`
    * - public_net
-     - tuple
+     - :ref:`public_network_domain`
      - Public network information
      - -
    * - server_type
@@ -87,6 +87,101 @@ Server Domain
    * - volumes
      - List[:ref:`volume_domain`]
      - Volumes assigned to this server.
+     - -
+
+You can find more information about this resource in our `API Documentation <https://docs.hetzner.cloud/#servers>`_.
+
+.. _public_network_domain:
+
+Public Network Domain
+**********************
+
+.. code-block:: python
+
+    from hcloud.servers.domain import PublicNetwork
+
+
+.. list-table:: Properties
+   :widths: 15 15 10 10
+   :header-rows: 1
+
+   * - Property
+     - Type
+     - Description
+     - Sample
+   * - ipv4
+     - :ref:`ipv4_address_domain`
+     - ID of server
+     - `123`
+   * - ivp6
+     - :ref:`ipv6_network_domain`
+     -
+     - `my-server`
+   * - floating_ips
+     - List[:ref:`floating_ip_domain`]
+     - List of Floating IPs which are assigned to the server
+     - -
+
+.. _ipv4_address_domain:
+
+IPv4Address Domain
+**********************
+
+.. code-block:: python
+
+    from hcloud.servers.domain import IPv4Address
+
+
+.. list-table:: Properties
+   :widths: 15 15 10 10
+   :header-rows: 1
+
+   * - Property
+     - Type
+     - Description
+     - Sample
+   * - ip
+     - str
+     - Server IPv4 Address
+     - `127.0.0.1`
+   * - blocked
+     - bool
+     - Determine if the IP Address is blocked
+     - `False`
+   * - dns_ptr
+     - str
+     - DNS PTR of the IPv4
+     - `server01.example.com`
+
+.. _ipv6_network_domain:
+
+IPv6Network Domain
+**********************
+
+.. code-block:: python
+
+    from hcloud.servers.domain import IPv6Network
+
+
+.. list-table:: Properties
+   :widths: 15 15 10 10
+   :header-rows: 1
+
+   * - Property
+     - Type
+     - Description
+     - Sample
+   * - ip
+     - str
+     - Server IPv6 Network
+     - `2001:db8::/64`
+   * - blocked
+     - bool
+     - Determine if the IP Network is blocked
+     - `False`
+   * - dns_ptr
+     - List
+     - DNS PTR of all IPv6 Address in the network
      - -
 
 You can find more information about this resource in our `API Documentation <https://docs.hetzner.cloud/#servers>`_.

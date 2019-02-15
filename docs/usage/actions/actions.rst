@@ -81,3 +81,29 @@ Get a specific Action
 **Return:** :ref:`action_domain`
 
 `API Documentation <https://docs.hetzner.cloud/#actions-get-one-action>`_
+
+
+Wait until action is finished
+------------------------------
+
+.. code-block:: python
+
+  #client = HcloudClient(token="Your-Project-Token")
+   action = client.actions.get_by_id(1234)
+   action.wait_until_finished()
+
+**Return:** :ref:`action_domain`
+**Raises:** `ActionFailedException` or `ActionTimeoutException`
+
+.. list-table::
+   :widths: 15 10 10 30
+   :header-rows: 1
+
+   * - Parameter
+     - Type
+     - Description
+     - Sample
+   * - max_retries
+     - `int` (optional)
+     - Max retries when polling the information
+     - `100`
