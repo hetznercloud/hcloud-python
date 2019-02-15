@@ -38,7 +38,7 @@ class BoundFloatingIP(BoundModelBase):
         """
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
-    def get_actions(self, sort=None):
+    def get_actions(self, status=None, sort=None):
         # type: (Optional[List[str]]) -> List[BoundAction]
         """Returns all action objects for a Floating IP.
 
@@ -49,7 +49,7 @@ class BoundFloatingIP(BoundModelBase):
 
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return self._client.get_actions(self, sort)
+        return self._client.get_actions(self, status, sort)
 
     def update(self, description=None, labels=None):
         # type: (Optional[str], Optional[Dict[str, str]]) -> BoundFloatingIP
