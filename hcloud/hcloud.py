@@ -55,12 +55,12 @@ class HcloudClient(object):
 
         self.datacenters = DatacentersClient(self)
         """DatacentersClient Instance
-        
+
         :type: :class:`DatacentersClient <hcloud.datacenters.client.DatacentersClient>`
         """
         self.locations = LocationsClient(self)
         """LocationsClient Instance
-        
+
         :type: :class:`LocationsClient <hcloud.locations.client.LocationsClient>`
         """
         self.servers = ServersClient(self)
@@ -124,6 +124,7 @@ class HcloudClient(object):
             return "{prefix}/{version}".format(prefix=self.__user_agent_prefix, version=self._version)
 
     def _get_headers(self):
+
         headers = {
             "User-Agent": self._get_user_agent(),
             "Authorization": "Bearer {token}".format(token=self.token)

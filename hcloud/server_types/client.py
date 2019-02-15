@@ -11,11 +11,26 @@ class ServerTypesClient(ClientEntityBase):
 
     def get_by_id(self, id):
         # type: (int) -> server_types.client.BoundServerType
+        """Returns a specific Server Type.
+
+        :param id: int
+        :return: :class:`BoundServerType <hcloud.server_types.client.BoundServerType>`
+        """
         response = self._client.request(url="/server_types/{server_type_id}".format(server_type_id=id), method="GET")
         return BoundServerType(self, response['server_type'])
 
     def get_list(self, name=None, page=None, per_page=None):
         # type: (Optional[str], Optional[int], Optional[int]) -> PageResults[List[BoundServerType], Meta]
+        """Get a list of Server types
+
+        :param name: str (optional)
+               Can be used to filter server type by their name.
+        :param page: int (optional)
+               Specifies the page to fetch
+        :param per_page: int (optional)
+               Specifies how many results are returned by page
+        :return: (List[:class:`BoundServerType <hcloud.server_types.client.BoundServerType>`], :class:`Meta <hcloud.core.domain.Meta>`)
+        """
         params = {}
         if name is not None:
             params['name'] = name
@@ -30,4 +45,10 @@ class ServerTypesClient(ClientEntityBase):
 
     def get_all(self, name=None):
         # type: (Optional[str]) -> List[BoundServerType]
+        """Get all Server types
+
+        :param name: str (optional)
+               Can be used to filter server type by their name.
+        :return: List[:class:`BoundServerType <hcloud.server_types.client.BoundServerType>`]
+        """
         return super(ServerTypesClient, self).get_all(name=name)

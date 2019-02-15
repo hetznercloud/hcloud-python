@@ -38,7 +38,6 @@ class DatacentersClient(ClientEntityBase):
         :param id: int
         :return: :class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`
         """
-
         response = self._client.request(url="/datacenters/{datacenter_id}".format(datacenter_id=id), method="GET")
         return BoundDatacenter(self, response['datacenter'])
 
