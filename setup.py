@@ -25,7 +25,7 @@ extras_require = {
 }
 
 version = {}
-with open("hcloud/version.py") as fp:
+with open("hcloud/__version__.py") as fp:
     exec(fp.read(), version)
 
 setup(

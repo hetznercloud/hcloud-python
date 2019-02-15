@@ -21,6 +21,7 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
         server_types=None
     ):
         self.id = id
+        """ID of Datacenter"""
         self.name = name
         self.description = description
         self.location = location

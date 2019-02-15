@@ -187,6 +187,7 @@ class ServersClient(ClientEntityBase):
         # type: (...) -> CreateServerResponse
         """
         Should be visible in docs
+
         :param name:
         :param server_type:
         :param image:

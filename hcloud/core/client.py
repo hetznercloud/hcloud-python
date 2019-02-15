@@ -7,6 +7,10 @@ class ClientEntityBase(object):
     results_list_attribute_name = None
 
     def __init__(self, client):
+        """
+        :param client: HcloudClient
+        :return self
+        """
         self._client = client
 
     def is_list_attribute_implemented(self):
@@ -61,14 +65,27 @@ class ClientEntityBase(object):
 
 
 class BoundModelBase(object):
+    """Bound Model Base"""
     model = None
 
     def __init__(self, client, data={}, complete=True):
+        """
+        :param client:
+                The client for the specific model to use
+        :param data:
+                The data of the model
+        :param complete: bool
+                True if we returned a complete model or just the id
+        """
         self._client = client
         self.complete = complete
         self.data_model = self.model(**data)
 
     def __getattr__(self, name):
+        """
+        :param name: str
+        :return:
+        """
         value = getattr(self.data_model, name)
         if not value and not self.complete:
             self.reload()
@@ -76,6 +93,8 @@ class BoundModelBase(object):
         return value
 
     def reload(self):
+        """Reloads the model and tries to get all data from the APIx
+        """
         bound_model = self._client.get_by_id(self.data_model.id)
         self.data_model = bound_model.data_model
         self.complete = True

@@ -5,9 +5,15 @@ from hcloud.helpers.descriptors import ISODateTime
 
 
 class Action(BaseDomain):
+    """Action Domain
+    Description of all fields: <https://docs.hetzner.cloud/#actions-get-one-action>
+    """
     STATUS_RUNNING = "running"
+    """Action Status running"""
     STATUS_SUCCESS = "success"
+    """Action Status success"""
     STATUS_ERROR = "error"
+    """Action Status error"""
 
     started = ISODateTime()
     finished = ISODateTime()
@@ -33,6 +39,7 @@ class Action(BaseDomain):
         error=None
     ):
         self.id = id
+
         self.command = command
         self.status = status
         self.progress = progress
@@ -43,10 +50,12 @@ class Action(BaseDomain):
 
 
 class ActionFailedException(Exception):
+    """The Action you was waiting for failed"""
     def __init__(self, action):
         self.action = action
 
 
 class ActionTimeoutException(Exception):
+    """The Action you was waiting for timeouted in hcloud-python."""
     def __init__(self, action):
         self.action = action

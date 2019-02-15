@@ -10,7 +10,7 @@ class TestHetznerClient(object):
 
     @pytest.fixture()
     def client(self):
-        HcloudClient.version = '0.0.0'
+        HcloudClient._version = '0.0.0'
         return HcloudClient(token="project_token")
 
     @pytest.fixture()
