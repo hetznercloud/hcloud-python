@@ -13,6 +13,11 @@ class IsosClient(ClientEntityBase):
 
     def get_by_id(self, id):
         # type: (int) -> BoundIso
+        """Get a specific ISO by its id
+
+        :param id: int
+        :return: :class:`BoundIso <hcloud.isos.client.BoundIso>`
+        """
         response = self._client.request(url="/isos/{iso_id}".format(iso_id=id), method="GET")
         return BoundIso(self, response['iso'])
 
@@ -22,6 +27,16 @@ class IsosClient(ClientEntityBase):
                  per_page=None,  # type: Optional[int]
                  ):
         # type: (...) -> PageResults[List[BoundIso], Meta]
+        """Get a list of ISOs
+
+        :param name: str (optional)
+               Can be used to filter ISOs by their name.
+        :param page: int (optional)
+               Specifies the page to fetch
+        :param per_page: int (optional)
+               Specifies how many results are returned by page
+        :return: (List[:class:`BoundIso <hcloud.isos.client.BoundIso>`], :class:`Meta <hcloud.core.domain.Meta>`)
+        """
         params = {}
         if name:
             params['name'] = name
@@ -36,4 +51,10 @@ class IsosClient(ClientEntityBase):
 
     def get_all(self, name=None):
         # type: (Optional[str]) -> List[BoundIso]
+        """Get all ISOs
+
+        :param name: str (optional)
+               Can be used to filter ISOs by their name.
+        :return: List[:class:`BoundIso <hcloud.isos.client.BoundIso>`]
+        """
         return super(IsosClient, self).get_all(name=name)
