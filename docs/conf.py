@@ -51,8 +51,8 @@ project = u'Hetzner Cloud Python'
 copyright = u"2019, Hetzner Cloud GmbH"
 author = u"Hetzner Cloud GmbH"
 
-# The _version info for the project you're documenting, acts as replacement
-# for |_version| and |release|, also used in various other places throughout
+# The version info for the project you're documenting, acts as replacement
+# for |version| and |release|, also used in various other places throughout
 # the built documents.
 #
 # The short X.Y _version.
@@ -160,3 +160,7 @@ texinfo_documents = [
 ]
 
 source_suffix = ['.rst']
+
+
+def setup(app):
+    app.add_javascript('js/open_links_in_new_tab.js')

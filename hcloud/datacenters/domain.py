@@ -3,7 +3,13 @@ from hcloud.core.domain import BaseDomain, DomainIdentityMixin
 
 
 class Datacenter(BaseDomain, DomainIdentityMixin):
+    """Datacenter Domain
 
+    :param id: ID of Datacenter
+    :param name: Name of Datacenter
+    :param description: Description of Datacenter
+    :param location: :class:`BoundLocation <hcloud.locations.client.BoundLocation>`
+    """
     __slots__ = (
         "id",
         "name",
@@ -21,7 +27,6 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
         server_types=None
     ):
         self.id = id
-        """ID of Datacenter"""
         self.name = name
         self.description = description
         self.location = location
