@@ -347,7 +347,7 @@ class ServersClient(ClientEntityBase):
 
         :param name: str
                Name of the server to create (must be unique per project and a valid hostname as per RFC 1123)
-        :param server_type:  :class:`BoundServerType <hcloud.server_types.client.BoundServerType>` or :class:`ServerType <hcloud.server_types.domain.ServerType>`
+        :param server_type: :class:`BoundServerType <hcloud.server_types.client.BoundServerType>` or :class:`ServerType <hcloud.server_types.domain.ServerType>`
                Server type this server should be created with
         :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
                Image the server is created from
@@ -403,7 +403,7 @@ class ServersClient(ClientEntityBase):
 
     def get_actions_list(self, server, status=None, sort=None, page=None, per_page=None):
         # type: (Server, Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction], Meta]
-        """Returns all action objects for a Floating IP.
+        """Returns all action objects for a server.
 
         :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
         :param status: List[str] (optional)
