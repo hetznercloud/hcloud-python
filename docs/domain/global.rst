@@ -8,7 +8,7 @@ Labels are Key Value pairs.
 .. code-block:: python
 
     label = {"key":"value"} # One Label
-    labels = [{"key":"value"},{"another_key":"value"}] # Many Labels
+    labels ={"key": "value", "another_key": "value"} # Many Labels 
 
 See our `API Documentation <https://docs.hetzner.cloud/#overview-labels>`_ for more details about the Labels.
 

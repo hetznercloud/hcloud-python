@@ -9,13 +9,13 @@ class BoundAction(BoundModelBase):
     model = Action
 
     def wait_until_finished(self, max_retries=100):
-        """Wait until the specific action is not running anymore
+        """Wait until the specific action has status="finished" (set Client.poll_interval to specify a delay between checks)
 
         :param max_retries: int
                Specify how many retries will be performed before an ActionTimeoutException will be raised
         :return: bool
-        :raises: ActionFailedException
-        :raises: ActionTimeoutException
+        :raises: ActionFailedException when action is finished with status=="error"
+        :raises: ActionTimeoutException when Action is still in "running" state after max_retries reloads.
         """
         while self.status == Action.STATUS_RUNNING:
             if max_retries > 0:

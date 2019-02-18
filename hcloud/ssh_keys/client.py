@@ -95,7 +95,7 @@ class SSHKeysClient(ClientEntityBase):
 
     def create(self, name, public_key, labels=None):
         # type: (str, str, Optional[Dict[str, str]]) -> BoundSSHKey
-        """
+        """Creates a new SSH key with the given name and public_key.
 
         :param name: str
         :param public_key: str
@@ -139,7 +139,7 @@ class SSHKeysClient(ClientEntityBase):
         """Deletes an SSH key. It cannot be used anymore.
 
         :param ssh_key: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>` or  :class:`SSHKey <hcloud.ssh_keys.domain.SSHKey>`
-        :return: boolean
+        :return: True
         """
         # Return always true, because the API does not return an action for it. When an error occurs a HcloudAPIException will be raised
         return True

@@ -75,7 +75,7 @@ class BoundModelBase(object):
         :param data:
                 The data of the model
         :param complete: bool
-                True if we returned a complete model or just the id
+                False if not all attributes of the model fetched
         """
         self._client = client
         self.complete = complete

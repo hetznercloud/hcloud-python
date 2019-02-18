@@ -6,7 +6,7 @@ from hcloud.locations.client import BoundLocation
 from hcloud.server_types.client import BoundServerType
 
 
-class BoundDatacenter(BoundModelBase, Datacenter):
+class BoundDatacenter(BoundModelBase):
     model = Datacenter
 
     def __init__(self, client, data):
