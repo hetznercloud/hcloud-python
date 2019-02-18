@@ -14,8 +14,8 @@ before_script:
 - docker ps -a
 - sleep 10
 install:
-- pip install -r requirements/dev.txt
 - pip install .
+- pip install -r requirements/test.txt
 - pip install tox-travis
 script: tox && tox -e flake8
 deploy:

@@ -11,11 +11,18 @@ with open('README.rst') as readme_file:
 with open('CHANGELOG.md') as changelog_file:
     changelog = changelog_file.read()
 
-requirements = []
+requirements = [
+    "future==0.17.1",
+    "python-dateutil==2.7.5",
+    "requests==2.20.0"
+]
 
-setup_requirements = ['pytest-runner', ]
-
-test_requirements = ['pytest', ]
+extras_require = {
+    'docs': [
+        "Sphinx==1.8.1",
+        "sphinx-rtd-theme==0.4.2"
+    ]
+}
 
 version = {}
 with open("hcloud/version.py") as fp:
@@ -36,17 +43,17 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
+    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <3.8',
     description="Official Hetzner Cloud python library",
     install_requires=requirements,
+    extras_require=extras_require,
     license="MIT license",
     long_description=readme + '\n\n' + changelog,
     include_package_data=True,
-    keywords='hcloud',
+    keywords='hcloud hetzner cloud',
     name='hcloud',
-    packages=find_packages(exclude=["examples", "tests"]),
-    setup_requires=setup_requirements,
+    packages=find_packages(exclude=["examples", "tests", "docs"]),
     test_suite='tests',
-    tests_require=test_requirements,
     url='https://github.com/hetznercloud/hcloud-python',
     version=version['VERSION'],
     zip_safe=False,
