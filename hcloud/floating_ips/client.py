@@ -160,7 +160,6 @@ class FloatingIPsClient(ClientEntityBase):
         """Returns all action objects for a Floating IP.
 
         :param floating_ip: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>` or  :class:`FloatingIP <hcloud.floating_ips.domain.FloatingIP>
-        :param floating_ip: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>` or  :class:`FloatingIP <hcloud.floating_ips.domain.FloatingIP>
         :param status: List[str] (optional)
                Response will have only actions with specified statuses. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
         :param sort: List[str] (optional)
@@ -208,7 +207,7 @@ class FloatingIPsClient(ClientEntityBase):
         response = self._client.request(url="/floating_ips", method="GET", params=params)
         floating_ips = [BoundFloatingIP(self, floating_ip_data) for floating_ip_data in response['floating_ips']]
 
-        return self.add_meta_to_result(floating_ips, response)
+        return self._add_meta_to_result(floating_ips, response)
 
     def get_all(self, label_selector=None):
         # type: (Optional[str]) -> List[BoundFloatingIP]

@@ -43,7 +43,7 @@ class LocationsClient(ClientEntityBase):
 
         response = self._client.request(url="/locations", method="GET", params=params)
         locations = [BoundLocation(self, location_data) for location_data in response['locations']]
-        return self.add_meta_to_result(locations, response)
+        return self._add_meta_to_result(locations, response)
 
     def get_all(self, name=None):
         # type: (Optional[str]) -> List[BoundLocation]

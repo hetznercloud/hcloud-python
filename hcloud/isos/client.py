@@ -47,7 +47,7 @@ class IsosClient(ClientEntityBase):
 
         response = self._client.request(url="/isos", method="GET", params=params)
         isos = [BoundIso(self, iso_data) for iso_data in response['isos']]
-        return self.add_meta_to_result(isos, response)
+        return self._add_meta_to_result(isos, response)
 
     def get_all(self, name=None):
         # type: (Optional[str]) -> List[BoundIso]

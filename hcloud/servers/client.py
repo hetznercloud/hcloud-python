@@ -5,7 +5,8 @@ from hcloud.actions.client import BoundAction
 from hcloud.core.domain import add_meta_to_result
 from hcloud.floating_ips.client import BoundFloatingIP
 from hcloud.isos.client import BoundIso
-from hcloud.servers.domain import Server, CreateServerResponse, ResetPasswordResponse, EnableRescueResponse, RequestConsoleResponse, PublicNetwork, IPv4Address, IPv6Network
+from hcloud.servers.domain import Server, CreateServerResponse, ResetPasswordResponse, EnableRescueResponse, \
+    RequestConsoleResponse, PublicNetwork, IPv4Address, IPv6Network
 from hcloud.volumes.client import BoundVolume
 from hcloud.images.domain import CreateImageResponse
 from hcloud.images.client import BoundImage
@@ -43,97 +44,229 @@ class BoundServer(BoundModelBase):
         if public_net:
             ipv4_address = IPv4Address(**public_net['ipv4'])
             ipv6_network = IPv6Network(**public_net['ipv6'])
-            floating_ips = [BoundFloatingIP(client._client.floating_ips, {"id": floating_ip}, complete=False) for floating_ip in public_net['floating_ips']]
+            floating_ips = [BoundFloatingIP(client._client.floating_ips, {"id": floating_ip}, complete=False) for
+                            floating_ip in public_net['floating_ips']]
             data['public_net'] = PublicNetwork(ipv4=ipv4_address, ipv6=ipv6_network, floating_ips=floating_ips)
 
         super(BoundServer, self).__init__(client, data, complete)
 
     def get_actions_list(self, status=None, sort=None, page=None, per_page=None):
         # type: (Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction, Meta]]
+        """Returns all action objects for a Floating IP.
+
+        :param status: List[str] (optional)
+               Response will have only actions with specified statuses. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+        :param sort: List[str] (optional)
+               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+        :param page: int (optional)
+               Specifies the page to fetch
+        :param per_page: int (optional)
+               Specifies how many results are returned by page
+        :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
+        """
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
     def get_actions(self, status=None, sort=None):
         # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
+        """Returns all action objects for a server.
+
+        :param status: List[str] (optional)
+               Response will have only actions with specified statuses. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+        :param sort: List[str] (optional)
+               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+        :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
+        """
         return self._client.get_actions(self, status, sort)
 
     def update(self, name=None, labels=None):
         # type: (Optional[str], Optional[Dict[str, str]]) -> BoundServer
+        """Updates a server. You can update a server’s name and a server’s labels.
+
+         :param name: str (optional)
+                New name to set
+         :param labels: Dict[str, str] (optional)
+                User-defined labels (key-value pairs)
+         :return: :class:`BoundServer <hcloud.servers.client.BoundServer>`
+         """
         return self._client.update(self, name, labels)
 
     def delete(self):
         # type: () -> BoundAction
+        """Deletes a server. This immediately removes the server from your account, and it is no longer accessible.
+
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.delete(self)
 
     def power_off(self):
         # type: () -> BoundAction
+        """Cuts power to the server. This forcefully stops it without giving the server operating system time to gracefully stop
+
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.power_off(self)
 
     def power_on(self):
         # type: () -> BoundAction
+        """Starts a server by turning its power on.
+
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.power_on(self)
 
     def reboot(self):
         # type: () -> BoundAction
+        """Reboots a server gracefully by sending an ACPI request.
+
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.reboot(self)
 
     def reset(self):
         # type: () -> BoundAction
+        """Cuts power to a server and starts it again.
+
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.reset(self)
 
     def shutdown(self):
         # type: () -> BoundAction
+        """Shuts down a server gracefully by sending an ACPI shutdown request.
+
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.shutdown(self)
 
     def reset_password(self):
         # type: () -> ResetPasswordResponse
+        """ Resets the root password. Only works for Linux systems that are running the qemu guest agent.
+
+        :return: :class:`ResetPasswordResponse <hcloud.servers.domain.ResetPasswordResponse>`
+        """
         return self._client.reset_password(self)
 
     def enable_rescue(self, type=None, ssh_keys=None):
         # type: (str, Optional[List[str]]) -> EnableRescueResponse
+        """Enable the Hetzner Rescue System for this server.
+
+        :param type: str
+                Type of rescue system to boot (default: linux64)
+                Choices: linux64, linux32, freebsd64
+        :param ssh_keys: List[str]
+                Array of SSH key IDs which should be injected into the rescue system. Only available for types: linux64 and linux32.
+        :return: :class:`EnableRescueResponse <hcloud.servers.domain.EnableRescueResponse>`
+        """
         return self._client.enable_rescue(self, type=type, ssh_keys=ssh_keys)
 
     def disable_rescue(self):
         # type: () -> BoundAction
+        """Disables the Hetzner Rescue System for a server.
+
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.disable_rescue(self)
 
     def create_image(self, description=None, type=None, labels=None):
         # type: (str, str, Optional[Dict[str, str]]) -> BoundAction
+        """Creates an image (snapshot) from a server by copying the contents of its disks.
+
+        :param description: str (optional)
+               Description of the image. If you do not set this we auto-generate one for you.
+        :param type: str (optional)
+               Type of image to create (default: snapshot)
+               Choices: snapshot, backup
+        :param labels: Dict[str, str]
+               User-defined labels (key-value pairs)
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.create_image(self, description, type, labels)
 
     def rebuild(self, image):
         # type: (Image) -> BoundAction
+        """Rebuilds a server overwriting its disk with the content of an image, thereby destroying all data on the target server.
+
+        :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.servers.domain.Image>`
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.rebuild(self, image)
 
     def change_type(self, server_type, upgrade_disk):
         # type: (BoundServerType, bool) -> BoundAction
+        """Changes the type (Cores, RAM and disk sizes) of a server.
+
+        :param server_type: :class:`BoundServerType <hcloud.server_types.client.BoundServerType>` or :class:`ServerType <hcloud.server_types.domain.ServerType>`
+               Server type the server should migrate to
+        :param upgrade_disk: boolean
+               If false, do not upgrade the disk. This allows downgrading the server type later.
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.change_type(self, server_type, upgrade_disk)
 
     def enable_backup(self):
         # type: () -> BoundAction
+        """Enables and configures the automatic daily backup option for the server. Enabling automatic backups will increase the price of the server by 20%.
+
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.enable_backup(self)
 
     def disable_backup(self):
         # type: () -> BoundAction
+        """Disables the automatic backup option and deletes all existing Backups for a Server.
+
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.disable_backup(self)
 
     def attach_iso(self, iso):
         # type: (Iso) -> BoundAction
+        """Attaches an ISO to a server.
+
+        :param iso: :class:`BoundIso <hcloud.isos.client.BoundIso>` or :class:`Server <hcloud.isos.domain.Iso>`
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.attach_iso(self, iso)
 
     def detach_iso(self):
         # type: () -> BoundAction
+        """Detaches an ISO from a server.
+
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.detach_iso(self)
 
     def change_dns_ptr(self, ip, dns_ptr):
         # type: (str, Optional[str]) -> BoundAction
+        """Changes the hostname that will appear when getting the hostname belonging to the primary IPs (ipv4 and ipv6) of this server.
+
+        :param ip: str
+                   The IP address for which to set the reverse DNS entry
+        :param dns_ptr:
+                  Hostname to set as a reverse DNS PTR entry, will reset to original default value if `None`
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.change_dns_ptr(self, ip, dns_ptr)
 
     def change_protection(self, delete=None, rebuild=None):
         # type: (Optional[bool], Optional[bool]) -> BoundAction
+        """Changes the protection configuration of the server.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :param delete: boolean
+                     If true, prevents the server from being deleted (currently delete and rebuild attribute needs to have the same value)
+        :param rebuild: boolean
+                     If true, prevents the server from being rebuilt (currently delete and rebuild attribute needs to have the same value)
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.change_protection(self, delete, rebuild)
 
     def request_console(self):
         # type: () -> RequestConsoleResponse
+        """Requests credentials for remote access via vnc over websocket to keyboard, monitor, and mouse for a server.
+
+        :return: :class:`RequestConsoleResponse <hcloud.servers.domain.RequestConsoleResponse>`
+        """
         return self._client.request_console(self)
 
 
@@ -142,16 +275,33 @@ class ServersClient(ClientEntityBase):
 
     def get_by_id(self, id):
         # type: (int) -> BoundServer
+        """Get a specific server
+
+        :param id: int
+        :return: :class:`BoundServer <hcloud.servers.client.BoundServer>
+        """
         response = self._client.request(url="/servers/{server_id}".format(server_id=id), method="GET")
         return BoundServer(self, response['server'])
 
     def get_list(self,
-                 name=None,            # type: Optional[str]
+                 name=None,  # type: Optional[str]
                  label_selector=None,  # type: Optional[str]
-                 page=None,            # type: Optional[int]
-                 per_page=None         # type: Optional[int]
+                 page=None,  # type: Optional[int]
+                 per_page=None  # type: Optional[int]
                  ):
         # type: (...) -> PageResults[List[BoundServer], Meta]
+        """Get a list of servers from this account
+
+        :param name: str (optional)
+               Can be used to filter servers by their name.
+        :param label_selector: str (optional)
+               Can be used to filter servers by labels. The response will only contain servers matching the label selector.
+        :param page: int (optional)
+               Specifies the page to fetch
+        :param per_page: int (optional)
+               Specifies how many results are returned by page
+        :return: (List[:class:`BoundServer <hcloud.servers.client.BoundServer>`], :class:`Meta <hcloud.core.domain.Meta>`)
+        """
         params = {}
         if name:
             params['name'] = name
@@ -165,40 +315,57 @@ class ServersClient(ClientEntityBase):
         response = self._client.request(url="/servers", method="GET", params=params)
 
         ass_servers = [BoundServer(self, server_data) for server_data in response['servers']]
-        return self.add_meta_to_result(ass_servers, response)
+        return self._add_meta_to_result(ass_servers, response)
 
     def get_all(self, name=None, label_selector=None):
         # type: (Optional[str], Optional[str]) -> List[BoundServer]
+        """Get all servers from this account
+
+        :param name: str (optional)
+               Can be used to filter servers by their name.
+        :param label_selector: str (optional)
+               Can be used to filter servers by labels. The response will only contain servers matching the label selector.
+        :return: List[:class:`BoundServer <hcloud.servers.client.BoundServer>`]
+        """
         return super(ServersClient, self).get_all(name=name, label_selector=label_selector)
 
     def create(self,
-               name,                      # type: str
-               server_type,               # type: ServerType
-               image,                     # type: Image
-               ssh_keys=None,             # type: Optional[List[SSHKey]]
-               volumes=None,              # type: Optional[List[Volume]]
-               user_data=None,            # type: Optional[str]
-               labels=None,               # type: Optional[Dict[str, str]]
-               location=None,             # type: Optional[Location]
-               datacenter=None,           # type: Optional[Datacenter]
-               start_after_create=True,   # type: Optional[bool]
-               automount=None             # type: Optional[bool]
+               name,  # type: str
+               server_type,  # type: ServerType
+               image,  # type: Image
+               ssh_keys=None,  # type: Optional[List[SSHKey]]
+               volumes=None,  # type: Optional[List[Volume]]
+               user_data=None,  # type: Optional[str]
+               labels=None,  # type: Optional[Dict[str, str]]
+               location=None,  # type: Optional[Location]
+               datacenter=None,  # type: Optional[Datacenter]
+               start_after_create=True,  # type: Optional[bool]
+               automount=None  # type: Optional[bool]
                ):
         # type: (...) -> CreateServerResponse
-        """
-        Should be visible in docs
+        """Creates a new server. Returns preliminary information about the server as well as an action that covers progress of creation.
 
-        :param name:
-        :param server_type:
-        :param image:
-        :param ssh_keys:
-        :param volumes:
-        :param user_data:
-        :param labels:
-        :param location:
-        :param datacenter:
-        :param start_after_create:
-        :return:
+        :param name: str
+               Name of the server to create (must be unique per project and a valid hostname as per RFC 1123)
+        :param server_type:  :class:`BoundServerType <hcloud.server_types.client.BoundServerType>` or :class:`ServerType <hcloud.server_types.domain.ServerType>`
+               Server type this server should be created with
+        :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
+               Image the server is created from
+        :param ssh_keys: List[:class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>` or :class:`SSHKey <hcloud.ssh_keys.domain.SSHKey>`] (optional)
+               SSH keys which should be injected into the server at creation time
+        :param volumes: List[:class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`] (optional)
+               Volumes which should be attached to the server at the creation time. Volumes must be in the same location.
+        :param user_data: str (optional)
+               Cloud-Init user data to use during server creation. This field is limited to 32KiB.
+        :param labels: Dict[str,str] (optional)
+               User-defined labels (key-value pairs)
+        :param location: :class:`BoundLocation <hcloud.locations.client.BoundLocation>` or :class:`Location <hcloud.locations.domain.Location>`
+        :param datacenter: :class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>` or :class:`Datacenter <hcloud.datacenters.domain.Datacenter>`
+        :param start_after_create: boolean (optional)
+               Start Server right after creation. Defaults to True.
+        :param automount: boolean (optional)
+               Auto mount volumes after attach.
+        :return: :class:`CreateServerResponse <hcloud.servers.domain.CreateServerResponse>`
         """
         data = {
             'name': name,
@@ -236,6 +403,19 @@ class ServersClient(ClientEntityBase):
 
     def get_actions_list(self, server, status=None, sort=None, page=None, per_page=None):
         # type: (Server, Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction], Meta]
+        """Returns all action objects for a Floating IP.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :param status: List[str] (optional)
+               Response will have only actions with specified statuses. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+        :param sort: List[str] (optional)
+               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+        :param page: int (optional)
+               Specifies the page to fetch
+        :param per_page: int (optional)
+               Specifies how many results are returned by page
+        :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
+        """
         params = {}
         if status is not None:
             params["status"] = status
@@ -246,16 +426,35 @@ class ServersClient(ClientEntityBase):
         if per_page is not None:
             params["per_page"] = per_page
 
-        response = self._client.request(url="/servers/{server_id}/actions".format(server_id=server.id), method="GET", params=params)
+        response = self._client.request(url="/servers/{server_id}/actions".format(server_id=server.id), method="GET",
+                                        params=params)
         actions = [BoundAction(self._client.actions, action_data) for action_data in response['actions']]
         return add_meta_to_result(actions, response, 'actions')
 
     def get_actions(self, server, status=None, sort=None):
         # type: (Server, Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
+        """Returns all action objects for a server.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :param status: List[str] (optional)
+               Response will have only actions with specified statuses. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+        :param sort: List[str] (optional)
+               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+        :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
+        """
         return super(ServersClient, self).get_actions(server, status=status, sort=sort)
 
     def update(self, server, name=None, labels=None):
         # type:(Server,  Optional[str],  Optional[Dict[str, str]]) -> BoundServer
+        """Updates a server. You can update a server’s name and a server’s labels.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :param name: str (optional)
+               New name to set
+        :param labels: Dict[str, str] (optional)
+               User-defined labels (key-value pairs)
+        :return: :class:`BoundServer <hcloud.servers.client.BoundServer>`
+        """
         data = {}
         if name is not None:
             data.update({"name": name})
@@ -266,69 +465,148 @@ class ServersClient(ClientEntityBase):
 
     def delete(self, server):
         # type: (Server) -> BoundAction
+        """Deletes a server. This immediately removes the server from your account, and it is no longer accessible.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         response = self._client.request(url="/servers/{server_id}".format(server_id=server.id), method="DELETE")
         return BoundAction(self._client.actions, response['action'])
 
     def power_off(self, server):
         # type: (Server) -> Action
-        response = self._client.request(url="/servers/{server_id}/actions/poweroff".format(server_id=server.id), method="POST")
+        """Cuts power to the server. This forcefully stops it without giving the server operating system time to gracefully stop
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        response = self._client.request(url="/servers/{server_id}/actions/poweroff".format(server_id=server.id),
+                                        method="POST")
         return BoundAction(self._client.actions, response['action'])
 
     def power_on(self, server):
         # type: (servers.domain.Server) -> actions.domain.Action
-        response = self._client.request(url="/servers/{server_id}/actions/poweron".format(server_id=server.id), method="POST")
+        """Starts a server by turning its power on.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        response = self._client.request(url="/servers/{server_id}/actions/poweron".format(server_id=server.id),
+                                        method="POST")
         return BoundAction(self._client.actions, response['action'])
 
     def reboot(self, server):
         # type: (servers.domain.Server) -> actions.domain.Action
-        response = self._client.request(url="/servers/{server_id}/actions/reboot".format(server_id=server.id), method="POST")
+        """Reboots a server gracefully by sending an ACPI request.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        response = self._client.request(url="/servers/{server_id}/actions/reboot".format(server_id=server.id),
+                                        method="POST")
         return BoundAction(self._client.actions, response['action'])
 
     def reset(self, server):
         # type: (servers.domain.Server) -> actions.domainAction
-        response = self._client.request(url="/servers/{server_id}/actions/reset".format(server_id=server.id), method="POST")
+        """Cuts power to a server and starts it again.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        response = self._client.request(url="/servers/{server_id}/actions/reset".format(server_id=server.id),
+                                        method="POST")
         return BoundAction(self._client.actions, response['action'])
 
     def shutdown(self, server):
         # type: (servers.domain.Server) -> actions.domainAction
-        response = self._client.request(url="/servers/{server_id}/actions/shutdown".format(server_id=server.id), method="POST")
+        """Shuts down a server gracefully by sending an ACPI shutdown request.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        response = self._client.request(url="/servers/{server_id}/actions/shutdown".format(server_id=server.id),
+                                        method="POST")
         return BoundAction(self._client.actions, response['action'])
 
     def reset_password(self, server):
         # type: (servers.domain.Server) -> ResetPasswordResponse
-        response = self._client.request(url="/servers/{server_id}/actions/reset_password".format(server_id=server.id), method="POST")
-        return ResetPasswordResponse(action=BoundAction(self._client.actions, response['action']), root_password=response['root_password'])
+        """ Resets the root password. Only works for Linux systems that are running the qemu guest agent.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :return: :class:`ResetPasswordResponse <hcloud.servers.domain.ResetPasswordResponse>`
+        """
+        response = self._client.request(url="/servers/{server_id}/actions/reset_password".format(server_id=server.id),
+                                        method="POST")
+        return ResetPasswordResponse(action=BoundAction(self._client.actions, response['action']),
+                                     root_password=response['root_password'])
 
     def change_type(self, server, server_type, upgrade_disk):
         # type: (servers.domain.Server, BoundServerType, bool) -> actions.domainAction
+        """Changes the type (Cores, RAM and disk sizes) of a server.
 
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :param server_type: :class:`BoundServerType <hcloud.server_types.client.BoundServerType>` or :class:`ServerType <hcloud.server_types.domain.ServerType>`
+               Server type the server should migrate to
+        :param upgrade_disk: boolean
+               If false, do not upgrade the disk. This allows downgrading the server type later.
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         data = {
             "server_type": server_type.id_or_name,
             "upgrade_disk": upgrade_disk
         }
-        response = self._client.request(url="/servers/{server_id}/actions/change_type".format(server_id=server.id), method="POST", json=data)
+        response = self._client.request(url="/servers/{server_id}/actions/change_type".format(server_id=server.id),
+                                        method="POST", json=data)
         return BoundAction(self._client.actions, response['action'])
 
     def enable_rescue(self, server, type=None, ssh_keys=None):
         # type: (servers.domain.Server, str, Optional[List[str]]) -> EnableRescueResponse
+        """Enable the Hetzner Rescue System for this server.
 
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :param type: str
+                Type of rescue system to boot (default: linux64)
+                Choices: linux64, linux32, freebsd64
+        :param ssh_keys: List[str]
+                Array of SSH key IDs which should be injected into the rescue system. Only available for types: linux64 and linux32.
+        :return: :class:`EnableRescueResponse <hcloud.servers.domain.EnableRescueResponse>`
+        """
         data = {
             "type": type
         }
         if ssh_keys is not None:
             data.update({"ssh_keys": ssh_keys})
 
-        response = self._client.request(url="/servers/{server_id}/actions/enable_rescue".format(server_id=server.id), method="POST", json=data)
-        return EnableRescueResponse(action=BoundAction(self._client.actions, response['action']), root_password=response['root_password'])
+        response = self._client.request(url="/servers/{server_id}/actions/enable_rescue".format(server_id=server.id),
+                                        method="POST", json=data)
+        return EnableRescueResponse(action=BoundAction(self._client.actions, response['action']),
+                                    root_password=response['root_password'])
 
     def disable_rescue(self, server):
         # type: (servers.domain.Server) -> actions.domainAction
-        response = self._client.request(url="/servers/{server_id}/actions/disable_rescue".format(server_id=server.id), method="POST")
+        """Disables the Hetzner Rescue System for a server.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        response = self._client.request(url="/servers/{server_id}/actions/disable_rescue".format(server_id=server.id),
+                                        method="POST")
         return BoundAction(self._client.actions, response['action'])
 
     def create_image(self, server, description=None, type=None, labels=None):
         # type: (servers.domain.Server, str, str, Optional[Dict[str, str]]) -> CreateImageResponse
+        """Creates an image (snapshot) from a server by copying the contents of its disks.
 
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :param description: str (optional)
+               Description of the image. If you do not set this we auto-generate one for you.
+        :param type: str (optional)
+               Type of image to create (default: snapshot)
+               Choices: snapshot, backup
+        :param labels: Dict[str, str]
+               User-defined labels (key-value pairs)
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         data = {}
         if description is not None:
             data.update({"description": description})
@@ -339,62 +617,122 @@ class ServersClient(ClientEntityBase):
         if labels is not None:
             data.update({"type": labels})
 
-        response = self._client.request(url="/servers/{server_id}/actions/create_image".format(server_id=server.id), method="POST", json=data)
-        return CreateImageResponse(action=BoundAction(self._client.actions, response['action']), image=BoundImage(self._client.images, response['image']))
+        response = self._client.request(url="/servers/{server_id}/actions/create_image".format(server_id=server.id),
+                                        method="POST", json=data)
+        return CreateImageResponse(action=BoundAction(self._client.actions, response['action']),
+                                   image=BoundImage(self._client.images, response['image']))
 
     def rebuild(self, server, image):
         # type: (servers.domain.Server, Image) -> actions.domainAction
+        """Rebuilds a server overwriting its disk with the content of an image, thereby destroying all data on the target server.
 
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.servers.domain.Image>`
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         data = {
             "image": image.id_or_name
         }
-        response = self._client.request(url="/servers/{server_id}/actions/rebuild".format(server_id=server.id), method="POST", json=data)
+        response = self._client.request(url="/servers/{server_id}/actions/rebuild".format(server_id=server.id),
+                                        method="POST", json=data)
         return BoundAction(self._client.actions, response['action'])
 
     def enable_backup(self, server):
         # type: (servers.domain.Server) -> actions.domainAction
-        response = self._client.request(url="/servers/{server_id}/actions/enable_backup".format(server_id=server.id), method="POST")
+        """Enables and configures the automatic daily backup option for the server. Enabling automatic backups will increase the price of the server by 20%.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        response = self._client.request(url="/servers/{server_id}/actions/enable_backup".format(server_id=server.id),
+                                        method="POST")
         return BoundAction(self._client.actions, response['action'])
 
     def disable_backup(self, server):
         # type: (servers.domain.Server) -> actions.domainAction
-        response = self._client.request(url="/servers/{server_id}/actions/disable_backup".format(server_id=server.id), method="POST")
+        """Disables the automatic backup option and deletes all existing Backups for a Server.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        response = self._client.request(url="/servers/{server_id}/actions/disable_backup".format(server_id=server.id),
+                                        method="POST")
         return BoundAction(self._client.actions, response['action'])
 
     def attach_iso(self, server, iso):
         # type: (servers.domain.Server, Iso) -> actions.domainAction
+        """Attaches an ISO to a server.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :param iso: :class:`BoundIso <hcloud.isos.client.BoundIso>` or :class:`Server <hcloud.isos.domain.Iso>`
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         data = {
             "iso": iso.id_or_name
         }
-        response = self._client.request(url="/servers/{server_id}/actions/attach_iso".format(server_id=server.id), method="POST", json=data)
+        response = self._client.request(url="/servers/{server_id}/actions/attach_iso".format(server_id=server.id),
+                                        method="POST", json=data)
         return BoundAction(self._client.actions, response['action'])
 
     def detach_iso(self, server):
         # type: (servers.domain.Server) -> actions.domainAction
-        response = self._client.request(url="/servers/{server_id}/actions/detach_iso".format(server_id=server.id), method="POST")
+        """Detaches an ISO from a server.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        response = self._client.request(url="/servers/{server_id}/actions/detach_iso".format(server_id=server.id),
+                                        method="POST")
         return BoundAction(self._client.actions, response['action'])
 
     def change_dns_ptr(self, server, ip, dns_ptr):
-        # type: (servers.domain.Server, str, Optional[str]) -> actions.domainAction
+        # type: (servers.domain.Server, str, str) -> actions.domainAction
+        """Changes the hostname that will appear when getting the hostname belonging to the primary IPs (ipv4 and ipv6) of this server.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :param ip: str
+                   The IP address for which to set the reverse DNS entry
+        :param dns_ptr:
+                  Hostname to set as a reverse DNS PTR entry, will reset to original default value if `None`
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         data = {
             "ip": ip,
             "dns_ptr": dns_ptr
         }
-        response = self._client.request(url="/servers/{server_id}/actions/change_dns_ptr".format(server_id=server.id), method="POST", json=data)
+        response = self._client.request(url="/servers/{server_id}/actions/change_dns_ptr".format(server_id=server.id),
+                                        method="POST", json=data)
         return BoundAction(self._client.actions, response['action'])
 
     def change_protection(self, server, delete=None, rebuild=None):
         # type: (servers.domain.Server, Optional[bool], Optional[bool]) -> actions.domainAction
+        """Changes the protection configuration of the server.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :param delete: boolean
+                     If true, prevents the server from being deleted (currently delete and rebuild attribute needs to have the same value)
+        :param rebuild: boolean
+                     If true, prevents the server from being rebuilt (currently delete and rebuild attribute needs to have the same value)
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         data = {}
         if delete is not None:
             data.update({"delete": delete})
         if rebuild is not None:
             data.update({"rebuild": rebuild})
 
-        response = self._client.request(url="/servers/{server_id}/actions/change_protection".format(server_id=server.id), method="POST", json=data)
+        response = self._client.request(
+            url="/servers/{server_id}/actions/change_protection".format(server_id=server.id), method="POST", json=data)
         return BoundAction(self._client.actions, response['action'])
 
     def request_console(self, server):
         # type: (servers.domain.Server) -> RequestConsoleResponse
-        response = self._client.request(url="/servers/{server_id}/actions/request_console".format(server_id=server.id), method="POST")
-        return RequestConsoleResponse(action=BoundAction(self._client.actions, response['action']), wss_url=response['wss_url'], password=response['password'])
+        """Requests credentials for remote access via vnc over websocket to keyboard, monitor, and mouse for a server.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :return: :class:`RequestConsoleResponse <hcloud.servers.domain.RequestConsoleResponse>`
+        """
+        response = self._client.request(url="/servers/{server_id}/actions/request_console".format(server_id=server.id),
+                                        method="POST")
+        return RequestConsoleResponse(action=BoundAction(self._client.actions, response['action']),
+                                      wss_url=response['wss_url'], password=response['password'])

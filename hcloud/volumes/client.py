@@ -69,7 +69,7 @@ class VolumesClient(ClientEntityBase):
 
         response = self._client.request(url="/volumes", method="GET", params=params)
         volumes = [BoundVolume(self, volume_data) for volume_data in response['volumes']]
-        return self.add_meta_to_result(volumes, response)
+        return self._add_meta_to_result(volumes, response)
 
     def get_all(self, label_selector=None):
         # type: (Optional[str]) -> List[BoundVolume]

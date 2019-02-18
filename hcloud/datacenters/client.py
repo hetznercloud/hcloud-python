@@ -71,7 +71,7 @@ class DatacentersClient(ClientEntityBase):
 
         datacenters = [BoundDatacenter(self, datacenter_data) for datacenter_data in response['datacenters']]
 
-        return self.add_meta_to_result(datacenters, response)
+        return self._add_meta_to_result(datacenters, response)
 
     def get_all(self, name=None):
         # type: (Optional[str]) -> List[BoundDatacenter]

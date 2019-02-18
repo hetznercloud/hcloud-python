@@ -74,7 +74,7 @@ class ActionsClient(ClientEntityBase):
 
         response = self._client.request(url="/actions", method="GET", params=params)
         actions = [BoundAction(self, action_data) for action_data in response['actions']]
-        return self.add_meta_to_result(actions, response)
+        return self._add_meta_to_result(actions, response)
 
     def get_all(self, status=None, sort=None):
         # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]

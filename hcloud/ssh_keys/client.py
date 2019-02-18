@@ -77,7 +77,7 @@ class SSHKeysClient(ClientEntityBase):
         response = self._client.request(url="/ssh_keys", method="GET", params=params)
 
         ass_ssh_keys = [BoundSSHKey(self, server_data) for server_data in response['ssh_keys']]
-        return self.add_meta_to_result(ass_ssh_keys, response)
+        return self._add_meta_to_result(ass_ssh_keys, response)
 
     def get_all(self, name=None, fingerprint=None, label_selector=None):
         # type: (Optional[str], Optional[str], Optional[str]) -> List[BoundSSHKey]

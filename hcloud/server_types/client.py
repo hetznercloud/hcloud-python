@@ -41,7 +41,7 @@ class ServerTypesClient(ClientEntityBase):
 
         response = self._client.request(url="/server_types", method="GET", params=params)
         server_types = [BoundServerType(self, server_type_data) for server_type_data in response['server_types']]
-        return self.add_meta_to_result(server_types, response)
+        return self._add_meta_to_result(server_types, response)
 
     def get_all(self, name=None):
         # type: (Optional[str]) -> List[BoundServerType]

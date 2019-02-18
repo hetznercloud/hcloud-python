@@ -103,7 +103,7 @@ class ImagesClient(ClientEntityBase):
         response = self._client.request(url="/images", method="GET", params=params)
         images = [BoundImage(self, image_data) for image_data in response['images']]
 
-        return self.add_meta_to_result(images, response)
+        return self._add_meta_to_result(images, response)
 
     def get_all(self,
                 name=None,            # type: Optional[str]
