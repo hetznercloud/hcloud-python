@@ -22,22 +22,59 @@ class BoundImage(BoundModelBase):
 
     def get_actions_list(self, sort=None, page=None, per_page=None):
         # type: (Optional[List[str]], Optional[int], Optional[int]) -> PageResult[BoundAction, Meta]
+        """Returns a list of action objects for the image.
+
+        :param sort: List[str] (optional)
+               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+        :param page: int (optional)
+               Specifies the page to fetch
+        :param per_page: int (optional)
+               Specifies how many results are returned by page
+        :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
+        """
         return self._client.get_actions_list(self, sort, page, per_page)
 
     def get_actions(self, sort=None):
         # type: (Optional[List[str]]) -> List[BoundAction]
+        """Returns all action objects for the image.
+
+        :param sort: List[str] (optional)
+               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+        :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
+        """
         return self._client.get_actions(self, sort)
 
     def update(self, description=None, type=None, labels=None):
         # type: (Optional[str], Optional[Dict[str, str]]) -> BoundImage
+        """Updates the Image. You may change the description, convert a Backup image to a Snapshot Image or change the image labels.
+
+        :param description: str (optional)
+               New description of Image
+        :param type: str (optional)
+               Destination image type to convert to
+               Choices: snapshot
+        :param labels: Dict[str, str] (optional)
+               User-defined labels (key-value pairs)
+        :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
+        """
         return self._client.update(self, description, type, labels)
 
     def delete(self):
         # type: () -> bool
+        """Deletes an Image. Only images of type snapshot and backup can be deleted.
+
+        :return: bool
+        """
         return self._client.delete(self)
 
     def change_protection(self, delete=None):
         # type: (Optional[bool]) -> BoundAction
+        """Changes the protection configuration of the image. Can only be used on snapshots.
+
+        :param delete: bool
+               If true, prevents the snapshot from being deleted
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.change_protection(self, delete)
 
 
@@ -51,6 +88,17 @@ class ImagesClient(ClientEntityBase):
                          per_page=None  # type: Optional[int]
                          ):
         # type: (...) -> PageResults[List[BoundAction], Meta]
+        """Returns a list of action objects for an image.
+
+        :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
+        :param sort: List[str] (optional)
+               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+        :param page: int (optional)
+               Specifies the page to fetch
+        :param per_page: int (optional)
+               Specifies how many results are returned by page
+        :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
+        """
         params = {}
         if sort is not None:
             params["sort"] = sort
@@ -67,10 +115,22 @@ class ImagesClient(ClientEntityBase):
                     sort=None,     # type: Optional[List[str]]
                     ):
         # type: (...) -> List[BoundAction]
+        """Returns all action objects for an image.
+
+        :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
+        :param sort: List[str] (optional)
+               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+        :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
+        """
         return super(ImagesClient, self).get_actions(image, sort=sort)
 
     def get_by_id(self, id):
         # type: (int) -> BoundImage
+        """Get a specific Image
+
+        :param id: int
+        :return: :class:`BoundImage <hcloud.images.client.BoundImage
+        """
         response = self._client.request(url="/images/{image_id}".format(image_id=id), method="GET")
         return BoundImage(self, response['image'])
 
@@ -84,6 +144,24 @@ class ImagesClient(ClientEntityBase):
                  per_page=None         # type: Optional[int]
                  ):
         # type: (...) -> PageResults[List[BoundImage]]
+        """Get all images
+
+        :param name: str (optional)
+               Can be used to filter images by their name.
+        :param label_selector: str (optional)
+               Can be used to filter servers by labels. The response will only contain servers matching the label selector.
+        :param bound_to: List[str] (optional)
+               Server Id linked to the image. Only available for images of type backup
+        :param type: List[str] (optional)
+               Choices: system snapshot backup
+        :param sort: List[str] (optional)
+               Choices: id id:asc id:desc name name:asc name:desc created created:asc created:desc
+        :param page: int (optional)
+               Specifies the page to fetch
+        :param per_page: int (optional)
+               Specifies how many results are returned by page
+        :return: (List[:class:`BoundImage <hcloud.images.client.BoundImage>`], :class:`Meta <hcloud.core.domain.Meta>`)
+        """
         params = {}
         if name:
             params['name'] = name
@@ -113,10 +191,36 @@ class ImagesClient(ClientEntityBase):
                 sort=None,            # type: Optional[List[str]]
                 ):
         # type: (...) -> List[BoundImage]
+        """Get all images
+
+        :param name: str (optional)
+               Can be used to filter images by their name.
+        :param label_selector: str (optional)
+               Can be used to filter servers by labels. The response will only contain servers matching the label selector.
+        :param bound_to: List[str] (optional)
+               Server Id linked to the image. Only available for images of type backup
+        :param type: List[str] (optional)
+               Choices: system snapshot backup
+        :param sort: List[str] (optional)
+               Choices: id id:asc id:desc name name:asc name:desc created created:asc created:desc
+        :return: List[:class:`BoundImage <hcloud.images.client.BoundImage>`]
+        """
         return super(ImagesClient, self).get_all(name=name, label_selector=label_selector, bound_to=bound_to, type=type, sort=sort)
 
     def update(self, image, description=None, type=None, labels=None):
         # type:(Image,  Optional[str], Optional[str],  Optional[Dict[str, str]]) -> BoundImage
+        """Updates the Image. You may change the description, convert a Backup image to a Snapshot Image or change the image labels.
+
+        :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
+        :param description: str (optional)
+               New description of Image
+        :param type: str (optional)
+               Destination image type to convert to
+               Choices: snapshot
+        :param labels: Dict[str, str] (optional)
+               User-defined labels (key-value pairs)
+        :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
+        """
         data = {}
         if description is not None:
             data.update({"description": description})
@@ -129,12 +233,24 @@ class ImagesClient(ClientEntityBase):
 
     def delete(self, image):
         # type: (Image) -> bool
+        """Deletes an Image. Only images of type snapshot and backup can be deleted.
+
+        :param :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
+        :return: bool
+        """
         self._client.request(url="/images/{image_id}".format(image_id=image.id), method="DELETE")
         # Return allays true, because the API does not return an action for it. When an error occurs a APIException will be raised
         return True
 
     def change_protection(self, image, delete=None):
         # type: (Image, Optional[bool], Optional[bool]) -> BoundAction
+        """Changes the protection configuration of the image. Can only be used on snapshots.
+
+        :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
+        :param delete: bool
+               If true, prevents the snapshot from being deleted
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         data = {}
         if delete is not None:
             data.update({"delete": delete})
