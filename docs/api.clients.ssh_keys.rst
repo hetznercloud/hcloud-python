@@ -10,5 +10,4 @@ SSHKeysClient
 
 .. autoclass:: hcloud.ssh_keys.domain.SSHKey
     :members:
-    :undoc-members:
 

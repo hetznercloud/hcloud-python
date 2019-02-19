@@ -5,10 +5,11 @@ from hcloud.core.domain import BaseDomain, DomainIdentityMixin
 class Datacenter(BaseDomain, DomainIdentityMixin):
     """Datacenter Domain
 
-    :param id: ID of Datacenter
-    :param name: Name of Datacenter
-    :param description: Description of Datacenter
+    :param id: int ID of Datacenter
+    :param name: str Name of Datacenter
+    :param description: str Description of Datacenter
     :param location: :class:`BoundLocation <hcloud.locations.client.BoundLocation>`
+    :param server_types: :class:`DatacenterServerTypes <hcloud.datacenters.domain.DatacenterServerTypes>`
     """
     __slots__ = (
         "id",
@@ -34,6 +35,15 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
 
 
 class DatacenterServerTypes:
+    """DatacenterServerTypes Domain
+
+    :param available: List[:class:`BoundServerTypes <hcloud.server_types.client.BoundServerTypes>`]
+           All available server types for this datacenter
+    :param supported: List[:class:`BoundServerTypes <hcloud.server_types.client.BoundServerTypes>`]
+           All supported server types for this datacenter
+    :param available_for_migration: List[:class:`BoundServerTypes <hcloud.server_types.client.BoundServerTypes>`]
+           All available for migration (change type) server types for this datacenter
+    """
     __slots__ = (
         "available",
         "supported",

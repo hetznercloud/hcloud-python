@@ -1,7 +1,6 @@
 ServerTypesClient
 ==================
 
-
 .. autoclass:: hcloud.server_types.client.ServerTypesClient
     :members:
 
@@ -10,5 +9,4 @@ ServerTypesClient
 
 .. autoclass:: hcloud.server_types.domain.ServerType
     :members:
-    :undoc-members:
 

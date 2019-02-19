@@ -82,7 +82,7 @@ class BoundModelBase(object):
         self.data_model = self.model(**data)
 
     def __getattr__(self, name):
-        """
+        """Allow magical access to the properties of the model
         :param name: str
         :return:
         """

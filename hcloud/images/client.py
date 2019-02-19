@@ -25,7 +25,7 @@ class BoundImage(BoundModelBase):
         """Returns a list of action objects for the image.
 
         :param sort: List[str] (optional)
-               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :param page: int (optional)
                Specifies the page to fetch
         :param per_page: int (optional)
@@ -39,7 +39,7 @@ class BoundImage(BoundModelBase):
         """Returns all action objects for the image.
 
         :param sort: List[str] (optional)
-               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
         return self._client.get_actions(self, sort)
@@ -92,7 +92,7 @@ class ImagesClient(ClientEntityBase):
 
         :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
         :param sort: List[str] (optional)
-               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :param page: int (optional)
                Specifies the page to fetch
         :param per_page: int (optional)
@@ -119,7 +119,7 @@ class ImagesClient(ClientEntityBase):
 
         :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
         :param sort: List[str] (optional)
-               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
         return super(ImagesClient, self).get_actions(image, sort=sort)

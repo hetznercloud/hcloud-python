@@ -10,5 +10,6 @@ Floating IPsClient
 
 .. autoclass:: hcloud.floating_ips.domain.FloatingIP
     :members:
-    :undoc-members:
 
+.. autoclass:: hcloud.floating_ips.domain.CreateFloatingIPResponse
+    :members:

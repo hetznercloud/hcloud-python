@@ -2,7 +2,7 @@ ISOsClient
 ==================
 
 
-.. autoclass:: hcloud.isos.client.ISOsClient
+.. autoclass:: hcloud.isos.client.IsosClient
     :members:
 
 .. autoclass:: hcloud.isos.client.BoundIso
@@ -10,5 +10,4 @@ ISOsClient
 
 .. autoclass:: hcloud.isos.domain.Iso
     :members:
-    :undoc-members:
 

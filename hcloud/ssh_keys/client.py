@@ -118,11 +118,11 @@ class SSHKeysClient(ClientEntityBase):
         """Updates an SSH key. You can update an SSH key name and an SSH key labels.
 
         :param ssh_key: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>` or  :class:`SSHKey <hcloud.ssh_keys.domain.SSHKey>`
-        :param description: str (optional)
+        :param name: str (optional)
                New Description to set
         :param labels: Dict[str, str] (optional)
                User-defined labels (key-value pairs)
-        :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>
+        :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`
         """
         data = {}
         if name is not None:

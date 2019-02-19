@@ -53,9 +53,9 @@ class ActionsClient(ClientEntityBase):
         """Get a list of actions from this account
 
         :param status: List[str] (optional)
-               Response will have only actions with specified statuses. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Response will have only actions with specified statuses. Choices: `running` `success` `error`
         :param sort: List[str] (optional)
-               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :param page: int (optional)
                Specifies the page to fetch
         :param per_page: int (optional)
@@ -81,9 +81,9 @@ class ActionsClient(ClientEntityBase):
         """Get all actions of the account
 
         :param status: List[str] (optional)
-               Response will have only actions with specified statuses. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Response will have only actions with specified statuses. Choices: `running` `success` `error`
         :param sort: List[str] (optional)
-               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
         return super(ActionsClient, self).get_all(status=status, sort=sort)

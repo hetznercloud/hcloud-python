@@ -27,9 +27,9 @@ class BoundFloatingIP(BoundModelBase):
         """Returns all action objects for a Floating IP.
 
        :param status: List[str] (optional)
-               Response will have only actions with specified statuses. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Response will have only actions with specified statuses. Choices: `running` `success` `error`
         :param sort: List[str] (optional)
-               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :param page: int (optional)
                Specifies the page to fetch
         :param per_page: int (optional)
@@ -43,9 +43,9 @@ class BoundFloatingIP(BoundModelBase):
         """Returns all action objects for a Floating IP.
 
         :param status: List[str] (optional)
-               Response will have only actions with specified statuses. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Response will have only actions with specified statuses. Choices: `running` `success` `error`
         :param sort: List[str] (optional)
-               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
 
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
@@ -125,11 +125,11 @@ class FloatingIPsClient(ClientEntityBase):
         # type: (...) -> PageResults[List[BoundAction], Meta]
         """Returns all action objects for a Floating IP.
 
-        :param floating_ip: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>` or  :class:`FloatingIP <hcloud.floating_ips.domain.FloatingIP>
+        :param floating_ip: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>` or  :class:`FloatingIP <hcloud.floating_ips.domain.FloatingIP>`
         :param status: List[str] (optional)
-               Response will have only actions with specified statuses. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Response will have only actions with specified statuses. Choices: `running` `success` `error`
         :param sort: List[str] (optional)
-               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :param page: int (optional)
                Specifies the page to fetch
         :param per_page: int (optional)
@@ -159,11 +159,11 @@ class FloatingIPsClient(ClientEntityBase):
         # type: (...) -> List[BoundAction]
         """Returns all action objects for a Floating IP.
 
-        :param floating_ip: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>` or  :class:`FloatingIP <hcloud.floating_ips.domain.FloatingIP>
+        :param floating_ip: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>` or  :class:`FloatingIP <hcloud.floating_ips.domain.FloatingIP>`
         :param status: List[str] (optional)
-               Response will have only actions with specified statuses. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Response will have only actions with specified statuses. Choices: `running` `success` `error`
         :param sort: List[str] (optional)
-               Specify how the results are sorted. See `our documentation <https://docs.hetzner.cloud/#actions-list-all-actions>`_  for all available values.
+               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
 
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
@@ -265,7 +265,7 @@ class FloatingIPsClient(ClientEntityBase):
         # type: (FloatingIP,  Optional[str], Optional[Dict[str, str]]) -> BoundFloatingIP
         """Updates the description or labels of a Floating IP.
 
-        :param floating_ip: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>` or  :class:`FloatingIP <hcloud.floating_ips.domain.FloatingIP>
+        :param floating_ip: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>` or  :class:`FloatingIP <hcloud.floating_ips.domain.FloatingIP>`
         :param description: str (optional)
                New Description to set
         :param labels: Dict[str, str] (optional)

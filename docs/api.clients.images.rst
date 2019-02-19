@@ -10,5 +10,7 @@ ImagesClient
 
 .. autoclass:: hcloud.images.domain.Image
     :members:
-    :undoc-members:
+
+.. autoclass:: hcloud.images.domain.CreateImageResponse
+    :members:
 
