@@ -6,7 +6,6 @@
    installation
    samples
    usage
-   domain
    api
    Hetzner Cloud API Documentation <https://docs.hetzner.cloud>
    contributing
