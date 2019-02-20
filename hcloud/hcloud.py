@@ -18,7 +18,7 @@ from hcloud.datacenters.client import DatacentersClient
 from .version import VERSION, USER_AGENT_PREFIX
 
 
-class HcloudAPIException(Exception):
+class APIException(Exception):
     def __init__(self, code, message, details):
         self.code = code
         self.message = message
@@ -69,7 +69,7 @@ class HcloudClient(object):
         return headers
 
     def _raise_exception_from_response(self, response):
-        raise HcloudAPIException(
+        raise APIException(
             code=response.status_code,
             message=response.reason,
             details={
@@ -78,7 +78,7 @@ class HcloudClient(object):
         )
 
     def _raise_exception_from_json_content(self, json_content):
-        raise HcloudAPIException(
+        raise APIException(
             code=json_content['error']['code'],
             message=json_content['error']['message'],
             details=json_content['error']['details']

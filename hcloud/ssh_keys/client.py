@@ -77,5 +77,5 @@ class SSHKeysClient(ClientEntityBase):
     def delete(self, ssh_key):
         # type: (SSHKey) -> bool
         self._client.request(url="/ssh_keys/{ssh_key_id}".format(ssh_key_id=ssh_key.id), method="DELETE")
-        # Return allays true, because the API does not return an action for it. When an error occurs a HcloudAPIException will be raised
+        # Return allays true, because the API does not return an action for it. When an error occurs a APIException will be raised
         return True

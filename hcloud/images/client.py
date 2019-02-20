@@ -130,7 +130,7 @@ class ImagesClient(ClientEntityBase):
     def delete(self, image):
         # type: (Image) -> bool
         self._client.request(url="/images/{image_id}".format(image_id=image.id), method="DELETE")
-        # Return allays true, because the API does not return an action for it. When an error occurs a HcloudAPIException will be raised
+        # Return allays true, because the API does not return an action for it. When an error occurs a APIException will be raised
         return True
 
     def change_protection(self, image, delete=None):
