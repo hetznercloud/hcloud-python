@@ -364,6 +364,18 @@ class TestServersClient(object):
         assert bound_server2.id == 2
         assert bound_server2.name == "my-server2"
 
+    def test_get_by_name(self, servers_client, response_simple_servers):
+        servers_client._client.request.return_value = response_simple_servers
+        bound_server = servers_client.get_by_name("my-server")
+
+        params = {'name': "my-server"}
+
+        servers_client._client.request.assert_called_with(url="/servers", method="GET", params=params)
+
+        assert bound_server._client is servers_client
+        assert bound_server.id == 1
+        assert bound_server.name == "my-server"
+
     def test_create_with_datacenter(self, servers_client, response_create_simple_server):
         servers_client._client.request.return_value = response_create_simple_server
         response = servers_client.create(

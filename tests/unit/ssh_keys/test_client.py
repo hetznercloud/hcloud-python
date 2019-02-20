@@ -105,6 +105,17 @@ class TestSSHKeysClient(object):
         assert ssh_keys2.id == 2324
         assert ssh_keys2.name == "SSH-Key"
 
+    def test_get_by_name(self, ssh_keys_client, one_ssh_keys_response):
+        ssh_keys_client._client.request.return_value = one_ssh_keys_response
+        ssh_keys = ssh_keys_client.get_by_name("SSH-Key")
+
+        params = {'name': "SSH-Key"}
+        ssh_keys_client._client.request.assert_called_with(url="/ssh_keys", method="GET", params=params)
+
+        assert ssh_keys._client is ssh_keys_client
+        assert ssh_keys.id == 2323
+        assert ssh_keys.name == "SSH-Key"
+
     def test_create(self, ssh_keys_client, ssh_key_response):
         ssh_keys_client._client.request.return_value = ssh_key_response
         ssh_key = ssh_keys_client.create(name="My ssh key", public_key="ssh-rsa AAAjjk76kgf...Xt")

@@ -85,6 +85,37 @@ def two_images_response():
 
 
 @pytest.fixture()
+def one_images_response():
+    return {
+        "images": [
+            {
+                "id": 4711,
+                "type": "snapshot",
+                "status": "available",
+                "name": "ubuntu-16.04",
+                "description": "Ubuntu 16.04 Standard 64 bit",
+                "image_size": 2.3,
+                "disk_size": 10,
+                "created": "2016-01-30T23:50+00:00",
+                "created_from": {
+                    "id": 1,
+                    "name": "Server"
+                },
+                "bound_to": None,
+                "os_flavor": "ubuntu",
+                "os_version": "16.04",
+                "rapid_deploy": False,
+                "protection": {
+                    "delete": False
+                },
+                "deprecated": "2018-02-28T00:00:00+00:00",
+                "labels": {}
+            },
+        ]
+    }
+
+
+@pytest.fixture()
 def response_update_image():
     return {
         "image": {

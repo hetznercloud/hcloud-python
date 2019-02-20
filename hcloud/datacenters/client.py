@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from hcloud.core.client import ClientEntityBase, BoundModelBase
+from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByNameMixin
 
 from hcloud.datacenters.domain import Datacenter, DatacenterServerTypes
 from hcloud.locations.client import BoundLocation
@@ -28,7 +28,7 @@ class BoundDatacenter(BoundModelBase):
         super(BoundDatacenter, self).__init__(client, data)
 
 
-class DatacentersClient(ClientEntityBase):
+class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
     results_list_attribute_name = 'datacenters'
 
     def get_by_id(self, id):
@@ -82,3 +82,13 @@ class DatacentersClient(ClientEntityBase):
         :return: List[:class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`]
         """
         return super(DatacentersClient, self).get_all(name=name)
+
+    def get_by_name(self, name):
+        # type: (str) -> BoundDatacenter
+        """Get datacenter by name
+
+        :param name: str
+               Used to get location by name.
+        :return: :class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`
+        """
+        return super(DatacentersClient, self).get_by_name(name)

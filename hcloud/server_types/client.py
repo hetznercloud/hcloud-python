@@ -1,4 +1,4 @@
-from hcloud.core.client import ClientEntityBase, BoundModelBase
+from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByNameMixin
 from hcloud.server_types.domain import ServerType
 
 
@@ -6,7 +6,7 @@ class BoundServerType(BoundModelBase):
     model = ServerType
 
 
-class ServerTypesClient(ClientEntityBase):
+class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
     results_list_attribute_name = 'server_types'
 
     def get_by_id(self, id):
@@ -52,3 +52,13 @@ class ServerTypesClient(ClientEntityBase):
         :return: List[:class:`BoundServerType <hcloud.server_types.client.BoundServerType>`]
         """
         return super(ServerTypesClient, self).get_all(name=name)
+
+    def get_by_name(self, name):
+        # type: (str) -> BoundServerType
+        """Get Server type by name
+
+        :param name: str
+               Used to get Server type by name.
+        :return: :class:`BoundServerType <hcloud.server_types.client.BoundServerType>`
+        """
+        return super(ServerTypesClient, self).get_by_name(name)

@@ -1,7 +1,7 @@
 import mock
 import pytest
 
-from hcloud.core.client import BoundModelBase, ClientEntityBase
+from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from hcloud.core.domain import add_meta_to_result
 
 
@@ -199,3 +199,43 @@ class TestClientEntityBase():
 
         error = exception_info.value
         assert str(error) == "in order to get results list, 'results_list_attribute_name' attribute of CandiesClient has to be specified"
+
+
+class TestGetEntityByNameMixin():
+    @pytest.fixture()
+    def client_class_constructor(self):
+        def constructor(json_content_function):
+            class CandiesClient(ClientEntityBase, GetEntityByNameMixin):
+                results_list_attribute_name = 'candies'
+
+                def get_list(self, name, page=None, per_page=None):
+                    json_content = json_content_function(page)
+                    results = json_content['candies']
+                    return self._add_meta_to_result(results, json_content)
+            return CandiesClient(mock.MagicMock())
+
+        return constructor
+
+    def test_get_get_by_name_result_exists(self, client_class_constructor):
+        json_content = {"candies": [1]}
+
+        def json_content_function(p):
+            return json_content
+
+        candies_client = client_class_constructor(json_content_function)
+
+        result = candies_client.get_by_name(name="sweet")
+
+        assert result == 1
+
+    def test_get_get_by_name_result_doe_not_exist(self, client_class_constructor):
+        json_content = {"candies": []}
+
+        def json_content_function(p):
+            return json_content
+
+        candies_client = client_class_constructor(json_content_function)
+
+        result = candies_client.get_by_name(name="sweet")
+
+        assert result is None

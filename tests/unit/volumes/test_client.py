@@ -187,6 +187,18 @@ class TestVolumesClient(object):
         assert bound_volume2.id == 2
         assert bound_volume2.name == "vault-storage"
 
+    def test_get_by_name(self, volumes_client, one_volumes_response):
+        volumes_client._client.request.return_value = one_volumes_response
+        bound_volume = volumes_client.get_by_name("database-storage")
+
+        params = {'name': "database-storage"}
+
+        volumes_client._client.request.assert_called_with(url="/volumes", method="GET", params=params)
+
+        assert bound_volume._client is volumes_client
+        assert bound_volume.id == 1
+        assert bound_volume.name == "database-storage"
+
     def test_create_with_location(self, volumes_client, volume_create_response):
         volumes_client._client.request.return_value = volume_create_response
         response = volumes_client.create(

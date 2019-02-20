@@ -62,3 +62,15 @@ class TestServerTypesClient(object):
         assert server_types2._client is server_types_client
         assert server_types2.id == 2
         assert server_types2.name == "cx21"
+
+    def test_get_by_name(self, server_types_client, one_server_types_response):
+        server_types_client._client.request.return_value = one_server_types_response
+        server_type = server_types_client.get_by_name("cx11")
+
+        params = {'name': "cx11"}
+
+        server_types_client._client.request.assert_called_with(url="/server_types", method="GET", params=params)
+
+        assert server_type._client is server_types_client
+        assert server_type.id == 1
+        assert server_type.name == "cx11"

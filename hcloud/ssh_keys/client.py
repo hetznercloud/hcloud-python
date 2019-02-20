@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from hcloud.core.client import ClientEntityBase, BoundModelBase
+from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByNameMixin
 
 from hcloud.ssh_keys.domain import SSHKey
 
@@ -27,7 +27,7 @@ class BoundSSHKey(BoundModelBase):
         return self._client.delete(self)
 
 
-class SSHKeysClient(ClientEntityBase):
+class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
     results_list_attribute_name = 'ssh_keys'
 
     def get_by_id(self, id):
@@ -92,6 +92,16 @@ class SSHKeysClient(ClientEntityBase):
         :return:  List[:class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`]
         """
         return super(SSHKeysClient, self).get_all(name=name, fingerprint=fingerprint, label_selector=label_selector)
+
+    def get_by_name(self, name):
+        # type: (str) -> SSHKeysClient
+        """Get ssh key by name
+
+        :param name: str
+               Used to get ssh key by name.
+        :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`
+        """
+        return super(SSHKeysClient, self).get_by_name(name)
 
     def create(self, name, public_key, labels=None):
         # type: (str, str, Optional[Dict[str, str]]) -> BoundSSHKey

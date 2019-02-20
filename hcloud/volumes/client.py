@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from hcloud.core.client import ClientEntityBase, BoundModelBase
+from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByNameMixin
 
 from hcloud.actions.client import BoundAction
 from hcloud.core.domain import add_meta_to_result
@@ -103,7 +103,7 @@ class BoundVolume(BoundModelBase):
         return self._client.change_protection(self, delete)
 
 
-class VolumesClient(ClientEntityBase):
+class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
     results_list_attribute_name = 'volumes'
 
     def get_by_id(self, id):
@@ -131,6 +131,8 @@ class VolumesClient(ClientEntityBase):
         :return: (List[:class:`BoundVolume <hcloud.volumes.client.BoundVolume>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
         params = {}
+        if name is not None:
+            params['name'] = name
         if label_selector:
             params['label_selector'] = label_selector
         if page is not None:
@@ -150,6 +152,16 @@ class VolumesClient(ClientEntityBase):
         :return: List[:class:`BoundVolume <hcloud.volumes.client.BoundVolume>`]
         """
         return super(VolumesClient, self).get_all(label_selector=label_selector)
+
+    def get_by_name(self, name):
+        # type: (str) -> BoundVolume
+        """Get volume by name
+
+        :param name: str
+               Used to get volume by name.
+        :return: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>`
+        """
+        return super(VolumesClient, self).get_by_name(name)
 
     def create(self,
                size,  # type: int

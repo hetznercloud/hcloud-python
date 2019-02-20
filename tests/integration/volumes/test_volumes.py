@@ -59,6 +59,12 @@ class TestVolumesClient(object):
         assert bound_volume.name == "database-storage"
         assert bound_volume.size == 42
 
+    def test_get_by_name(self, hetzner_client):
+        bound_volume = hetzner_client.volumes.get_by_name("database-storage")
+        assert bound_volume.id == 4711
+        assert bound_volume.name == "database-storage"
+        assert bound_volume.size == 42
+
     def test_get_list(self, hetzner_client):
         result = hetzner_client.volumes.get_list()
         bound_volumes = result.volumes

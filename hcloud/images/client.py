@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from hcloud.actions.client import BoundAction
-from hcloud.core.client import BoundModelBase, ClientEntityBase
+from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from hcloud.core.domain import add_meta_to_result
 
 from hcloud.images.domain import Image
@@ -78,7 +78,7 @@ class BoundImage(BoundModelBase):
         return self._client.change_protection(self, delete)
 
 
-class ImagesClient(ClientEntityBase):
+class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
     results_list_attribute_name = 'images'
 
     def get_actions_list(self,
@@ -206,6 +206,16 @@ class ImagesClient(ClientEntityBase):
         :return: List[:class:`BoundImage <hcloud.images.client.BoundImage>`]
         """
         return super(ImagesClient, self).get_all(name=name, label_selector=label_selector, bound_to=bound_to, type=type, sort=sort)
+
+    def get_by_name(self, name):
+        # type: (str) -> BoundImage
+        """Get image by name
+
+        :param name: str
+               Used to get image by name.
+        :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
+        """
+        return super(ImagesClient, self).get_by_name(name)
 
     def update(self, image, description=None, type=None, labels=None):
         # type:(Image,  Optional[str], Optional[str],  Optional[Dict[str, str]]) -> BoundImage

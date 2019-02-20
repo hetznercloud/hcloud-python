@@ -85,6 +85,37 @@ def two_volumes_response():
 
 
 @pytest.fixture()
+def one_volumes_response():
+    return {
+        "volumes": [
+            {
+                "id": 1,
+                "created": "2016-01-30T23:50:11+00:00",
+                "name": "database-storage",
+                "server": 12,
+                "location": {
+                    "id": 1,
+                    "name": "fsn1",
+                    "description": "Falkenstein DC Park 1",
+                    "country": "DE",
+                    "city": "Falkenstein",
+                    "latitude": 50.47612,
+                    "longitude": 12.370071
+                },
+                "size": 42,
+                "linux_device": "/dev/disk/by-id/scsi-0HC_Volume_4711",
+                "protection": {
+                    "delete": False
+                },
+                "format": "xfs",
+                "labels": {},
+                "status": "available"
+            }
+        ]
+    }
+
+
+@pytest.fixture()
 def volume_create_response():
     return {
         "volume": {

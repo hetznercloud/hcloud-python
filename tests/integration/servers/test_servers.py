@@ -151,6 +151,15 @@ class TestServersClient(object):
         assert server.datacenter.id == 1
         assert server.image.id == 4711
 
+    def test_get_by_name(self, hetzner_client):
+        server = hetzner_client.servers.get_by_name("my-server")
+        assert server.id == 42
+        assert server.name == "my-server"
+        assert server.volumes == []
+        assert server.server_type.id == 1
+        assert server.datacenter.id == 1
+        assert server.image.id == 4711
+
     def test_get_list(self, hetzner_client):
         result = hetzner_client.servers.get_list(42)
         servers = result.servers

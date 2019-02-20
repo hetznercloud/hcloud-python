@@ -93,3 +93,34 @@ def two_server_types_response():
             }
         ]
     }
+
+
+@pytest.fixture()
+def one_server_types_response():
+    return {
+        "server_types": [
+            {
+                "id": 1,
+                "name": "cx11",
+                "description": "CX11",
+                "cores": 1,
+                "memory": 1,
+                "disk": 25,
+                "prices": [
+                    {
+                        "location": "fsn1",
+                        "price_hourly": {
+                            "net": "1.0000000000",
+                            "gross": "1.1900000000000000"
+                        },
+                        "price_monthly": {
+                            "net": "1.0000000000",
+                            "gross": "1.1900000000000000"
+                        }
+                    }
+                ],
+                "storage_type": "local",
+                "cpu_type": "shared"
+            }
+        ]
+    }
