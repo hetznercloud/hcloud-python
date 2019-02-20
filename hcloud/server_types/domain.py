@@ -3,7 +3,27 @@ from hcloud.core.domain import BaseDomain, DomainIdentityMixin
 
 
 class ServerType(BaseDomain, DomainIdentityMixin):
+    """ServerType Domain
 
+    :param id: int
+           ID of the server type
+    :param name: str
+           Unique identifier of the server type
+    :param description: str
+           Description of the server type
+    :param cores: int
+           Number of cpu cores a server of this type will have
+    :param memory: int
+           Memory a server of this type will have in GB
+    :param disk: int
+           Disk size a server of this type will have in GB
+    :param prices: Dict
+           Prices in different locations
+    :param storage_type: str
+           Type of server boot drive. Local has higher speed. Network has better availability. Choices: `local`, `network`
+    :param cpu_type: string
+           Type of cpu. Choices: `shared`, `dedicated`
+    """
     __slots__ = (
         "id",
         "name",

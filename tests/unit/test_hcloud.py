@@ -10,7 +10,7 @@ class TestHetznerClient(object):
 
     @pytest.fixture()
     def client(self):
-        HcloudClient.version = '0.0.0'
+        HcloudClient._version = '0.0.0'
         return HcloudClient(token="project_token")
 
     @pytest.fixture()
@@ -139,7 +139,7 @@ class TestHetznerClient(object):
         assert error.details["content"] == ""
 
     def test_request_limit(self, mocked_requests, client, rate_limit_response):
-        client.retry_wait_time = 0
+        client._retry_wait_time = 0
         mocked_requests.request.return_value = rate_limit_response
         with pytest.raises(APIException) as exception_info:
             client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
@@ -149,7 +149,7 @@ class TestHetznerClient(object):
         assert error.message == "limit of 10 requests per hour reached"
 
     def test_request_limit_then_success(self, mocked_requests, client, rate_limit_response):
-        client.retry_wait_time = 0
+        client._retry_wait_time = 0
         response = requests.Response()
         response.status_code = 200
         response._content = json.dumps({"result": "data"}).encode('utf-8')

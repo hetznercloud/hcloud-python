@@ -5,6 +5,41 @@ from hcloud.helpers.descriptors import ISODateTime
 
 
 class Server(BaseDomain):
+    """Server Domain
+
+    :param id: int
+           ID of the server
+    :param name: str
+           Name of the server (must be unique per project and a valid hostname as per RFC 1123)
+    :param status: str
+           Status of the server Choices: `running`, `initializing`, `starting`, `stopping`, `off`, `deleting`, `migrating`, `rebuilding`, `unknown`
+    :param created: datetime
+           Point in time when the server was created
+    :param public_net: :class:`PublicNetwork <hcloud.servers.domain.PublicNetwork>`
+           Public network information.
+    :param server_type: :class:`BoundServerType <hcloud.server_types.client.BoundServerType>`
+    :param datacenter: :class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`
+    :param image: :class:`BoundImage <hcloud.images.client.BoundImage>`, None
+    :param iso: :class:`BoundIso <hcloud.isos.client.BoundIso>`, None
+    :param rescue_enabled: bool
+           True if rescue mode is enabled: Server will then boot into rescue system on next reboot.
+    :param locked: bool
+           True if server has been locked and is not available to user.
+    :param backup_window: str, None
+           Time window (UTC) in which the backup will run, or None if the backups are not enabled
+    :param outgoing_traffic: int, None
+           Outbound Traffic for the current billing period in bytes
+    :param ingoing_traffic: int, None
+           Inbound Traffic for the current billing period in bytes
+    :param included_traffic: int
+           Free Traffic for the current billing period in bytes
+    :param protection: dict
+           Protection configuration for the server
+    :param labels: dict
+            User-defined labels (key-value pairs)
+    :param volumes: List[:class:`BoundVolume <hcloud.volumes.client.BoundVolume>`]
+            Volumes assigned to this server.
+    """
     __slots__ = (
         "id",
         "name",
@@ -69,6 +104,17 @@ class Server(BaseDomain):
 
 
 class CreateServerResponse(BaseDomain):
+    """Create Server Response Domain
+
+    :param action: :class:`BoundServer <hcloud.servers.client.BoundServer>`
+           The created server
+    :param action: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+           Shows the progress of the server creation
+    :param next_actions: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
+           Additional actions like a `start_server` action after the server creation
+    :param root_password: str, None
+           The root password of the server if no SSH-Key was given on server creation
+    """
     __slots__ = (
         "server",
         "action",
@@ -90,6 +136,13 @@ class CreateServerResponse(BaseDomain):
 
 
 class ResetPasswordResponse(BaseDomain):
+    """Reset Password Response Domain
+
+    :param action: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+           Shows the progress of the server passwort reset action
+    :param root_password: str
+           The root password of the server
+    """
     __slots__ = (
         "action",
         "root_password"
@@ -105,6 +158,13 @@ class ResetPasswordResponse(BaseDomain):
 
 
 class EnableRescueResponse(BaseDomain):
+    """Enable Rescue Response Domain
+
+    :param action: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+           Shows the progress of the server enable rescue action
+    :param root_password: str
+           The root password of the server in the rescue mode
+    """
     __slots__ = (
         "action",
         "root_password"
@@ -120,6 +180,15 @@ class EnableRescueResponse(BaseDomain):
 
 
 class RequestConsoleResponse(BaseDomain):
+    """Request Console Response Domain
+
+    :param action: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+           Shows the progress of the server request console action
+    :param wss_url: str
+           URL of websocket proxy to use. This includes a token which is valid for a limited time only.
+    :param password: str
+           VNC password to use for this connection. This password only works in combination with a wss_url with valid token.
+    """
     __slots__ = (
         "action",
         "wss_url",
@@ -138,6 +207,12 @@ class RequestConsoleResponse(BaseDomain):
 
 
 class PublicNetwork(BaseDomain):
+    """Public Network Domain
+
+    :param ipv4: :class:`IPv4Address <hcloud.servers.domain.IPv4Address>`
+    :param ipv6: :class:`IPv6Network <hcloud.servers.domain.IPv6Network>`
+    :param floating_ips: List[:class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`]
+    """
     __slots__ = (
         "ipv4",
         "ipv6",
@@ -155,6 +230,15 @@ class PublicNetwork(BaseDomain):
 
 
 class IPv4Address(BaseDomain):
+    """IPv4 Address Domain
+
+    :param ip: str
+           The IPv4 Address
+    :param blocked: bool
+           Determine if the IP is blocked
+    :param dns_ptr: str
+           DNS PTR for the ip
+    """
     __slots__ = (
         "ip",
         "blocked",
@@ -172,6 +256,19 @@ class IPv4Address(BaseDomain):
 
 
 class IPv6Network(BaseDomain):
+    """IPv6 Network Domain
+
+    :param ip: str
+           The IPv6 Network as CIDR Notation
+    :param blocked: bool
+           Determine if the Network is blocked
+    :param dns_ptr: dict
+           DNS PTR Records for the Network as Dict
+    :param network: str
+           The network without the network mask
+    :param network_mask: str
+           The network mask
+    """
     __slots__ = (
         "ip",
         "blocked",

@@ -3,7 +3,29 @@ from hcloud.core.domain import BaseDomain
 
 
 class FloatingIP(BaseDomain):
+    """Floating IP Domain
 
+    :param id: int
+           ID of the Floating IP
+    :param description: str, None
+           Description of the Floating IP
+    :param ip: str
+           IP address of the Floating IP
+    :param type: str
+           Type of Floating IP. Choices: `ipv4`, `ipv6`
+    :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>`, None
+           Server the Floating IP is assigned to, None if it is not assigned at all
+    :param dns_ptr: List[Dict]
+           Array of reverse DNS entries
+    :param home_location: :class:`BoundLocation <hcloud.locations.client.BoundLocation>`
+           Location the Floating IP was created in. Routing is optimized for this location.
+    :param blocked: boolean
+           Whether the IP is blocked
+    :param protection: dict
+           Protection configuration for the Floating IP
+    :param labels: dict
+           User-defined labels (key-value pairs)
+    """
     __slots__ = (
         "id",
         "type",
@@ -44,6 +66,13 @@ class FloatingIP(BaseDomain):
 
 
 class CreateFloatingIPResponse(BaseDomain):
+    """Create Floating IP Response Domain
+
+    :param floating_ip: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`
+           The Floating IP which was created
+    :param action: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+           The Action which shows the progress of the Floating IP Creation
+    """
     __slots__ = (
         "floating_ip",
         "action"

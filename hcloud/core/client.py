@@ -7,20 +7,24 @@ class ClientEntityBase(object):
     results_list_attribute_name = None
 
     def __init__(self, client):
+        """
+        :param client: HcloudClient
+        :return self
+        """
         self._client = client
 
-    def is_list_attribute_implemented(self):
+    def _is_list_attribute_implemented(self):
         if self.results_list_attribute_name is None:
             raise NotImplementedError(
                 "in order to get results list, 'results_list_attribute_name' attribute of {} has to be specified". format(self.__class__.__name__)
             )
 
-    def add_meta_to_result(self,
-                           results,  # type: List[BoundModelBase]
-                           response  # type: json
-                           ):
+    def _add_meta_to_result(self,
+                            results,  # type: List[BoundModelBase]
+                            response  # type: json
+                            ):
         # type: (...) -> PageResult
-        self.is_list_attribute_implemented()
+        self._is_list_attribute_implemented()
         return add_meta_to_result(results, response, self.results_list_attribute_name)
 
     def _get_all(self,
@@ -49,7 +53,7 @@ class ClientEntityBase(object):
 
     def get_all(self, *args, **kwargs):
         # type: (...) -> List[BoundModelBase]
-        self.is_list_attribute_implemented()
+        self._is_list_attribute_implemented()
         return self._get_all(self.get_list, self.results_list_attribute_name, *args, **kwargs)
 
     def get_actions(self, *args, **kwargs):
@@ -61,14 +65,27 @@ class ClientEntityBase(object):
 
 
 class BoundModelBase(object):
+    """Bound Model Base"""
     model = None
 
     def __init__(self, client, data={}, complete=True):
+        """
+        :param client:
+                The client for the specific model to use
+        :param data:
+                The data of the model
+        :param complete: bool
+                False if not all attributes of the model fetched
+        """
         self._client = client
         self.complete = complete
         self.data_model = self.model(**data)
 
     def __getattr__(self, name):
+        """Allow magical access to the properties of the model
+        :param name: str
+        :return:
+        """
         value = getattr(self.data_model, name)
         if not value and not self.complete:
             self.reload()
@@ -76,6 +93,8 @@ class BoundModelBase(object):
         return value
 
     def reload(self):
+        """Reloads the model and tries to get all data from the APIx
+        """
         bound_model = self._client.get_by_id(self.data_model.id)
         self.data_model = bound_model.data_model
         self.complete = True

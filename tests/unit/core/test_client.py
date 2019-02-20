@@ -73,7 +73,7 @@ class TestClientEntityBase():
                 def get_list(self, status, page=None, per_page=None):
                     json_content = json_content_function(page)
                     results = [(r, page, status, per_page) for r in json_content['candies']]
-                    return self.add_meta_to_result(results, json_content)
+                    return self._add_meta_to_result(results, json_content)
             return CandiesClient(mock.MagicMock())
 
         return constructor
