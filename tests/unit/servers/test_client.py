@@ -439,7 +439,7 @@ class TestServersClient(object):
                 'name': "my-server",
                 'server_type': "cx11",
                 'image': 4711,
-                'volumes': ['1', '2'],
+                'volumes': [1, 2],
                 "start_after_create": False
             }
         )
