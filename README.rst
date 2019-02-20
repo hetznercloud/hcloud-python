@@ -18,9 +18,9 @@ Official Hetzner Cloud python library
 
 Setup Dev environment
 ---------------------
-1) `mkvirtualenv hcloud-python`.
+1) `mkvirtualenv hcloud-python`
 
-2) `pip install -r requirements/dev.txt`.
+2) `pip install -e .` or `pip install -e .[docs]` to be able to build docs
 
 
 Run tests
