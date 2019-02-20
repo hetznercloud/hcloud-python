@@ -376,14 +376,12 @@ class ServersClient(ClientEntityBase):
 
         if location is not None:
             data['location'] = location.id_or_name
-
         if datacenter is not None:
             data['datacenter'] = datacenter.id_or_name
-
         if ssh_keys is not None:
-            data['ssh_keys'] = [str(ssh_key.id_or_name) for ssh_key in ssh_keys]
+            data['ssh_keys'] = [ssh_key.id_or_name for ssh_key in ssh_keys]
         if volumes is not None:
-            data['volumes'] = [str(volume.id) for volume in volumes]
+            data['volumes'] = [volume.id for volume in volumes]
         if user_data is not None:
             data['user_data'] = user_data
         if labels is not None:
