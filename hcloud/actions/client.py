@@ -13,7 +13,6 @@ class BoundAction(BoundModelBase):
 
         :param max_retries: int
                Specify how many retries will be performed before an ActionTimeoutException will be raised
-        
         :raises: ActionFailedException when action is finished with status=="error"
         :raises: ActionTimeoutException when Action is still in "running" state after max_retries reloads.
         """
