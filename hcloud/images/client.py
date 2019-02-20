@@ -119,7 +119,7 @@ class ImagesClient(ClientEntityBase):
 
         :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
         :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
+               Specify how the results are sorted. Choices: `id` `command` `status` `progress`  `started` `finished` . You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default)
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
         return super(ImagesClient, self).get_actions(image, sort=sort)
@@ -202,7 +202,7 @@ class ImagesClient(ClientEntityBase):
         :param type: List[str] (optional)
                Choices: system snapshot backup
         :param sort: List[str] (optional)
-               Choices: id id:asc id:desc name name:asc name:desc created created:asc created:desc
+               Choices: id name created (You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default))
         :return: List[:class:`BoundImage <hcloud.images.client.BoundImage>`]
         """
         return super(ImagesClient, self).get_all(name=name, label_selector=label_selector, bound_to=bound_to, type=type, sort=sort)

@@ -13,7 +13,7 @@ class BoundAction(BoundModelBase):
 
         :param max_retries: int
                Specify how many retries will be performed before an ActionTimeoutException will be raised
-        :return: bool
+        
         :raises: ActionFailedException when action is finished with status=="error"
         :raises: ActionTimeoutException when Action is still in "running" state after max_retries reloads.
         """
@@ -55,7 +55,7 @@ class ActionsClient(ClientEntityBase):
         :param status: List[str] (optional)
                Response will have only actions with specified statuses. Choices: `running` `success` `error`
         :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
+               Specify how the results are sorted. Choices: `id` `command` `status` `progress`  `started` `finished` . You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default)
         :param page: int (optional)
                Specifies the page to fetch
         :param per_page: int (optional)
@@ -83,7 +83,7 @@ class ActionsClient(ClientEntityBase):
         :param status: List[str] (optional)
                Response will have only actions with specified statuses. Choices: `running` `success` `error`
         :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
+               Specify how the results are sorted. Choices: `id` `command` `status` `progress`  `started` `finished` . You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default)
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
         return super(ActionsClient, self).get_all(status=status, sort=sort)
