@@ -155,7 +155,7 @@ class FloatingIPsClient(ClientEntityBase):
     def delete(self, floating_ip):
         # type: (FloatingIP) -> bool
         self._client.request(url="/floating_ips/{floating_ip_id}".format(floating_ip_id=floating_ip.id), method="DELETE")
-        # Return allays true, because the API does not return an action for it. When an error occurs a HcloudAPIException will be raised
+        # Return allays true, because the API does not return an action for it. When an error occurs a APIException will be raised
         return True
 
     def change_protection(self, floating_ip, delete=None):

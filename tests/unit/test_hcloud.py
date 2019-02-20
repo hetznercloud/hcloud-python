@@ -3,7 +3,7 @@
 import json
 import requests
 import pytest
-from hcloud import HcloudClient, HcloudAPIException
+from hcloud import HcloudClient, APIException
 
 
 class TestHetznerClient(object):
@@ -87,7 +87,7 @@ class TestHetznerClient(object):
 
     def test_request_fails(self, mocked_requests, client, fail_response):
         mocked_requests.request.return_value = fail_response
-        with pytest.raises(HcloudAPIException) as exception_info:
+        with pytest.raises(APIException) as exception_info:
             client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
         error = exception_info.value
         assert error.code == "invalid_input"
@@ -99,7 +99,7 @@ class TestHetznerClient(object):
         fail_response.reason = "Internal Server Error"
         fail_response._content = "Internal Server Error"
         mocked_requests.request.return_value = fail_response
-        with pytest.raises(HcloudAPIException) as exception_info:
+        with pytest.raises(APIException) as exception_info:
             client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
         error = exception_info.value
         assert error.code == 500
@@ -111,7 +111,7 @@ class TestHetznerClient(object):
         response.reason = "OK"
         response._content = content
         mocked_requests.request.return_value = response
-        with pytest.raises(HcloudAPIException) as exception_info:
+        with pytest.raises(APIException) as exception_info:
             client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
         error = exception_info.value
         assert error.code == 200
@@ -131,7 +131,7 @@ class TestHetznerClient(object):
         fail_response.reason = "Internal Server Error"
         fail_response._content = ""
         mocked_requests.request.return_value = fail_response
-        with pytest.raises(HcloudAPIException) as exception_info:
+        with pytest.raises(APIException) as exception_info:
             client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
         error = exception_info.value
         assert error.code == 500
@@ -141,7 +141,7 @@ class TestHetznerClient(object):
     def test_request_limit(self, mocked_requests, client, rate_limit_response):
         client.retry_wait_time = 0
         mocked_requests.request.return_value = rate_limit_response
-        with pytest.raises(HcloudAPIException) as exception_info:
+        with pytest.raises(APIException) as exception_info:
             client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
         error = exception_info.value
         assert mocked_requests.request.call_count == 5
