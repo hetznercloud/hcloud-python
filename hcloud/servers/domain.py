@@ -37,7 +37,7 @@ class Server(BaseDomain):
            Protection configuration for the server
     :param labels: dict
             User-defined labels (key-value pairs)
-    :param volumes: List[class:`BoundVolume <hcloud.volumes.client.BoundVolume>`]
+    :param volumes: List[:class:`BoundVolume <hcloud.volumes.client.BoundVolume>`]
             Volumes assigned to this server.
     """
     __slots__ = (
