@@ -1,9 +1,9 @@
-from hcloud import HcloudClient
+from hcloud import Client
 from hcloud.images.domain import Image
 from hcloud.server_types.domain import ServerType
 
 # Create a client
-client = HcloudClient(token="project-token")
+client = Client(token="project-token")
 
 # Create 2 servers
 # Create 2 servers

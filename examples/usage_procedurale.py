@@ -1,11 +1,11 @@
-from hcloud import HcloudClient
+from hcloud import Client
 
 from hcloud.images.domain import Image
 from hcloud.servers.domain import Server
 from hcloud.server_types.domain import ServerType
 from hcloud.volumes.domain import Volume
 
-client = HcloudClient(token="project-token")
+client = Client(token="project-token")
 
 # Create 2 servers
 response1 = client.servers.create(

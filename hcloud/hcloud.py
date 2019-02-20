@@ -25,8 +25,11 @@ class APIException(Exception):
         self.message = message
         self.details = details
 
+    def __str__(self):
+        return self.message
 
-class HcloudClient(object):
+
+class Client(object):
     """Base Client for accessing the Hetzner Cloud API"""
 
     _version = VERSION
@@ -34,7 +37,7 @@ class HcloudClient(object):
     __user_agent_prefix = 'hcloud-python'
 
     def __init__(self, token, api_endpoint="https://api.hetzner.cloud/v1", application_name=None, application_version=None, poll_interval=1):
-        """Create an new HcloudClient instance
+        """Create an new Client instance
 
         :param token: str
                 Hetzner Cloud API token

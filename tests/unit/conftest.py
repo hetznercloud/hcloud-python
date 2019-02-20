@@ -1,6 +1,6 @@
 import mock
 import pytest
-from hcloud import HcloudClient
+from hcloud import Client
 
 
 @pytest.fixture(autouse=True, scope='function')
@@ -37,7 +37,7 @@ def generic_action():
 
 @pytest.fixture()
 def hetzner_client():
-    client = HcloudClient(token="token")
+    client = Client(token="token")
     patcher = mock.patch.object(client, "request")
     patcher.start()
     yield client
