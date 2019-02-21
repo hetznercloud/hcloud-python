@@ -88,7 +88,7 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
         """Get datacenter by name
 
         :param name: str
-               Used to get location by name.
+               Used to get datacenter by name.
         :return: :class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`
         """
         return super(DatacentersClient, self).get_by_name(name)

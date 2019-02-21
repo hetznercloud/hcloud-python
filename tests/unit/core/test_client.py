@@ -216,7 +216,7 @@ class TestGetEntityByNameMixin():
 
         return constructor
 
-    def test_get_get_by_name_result_exists(self, client_class_constructor):
+    def test_get_by_name_result_exists(self, client_class_constructor):
         json_content = {"candies": [1]}
 
         def json_content_function(p):
@@ -228,7 +228,7 @@ class TestGetEntityByNameMixin():
 
         assert result == 1
 
-    def test_get_get_by_name_result_doe_not_exist(self, client_class_constructor):
+    def test_get_by_name_result_does_not_exist(self, client_class_constructor):
         json_content = {"candies": []}
 
         def json_content_function(p):
