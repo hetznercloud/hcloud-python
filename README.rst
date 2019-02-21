@@ -6,7 +6,8 @@ Hetzner Cloud Python
     :target: https://travis-ci.com/hetznercloud/hcloud-python
 .. image:: https://readthedocs.org/projects/hcloud-python/badge/?version=latest
     :target: https://hcloud-python.readthedocs.io
-
+.. image:: https://img.shields.io/pypi/pyversions/hcloud.svg
+    :target: https://pypi.org/project/hcloud/
 
     
 **IMPORTANT: This project is still in development and not ready production yet!**
