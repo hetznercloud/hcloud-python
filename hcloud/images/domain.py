@@ -59,6 +59,8 @@ class Image(BaseDomain, DomainIdentityMixin):
         "labels"
     )
 
+    supported_fields = ("created", "deprecated")
+
     def __init__(
             self,
             id=None,

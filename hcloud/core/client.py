@@ -93,7 +93,7 @@ class BoundModelBase(object):
         """
         self._client = client
         self.complete = complete
-        self.data_model = self.model(**data)
+        self.data_model = self.model.from_dict(data)
 
     def __getattr__(self, name):
         """Allow magical access to the properties of the model

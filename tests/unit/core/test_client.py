@@ -2,14 +2,14 @@ import mock
 import pytest
 
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.core.domain import add_meta_to_result
+from hcloud.core.domain import add_meta_to_result, BaseDomain
 
 
 class TestBoundModelBase():
 
     @pytest.fixture()
     def bound_model_class(self):
-        class Model(object):
+        class Model(BaseDomain):
             __slots__ = ("id", "name", "description")
 
             def __init__(self, id, name="", description=""):

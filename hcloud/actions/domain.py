@@ -35,6 +35,8 @@ class Action(BaseDomain):
         "error",
     )
 
+    supported_fields = ("started", "finished")
+
     def __init__(
             self,
             id,

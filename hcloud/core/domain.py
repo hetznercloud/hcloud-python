@@ -5,6 +5,18 @@ from collections import namedtuple
 class BaseDomain(object):
     __slots__ = ()
 
+    supported_fields = ()
+
+    @classmethod
+    def get_supported_fields(cls):
+        return set(cls.__slots__ + cls.supported_fields)
+
+    @classmethod
+    def from_dict(cls, data):
+        supported_fields = cls.get_supported_fields()
+        supported_data = {k: v for k, v in data.items() if k in supported_fields}
+        return cls(**supported_data)
+
 
 class DomainIdentityMixin(object):
     __slots__ = ()

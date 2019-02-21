@@ -2,6 +2,11 @@
 History
 =======
 
+1.0.1 (2019-02-21)
+------------------
+
+  Fix: Ignore unknown fields in API response instead of raising an error
+
 1.0.0 (2019-02-21)
 ------------------
 

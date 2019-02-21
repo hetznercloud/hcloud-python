@@ -1,6 +1,8 @@
 import pytest
+from dateutil.parser import isoparse
 
 from hcloud.core.domain import BaseDomain, DomainIdentityMixin, Meta, Pagination, add_meta_to_result
+from hcloud.helpers.descriptors import ISODateTime
 
 
 class TestMeta(object):
@@ -89,3 +91,62 @@ class TestDomainIdentityMixin(object):
             domain.id_or_name
         error = exception_info.value
         assert str(error) == "id or name must be set"
+
+
+class ActionDomain(BaseDomain, DomainIdentityMixin):
+    __slots__ = ("id", "name", "started")
+
+    def __init__(self, id, name="name1", started=None):
+        self.id = id
+        self.name = name
+        self.started = isoparse(started) if started else None
+
+
+class ActionDomainWithDescriptor(BaseDomain):
+    started = ISODateTime()
+
+    __slots__ = ("id", "name")
+
+    supported_fields = ("started",)
+
+    def __init__(self, id=None, name="name1", started=None):
+        self.id = id
+        self.name = name
+        self.started = started
+
+
+class ActionDomainWithSupportedFieldsOverride(BaseDomain):
+
+    @classmethod
+    def get_supported_fields(cls):
+        return set(["id", "started", "name"])
+
+    def __init__(self, id=None, name="name1", started=None):
+        self.id = id
+        self.name = name
+        self.started = isoparse(started) if started else None
+
+
+class TestBaseDomain(object):
+
+    @pytest.mark.parametrize("domain", [ActionDomain, ActionDomainWithDescriptor, ActionDomainWithSupportedFieldsOverride])
+    @pytest.mark.parametrize(
+        "data_dict,expected_result",
+        [
+            ({"id": 1},
+             {"id": 1, "name": "name1", "started": None}
+             ),
+            ({"id": 2, "name": "name2"},
+             {"id": 2, "name": "name2", "started": None}
+             ),
+            ({"id": 3, "foo": "boo", "description": "new"},
+             {"id": 3, "name": "name1", "started": None}
+             ),
+            ({"id": 4, "foo": "boo", "description": "new", "name": "name-name3", "started": "2016-01-30T23:50+00:00"},
+             {"id": 4, "name": "name-name3", "started": isoparse("2016-01-30T23:50+00:00")}
+             ),
+        ])
+    def test_from_dict_ok(self, domain, data_dict, expected_result):
+        model = domain.from_dict(data_dict)
+        for k, v in expected_result.items():
+            assert getattr(model, k) == v
