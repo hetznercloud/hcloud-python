@@ -3,15 +3,15 @@
 import json
 import requests
 import pytest
-from hcloud import HcloudClient, APIException
+from hcloud import Client, APIException
 
 
 class TestHetznerClient(object):
 
     @pytest.fixture()
     def client(self):
-        HcloudClient._version = '0.0.0'
-        return HcloudClient(token="project_token")
+        Client._version = '0.0.0'
+        return Client(token="project_token")
 
     @pytest.fixture()
     def response(self):
@@ -56,12 +56,12 @@ class TestHetznerClient(object):
         assert user_agent == "hcloud-python/0.0.0"
 
     def test__get_user_agent_with_application_name(self, client):
-        client = HcloudClient(token="project_token", application_name="my-app")
+        client = Client(token="project_token", application_name="my-app")
         user_agent = client._get_user_agent()
         assert user_agent == "my-app hcloud-python/0.0.0"
 
     def test__get_user_agent_with_application_name_and_version(self, client):
-        client = HcloudClient(token="project_token", application_name="my-app", application_version="1.0.0")
+        client = Client(token="project_token", application_name="my-app", application_version="1.0.0")
         user_agent = client._get_user_agent()
         assert user_agent == "my-app/1.0.0 hcloud-python/0.0.0"
 
@@ -137,6 +137,7 @@ class TestHetznerClient(object):
         assert error.code == 500
         assert error.message == "Internal Server Error"
         assert error.details["content"] == ""
+        assert str(error) == "Internal Server Error"
 
     def test_request_limit(self, mocked_requests, client, rate_limit_response):
         client._retry_wait_time = 0

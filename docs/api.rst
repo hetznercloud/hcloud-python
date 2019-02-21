@@ -4,7 +4,7 @@ hcloud-python API
 Main Interface
 ---------------
 
-.. autoclass:: hcloud.HcloudClient
+.. autoclass:: hcloud.Client
     :members:
 
 

@@ -8,7 +8,7 @@ class ClientEntityBase(object):
 
     def __init__(self, client):
         """
-        :param client: HcloudClient
+        :param client: Client
         :return self
         """
         self._client = client
