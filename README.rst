@@ -9,9 +9,6 @@ Hetzner Cloud Python
 .. image:: https://img.shields.io/pypi/pyversions/hcloud.svg
     :target: https://pypi.org/project/hcloud/
 
-    
-**IMPORTANT: This project is still in development and not ready production yet!**
-
 Official Hetzner Cloud python library
 
 The library's documentation is available at `ReadTheDocs`_, the public API documentation is available at https://docs.hetzner.cloud.
