@@ -43,6 +43,12 @@ class TestImagesClient(object):
         assert image.name == "ubuntu-16.04"
         assert image.description == "Ubuntu 16.04 Standard 64 bit"
 
+    def test_get_by_name(self, hetzner_client):
+        image = hetzner_client.images.get_by_name("ubuntu-16.04")
+        assert image.id == 4711
+        assert image.name == "ubuntu-16.04"
+        assert image.description == "Ubuntu 16.04 Standard 64 bit"
+
     def test_get_list(self, hetzner_client):
         result = hetzner_client.images.get_list()
         images = result.images

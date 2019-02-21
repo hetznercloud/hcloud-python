@@ -110,3 +110,15 @@ class TestDatacentersClient(object):
         assert datacenter2.id == 2
         assert datacenter2.name == "nbg1-dc3"
         assert isinstance(datacenter2.location, BoundLocation)
+
+    def test_get_by_name(self, datacenters_client, one_datacenters_response):
+        datacenters_client._client.request.return_value = one_datacenters_response
+        datacenter = datacenters_client.get_by_name("fsn1-dc8")
+
+        params = {"name": "fsn1-dc8"}
+        datacenters_client._client.request.assert_called_with(url="/datacenters", method="GET", params=params)
+
+        assert datacenter._client is datacenters_client
+        assert datacenter.id == 1
+        assert datacenter.name == "fsn1-dc8"
+        assert isinstance(datacenter.location, BoundLocation)

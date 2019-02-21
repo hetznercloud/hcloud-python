@@ -64,6 +64,20 @@ class ClientEntityBase(object):
         return self._get_all(self.get_actions_list, 'actions', *args, **kwargs)
 
 
+class GetEntityByNameMixin(object):
+    """
+    Use as a mixin for ClientEntityBase classes
+    """
+
+    def get_by_name(self, name):
+        # type: (str) -> BoundModelBase
+        self._is_list_attribute_implemented()
+        response = self.get_list(name=name)
+        entities = getattr(response, self.results_list_attribute_name)
+        entity = entities[0] if entities else None
+        return entity
+
+
 class BoundModelBase(object):
     """Bound Model Base"""
     model = None

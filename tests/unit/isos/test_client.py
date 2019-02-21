@@ -96,3 +96,15 @@ class TestIsosClient(object):
         assert isos2._client is isos_client
         assert isos2.id == 4712
         assert isos2.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
+
+    def test_get_by_name(self, isos_client, one_isos_response):
+        isos_client._client.request.return_value = one_isos_response
+        iso = isos_client.get_by_name("FreeBSD-11.0-RELEASE-amd64-dvd1")
+
+        params = {'name': "FreeBSD-11.0-RELEASE-amd64-dvd1"}
+
+        isos_client._client.request.assert_called_with(url="/isos", method="GET", params=params)
+
+        assert iso._client is isos_client
+        assert iso.id == 4711
+        assert iso.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"

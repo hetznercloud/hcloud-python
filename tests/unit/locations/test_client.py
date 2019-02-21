@@ -61,3 +61,15 @@ class TestLocationsClient(object):
         assert location2._client is locations_client
         assert location2.id == 2
         assert location2.name == "nbg1"
+
+    def test_get_by_name(self, locations_client, one_locations_response):
+        locations_client._client.request.return_value = one_locations_response
+        location = locations_client.get_by_name("fsn1")
+
+        params = {'name': "fsn1"}
+
+        locations_client._client.request.assert_called_with(url="/locations", method="GET", params=params)
+
+        assert location._client is locations_client
+        assert location.id == 1
+        assert location.name == "fsn1"

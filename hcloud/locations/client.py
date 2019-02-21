@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from hcloud.core.client import ClientEntityBase, BoundModelBase
+from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByNameMixin
 
 from hcloud.locations.domain import Location
 
@@ -8,7 +8,7 @@ class BoundLocation(BoundModelBase):
     model = Location
 
 
-class LocationsClient(ClientEntityBase):
+class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
     results_list_attribute_name = 'locations'
 
     def get_by_id(self, id):
@@ -54,3 +54,13 @@ class LocationsClient(ClientEntityBase):
         :return: List[:class:`BoundLocation <hcloud.locations.client.BoundLocation>`]
         """
         return super(LocationsClient, self).get_all(name=name)
+
+    def get_by_name(self, name):
+        # type: (str) -> BoundLocation
+        """Get location by name
+
+        :param name: str
+               Used to get location by name.
+        :return: :class:`BoundLocation <hcloud.locations.client.BoundLocation>`
+        """
+        return super(LocationsClient, self).get_by_name(name)

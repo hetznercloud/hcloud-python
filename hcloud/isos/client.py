@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from hcloud.core.client import BoundModelBase, ClientEntityBase
+from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 
 from hcloud.isos.domain import Iso
 
@@ -8,7 +8,7 @@ class BoundIso(BoundModelBase):
     model = Iso
 
 
-class IsosClient(ClientEntityBase):
+class IsosClient(ClientEntityBase, GetEntityByNameMixin):
     results_list_attribute_name = 'isos'
 
     def get_by_id(self, id):
@@ -58,3 +58,13 @@ class IsosClient(ClientEntityBase):
         :return: List[:class:`BoundIso <hcloud.isos.client.BoundIso>`]
         """
         return super(IsosClient, self).get_all(name=name)
+
+    def get_by_name(self, name):
+        # type: (str) -> BoundIso
+        """Get iso by name
+
+        :param name: str
+               Used to get iso by name.
+        :return: :class:`BoundIso <hcloud.isos.client.BoundIso>`
+        """
+        return super(IsosClient, self).get_by_name(name)

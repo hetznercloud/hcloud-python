@@ -193,6 +193,18 @@ class TestImagesClient(object):
         assert images2.id == 4712
         assert images2.name == "ubuntu-18.10"
 
+    def test_get_by_name(self, images_client, one_images_response):
+        images_client._client.request.return_value = one_images_response
+        image = images_client.get_by_name("ubuntu-16.04")
+
+        params = {"name": "ubuntu-16.04"}
+
+        images_client._client.request.assert_called_with(url="/images", method="GET", params=params)
+
+        assert image._client is images_client
+        assert image.id == 4711
+        assert image.name == "ubuntu-16.04"
+
     @pytest.mark.parametrize("image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))])
     def test_get_actions_list(self, images_client, image, response_get_actions):
         images_client._client.request.return_value = response_get_actions
