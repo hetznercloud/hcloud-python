@@ -19,9 +19,6 @@ Hetzner Cloud Python
 .. image:: https://readthedocs.org/projects/hcloud-python/badge/?version=latest
     :target: https://hcloud-python.readthedocs.io
 
-
-**IMPORTANT: This project is still in development and not ready production yet!**
-
 This is the official `Hetzner Cloud`_ python library.
 
 .. _Hetzner Cloud: https://www.hetzner.com/cloud
