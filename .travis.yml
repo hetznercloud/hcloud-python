@@ -3,6 +3,7 @@ dist: xenial
 sudo: true
 stages:
   - test
+  - codingstyle
   - name: deploy
     if: tag IS present
 python:
@@ -21,10 +22,14 @@ install:
 - pip install -r requirements/test.txt
 - pip install tox-travis
 
-script: tox && tox -e flake8
+script: tox
 
 jobs:
   include:
+    - stage: codingstyle
+      env: STAGE=style_check
+      python: "3.6"
+      script: tox -e flake8
     - stage: deploy
       env: STAGE=deploy
       if: tag IS present
