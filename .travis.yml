@@ -1,13 +1,16 @@
 language: python
+dist: xenial
+sudo: true
+stages:
+  - test
+  - name: deploy
+    if: tag IS present
 python:
 - '2.7'
 - '3.5'
 - '3.6'
-matrix:
-  include:
-  - python: 3.7
-    dist: xenial
-    sudo: true
+- '3.7'
+
 before_script:
 - docker pull lkdevelopment/hetzner-cloud-api-mock
 - docker run -d -p 127.0.0.1:4000:8080 lkdevelopment/hetzner-cloud-api-mock
@@ -17,11 +20,22 @@ install:
 - pip install .
 - pip install -r requirements/test.txt
 - pip install tox-travis
+
 script: tox && tox -e flake8
-deploy:
-  provider: pypi
-  user: "$PYPIUSER"
-  password:
-    secure: IDBPB3zIu17qOuw1IePaEg2JGFiEDBpnhIWSr4qwCC6QwCyTcaQpn/Nt2GfkXI5M5Pp9eiePgRXVjriJPAVFaA/tC56gfAXiTs0I6/pY/i24f+TDr6Vp+73FV2q2u4vnhBgRjtXWLHEorhE2JfeUhnu+1rC49FP43NqOW3qFBEU09UkXsVZg1Z4mabWOew2GNe5kX5CVL9bLV2h96FutsM6VJsetVS/20gQrrIQJlHhmyLlSixj+z9p/m1cILy2lww/cNPgK9KLiLtNYibYRaI5uKShDHFtmxfGFNatsVEAcF0ZENBp4N44x5hQHxnNTaLjFTjNeRd7smCEAhULXCxVgo11Fz3yl1xQrTXEBkR7KcvKDnaAkjrYrwxRoGCmdWbBUMKpTjR7+/hcTr7TBI93u9GU+FZikVdba6CkVgy/tlTZjpz/Toxo7RSldRQxm9IsyP1HezgBgiQeU3JZnPDmANyMA2q3b4ee+QLj4NoblgEREEKju2x42gGbMQd0am8AvwOVnET/yMcd5vJxGQWEvRRzseLjzw0JJ7b295RMD1kxdfjYrMu3Lvt+WZY7DOTyfvaXU44EbWEFGRdfpHu9kgtl84NWEfKJc4p9bACL2Go+ROe9BeVzTPE9cFCemR2E4tvyHI2fq/GqtQ6P/Y7uSdLTtfasB9A2Xk9IBZRA=
-  on:
-    tags: true
+
+jobs:
+  include:
+    - stage: deploy
+      env: STAGE=deploy
+      if: tag IS present
+      python: "3.6"
+      script: echo "Deploy to pypi"
+      deploy:
+        provider: pypi
+        user: "$PYPIUSER"
+        password:
+          secure: IDBPB3zIu17qOuw1IePaEg2JGFiEDBpnhIWSr4qwCC6QwCyTcaQpn/Nt2GfkXI5M5Pp9eiePgRXVjriJPAVFaA/tC56gfAXiTs0I6/pY/i24f+TDr6Vp+73FV2q2u4vnhBgRjtXWLHEorhE2JfeUhnu+1rC49FP43NqOW3qFBEU09UkXsVZg1Z4mabWOew2GNe5kX5CVL9bLV2h96FutsM6VJsetVS/20gQrrIQJlHhmyLlSixj+z9p/m1cILy2lww/cNPgK9KLiLtNYibYRaI5uKShDHFtmxfGFNatsVEAcF0ZENBp4N44x5hQHxnNTaLjFTjNeRd7smCEAhULXCxVgo11Fz3yl1xQrTXEBkR7KcvKDnaAkjrYrwxRoGCmdWbBUMKpTjR7+/hcTr7TBI93u9GU+FZikVdba6CkVgy/tlTZjpz/Toxo7RSldRQxm9IsyP1HezgBgiQeU3JZnPDmANyMA2q3b4ee+QLj4NoblgEREEKju2x42gGbMQd0am8AvwOVnET/yMcd5vJxGQWEvRRzseLjzw0JJ7b295RMD1kxdfjYrMu3Lvt+WZY7DOTyfvaXU44EbWEFGRdfpHu9kgtl84NWEfKJc4p9bACL2Go+ROe9BeVzTPE9cFCemR2E4tvyHI2fq/GqtQ6P/Y7uSdLTtfasB9A2Xk9IBZRA=
+        on:
+          tags: true
+          condition: $STAGE=deploy
+
