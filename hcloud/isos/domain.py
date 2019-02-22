@@ -26,6 +26,8 @@ class Iso(BaseDomain, DomainIdentityMixin):
         "description"
     )
 
+    supported_fields = ("deprecated", )
+
     def __init__(
         self,
         id=None,

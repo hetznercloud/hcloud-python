@@ -62,6 +62,8 @@ class Server(BaseDomain):
 
     created = ISODateTime()
 
+    supported_fields = ("created", )
+
     def __init__(
             self,
             id,
