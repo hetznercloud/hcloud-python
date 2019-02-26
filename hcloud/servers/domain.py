@@ -40,6 +40,24 @@ class Server(BaseDomain):
     :param volumes: List[:class:`BoundVolume <hcloud.volumes.client.BoundVolume>`]
             Volumes assigned to this server.
     """
+    STATUS_RUNNING = "running"
+    """Server Status running"""
+    STATUS_INIT = "initializing"
+    """Server Status initializing"""
+    STATUS_STARTING = "starting"
+    """Server Status starting"""
+    STATUS_STOPPING = "stopping"
+    """Server Status stopping"""
+    STATUS_OFF = "off"
+    """Server Status off"""
+    STATUS_DELETING = "deleting"
+    """Server Status deleting"""
+    STATUS_MIGRATING = "migrating"
+    """Server Status migrating"""
+    STATUS_REBUILDING = "rebuilding"
+    """Server Status rebuilding"""
+    STATUS_UNKNOWN = "unknown"
+    """Server Status unknown"""
     __slots__ = (
         "id",
         "name",
@@ -62,7 +80,7 @@ class Server(BaseDomain):
 
     created = ISODateTime()
 
-    supported_fields = ("created", )
+    supported_fields = ("created",)
 
     def __init__(
             self,

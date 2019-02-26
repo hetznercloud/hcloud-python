@@ -29,6 +29,11 @@ class Volume(BaseDomain, DomainIdentityMixin):
     :param format: str, None
            Filesystem of the volume if formatted on creation, None if not formatted on creation.
     """
+    STATUS_CREATING="creating"
+    """Volume Status creating"""
+    STATUS_AVAILABLE="available"
+    """Volume Status available"""
+
     created = ISODateTime()
 
     __slots__ = (

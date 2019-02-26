@@ -85,7 +85,7 @@ class TestBoundServer(object):
     @pytest.mark.parametrize(
         "params",
         [
-            {"status": ["running"],
+            {"status": [Server.STATUS_RUNNING],
              "sort": "status",
              "page": 1,
              "per_page": 10},
@@ -109,7 +109,7 @@ class TestBoundServer(object):
     @pytest.mark.parametrize(
         "params",
         [
-            {"status": ["running"],
+            {"status": [Server.STATUS_RUNNING],
              "sort": "status"},
             {}
 
