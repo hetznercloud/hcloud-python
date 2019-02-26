@@ -29,9 +29,9 @@ class Volume(BaseDomain, DomainIdentityMixin):
     :param format: str, None
            Filesystem of the volume if formatted on creation, None if not formatted on creation.
     """
-    STATUS_CREATING="creating"
+    STATUS_CREATING = "creating"
     """Volume Status creating"""
-    STATUS_AVAILABLE="available"
+    STATUS_AVAILABLE = "available"
     """Volume Status available"""
 
     created = ISODateTime()
@@ -49,7 +49,7 @@ class Volume(BaseDomain, DomainIdentityMixin):
         "status"
     )
 
-    supported_fields = ("created", )
+    supported_fields = ("created",)
 
     def __init__(
             self,
