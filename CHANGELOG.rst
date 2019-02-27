@@ -2,6 +2,11 @@
 History
 =======
 
+1.1.0 (2019-02-27)
+------------------
+
+* Feature: Add `STATUS`-constants for server and volume status
+
 1.0.1 (2019-02-22)
 ------------------
 
