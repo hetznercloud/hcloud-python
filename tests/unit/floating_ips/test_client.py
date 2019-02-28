@@ -199,7 +199,7 @@ class TestFloatingIPsClient(object):
     @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
     def test_create_with_server(self, floating_ips_client, server, floating_ip_create_response):
         floating_ips_client._client.request.return_value = floating_ip_create_response
-        floating_ips_client.create(
+        response = floating_ips_client.create(
             type="ipv6",
             description="Web Frontend",
             server=server
@@ -213,6 +213,13 @@ class TestFloatingIPsClient(object):
                 'server': 1
             }
         )
+        bound_floating_ip = response.floating_ip
+        action = response.action
+
+        assert bound_floating_ip._client is floating_ips_client
+        assert bound_floating_ip.id == 4711
+        assert bound_floating_ip.description == "Web Frontend"
+        assert action.id == 13
 
     @pytest.mark.parametrize("floating_ip", [FloatingIP(id=1), BoundFloatingIP(mock.MagicMock(), dict(id=1))])
     def test_get_actions(self, floating_ips_client, floating_ip, response_get_actions):
