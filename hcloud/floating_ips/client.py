@@ -255,9 +255,13 @@ class FloatingIPsClient(ClientEntityBase):
 
         response = self._client.request(url="/floating_ips", json=data, method="POST")
 
+        action = None
+        if response.get('action') is not None:
+            action = BoundAction(self._client.actions, response['action'])
+
         result = CreateFloatingIPResponse(
             floating_ip=BoundFloatingIP(self, response['floating_ip']),
-            action=BoundAction(self._client.actions, response.get('action', None))
+            action=action
         )
         return result
 
