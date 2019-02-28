@@ -257,7 +257,7 @@ class FloatingIPsClient(ClientEntityBase):
 
         result = CreateFloatingIPResponse(
             floating_ip=BoundFloatingIP(self, response['floating_ip']),
-            action=BoundAction(self._client.actions, response['action'])
+            action=BoundAction(self._client.actions, response.get('action', None))
         )
         return result
 

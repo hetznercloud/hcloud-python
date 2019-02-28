@@ -45,7 +45,8 @@ class TestBoundFloatingIP(object):
     def test_get_actions(self, hetzner_client, bound_floating_ip, response_get_actions):
         hetzner_client.request.return_value = response_get_actions
         actions = bound_floating_ip.get_actions(sort="id")
-        hetzner_client.request.assert_called_with(url="/floating_ips/14/actions", method="GET", params={"sort": "id", 'page': 1, 'per_page': 50})
+        hetzner_client.request.assert_called_with(url="/floating_ips/14/actions", method="GET",
+                                                  params={"sort": "id", 'page': 1, 'per_page': 50})
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
@@ -55,7 +56,8 @@ class TestBoundFloatingIP(object):
     def test_update(self, hetzner_client, bound_floating_ip, response_update_floating_ip):
         hetzner_client.request.return_value = response_update_floating_ip
         floating_ip = bound_floating_ip.update(description="New description")
-        hetzner_client.request.assert_called_with(url="/floating_ips/14", method="PUT", json={"description": "New description"})
+        hetzner_client.request.assert_called_with(url="/floating_ips/14", method="PUT",
+                                                  json={"description": "New description"})
 
         assert floating_ip.id == 4711
         assert floating_ip.description == "New description"
@@ -70,7 +72,8 @@ class TestBoundFloatingIP(object):
     def test_change_protection(self, hetzner_client, bound_floating_ip, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_floating_ip.change_protection(True)
-        hetzner_client.request.assert_called_with(url="/floating_ips/14/actions/change_protection", method="POST", json={"delete": True})
+        hetzner_client.request.assert_called_with(url="/floating_ips/14/actions/change_protection", method="POST",
+                                                  json={"delete": True})
 
         assert action.id == 1
         assert action.progress == 0
@@ -168,8 +171,8 @@ class TestFloatingIPsClient(object):
         assert bound_floating_ip2.id == 4712
         assert bound_floating_ip2.description == "Web Backend"
 
-    def test_create_with_location(self, floating_ips_client, floating_ip_create_response):
-        floating_ips_client._client.request.return_value = floating_ip_create_response
+    def test_create_with_location(self, floating_ips_client, floating_ip_response):
+        floating_ips_client._client.request.return_value = floating_ip_response
         response = floating_ips_client.create(
             "ipv6",
             "Web Frontend",
@@ -191,8 +194,7 @@ class TestFloatingIPsClient(object):
         assert bound_floating_ip._client is floating_ips_client
         assert bound_floating_ip.id == 4711
         assert bound_floating_ip.description == "Web Frontend"
-
-        assert action.id == 13
+        assert action is None
 
     @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
     def test_create_with_server(self, floating_ips_client, server, floating_ip_create_response):
@@ -216,7 +218,8 @@ class TestFloatingIPsClient(object):
     def test_get_actions(self, floating_ips_client, floating_ip, response_get_actions):
         floating_ips_client._client.request.return_value = response_get_actions
         actions = floating_ips_client.get_actions(floating_ip)
-        floating_ips_client._client.request.assert_called_with(url="/floating_ips/1/actions", method="GET", params={'page': 1, 'per_page': 50})
+        floating_ips_client._client.request.assert_called_with(url="/floating_ips/1/actions", method="GET",
+                                                               params={'page': 1, 'per_page': 50})
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
@@ -229,7 +232,8 @@ class TestFloatingIPsClient(object):
     def test_update(self, floating_ips_client, floating_ip, response_update_floating_ip):
         floating_ips_client._client.request.return_value = response_update_floating_ip
         floating_ip = floating_ips_client.update(floating_ip, description="New description")
-        floating_ips_client._client.request.assert_called_with(url="/floating_ips/1", method="PUT", json={"description": "New description"})
+        floating_ips_client._client.request.assert_called_with(url="/floating_ips/1", method="PUT",
+                                                               json={"description": "New description"})
 
         assert floating_ip.id == 4711
         assert floating_ip.description == "New description"
@@ -238,7 +242,8 @@ class TestFloatingIPsClient(object):
     def test_change_protection(self, floating_ips_client, floating_ip, generic_action):
         floating_ips_client._client.request.return_value = generic_action
         action = floating_ips_client.change_protection(floating_ip, True)
-        floating_ips_client._client.request.assert_called_with(url="/floating_ips/1/actions/change_protection", method="POST", json={"delete": True})
+        floating_ips_client._client.request.assert_called_with(url="/floating_ips/1/actions/change_protection",
+                                                               method="POST", json={"delete": True})
 
         assert action.id == 1
         assert action.progress == 0
@@ -253,7 +258,8 @@ class TestFloatingIPsClient(object):
 
     @pytest.mark.parametrize("server,floating_ip",
                              [(Server(id=1), FloatingIP(id=12)),
-                              (BoundServer(mock.MagicMock(), dict(id=1)), BoundFloatingIP(mock.MagicMock(), dict(id=12)))])
+                              (BoundServer(mock.MagicMock(), dict(id=1)),
+                               BoundFloatingIP(mock.MagicMock(), dict(id=12)))])
     def test_assign(self, floating_ips_client, server, floating_ip, generic_action):
         floating_ips_client._client.request.return_value = generic_action
         action = floating_ips_client.assign(floating_ip, server)
