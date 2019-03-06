@@ -2,6 +2,12 @@
 History
 =======
 
+1.2.0 (2019-03-06)
+------------------
+
+* Feature: Add `get_by_fingerprint`-method for ssh keys
+* Fix: Create Floating IP with location raises an error because no action was given.
+
 1.1.0 (2019-02-27)
 ------------------
 
