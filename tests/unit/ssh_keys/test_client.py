@@ -116,6 +116,17 @@ class TestSSHKeysClient(object):
         assert ssh_keys.id == 2323
         assert ssh_keys.name == "SSH-Key"
 
+    def test_get_by_fingerprint(self, ssh_keys_client, one_ssh_keys_response):
+        ssh_keys_client._client.request.return_value = one_ssh_keys_response
+        ssh_keys = ssh_keys_client.get_by_fingerprint("b7:2f:30:a0:2f:6c:58:6c:21:04:58:61:ba:06:3b:2f")
+
+        params = {'fingerprint': "b7:2f:30:a0:2f:6c:58:6c:21:04:58:61:ba:06:3b:2f"}
+        ssh_keys_client._client.request.assert_called_with(url="/ssh_keys", method="GET", params=params)
+
+        assert ssh_keys._client is ssh_keys_client
+        assert ssh_keys.id == 2323
+        assert ssh_keys.name == "SSH-Key"
+
     def test_create(self, ssh_keys_client, ssh_key_response):
         ssh_keys_client._client.request.return_value = ssh_key_response
         ssh_key = ssh_keys_client.create(name="My ssh key", public_key="ssh-rsa AAAjjk76kgf...Xt")

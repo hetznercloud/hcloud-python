@@ -103,6 +103,18 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super(SSHKeysClient, self).get_by_name(name)
 
+    def get_by_fingerprint(self, fingerprint):
+        # type: (str) -> BoundSSHKey
+        """Get ssh key by fingerprint
+
+        :param fingerprint: str
+                Used to get ssh key by fingerprint.
+        :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`
+        """
+        response = self.get_list(fingerprint=fingerprint)
+        sshkeys = response.ssh_keys
+        return sshkeys[0] if sshkeys else None
+
     def create(self, name, public_key, labels=None):
         # type: (str, str, Optional[Dict[str, str]]) -> BoundSSHKey
         """Creates a new SSH key with the given name and public_key.
