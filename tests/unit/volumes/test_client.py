@@ -26,7 +26,8 @@ class TestBoundVolume(object):
         assert bound_volume.id == 1
         assert bound_volume.created == isoparse("2016-01-30T23:50:11+00:00")
         assert bound_volume.name == "database-storage"
-        assert bound_volume.server == 12
+        assert isinstance(bound_volume.server, BoundServer)
+        assert bound_volume.server.id == 12
         assert bound_volume.size == 42
         assert bound_volume.linux_device == "/dev/disk/by-id/scsi-0HC_Volume_4711"
         assert bound_volume.protection == {"delete": False}
