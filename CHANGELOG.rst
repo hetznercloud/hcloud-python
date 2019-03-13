@@ -2,6 +2,11 @@
 History
 =======
 
+1.2.1 (2019-03-13)
+------------------
+
+* Fix: The `server`- property on the `BoundVolume` was not casted to an `BoundServer`
+
 1.2.0 (2019-03-06)
 ------------------
 
