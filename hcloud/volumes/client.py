@@ -14,6 +14,11 @@ class BoundVolume(BoundModelBase):
         location = data.get("location")
         if location is not None:
             data['location'] = BoundLocation(client._client.locations, location)
+
+        from hcloud.servers.client import BoundServer
+        server = data.get("server")
+        if server is not None:
+            data['server'] = BoundServer(client._client.servers, {"id": server}, complete=False)
         super(BoundVolume, self).__init__(client, data, complete)
 
     def get_actions_list(self, status=None, sort=None, page=None, per_page=None):
