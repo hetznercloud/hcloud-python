@@ -5,7 +5,7 @@ History
 1.2.1 (2019-03-13)
 ------------------
 
-* Fix: The `server`- property on the `BoundVolume` was not casted to an `BoundServer`
+* Fix: BoundVolume.server server property now casted to the 'BoundServer'.
 
 1.2.0 (2019-03-06)
 ------------------
