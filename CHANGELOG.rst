@@ -2,6 +2,11 @@
 History
 =======
 
+1.2.1 (2019-03-13)
+------------------
+
+* Fix: BoundVolume.server server property now casted to the 'BoundServer'.
+
 1.2.0 (2019-03-06)
 ------------------
 
