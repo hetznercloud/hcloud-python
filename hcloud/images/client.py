@@ -20,10 +20,12 @@ class BoundImage(BoundModelBase):
 
         super(BoundImage, self).__init__(client, data)
 
-    def get_actions_list(self, sort=None, page=None, per_page=None):
-        # type: (Optional[List[str]], Optional[int], Optional[int]) -> PageResult[BoundAction, Meta]
+    def get_actions_list(self, status=None, sort=None, page=None, per_page=None):
+        # type: (Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResult[BoundAction, Meta]
         """Returns a list of action objects for the image.
 
+        :param status: List[str] (optional)
+               Response will have only actions with specified statuses. Choices: `running` `success` `error`
         :param sort: List[str] (optional)
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :param page: int (optional)
@@ -32,17 +34,19 @@ class BoundImage(BoundModelBase):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        return self._client.get_actions_list(self, sort, page, per_page)
+        return self._client.get_actions_list(self, status=status, sort=sort, page=page, per_page=per_page)
 
-    def get_actions(self, sort=None):
-        # type: (Optional[List[str]]) -> List[BoundAction]
+    def get_actions(self, status=None, sort=None):
+        # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
         """Returns all action objects for the image.
 
+        :param status: List[str] (optional)
+               Response will have only actions with specified statuses. Choices: `running` `success` `error`
         :param sort: List[str] (optional)
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return self._client.get_actions(self, sort)
+        return self._client.get_actions(self, status=status, sort=sort)
 
     def update(self, description=None, type=None, labels=None):
         # type: (Optional[str], Optional[Dict[str, str]]) -> BoundImage
@@ -84,6 +88,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
     def get_actions_list(self,
                          image,         # type: Image
                          sort=None,     # type: Optional[List[str]]
+                         status=None,  # type: Optional[List[str]]
                          page=None,     # type: Optional[int]
                          per_page=None  # type: Optional[int]
                          ):
@@ -91,6 +96,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         """Returns a list of action objects for an image.
 
         :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
+        :param status: List[str] (optional)
+               Response will have only actions with specified statuses. Choices: `running` `success` `error`
         :param sort: List[str] (optional)
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :param page: int (optional)
@@ -102,6 +109,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         params = {}
         if sort is not None:
             params["sort"] = sort
+        if status is not None:
+            params["status"] = status
         if page is not None:
             params["page"] = page
         if per_page is not None:
@@ -112,17 +121,20 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_actions(self,
                     image,         # type: Image
+                    status=None,   # type: Optional[List[str]]
                     sort=None,     # type: Optional[List[str]]
                     ):
         # type: (...) -> List[BoundAction]
         """Returns all action objects for an image.
 
         :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
+        :param status: List[str] (optional)
+               Response will have only actions with specified statuses. Choices: `running` `success` `error`
         :param sort: List[str] (optional)
                Specify how the results are sorted. Choices: `id` `command` `status` `progress`  `started` `finished` . You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default)
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super(ImagesClient, self).get_actions(image, sort=sort)
+        return super(ImagesClient, self).get_actions(image, sort=sort, status=status)
 
     def get_by_id(self, id):
         # type: (int) -> BoundImage
@@ -139,6 +151,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                  label_selector=None,  # type: Optional[str]
                  bound_to=None,        # type: Optional[List[str]]
                  type=None,            # type: Optional[List[str]]
+                 status=None,          # type: Optional[List[str]]
                  sort=None,            # type: Optional[List[str]]
                  page=None,            # type: Optional[int]
                  per_page=None         # type: Optional[int]
@@ -154,6 +167,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Server Id linked to the image. Only available for images of type backup
         :param type: List[str] (optional)
                Choices: system snapshot backup
+        :param status: List[str] (optional)
+               Can be used to filter images by their status. The response will only contain images matching the status.
         :param sort: List[str] (optional)
                Choices: id id:asc id:desc name name:asc name:desc created created:asc created:desc
         :param page: int (optional)
@@ -188,6 +203,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                 label_selector=None,  # type: Optional[str]
                 bound_to=None,        # type: Optional[List[str]]
                 type=None,            # type: Optional[List[str]]
+                status=None,          # type: Optional[List[str]]
                 sort=None,            # type: Optional[List[str]]
                 ):
         # type: (...) -> List[BoundImage]
@@ -201,11 +217,13 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Server Id linked to the image. Only available for images of type backup
         :param type: List[str] (optional)
                Choices: system snapshot backup
+        :param status: List[str] (optional)
+               Can be used to filter images by their status. The response will only contain images matching the status.
         :param sort: List[str] (optional)
                Choices: id name created (You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default))
         :return: List[:class:`BoundImage <hcloud.images.client.BoundImage>`]
         """
-        return super(ImagesClient, self).get_all(name=name, label_selector=label_selector, bound_to=bound_to, type=type, sort=sort)
+        return super(ImagesClient, self).get_all(name=name, label_selector=label_selector, bound_to=bound_to, type=type, status=status, sort=sort)
 
     def get_by_name(self, name):
         # type: (str) -> BoundImage

@@ -121,14 +121,16 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         response = self._client.request(url="/volumes/{volume_id}".format(volume_id=id), method="GET")
         return BoundVolume(self, response['volume'])
 
-    def get_list(self, name=None, label_selector=None, page=None, per_page=None):
-        # type: (Optional[str], Optional[str], Optional[int], Optional[int]) -> PageResults[List[BoundVolume], Meta]
+    def get_list(self, name=None, label_selector=None, status=None, page=None, per_page=None):
+        # type: (Optional[str], Optional[str], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundVolume], Meta]
         """Get a list of volumes from this account
 
         :param name: str (optional)
                Can be used to filter volumes by their name.
         :param label_selector:  str (optional)
                Can be used to filter volumes by labels. The response will only contain volumes matching the label selector.
+        :param status: List[str] (optional)
+               Can be used to filter volumes by their status. The response will only contain volumes matching the status.
         :param page: int (optional)
                Specifies the page to fetch
         :param per_page: int (optional)
@@ -140,6 +142,8 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
             params['name'] = name
         if label_selector:
             params['label_selector'] = label_selector
+        if status:
+            params["status"] = status
         if page is not None:
             params['page'] = page
         if per_page is not None:
@@ -149,11 +153,14 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         volumes = [BoundVolume(self, volume_data) for volume_data in response['volumes']]
         return self._add_meta_to_result(volumes, response)
 
-    def get_all(self, label_selector=None):
-        # type: (Optional[str]) -> List[BoundVolume]
+    def get_all(self, label_selector=None, status=None):
+        # type: (Optional[str], Optional[List[str]]) -> List[BoundVolume]
         """Get all volumes from this account
 
         :param label_selector:
+               Can be used to filter volumes by labels. The response will only contain volumes matching the label selector.
+        :param status: List[str] (optional)
+               Can be used to filter volumes by their status. The response will only contain volumes matching the status.
         :return: List[:class:`BoundVolume <hcloud.volumes.client.BoundVolume>`]
         """
         return super(VolumesClient, self).get_all(label_selector=label_selector)
@@ -267,7 +274,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super(VolumesClient, self).get_actions(volume, sort=sort)
+        return super(VolumesClient, self).get_actions(volume, status=status, sort=sort)
 
     def update(self, volume, name=None, labels=None):
         # type:(Union[Volume, BoundVolume],  Optional[str],  Optional[Dict[str, str]]) -> BoundVolume
