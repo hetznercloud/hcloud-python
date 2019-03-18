@@ -20,8 +20,8 @@ class BoundImage(BoundModelBase):
 
         super(BoundImage, self).__init__(client, data)
 
-    def get_actions_list(self, status=None, sort=None, page=None, per_page=None):
-        # type: (Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResult[BoundAction, Meta]
+    def get_actions_list(self, sort=None, page=None, per_page=None, status=None):
+        # type: (Optional[List[str]], Optional[int], Optional[int], Optional[List[str]]) -> PageResult[BoundAction, Meta]
         """Returns a list of action objects for the image.
 
         :param status: List[str] (optional)
@@ -36,7 +36,7 @@ class BoundImage(BoundModelBase):
         """
         return self._client.get_actions_list(self, status=status, sort=sort, page=page, per_page=per_page)
 
-    def get_actions(self, status=None, sort=None):
+    def get_actions(self, sort=None, status=None):
         # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
         """Returns all action objects for the image.
 
@@ -88,9 +88,9 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
     def get_actions_list(self,
                          image,         # type: Image
                          sort=None,     # type: Optional[List[str]]
-                         status=None,  # type: Optional[List[str]]
                          page=None,     # type: Optional[int]
-                         per_page=None  # type: Optional[int]
+                         per_page=None,  # type: Optional[int]
+                         status=None,  # type: Optional[List[str]]
                          ):
         # type: (...) -> PageResults[List[BoundAction], Meta]
         """Returns a list of action objects for an image.
@@ -121,8 +121,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_actions(self,
                     image,         # type: Image
+                    sort=None,  # type: Optional[List[str]]
                     status=None,   # type: Optional[List[str]]
-                    sort=None,     # type: Optional[List[str]]
                     ):
         # type: (...) -> List[BoundAction]
         """Returns all action objects for an image.
@@ -151,10 +151,10 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                  label_selector=None,  # type: Optional[str]
                  bound_to=None,        # type: Optional[List[str]]
                  type=None,            # type: Optional[List[str]]
-                 status=None,          # type: Optional[List[str]]
                  sort=None,            # type: Optional[List[str]]
                  page=None,            # type: Optional[int]
-                 per_page=None         # type: Optional[int]
+                 per_page=None,        # type: Optional[int]
+                 status=None           # type: Optional[List[str]]
                  ):
         # type: (...) -> PageResults[List[BoundImage]]
         """Get all images
@@ -192,6 +192,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
             params['page'] = page
         if per_page:
             params['per_page'] = per_page
+        if status:
+            params['status'] = per_page
 
         response = self._client.request(url="/images", method="GET", params=params)
         images = [BoundImage(self, image_data) for image_data in response['images']]
@@ -203,8 +205,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                 label_selector=None,  # type: Optional[str]
                 bound_to=None,        # type: Optional[List[str]]
                 type=None,            # type: Optional[List[str]]
-                status=None,          # type: Optional[List[str]]
                 sort=None,            # type: Optional[List[str]]
+                status=None,          # type: Optional[List[str]]
                 ):
         # type: (...) -> List[BoundImage]
         """Get all images

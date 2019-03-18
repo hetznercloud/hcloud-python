@@ -286,9 +286,9 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
     def get_list(self,
                  name=None,  # type: Optional[str]
                  label_selector=None,  # type: Optional[str]
-                 status=None,  # type: Optional[List[str]]
                  page=None,  # type: Optional[int]
-                 per_page=None  # type: Optional[int]
+                 per_page=None,  # type: Optional[int]
+                 status=None,  # type: Optional[List[str]]
                  ):
         # type: (...) -> PageResults[List[BoundServer], Meta]
         """Get a list of servers from this account
@@ -334,7 +334,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter servers by their status. The response will only contain servers matching the status.
         :return: List[:class:`BoundServer <hcloud.servers.client.BoundServer>`]
         """
-        return super(ServersClient, self).get_all(name=name, label_selector=label_selector)
+        return super(ServersClient, self).get_all(name=name, label_selector=label_selector, status=status)
 
     def get_by_name(self, name):
         # type: (str) -> BoundServer

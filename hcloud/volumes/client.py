@@ -121,8 +121,8 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         response = self._client.request(url="/volumes/{volume_id}".format(volume_id=id), method="GET")
         return BoundVolume(self, response['volume'])
 
-    def get_list(self, name=None, label_selector=None, status=None, page=None, per_page=None):
-        # type: (Optional[str], Optional[str], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundVolume], Meta]
+    def get_list(self, name=None, label_selector=None, page=None, per_page=None, status=None):
+        # type: (Optional[str], Optional[str], Optional[int], Optional[int], Optional[List[str]]) -> PageResults[List[BoundVolume], Meta]
         """Get a list of volumes from this account
 
         :param name: str (optional)
@@ -163,7 +163,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter volumes by their status. The response will only contain volumes matching the status.
         :return: List[:class:`BoundVolume <hcloud.volumes.client.BoundVolume>`]
         """
-        return super(VolumesClient, self).get_all(label_selector=label_selector)
+        return super(VolumesClient, self).get_all(label_selector=label_selector, status=status)
 
     def get_by_name(self, name):
         # type: (str) -> BoundVolume
@@ -233,7 +233,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return result
 
-    def get_actions_list(self, volume, status=None, sort=None, page=None, per_page=None):
+    def get_actions_list(self, volume, sort=None, status=None, page=None, per_page=None):
         # type: (Volume, Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction], Meta]
         """Returns all action objects for a volume.
 
