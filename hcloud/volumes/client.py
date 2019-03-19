@@ -233,7 +233,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return result
 
-    def get_actions_list(self, volume, sort=None, status=None, page=None, per_page=None):
+    def get_actions_list(self, volume, status=None, sort=None, page=None, per_page=None):
         # type: (Volume, Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction], Meta]
         """Returns all action objects for a volume.
 

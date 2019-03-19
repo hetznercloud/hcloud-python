@@ -34,7 +34,7 @@ class BoundImage(BoundModelBase):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        return self._client.get_actions_list(self, status=status, sort=sort, page=page, per_page=per_page)
+        return self._client.get_actions_list(self, sort=sort, page=page, per_page=per_page, status=status)
 
     def get_actions(self, sort=None, status=None):
         # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
@@ -225,7 +225,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Choices: id name created (You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default))
         :return: List[:class:`BoundImage <hcloud.images.client.BoundImage>`]
         """
-        return super(ImagesClient, self).get_all(name=name, label_selector=label_selector, bound_to=bound_to, type=type, status=status, sort=sort)
+        return super(ImagesClient, self).get_all(name=name, label_selector=label_selector, bound_to=bound_to, type=type, sort=sort, status=status)
 
     def get_by_name(self, name):
         # type: (str) -> BoundImage
