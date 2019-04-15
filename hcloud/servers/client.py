@@ -287,7 +287,8 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                  name=None,  # type: Optional[str]
                  label_selector=None,  # type: Optional[str]
                  page=None,  # type: Optional[int]
-                 per_page=None  # type: Optional[int]
+                 per_page=None,  # type: Optional[int]
+                 status=None,  # type: Optional[List[str]]
                  ):
         # type: (...) -> PageResults[List[BoundServer], Meta]
         """Get a list of servers from this account
@@ -296,6 +297,8 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter servers by their name.
         :param label_selector: str (optional)
                Can be used to filter servers by labels. The response will only contain servers matching the label selector.
+        :param status: List[str] (optional)
+               Can be used to filter servers by their status. The response will only contain servers matching the status.
         :param page: int (optional)
                Specifies the page to fetch
         :param per_page: int (optional)
@@ -307,6 +310,8 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
             params['name'] = name
         if label_selector:
             params['label_selector'] = label_selector
+        if status:
+            params["status"] = status
         if page:
             params['page'] = page
         if per_page:
@@ -317,17 +322,19 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         ass_servers = [BoundServer(self, server_data) for server_data in response['servers']]
         return self._add_meta_to_result(ass_servers, response)
 
-    def get_all(self, name=None, label_selector=None):
-        # type: (Optional[str], Optional[str]) -> List[BoundServer]
+    def get_all(self, name=None, label_selector=None, status=None):
+        # type: (Optional[str], Optional[str], Optional[List[str]]) -> List[BoundServer]
         """Get all servers from this account
 
         :param name: str (optional)
                Can be used to filter servers by their name.
         :param label_selector: str (optional)
                Can be used to filter servers by labels. The response will only contain servers matching the label selector.
+        :param status: List[str] (optional)
+               Can be used to filter servers by their status. The response will only contain servers matching the status.
         :return: List[:class:`BoundServer <hcloud.servers.client.BoundServer>`]
         """
-        return super(ServersClient, self).get_all(name=name, label_selector=label_selector)
+        return super(ServersClient, self).get_all(name=name, label_selector=label_selector, status=status)
 
     def get_by_name(self, name):
         # type: (str) -> BoundServer
