@@ -17,6 +17,7 @@ class TestLocationsClient(object):
         assert location._client is locations_client
         assert location.id == 1
         assert location.name == "fsn1"
+        assert location.network_zone == "eu-central"
 
     @pytest.mark.parametrize("params", [{'name': "fsn1", "page": 1, "per_page": 10}, {}])
     def test_get_list(self, locations_client, two_locations_response, params):
@@ -35,10 +36,12 @@ class TestLocationsClient(object):
         assert location1._client is locations_client
         assert location1.id == 1
         assert location1.name == "fsn1"
+        assert location1.network_zone == "eu-central"
 
         assert location2._client is locations_client
         assert location2.id == 2
         assert location2.name == "nbg1"
+        assert location2.network_zone == "eu-central"
 
     @pytest.mark.parametrize("params", [{'name': "fsn1"}, {}])
     def test_get_all(self, locations_client, two_locations_response, params):
@@ -57,10 +60,12 @@ class TestLocationsClient(object):
         assert location1._client is locations_client
         assert location1.id == 1
         assert location1.name == "fsn1"
+        assert location1.network_zone == "eu-central"
 
         assert location2._client is locations_client
         assert location2.id == 2
         assert location2.name == "nbg1"
+        assert location2.network_zone == "eu-central"
 
     def test_get_by_name(self, locations_client, one_locations_response):
         locations_client._client.request.return_value = one_locations_response
@@ -73,3 +78,4 @@ class TestLocationsClient(object):
         assert location._client is locations_client
         assert location.id == 1
         assert location.name == "fsn1"
+        assert location.network_zone == "eu-central"
