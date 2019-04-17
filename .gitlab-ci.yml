@@ -20,11 +20,6 @@ python27:
   image: python:2.7
   script: tox -e py27
 
-python34:
-  <<: *tests_template
-  image: python:3.4
-  script: tox -e py34
-
 python35:
   <<: *tests_template
   image: python:3.5
