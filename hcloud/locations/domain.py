@@ -19,6 +19,8 @@ class Location(BaseDomain, DomainIdentityMixin):
            Latitude of the city closest to the location
     :param longitude: float
            Longitude of the city closest to the location
+    :param network_zone: str
+           Name of network zone this location resides in
     """
 
     __slots__ = (
@@ -28,7 +30,8 @@ class Location(BaseDomain, DomainIdentityMixin):
         "country",
         "city",
         "latitude",
-        "longitude"
+        "longitude",
+        "network_zone"
     )
 
     def __init__(
@@ -39,7 +42,8 @@ class Location(BaseDomain, DomainIdentityMixin):
             country=None,
             city=None,
             latitude=None,
-            longitude=None
+            longitude=None,
+            network_zone=None,
     ):
         self.id = id
         self.name = name
@@ -48,3 +52,4 @@ class Location(BaseDomain, DomainIdentityMixin):
         self.city = city
         self.latitude = latitude
         self.longitude = longitude
+        self.network_zone = network_zone
