@@ -6,6 +6,7 @@ import requests
 
 from hcloud.actions.client import ActionsClient
 from hcloud.floating_ips.client import FloatingIPsClient
+from hcloud.networks.client import NetworksClient
 from hcloud.isos.client import IsosClient
 from hcloud.servers.client import ServersClient
 from hcloud.server_types.client import ServerTypesClient
@@ -105,6 +106,11 @@ class Client(object):
         """FloatingIPsClient Instance
 
         :type: :class:`FloatingIPsClient <hcloud.floating_ips.client.FloatingIPsClient>`
+        """
+        self.networks = NetworksClient(self)
+        """NetworksClient Instance
+
+        :type: :class:`NetworksClient <hcloud.networks.client.NetworksClient>`
         """
 
     def _get_user_agent(self):
