@@ -52,7 +52,7 @@ setup(
     include_package_data=True,
     keywords='hcloud hetzner cloud',
     name='hcloud',
-    packages=find_packages(exclude=["examples", "tests", "docs"]),
+    packages=find_packages(exclude=["examples", "tests*", "docs"]),
     test_suite='tests',
     url='https://github.com/hetznercloud/hcloud-python',
     version=version['VERSION'],
