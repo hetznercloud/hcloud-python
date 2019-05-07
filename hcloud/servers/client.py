@@ -12,6 +12,8 @@ from hcloud.images.domain import CreateImageResponse
 from hcloud.images.client import BoundImage
 from hcloud.server_types.client import BoundServerType
 from hcloud.datacenters.client import BoundDatacenter
+from hcloud.networks.client import BoundNetwork  # noqa
+from hcloud.networks.domain import Network  # noqa
 
 
 class BoundServer(BoundModelBase):
@@ -751,3 +753,18 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                                         method="POST")
         return RequestConsoleResponse(action=BoundAction(self._client.actions, response['action']),
                                       wss_url=response['wss_url'], password=response['password'])
+
+    def attach_to_network(self, server, network, ip=None, alias_ips=None):
+        # type: (Union[Server,BoundServer], Union[Network,BoundNetwork],Optional[str], Optional[List[str]]) -> BoundAction
+        # TODO
+        pass
+
+    def detach_from_network(self, server, network):
+        # type: (Union[Server,BoundServer], Union[Network,BoundNetwork]) -> BoundAction
+        # TODO
+        pass
+
+    def change_alias_ips(self, server, network, alias_ips):
+        # type: (Union[Server,BoundServer], Union[Network,BoundNetwork], List[str]) -> BoundAction
+        # TODO
+        pass
