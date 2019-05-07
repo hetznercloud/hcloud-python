@@ -22,6 +22,7 @@ class Network(BaseDomain):
     :param labels: dict
            User-defined labels (key-value pairs)
     """
+
     __slots__ = (
         "id",
         "name",
@@ -30,20 +31,19 @@ class Network(BaseDomain):
         "routes",
         "servers",
         "protection",
-        "labels"
+        "labels",
     )
 
     def __init__(
-            self,
-            id=None,
-            name=None,
-            ip_range=None,
-            subnets=None,
-            routes=None,
-            servers=None,
-            protection=None,
-            labels=None
-
+        self,
+        id=None,
+        name=None,
+        ip_range=None,
+        subnets=None,
+        routes=None,
+        servers=None,
+        protection=None,
+        labels=None,
     ):
         self.id = id
         self.name = name
@@ -56,13 +56,20 @@ class Network(BaseDomain):
 
 
 class NetworkSubnet(BaseDomain):
-    #  TODO
-    pass
+    __slots__ = ("type", "ip_range", "network_zone")
+
+    def __init__(self, type=None, ip_range=None, network_zone=None):
+        self.type = type
+        self.ip_range = ip_range
+        self.network_zone = network_zone
 
 
 class NetworkRoute(BaseDomain):
-    #  TODO
-    pass
+    __slots__ = ("destination", "gateway", "network_zone")
+
+    def __init__(self, destination=None, gateway=None):
+        self.destination = destination
+        self.gateway = gateway
 
 
 class CreateNetworkResponse(BaseDomain):
@@ -73,15 +80,9 @@ class CreateNetworkResponse(BaseDomain):
     :param action: :class:`BoundAction <hcloud.actions.client.BoundAction>`
            The Action which shows the progress of the network Creation
     """
-    __slots__ = (
-        "network",
-        "action"
-    )
 
-    def __init__(
-            self,
-            network,  # type: BoundNetwork
-            action,  # type: BoundAction
-    ):
+    __slots__ = ("network", "action")
+
+    def __init__(self, network, action):  # type: BoundNetwork  # type: BoundAction
         self.network = network
         self.action = action
