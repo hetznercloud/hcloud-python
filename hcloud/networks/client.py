@@ -21,7 +21,7 @@ class BoundNetwork(BoundModelBase):
             data['routes'] = routes
 
         from hcloud.servers.client import BoundServer
-        servers = data.get("servers",[])
+        servers = data.get("servers", [])
         if servers is not None:
             servers = [BoundServer(client._client.servers, {"id": server}, complete=False) for server in servers]
             data['servers'] = servers
@@ -75,6 +75,36 @@ class BoundNetwork(BoundModelBase):
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
         return self._client.get_actions(self, status, sort)
+
+    def add_subnet(self, subnet):
+        # type: (NetworkSubnet) -> List[BoundAction]
+        return self._client.add_subnet(self, subnet=subnet)
+
+    def remove_subnet(self, subnet):
+        # type: (NetworkSubnet) -> List[BoundAction]
+        return self._client.remove_subnet(self, subnet=subnet)
+
+    def add_route(self, route):
+        # type: (NetworkRoute) -> List[BoundAction]
+        return self._client.add_route(self, route=route)
+
+    def remove_route(self, route):
+        # type: (NetworkRoute) -> List[BoundAction]
+        return self._client.remove_route(self, route=route)
+
+    def change_ip_range(self, ip_range):
+        # type: (str) -> List[BoundAction]
+        return self._client.change_ip_range(self, ip_range=ip_range)
+
+    def change_protection(self, delete=None):
+        # type: (Optional[bool]) -> BoundAction
+        """Changes the protection configuration of a network.
+
+        :param delete: boolean
+               If True, prevents the network from being deleted
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        return self._client.change_protection(self, delete=delete)
 
 
 class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
@@ -274,3 +304,46 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         return super(NetworksClient, self).get_actions(
             network, status=status, sort=sort
         )
+
+    def add_subnet(self, network, subnet):
+        # type: (Union[Network, BoundNetwork], NetworkSubnet) -> List[BoundAction]
+        # TODO
+        pass
+
+    def remove_subnet(self, network, subnet):
+        # type: (Union[Network, BoundNetwork], NetworkSubnet) -> List[BoundAction]
+        # TODO
+        pass
+
+    def add_route(self, network, route):
+        # type: (Union[Network, BoundNetwork], NetworkRoute) -> List[BoundAction]
+        # TODO
+        pass
+
+    def remove_route(self, network, route):
+        # type: (Union[Network, BoundNetwork], NetworkRoute) -> List[BoundAction]
+        # TODO
+        pass
+
+    def change_ip_range(self, network, ip_range):
+        # type: (Union[Network, BoundNetwork], str) -> List[BoundAction]
+        # TODO
+        pass
+
+    def change_protection(self, network, delete=None):
+        # type: (Union[Network, BoundNetwork], Optional[bool]) -> BoundAction
+        """Changes the protection configuration of a network.
+
+        :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
+        :param delete: boolean
+               If True, prevents the network from being deleted
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        data = {}
+        if delete is not None:
+            data.update({"delete": delete})
+
+        response = self._client.request(
+            url="/networks/{network_id}/actions/change_protection".format(network_id=network.id),
+            method="POST", json=data)
+        return BoundAction(self._client.actions, response['action'])
