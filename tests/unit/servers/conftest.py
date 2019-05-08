@@ -902,3 +902,87 @@ def response_get_actions():
             }
         ]
     }
+
+
+@pytest.fixture()
+def response_attach_to_network():
+    return {
+        "action": {
+            "id": 1,
+            "command": "attach_to_network",
+            "status": "running",
+            "progress": 0,
+            "started": "2016-01-30T23:50:00+00:00",
+            "finished": None,
+            "resources": [
+                {
+                    "id": 42,
+                    "type": "server"
+                },
+                {
+                    "id": 4711,
+                    "type": "network"
+                }
+            ],
+            "error": {
+                "code": "action_failed",
+                "message": "Action failed"
+            }
+        }
+    }
+
+
+@pytest.fixture()
+def response_detach_from_network():
+    return {
+        "action": {
+            "id": 1,
+            "command": "detach_from_network",
+            "status": "running",
+            "progress": 0,
+            "started": "2016-01-30T23:50:00+00:00",
+            "finished": None,
+            "resources": [
+                {
+                    "id": 42,
+                    "type": "server"
+                },
+                {
+                    "id": 4711,
+                    "type": "network"
+                }
+            ],
+            "error": {
+                "code": "action_failed",
+                "message": "Action failed"
+            }
+        }
+    }
+
+
+@pytest.fixture()
+def response_change_alias_ips():
+    return {
+        "action": {
+            "id": 1,
+            "command": "change_alias_ips",
+            "status": "running",
+            "progress": 0,
+            "started": "2016-01-30T23:50:00+00:00",
+            "finished": None,
+            "resources": [
+                {
+                    "id": 42,
+                    "type": "server"
+                },
+                {
+                    "id": 4711,
+                    "type": "network"
+                }
+            ],
+            "error": {
+                "code": "action_failed",
+                "message": "Action failed"
+            }
+        }
+    }
