@@ -271,6 +271,39 @@ class BoundServer(BoundModelBase):
         """
         return self._client.request_console(self)
 
+    def attach_to_network(self, network, ip=None, alias_ips=None):
+        # type: (Union[Network,BoundNetwork],Optional[str], Optional[List[str]]) -> BoundAction
+        """Attaches a server to a network
+
+        :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
+        :param ip: str
+                IP to request to be assigned to this server
+        :param alias_ips: List[str]
+                New alias IPs to set for this server.
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        return self._client.attach_to_network(self, network, ip, alias_ips)
+
+    def detach_from_network(self, network):
+        # type: ( Union[Network,BoundNetwork]) -> BoundAction
+        """Detaches a server from a network.
+
+        :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        return self._client.detach_from_network(self, network)
+
+    def change_alias_ips(self, network, alias_ips):
+        # type: (Union[Network,BoundNetwork], List[str]) -> BoundAction
+        """Changes the alias IPs of an already attached network.
+
+        :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
+        :param alias_ips: List[str]
+                New alias IPs to set for this server.
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        return self._client.change_alias_ips(self, network, alias_ips)
+
 
 class ServersClient(ClientEntityBase, GetEntityByNameMixin):
     results_list_attribute_name = 'servers'
@@ -730,7 +763,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                      If true, prevents the server from being deleted (currently delete and rebuild attribute needs to have the same value)
         :param rebuild: boolean
                      If true, prevents the server from being rebuilt (currently delete and rebuild attribute needs to have the same value)
-        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         data = {}
         if delete is not None:
@@ -756,15 +789,59 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
 
     def attach_to_network(self, server, network, ip=None, alias_ips=None):
         # type: (Union[Server,BoundServer], Union[Network,BoundNetwork],Optional[str], Optional[List[str]]) -> BoundAction
-        # TODO
-        pass
+        """Attaches a server to a network
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
+        :param ip: str
+                IP to request to be assigned to this server
+        :param alias_ips: List[str]
+                New alias IPs to set for this server.
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        data = {
+            "network": network.id,
+        }
+        if ip is not None:
+            data.update({"ip": ip})
+        if alias_ips is not None:
+            data.update({"alias_ips": ip})
+        response = self._client.request(
+            url="/servers/{server_id}/actions/attach_to_network".format(server_id=server.id), method="POST",
+            json=data)
+        return BoundAction(self._client.actions, response['action'])
 
     def detach_from_network(self, server, network):
         # type: (Union[Server,BoundServer], Union[Network,BoundNetwork]) -> BoundAction
-        # TODO
-        pass
+        """Detaches a server from a network.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        data = {
+            "network": network.id,
+        }
+        response = self._client.request(
+            url="/servers/{server_id}/actions/detach_from_network".format(server_id=server.id), method="POST",
+            json=data)
+        return BoundAction(self._client.actions, response['action'])
 
     def change_alias_ips(self, server, network, alias_ips):
         # type: (Union[Server,BoundServer], Union[Network,BoundNetwork], List[str]) -> BoundAction
-        # TODO
-        pass
+        """Changes the alias IPs of an already attached network.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
+        :param alias_ips: List[str]
+                New alias IPs to set for this server.
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        data = {
+            "network": network.id,
+            "alias_ips": alias_ips
+        }
+        response = self._client.request(
+            url="/servers/{server_id}/actions/change_alias_ips".format(server_id=server.id), method="POST",
+            json=data)
+        return BoundAction(self._client.actions, response['action'])
