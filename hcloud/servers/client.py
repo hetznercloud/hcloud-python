@@ -805,7 +805,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         if ip is not None:
             data.update({"ip": ip})
         if alias_ips is not None:
-            data.update({"alias_ips": ip})
+            data.update({"alias_ips": alias_ips})
         response = self._client.request(
             url="/servers/{server_id}/actions/attach_to_network".format(server_id=server.id), method="POST",
             json=data)
