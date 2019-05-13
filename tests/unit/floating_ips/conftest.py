@@ -7,6 +7,7 @@ def floating_ip_response():
         "floating_ip": {
             "id": 4711,
             "description": "Web Frontend",
+            "created": "2016-01-30T23:50+00:00",
             "ip": "131.232.99.1",
             "type": "ipv4",
             "server": 42,
@@ -41,6 +42,7 @@ def two_floating_ips_response():
             {
                 "id": 4711,
                 "description": "Web Frontend",
+                "created": "2016-01-30T23:50+00:00",
                 "ip": "131.232.99.1",
                 "type": "ipv4",
                 "server": 42,
@@ -68,6 +70,7 @@ def two_floating_ips_response():
             {
                 "id": 4712,
                 "description": "Web Backend",
+                "created": "2016-01-30T23:50+00:00",
                 "ip": "131.232.99.2",
                 "type": "ipv4",
                 "server": 42,
@@ -102,6 +105,7 @@ def floating_ip_create_response():
         "floating_ip": {
             "id": 4711,
             "description": "Web Frontend",
+            "created": "2016-01-30T23:50+00:00",
             "ip": "131.232.99.1",
             "type": "ipv4",
             "server": 42,
@@ -154,6 +158,7 @@ def response_update_floating_ip():
 
             "id": 4711,
             "description": "New description",
+            "created": "2016-01-30T23:50+00:00",
             "ip": "131.232.99.1",
             "type": "ipv4",
             "server": 42,
