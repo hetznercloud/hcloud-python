@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from hcloud.core.domain import BaseDomain
 
+from hcloud.helpers.descriptors import ISODateTime
+
 
 class FloatingIP(BaseDomain):
     """Floating IP Domain
@@ -25,6 +27,8 @@ class FloatingIP(BaseDomain):
            Protection configuration for the Floating IP
     :param labels: dict
            User-defined labels (key-value pairs)
+    :param created: datetime
+           Point in time when the Floating IP was created
     """
     __slots__ = (
         "id",
@@ -38,6 +42,8 @@ class FloatingIP(BaseDomain):
         "protection",
         "labels"
     )
+    created = ISODateTime()
+    supported_fields = ("created",)
 
     def __init__(
         self,
@@ -50,8 +56,8 @@ class FloatingIP(BaseDomain):
         home_location=None,
         blocked=None,
         protection=None,
-        labels=None
-
+        labels=None,
+        created=None
     ):
         self.id = id
         self.type = type
@@ -63,6 +69,7 @@ class FloatingIP(BaseDomain):
         self.blocked = blocked
         self.protection = protection
         self.labels = labels
+        self.created = created
 
 
 class CreateFloatingIPResponse(BaseDomain):

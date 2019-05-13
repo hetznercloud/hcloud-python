@@ -6,6 +6,7 @@ master(XXXX-XX-XX)
 ------------------
 
 * Feature: Add status filter for servers, images and volumes
+* Feature: Add 'created' property to Floating IP domain
 
 1.2.1 (2019-03-13)
 ------------------
