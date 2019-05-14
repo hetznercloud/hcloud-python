@@ -278,7 +278,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         """Get a specific server
 
         :param id: int
-        :return: :class:`BoundServer <hcloud.servers.client.BoundServer>
+        :return: :class:`BoundServer <hcloud.servers.client.BoundServer>`
         """
         response = self._client.request(url="/servers/{server_id}".format(server_id=id), method="GET")
         return BoundServer(self, response['server'])
