@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from hcloud.core.domain import BaseDomain
+from hcloud.helpers.descriptors import ISODateTime
 
 
 class Network(BaseDomain):
@@ -31,22 +32,27 @@ class Network(BaseDomain):
         "routes",
         "servers",
         "protection",
-        "labels",
+        "labels"
     )
 
+    created = ISODateTime()
+    supported_fields = ("created",)
+
     def __init__(
-        self,
-        id=None,
-        name=None,
-        ip_range=None,
-        subnets=None,
-        routes=None,
-        servers=None,
-        protection=None,
-        labels=None,
+            self,
+            id=None,
+            name=None,
+            created=None,
+            ip_range=None,
+            subnets=None,
+            routes=None,
+            servers=None,
+            protection=None,
+            labels=None,
     ):
         self.id = id
         self.name = name
+        self.created = created
         self.ip_range = ip_range
         self.subnets = subnets
         self.routes = routes
@@ -56,12 +62,13 @@ class Network(BaseDomain):
 
 
 class NetworkSubnet(BaseDomain):
-    __slots__ = ("type", "ip_range", "network_zone")
+    __slots__ = ("type", "ip_range", "network_zone", "gateway")
 
-    def __init__(self, type=None, ip_range=None, network_zone=None):
+    def __init__(self, type=None, ip_range=None, network_zone=None, gateway=None):
         self.type = type
         self.ip_range = ip_range
         self.network_zone = network_zone
+        self.gateway = gateway
 
 
 class NetworkRoute(BaseDomain):
@@ -83,6 +90,10 @@ class CreateNetworkResponse(BaseDomain):
 
     __slots__ = ("network", "action")
 
-    def __init__(self, network, action):  # type: BoundNetwork  # type: BoundAction
+    def __init__(
+            self,
+            network,  # type: BoundNetwork
+            action  # type: BoundAction
+    ):
         self.network = network
         self.action = action

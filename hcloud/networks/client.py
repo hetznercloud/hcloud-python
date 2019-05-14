@@ -44,7 +44,7 @@ class BoundNetwork(BoundModelBase):
         # type: () -> BoundAction
         """Deletes a network.
 
-        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        :return: boolean
         """
         return self._client.delete(self)
 
@@ -245,12 +245,12 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         """Deletes a network.
 
         :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
-        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        :return: boolean
         """
-        response = self._client.request(
+        self._client.request(
             url="/networks/{network_id}".format(network_id=network.id), method="DELETE"
         )
-        return BoundAction(self._client.actions, response["action"])
+        return True
 
     def get_actions_list(
         self, network, status=None, sort=None, page=None, per_page=None
@@ -307,28 +307,97 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
 
     def add_subnet(self, network, subnet):
         # type: (Union[Network, BoundNetwork], NetworkSubnet) -> List[BoundAction]
-        # TODO
-        pass
+        """Adds a subnet entry to a network.
 
-    def remove_subnet(self, network, subnet):
+        :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
+        :param subnet: :class:`NetworkSubnet <hcloud.networks.domain.NetworkSubnet>`
+                       The NetworkSubnet you want to add to the Network
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        data = {
+            "type": subnet.type,
+            "ip_range": subnet.ip_range,
+            "network_zone": subnet.network_zone,
+        }
+
+        response = self._client.request(
+            url="/networks/{network_id}/actions/add_subnet".format(network_id=network.id),
+            method="POST", json=data)
+        return BoundAction(self._client.actions, response['action'])
+
+    def delete_subnet(self, network, subnet):
         # type: (Union[Network, BoundNetwork], NetworkSubnet) -> List[BoundAction]
-        # TODO
-        pass
+        """Removes a subnet entry from a network
+
+        :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
+        :param subnet: :class:`NetworkSubnet <hcloud.networks.domain.NetworkSubnet>`
+                       The NetworkSubnet you want to remove from the Network
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        data = {
+            "ip_range": subnet.ip_range,
+        }
+
+        response = self._client.request(
+            url="/networks/{network_id}/actions/delete_subnet".format(network_id=network.id),
+            method="POST", json=data)
+        return BoundAction(self._client.actions, response['action'])
 
     def add_route(self, network, route):
         # type: (Union[Network, BoundNetwork], NetworkRoute) -> List[BoundAction]
-        # TODO
-        pass
+        """Adds a route entry to a network.
 
-    def remove_route(self, network, route):
+        :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
+        :param route: :class:`NetworkRoute <hcloud.networks.domain.NetworkRoute>`
+                    The NetworkRoute you want to add to the Network
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        data = {
+            "destination": route.destination,
+            "gateway": route.gateway,
+        }
+
+        response = self._client.request(
+            url="/networks/{network_id}/actions/add_route".format(network_id=network.id),
+            method="POST", json=data)
+        return BoundAction(self._client.actions, response['action'])
+
+    def delete_route(self, network, route):
         # type: (Union[Network, BoundNetwork], NetworkRoute) -> List[BoundAction]
-        # TODO
-        pass
+        """Removes a route entry to a network.
+
+        :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
+        :param route: :class:`NetworkRoute <hcloud.networks.domain.NetworkRoute>`
+                    The NetworkRoute you want to remove from the Network
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        data = {
+            "destination": route.destination,
+            "gateway": route.gateway,
+        }
+
+        response = self._client.request(
+            url="/networks/{network_id}/actions/delete_route".format(network_id=network.id),
+            method="POST", json=data)
+        return BoundAction(self._client.actions, response['action'])
 
     def change_ip_range(self, network, ip_range):
         # type: (Union[Network, BoundNetwork], str) -> List[BoundAction]
-        # TODO
-        pass
+        """Changes the IP range of a network.
+
+        :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
+        :param ip_range: str
+                    The new prefix for the whole network.
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        data = {
+            "ip_range": ip_range,
+        }
+
+        response = self._client.request(
+            url="/networks/{network_id}/actions/change_ip_range".format(network_id=network.id),
+            method="POST", json=data)
+        return BoundAction(self._client.actions, response['action'])
 
     def change_protection(self, network, delete=None):
         # type: (Union[Network, BoundNetwork], Optional[bool]) -> BoundAction
