@@ -52,7 +52,7 @@ class TestBoundNetwork(object):
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
         assert actions[0].id == 13
-        assert actions[0].command == "nw_add_subnet"
+        assert actions[0].command == "add_subnet"
 
     def test_update(self, hetzner_client, bound_network, response_update_network):
         hetzner_client.request.return_value = response_update_network
@@ -79,13 +79,42 @@ class TestBoundNetwork(object):
         assert action.progress == 0
 
     def test_add_subnet(self, hetzner_client, bound_network, generic_action):
-        pass
+        hetzner_client.request.return_value = generic_action
+        subnet = NetworkSubnet(type="server", ip_range="10.0.1.0/24", network_zone="eu-central")
+        action = bound_network.add_subnet(subnet)
+        hetzner_client.request.assert_called_with(url="/networks/14/actions/add_subnet", method="POST",
+                                                  json={"type": "server", "ip_range": "10.0.1.0/24",
+                                                        "network_zone": "eu-central"})
+
+        assert action.id == 1
+        assert action.progress == 0
 
     def test_delete_subnet(self, hetzner_client, bound_network, generic_action):
-        pass
+        hetzner_client.request.return_value = generic_action
+        subnet = NetworkSubnet(ip_range="10.0.1.0/24")
+        action = bound_network.delete_subnet(subnet)
+        hetzner_client.request.assert_called_with(url="/networks/14/actions/delete_subnet", method="POST",
+                                                  json={"ip_range": "10.0.1.0/24"})
+
+        assert action.id == 1
+        assert action.progress == 0
 
     def test_add_route(self, hetzner_client, bound_network, generic_action):
-        pass
+        hetzner_client.request.return_value = generic_action
+        route = NetworkRoute(destination="10.100.1.0/24", gateway="10.0.1.1")
+        action = bound_network.add_route(route)
+        hetzner_client.request.assert_called_with(url="/networks/14/actions/add_route", method="POST",
+                                                  json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"})
+
+        assert action.id == 1
+        assert action.progress == 0
 
     def test_delete_route(self, hetzner_client, bound_network, generic_action):
-        pass
+        hetzner_client.request.return_value = generic_action
+        route = NetworkRoute(destination="10.100.1.0/24", gateway="10.0.1.1")
+        action = bound_network.delete_route(route)
+        hetzner_client.request.assert_called_with(url="/networks/14/actions/delete_route", method="POST",
+                                                  json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"})
+
+        assert action.id == 1
+        assert action.progress == 0
