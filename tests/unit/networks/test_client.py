@@ -126,6 +126,14 @@ class TestNetworksClient(object):
     def networks_client(self):
         return NetworksClient(client=mock.MagicMock())
 
+    @pytest.fixture()
+    def network_subnet(self):
+        return NetworkSubnet(type="server", ip_range="10.0.1.0/24", network_zone="eu-central")
+
+    @pytest.fixture()
+    def network_route(self):
+        return NetworkRoute(destination="10.100.1.0/24", gateway="10.0.1.1")
+
     def test_get_by_id(self, networks_client, network_response):
         networks_client._client.request.return_value = network_response
         bound_network = networks_client.get_by_id(1)
@@ -195,3 +203,94 @@ class TestNetworksClient(object):
         assert bound_network._client is networks_client
         assert bound_network.id == 1
         assert bound_network.name == "mynet"
+
+    def test_create(self, networks_client, network_create_response):
+        networks_client._client.request.return_value = network_create_response
+        networks_client.create(
+            name="mynet",
+            ip_range="10.0.0.0/8"
+        )
+        networks_client._client.request.assert_called_with(
+            url="/networks",
+            method="POST",
+            json={
+                'name': "mynet",
+                'ip_range': "10.0.0.0/8",
+            }
+        )
+
+    def test_create_with_subnet(self, networks_client, network_subnet, network_create_response):
+        networks_client._client.request.return_value = network_create_response
+        networks_client.create(
+            name="mynet",
+            ip_range="10.0.0.0/8",
+            subnets=[network_subnet]
+        )
+        networks_client._client.request.assert_called_with(
+            url="/networks",
+            method="POST",
+            json={
+                'name': "mynet",
+                'ip_range': "10.0.0.0/8",
+                'subnets': [
+                    {
+                        'type': "server",
+                        'ip_range': "10.0.1.0/24",
+                        'network_zone': "eu-central"
+                    }
+                ]
+            }
+        )
+
+    def test_create_with_route(self, networks_client, network_route, network_create_response):
+        networks_client._client.request.return_value = network_create_response
+        networks_client.create(
+            name="mynet",
+            ip_range="10.0.0.0/8",
+            routes=[network_route]
+        )
+        networks_client._client.request.assert_called_with(
+            url="/networks",
+            method="POST",
+            json={
+                'name': "mynet",
+                'ip_range': "10.0.0.0/8",
+                'routes': [
+                    {
+                        'destination': "10.100.1.0/24",
+                        'gateway': "10.0.1.1",
+                    }
+                ]
+            }
+        )
+
+    def test_create_with_route_and_subnet(self, networks_client, network_subnet, network_route,
+                                          network_create_response):
+        networks_client._client.request.return_value = network_create_response
+        networks_client.create(
+            name="mynet",
+            ip_range="10.0.0.0/8",
+            subnets=[network_subnet],
+            routes=[network_route]
+        )
+        networks_client._client.request.assert_called_with(
+            url="/networks",
+            method="POST",
+            json={
+                'name': "mynet",
+                'ip_range': "10.0.0.0/8",
+                'subnets': [
+                    {
+                        'type': "server",
+                        'ip_range': "10.0.1.0/24",
+                        'network_zone': "eu-central"
+                    }
+                ],
+                'routes': [
+                    {
+                        'destination': "10.100.1.0/24",
+                        'gateway': "10.0.1.1",
+                    }
+                ]
+            }
+        )

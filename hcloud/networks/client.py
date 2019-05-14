@@ -123,11 +123,11 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundNetwork(self, response["network"])
 
     def get_list(
-        self,
-        name=None,  # type: Optional[str]
-        label_selector=None,  # type: Optional[str]
-        page=None,  # type: Optional[int]
-        per_page=None,  # type: Optional[int]
+            self,
+            name=None,  # type: Optional[str]
+            label_selector=None,  # type: Optional[str]
+            page=None,  # type: Optional[int]
+            per_page=None,  # type: Optional[int]
     ):
         # type: (...) -> PageResults[List[BoundNetwork], Meta]
         """Get a list of networks from this account
@@ -184,12 +184,12 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         return super(NetworksClient, self).get_by_name(name)
 
     def create(
-        self,
-        name,  # type: str
-        ip_range,  # type: str
-        subnets=None,  # type: Optional[List[NetworkSubnet]]
-        routes=None,  # type:  Optional[List[NetworkRoute]]
-        labels=None,  # type:  Optional[Dict[str, str]]
+            self,
+            name,  # type: str
+            ip_range,  # type: str
+            subnets=None,  # type: Optional[List[NetworkSubnet]]
+            routes=None,  # type:  Optional[List[NetworkRoute]]
+            labels=None,  # type:  Optional[Dict[str, str]]
     ):
         """Creates a network with range ip_range.
 
@@ -207,9 +207,9 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data = {"name": name, "ip_range": ip_range}
         if subnets is not None:
-            data["subnets"] = subnets
+            data["subnets"] = [{'type': subnet.type, 'ip_range': subnet.ip_range, 'network_zone': subnet.network_zone} for subnet in subnets]
         if routes is not None:
-            data["routes"] = routes
+            data["routes"] = [{'destination': route.destination, 'gateway': route.gateway} for route in routes]
         if labels is not None:
             data["labels"] = labels
 
@@ -253,7 +253,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         return True
 
     def get_actions_list(
-        self, network, status=None, sort=None, page=None, per_page=None
+            self, network, status=None, sort=None, page=None, per_page=None
     ):
         # type: (Network, Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction], Meta]
         """Returns all action objects for a network.
