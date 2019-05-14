@@ -80,17 +80,17 @@ class BoundNetwork(BoundModelBase):
         # type: (NetworkSubnet) -> List[BoundAction]
         return self._client.add_subnet(self, subnet=subnet)
 
-    def remove_subnet(self, subnet):
+    def delete_subnet(self, subnet):
         # type: (NetworkSubnet) -> List[BoundAction]
-        return self._client.remove_subnet(self, subnet=subnet)
+        return self._client.delete_subnet(self, subnet=subnet)
 
     def add_route(self, route):
         # type: (NetworkRoute) -> List[BoundAction]
         return self._client.add_route(self, route=route)
 
-    def remove_route(self, route):
+    def delete_route(self, route):
         # type: (NetworkRoute) -> List[BoundAction]
-        return self._client.remove_route(self, route=route)
+        return self._client.delete_route(self, route=route)
 
     def change_ip_range(self, ip_range):
         # type: (str) -> List[BoundAction]

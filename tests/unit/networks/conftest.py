@@ -223,7 +223,7 @@ def response_get_actions():
         "actions": [
             {
                 "id": 13,
-                "command": "nw_add_subnet",
+                "command": "add_subnet",
                 "status": "success",
                 "progress": 100,
                 "started": "2016-01-30T23:55:00+00:00",
