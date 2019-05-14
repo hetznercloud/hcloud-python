@@ -60,7 +60,6 @@ def two_networks_response():
                         "type": "vswitch",
                         "ip_range": "10.0.3.0/24",
                         "network_zone": "eu-central",
-                        "vswitch_id": 333,
                         "gateway": "10.0.3.1"
                     }
                 ],
@@ -80,7 +79,7 @@ def two_networks_response():
             },
             {
                 "id": 2,
-                "name": "mynother-net",
+                "name": "myanothernet",
                 "created": "2016-01-30T23:50:11+00:00",
                 "ip_range": "12.0.0.0/8",
                 "subnets": [
@@ -129,7 +128,6 @@ def one_network_response():
                         "type": "vswitch",
                         "ip_range": "10.0.3.0/24",
                         "network_zone": "eu-central",
-                        "vswitch_id": 333,
                         "gateway": "10.0.3.1"
                     }
                 ],

@@ -3,7 +3,7 @@ from dateutil.parser import isoparse
 import mock
 
 from hcloud.actions.client import BoundAction
-from hcloud.networks.client import BoundNetwork
+from hcloud.networks.client import BoundNetwork, NetworksClient
 from hcloud.networks.domain import NetworkSubnet, NetworkRoute
 from hcloud.servers.client import BoundServer
 
@@ -118,3 +118,80 @@ class TestBoundNetwork(object):
 
         assert action.id == 1
         assert action.progress == 0
+
+
+class TestNetworksClient(object):
+
+    @pytest.fixture()
+    def networks_client(self):
+        return NetworksClient(client=mock.MagicMock())
+
+    def test_get_by_id(self, networks_client, network_response):
+        networks_client._client.request.return_value = network_response
+        bound_network = networks_client.get_by_id(1)
+        networks_client._client.request.assert_called_with(url="/networks/1", method="GET")
+        assert bound_network._client is networks_client
+        assert bound_network.id == 1
+        assert bound_network.name == "mynet"
+
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {'label_selector': "label1", 'page': 1, 'per_page': 10},
+            {}
+        ]
+    )
+    def test_get_list(self, networks_client, two_networks_response, params):
+        networks_client._client.request.return_value = two_networks_response
+        result = networks_client.get_list(**params)
+        networks_client._client.request.assert_called_with(url="/networks", method="GET", params=params)
+
+        bound_networks = result.networks
+        assert result.meta is None
+
+        assert len(bound_networks) == 2
+
+        bound_network1 = bound_networks[0]
+        bound_network2 = bound_networks[1]
+
+        assert bound_network1._client is networks_client
+        assert bound_network1.id == 1
+        assert bound_network1.name == "mynet"
+
+        assert bound_network2._client is networks_client
+        assert bound_network2.id == 2
+        assert bound_network2.name == "myanothernet"
+
+    @pytest.mark.parametrize("params", [{'label_selector': "label1"}])
+    def test_get_all(self, networks_client, two_networks_response, params):
+        networks_client._client.request.return_value = two_networks_response
+        bound_networks = networks_client.get_all(**params)
+
+        params.update({'page': 1, 'per_page': 50})
+
+        networks_client._client.request.assert_called_with(url="/networks", method="GET", params=params)
+
+        assert len(bound_networks) == 2
+
+        bound_network1 = bound_networks[0]
+        bound_network2 = bound_networks[1]
+
+        assert bound_network1._client is networks_client
+        assert bound_network1.id == 1
+        assert bound_network1.name == "mynet"
+
+        assert bound_network2._client is networks_client
+        assert bound_network2.id == 2
+        assert bound_network2.name == "myanothernet"
+
+    def test_get_by_name(self, networks_client, one_network_response):
+        networks_client._client.request.return_value = one_network_response
+        bound_network = networks_client.get_by_name("mynet")
+
+        params = {'name': "mynet"}
+
+        networks_client._client.request.assert_called_with(url="/networks", method="GET", params=params)
+
+        assert bound_network._client is networks_client
+        assert bound_network.id == 1
+        assert bound_network.name == "mynet"
