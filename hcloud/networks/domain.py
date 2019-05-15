@@ -62,6 +62,17 @@ class Network(BaseDomain):
 
 
 class NetworkSubnet(BaseDomain):
+    """Network Subnet Domain
+
+    :param type: str
+              Type of sub network.
+    :param ip_range: str
+              Range to allocate IPs from.
+    :param network_zone: str
+              Name of network zone.
+    :param gateway: str
+              Gateway for the route.
+    """
     __slots__ = ("type", "ip_range", "network_zone", "gateway")
 
     def __init__(self, type=None, ip_range=None, network_zone=None, gateway=None):
@@ -72,7 +83,15 @@ class NetworkSubnet(BaseDomain):
 
 
 class NetworkRoute(BaseDomain):
-    __slots__ = ("destination", "gateway", "network_zone")
+    """Network Route Domain
+
+    :param destination: str
+           Destination network or host of this route.
+    :param gateway: str
+           Gateway for the route.
+    """
+
+    __slots__ = ("destination", "gateway")
 
     def __init__(self, destination=None, gateway=None):
         self.destination = destination
