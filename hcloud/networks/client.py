@@ -12,7 +12,7 @@ class BoundNetwork(BoundModelBase):
     def __init__(self, client, data, complete=True):
         subnets = data.get("subnets", [])
         if subnets is not None:
-            subnets = [NetworkSubnet(**subnet) for subnet in subnets]
+            subnets = [NetworkSubnet(type=subnet['type'], ip_range=subnet['ip_range'], gateway=subnet['gateway'], network_zone=subnet['network_zone']) for subnet in subnets]
             data['subnets'] = subnets
 
         routes = data.get("routes", [])
@@ -78,22 +78,52 @@ class BoundNetwork(BoundModelBase):
 
     def add_subnet(self, subnet):
         # type: (NetworkSubnet) -> List[BoundAction]
+        """Adds a subnet entry to a network.
+
+        :param subnet: :class:`NetworkSubnet <hcloud.networks.domain.NetworkSubnet>`
+                       The NetworkSubnet you want to add to the Network
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.add_subnet(self, subnet=subnet)
 
     def delete_subnet(self, subnet):
         # type: (NetworkSubnet) -> List[BoundAction]
+        """Removes a subnet entry from a network
+
+        :param subnet: :class:`NetworkSubnet <hcloud.networks.domain.NetworkSubnet>`
+                       The NetworkSubnet you want to remove from the Network
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.delete_subnet(self, subnet=subnet)
 
     def add_route(self, route):
         # type: (NetworkRoute) -> List[BoundAction]
+        """Adds a route entry to a network.
+
+        :param route: :class:`NetworkRoute <hcloud.networks.domain.NetworkRoute>`
+                    The NetworkRoute you want to add to the Network
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.add_route(self, route=route)
 
     def delete_route(self, route):
         # type: (NetworkRoute) -> List[BoundAction]
+        """Removes a route entry to a network.
+
+        :param route: :class:`NetworkRoute <hcloud.networks.domain.NetworkRoute>`
+                    The NetworkRoute you want to remove from the Network
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.delete_route(self, route=route)
 
     def change_ip_range(self, ip_range):
         # type: (str) -> List[BoundAction]
+        """Changes the IP range of a network.
+
+        :param ip_range: str
+                    The new prefix for the whole network.
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
         return self._client.change_ip_range(self, ip_range=ip_range)
 
     def change_protection(self, delete=None):

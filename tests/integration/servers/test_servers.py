@@ -1,6 +1,8 @@
 import mock
 import pytest
 
+from hcloud.networks.client import BoundNetwork
+from hcloud.networks.domain import Network
 from hcloud.servers.client import BoundServer
 from hcloud.servers.domain import Server
 from hcloud.ssh_keys.domain import SSHKey
@@ -140,6 +142,27 @@ class TestBoundServer(object):
         assert response.wss_url == "wss://console.hetzner.cloud/?server_id=1&token=3db32d15-af2f-459c-8bf8-dee1fd05f49c"
         assert response.password == "9MQaTg2VAGI0FIpc10k3UpRXcHj2wQ6x"
 
+    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
+    def test_attach_to_network(self, bound_server, network):
+        action = bound_server.attach_to_network(network, ip="10.0.1.1", alias_ips=["10.0.1.2"])
+
+        assert action.id == 13
+        assert action.command == "attach_to_network"
+
+    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
+    def test_detach_from_network(self, bound_server, network):
+        action = bound_server.detach_from_network(network)
+
+        assert action.id == 13
+        assert action.command == "detach_from_network"
+
+    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
+    def test_change_alias_ips(self, bound_server, network):
+        action = bound_server.change_alias_ips(network, alias_ips=["10.0.1.2"])
+
+        assert action.id == 13
+        assert action.command == "change_alias_ips"
+
 
 class TestServersClient(object):
 
@@ -161,7 +184,7 @@ class TestServersClient(object):
         assert server.image.id == 4711
 
     def test_get_list(self, hetzner_client):
-        result = hetzner_client.servers.get_list(42)
+        result = hetzner_client.servers.get_list()
         servers = result.servers
         assert servers[0].id == 42
         assert servers[0].volumes == []
@@ -170,7 +193,6 @@ class TestServersClient(object):
         assert servers[0].image.id == 4711
 
     def test_create(self, hetzner_client):
-
         response = hetzner_client.servers.create(
             "my-server",
             server_type=ServerType(name="cx11"),
@@ -355,3 +377,27 @@ class TestServersClient(object):
         assert response.action.command == "request_console"
         assert response.wss_url == "wss://console.hetzner.cloud/?server_id=1&token=3db32d15-af2f-459c-8bf8-dee1fd05f49c"
         assert response.password == "9MQaTg2VAGI0FIpc10k3UpRXcHj2wQ6x"
+
+    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
+    def test_attach_to_network(self, hetzner_client, server, network):
+        action = hetzner_client.servers.attach_to_network(server, network, ip="10.0.1.1", alias_ips=["10.0.1.2"])
+
+        assert action.id == 13
+        assert action.command == "attach_to_network"
+
+    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
+    def test_detach_from_network(self, hetzner_client, server, network):
+        action = hetzner_client.servers.detach_from_network(server, network)
+
+        assert action.id == 13
+        assert action.command == "detach_from_network"
+
+    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
+    def test_change_alias_ips(self, hetzner_client, server, network):
+        action = hetzner_client.servers.change_alias_ips(server, network, alias_ips=["10.0.1.2"])
+
+        assert action.id == 13
+        assert action.command == "change_alias_ips"
