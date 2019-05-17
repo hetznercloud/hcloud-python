@@ -12,12 +12,12 @@ class BoundNetwork(BoundModelBase):
     def __init__(self, client, data, complete=True):
         subnets = data.get("subnets", [])
         if subnets is not None:
-            subnets = [NetworkSubnet(type=subnet['type'], ip_range=subnet['ip_range'], gateway=subnet['gateway'], network_zone=subnet['network_zone']) for subnet in subnets]
+            subnets = [NetworkSubnet.from_dict(subnet) for subnet in subnets]
             data['subnets'] = subnets
 
         routes = data.get("routes", [])
         if routes is not None:
-            routes = [NetworkRoute(**route) for route in routes]
+            routes = [NetworkRoute.from_dict(route) for route in routes]
             data['routes'] = routes
 
         from hcloud.servers.client import BoundServer
@@ -346,9 +346,10 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data = {
             "type": subnet.type,
-            "ip_range": subnet.ip_range,
             "network_zone": subnet.network_zone,
         }
+        if subnet.ip_range is not None:
+            data["ip_range"] = subnet.ip_range
 
         response = self._client.request(
             url="/networks/{network_id}/actions/add_subnet".format(network_id=network.id),
