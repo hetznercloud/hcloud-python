@@ -40,7 +40,7 @@ class Network(BaseDomain):
 
     def __init__(
             self,
-            id=None,
+            id,
             name=None,
             created=None,
             ip_range=None,
@@ -75,7 +75,7 @@ class NetworkSubnet(BaseDomain):
     """
     __slots__ = ("type", "ip_range", "network_zone", "gateway")
 
-    def __init__(self, type=None, ip_range=None, network_zone=None, gateway=None):
+    def __init__(self, ip_range, type=None, network_zone=None, gateway=None):
         self.type = type
         self.ip_range = ip_range
         self.network_zone = network_zone
@@ -93,7 +93,7 @@ class NetworkRoute(BaseDomain):
 
     __slots__ = ("destination", "gateway")
 
-    def __init__(self, destination=None, gateway=None):
+    def __init__(self, destination, gateway):
         self.destination = destination
         self.gateway = gateway
 
