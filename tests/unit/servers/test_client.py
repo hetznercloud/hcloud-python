@@ -5,7 +5,7 @@ from hcloud.floating_ips.client import BoundFloatingIP
 from hcloud.isos.client import BoundIso
 from hcloud.servers.client import ServersClient, BoundServer
 
-from hcloud.servers.domain import Server, PublicNetwork, IPv4Address, IPv6Network
+from hcloud.servers.domain import Server, PublicNetwork, IPv4Address, IPv6Network, PrivateNet
 from hcloud.volumes.client import BoundVolume
 from hcloud.volumes.domain import Volume
 from hcloud.images.domain import Image
@@ -83,6 +83,13 @@ class TestBoundServer(object):
         assert bound_server.iso.id == 4711
         assert bound_server.iso.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
         assert bound_server.iso.complete is True
+
+        assert len(bound_server.private_net) == 1
+        assert isinstance(bound_server.private_net[0], PrivateNet)
+        assert bound_server.private_net[0].network._client == bound_server._client._client.networks
+        assert bound_server.private_net[0].ip == "10.1.1.5"
+        assert len(bound_server.private_net[0].alias_ips) == 1
+        assert bound_server.private_net[0].alias_ips[0] == "10.1.1.8"
 
     @pytest.mark.parametrize(
         "params",

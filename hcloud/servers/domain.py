@@ -39,6 +39,8 @@ class Server(BaseDomain):
             User-defined labels (key-value pairs)
     :param volumes: List[:class:`BoundVolume <hcloud.volumes.client.BoundVolume>`]
             Volumes assigned to this server.
+    :param private_net: List[:class:`PrivateNet <hcloud.servers.domain.PrivateNet`]
+            Private networks information.
     """
     STATUS_RUNNING = "running"
     """Server Status running"""
@@ -76,6 +78,7 @@ class Server(BaseDomain):
         "protection",
         "labels",
         "volumes",
+        "private_net"
     )
 
     created = ISODateTime()
@@ -102,6 +105,7 @@ class Server(BaseDomain):
             protection=None,
             labels=None,
             volumes=None,
+            private_net=None,
     ):
         self.id = id
         self.name = name
@@ -121,6 +125,7 @@ class Server(BaseDomain):
         self.protection = protection
         self.labels = labels
         self.volumes = volumes
+        self.private_net = private_net
 
 
 class CreateServerResponse(BaseDomain):
@@ -308,3 +313,29 @@ class IPv6Network(BaseDomain):
         ip_parts = self.ip.split("/")  # 2001:db8::/64 to 2001:db8:: and 64
         self.network = ip_parts[0]
         self.network_mask = ip_parts[1]
+
+
+class PrivateNet(BaseDomain):
+    """PrivateNet Domain
+
+    :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>`
+           The network the server is attached to
+    :param ip: str
+           The main IP Address of the server in the Network
+    :param alias_ips: List[str]
+           The alias ips for a server
+    """
+    __slots__ = (
+        "network",
+        "ip",
+        "alias_ips"
+    )
+
+    def __init__(self,
+                 network,  # type: BoundNetwork
+                 ip,  # type: str
+                 alias_ips,  # type: List[str]
+                 ):
+        self.network = network
+        self.ip = ip
+        self.alias_ips = alias_ips

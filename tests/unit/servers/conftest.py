@@ -29,6 +29,13 @@ def response_simple_server():
                     478
                 ]
             },
+            "private_net": [
+                {
+                    "network": 4711,
+                    "ip": "10.1.1.5",
+                    "alias_ips": ["10.1.1.8"]
+                }
+            ],
             "server_type": {
                 "id": 1,
                 "name": "cx11",
@@ -148,6 +155,7 @@ def response_create_simple_server():
                 "floating_ips": [
                 ]
             },
+            "private_net": [],
             "server_type": {
                 "id": 1,
                 "name": "cx11",
@@ -309,6 +317,7 @@ def response_update_server():
                     478
                 ]
             },
+            "private_net": [],
             "server_type": {
                 "id": 1,
                 "name": "cx11",
@@ -437,6 +446,13 @@ def response_simple_servers():
                     478
                 ]
             },
+            "private_net": [
+                {
+                    "network": 4711,
+                    "ip": "10.1.1.5",
+                    "alias_ips": ["10.1.1.8"]
+                }
+            ],
             "server_type": {
                 "id": 1,
                 "name": "cx11",
@@ -550,6 +566,13 @@ def response_simple_servers():
                     478
                 ]
             },
+            "private_net": [
+                {
+                    "network": 4711,
+                    "ip": "10.1.1.7",
+                    "alias_ips": ["10.1.1.99"]
+                }
+            ],
             "server_type": {
                 "id": 1,
                 "name": "cx11",
@@ -670,6 +693,13 @@ def response_full_server():
                     478
                 ]
             },
+            "private_net": [
+                {
+                    "network": 4711,
+                    "ip": "10.1.1.5",
+                    "alias_ips": ["10.1.1.8"]
+                }
+            ],
             "server_type": {
                 "id": 1,
                 "name": "cx11",

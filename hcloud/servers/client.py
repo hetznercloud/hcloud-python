@@ -6,7 +6,7 @@ from hcloud.core.domain import add_meta_to_result
 from hcloud.floating_ips.client import BoundFloatingIP
 from hcloud.isos.client import BoundIso
 from hcloud.servers.domain import Server, CreateServerResponse, ResetPasswordResponse, EnableRescueResponse, \
-    RequestConsoleResponse, PublicNetwork, IPv4Address, IPv6Network
+    RequestConsoleResponse, PublicNetwork, IPv4Address, IPv6Network, PrivateNet
 from hcloud.volumes.client import BoundVolume
 from hcloud.images.domain import CreateImageResponse
 from hcloud.images.client import BoundImage
@@ -49,6 +49,11 @@ class BoundServer(BoundModelBase):
             floating_ips = [BoundFloatingIP(client._client.floating_ips, {"id": floating_ip}, complete=False) for
                             floating_ip in public_net['floating_ips']]
             data['public_net'] = PublicNetwork(ipv4=ipv4_address, ipv6=ipv6_network, floating_ips=floating_ips)
+
+        private_nets = data.get("private_net")
+        if private_nets:
+            private_nets = [PrivateNet(network=BoundNetwork(client._client.networks, {"id": private_net['network']}, complete=False), ip=private_net['ip'], alias_ips=private_net['alias_ips']) for private_net in private_nets]
+            data['private_net'] = private_nets
 
         super(BoundServer, self).__init__(client, data, complete)
 
