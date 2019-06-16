@@ -126,7 +126,7 @@ class Server(BaseDomain):
 class CreateServerResponse(BaseDomain):
     """Create Server Response Domain
 
-    :param action: :class:`BoundServer <hcloud.servers.client.BoundServer>`
+    :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>`
            The created server
     :param action: :class:`BoundAction <hcloud.actions.client.BoundAction>`
            Shows the progress of the server creation
