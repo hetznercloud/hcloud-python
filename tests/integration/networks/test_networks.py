@@ -88,7 +88,7 @@ class TestNetworksClient(object):
         assert network.id == 4711
         assert network.name == "mynet"
         assert network.ip_range == "10.0.0.0/16"
-        assert len(network.subnets) == 2
+        assert len(network.subnets) == 1
         assert len(network.routes) == 1
         assert len(network.servers) == 1
         assert network.protection['delete'] is False
@@ -98,7 +98,7 @@ class TestNetworksClient(object):
         assert network.id == 4711
         assert network.name == "mynet"
         assert network.ip_range == "10.0.0.0/16"
-        assert len(network.subnets) == 2
+        assert len(network.subnets) == 1
         assert len(network.routes) == 1
         assert len(network.servers) == 1
         assert network.protection['delete'] is False
@@ -109,7 +109,7 @@ class TestNetworksClient(object):
         assert networks[0].id == 4711
         assert networks[0].name == "mynet"
         assert networks[0].ip_range == "10.0.0.0/16"
-        assert len(networks[0].subnets) == 2
+        assert len(networks[0].subnets) == 1
         assert len(networks[0].routes) == 1
         assert len(networks[0].servers) == 1
         assert networks[0].protection['delete'] is False
@@ -119,7 +119,7 @@ class TestNetworksClient(object):
         assert networks[0].id == 4711
         assert networks[0].name == "mynet"
         assert networks[0].ip_range == "10.0.0.0/16"
-        assert len(networks[0].subnets) == 2
+        assert len(networks[0].subnets) == 1
         assert len(networks[0].routes) == 1
         assert len(networks[0].servers) == 1
         assert networks[0].protection['delete'] is False
