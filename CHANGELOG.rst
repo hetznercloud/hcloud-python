@@ -2,11 +2,12 @@
 History
 =======
 
-master(XXXX-XX-XX)
+1.3.0 (XXXX-XX-XX)
 ------------------
 
 * Feature: Add status filter for servers, images and volumes
 * Feature: Add 'created' property to Floating IP domain
+* Feature: Add 'Networks' support
 
 1.2.1 (2019-03-13)
 ------------------
