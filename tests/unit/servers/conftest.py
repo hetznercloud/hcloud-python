@@ -29,6 +29,13 @@ def response_simple_server():
                     478
                 ]
             },
+            "private_net": [
+                {
+                    "network": 4711,
+                    "ip": "10.1.1.5",
+                    "alias_ips": ["10.1.1.8"]
+                }
+            ],
             "server_type": {
                 "id": 1,
                 "name": "cx11",
@@ -148,6 +155,7 @@ def response_create_simple_server():
                 "floating_ips": [
                 ]
             },
+            "private_net": [],
             "server_type": {
                 "id": 1,
                 "name": "cx11",
@@ -309,6 +317,7 @@ def response_update_server():
                     478
                 ]
             },
+            "private_net": [],
             "server_type": {
                 "id": 1,
                 "name": "cx11",
@@ -437,6 +446,13 @@ def response_simple_servers():
                     478
                 ]
             },
+            "private_net": [
+                {
+                    "network": 4711,
+                    "ip": "10.1.1.5",
+                    "alias_ips": ["10.1.1.8"]
+                }
+            ],
             "server_type": {
                 "id": 1,
                 "name": "cx11",
@@ -550,6 +566,13 @@ def response_simple_servers():
                     478
                 ]
             },
+            "private_net": [
+                {
+                    "network": 4711,
+                    "ip": "10.1.1.7",
+                    "alias_ips": ["10.1.1.99"]
+                }
+            ],
             "server_type": {
                 "id": 1,
                 "name": "cx11",
@@ -670,6 +693,13 @@ def response_full_server():
                     478
                 ]
             },
+            "private_net": [
+                {
+                    "network": 4711,
+                    "ip": "10.1.1.5",
+                    "alias_ips": ["10.1.1.8"]
+                }
+            ],
             "server_type": {
                 "id": 1,
                 "name": "cx11",
@@ -901,4 +931,88 @@ def response_get_actions():
                 }
             }
         ]
+    }
+
+
+@pytest.fixture()
+def response_attach_to_network():
+    return {
+        "action": {
+            "id": 1,
+            "command": "attach_to_network",
+            "status": "running",
+            "progress": 0,
+            "started": "2016-01-30T23:50:00+00:00",
+            "finished": None,
+            "resources": [
+                {
+                    "id": 42,
+                    "type": "server"
+                },
+                {
+                    "id": 4711,
+                    "type": "network"
+                }
+            ],
+            "error": {
+                "code": "action_failed",
+                "message": "Action failed"
+            }
+        }
+    }
+
+
+@pytest.fixture()
+def response_detach_from_network():
+    return {
+        "action": {
+            "id": 1,
+            "command": "detach_from_network",
+            "status": "running",
+            "progress": 0,
+            "started": "2016-01-30T23:50:00+00:00",
+            "finished": None,
+            "resources": [
+                {
+                    "id": 42,
+                    "type": "server"
+                },
+                {
+                    "id": 4711,
+                    "type": "network"
+                }
+            ],
+            "error": {
+                "code": "action_failed",
+                "message": "Action failed"
+            }
+        }
+    }
+
+
+@pytest.fixture()
+def response_change_alias_ips():
+    return {
+        "action": {
+            "id": 1,
+            "command": "change_alias_ips",
+            "status": "running",
+            "progress": 0,
+            "started": "2016-01-30T23:50:00+00:00",
+            "finished": None,
+            "resources": [
+                {
+                    "id": 42,
+                    "type": "server"
+                },
+                {
+                    "id": 4711,
+                    "type": "network"
+                }
+            ],
+            "error": {
+                "code": "action_failed",
+                "message": "Action failed"
+            }
+        }
     }

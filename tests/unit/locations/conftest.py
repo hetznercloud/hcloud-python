@@ -11,7 +11,8 @@ def location_response():
             "country": "DE",
             "city": "Falkenstein",
             "latitude": 50.47612,
-            "longitude": 12.370071
+            "longitude": 12.370071,
+            "network_zone": "eu-central",
         }
     }
 
@@ -28,7 +29,8 @@ def two_locations_response():
                 "country": "DE",
                 "city": "Falkenstein",
                 "latitude": 50.47612,
-                "longitude": 12.370071
+                "longitude": 12.370071,
+                "network_zone": "eu-central",
 
             },
             {
@@ -38,7 +40,8 @@ def two_locations_response():
                 "country": "DE",
                 "city": "Nuremberg",
                 "latitude": 49.452102,
-                "longitude": 11.076665
+                "longitude": 11.076665,
+                "network_zone": "eu-central",
             }
         ]
     }
@@ -56,8 +59,8 @@ def one_locations_response():
                 "country": "DE",
                 "city": "Falkenstein",
                 "latitude": 50.47612,
-                "longitude": 12.370071
-
+                "longitude": 12.370071,
+                "network_zone": "eu-central",
             }
         ]
     }

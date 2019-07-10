@@ -5,7 +5,7 @@ from hcloud.floating_ips.client import BoundFloatingIP
 from hcloud.isos.client import BoundIso
 from hcloud.servers.client import ServersClient, BoundServer
 
-from hcloud.servers.domain import Server, PublicNetwork, IPv4Address, IPv6Network
+from hcloud.servers.domain import Server, PublicNetwork, IPv4Address, IPv6Network, PrivateNet
 from hcloud.volumes.client import BoundVolume
 from hcloud.volumes.domain import Volume
 from hcloud.images.domain import Image
@@ -17,6 +17,8 @@ from hcloud.locations.domain import Location
 from hcloud.actions.client import BoundAction
 from hcloud.server_types.client import BoundServerType
 from hcloud.server_types.domain import ServerType
+from hcloud.networks.domain import Network
+from hcloud.networks.client import BoundNetwork
 
 
 class TestBoundServer(object):
@@ -81,6 +83,13 @@ class TestBoundServer(object):
         assert bound_server.iso.id == 4711
         assert bound_server.iso.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
         assert bound_server.iso.complete is True
+
+        assert len(bound_server.private_net) == 1
+        assert isinstance(bound_server.private_net[0], PrivateNet)
+        assert bound_server.private_net[0].network._client == bound_server._client._client.networks
+        assert bound_server.private_net[0].ip == "10.1.1.5"
+        assert len(bound_server.private_net[0].alias_ips) == 1
+        assert bound_server.private_net[0].alias_ips[0] == "10.1.1.8"
 
     @pytest.mark.parametrize(
         "params",
@@ -292,6 +301,36 @@ class TestBoundServer(object):
         assert response.action.progress == 0
         assert response.wss_url == "wss://console.hetzner.cloud/?server_id=1&token=3db32d15-af2f-459c-8bf8-dee1fd05f49c"
         assert response.password == "9MQaTg2VAGI0FIpc10k3UpRXcHj2wQ6x"
+
+    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
+    def test_attach_to_network(self, hetzner_client, bound_server, network, response_attach_to_network):
+        hetzner_client.request.return_value = response_attach_to_network
+        action = bound_server.attach_to_network(network, "10.0.1.1", ["10.0.1.2", "10.0.1.3"])
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/attach_to_network", method="POST", json={"network": 4711, "ip": "10.0.1.1", "alias_ips": ["10.0.1.2", "10.0.1.3"]})
+
+        assert action.id == 1
+        assert action.progress == 0
+        assert action.command == "attach_to_network"
+
+    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
+    def test_detach_from_network(self, hetzner_client, bound_server, network, response_detach_from_network):
+        hetzner_client.request.return_value = response_detach_from_network
+        action = bound_server.detach_from_network(network)
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/detach_from_network", method="POST", json={"network": 4711})
+
+        assert action.id == 1
+        assert action.progress == 0
+        assert action.command == "detach_from_network"
+
+    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
+    def test_change_alias_ips(self, hetzner_client, bound_server, network, response_change_alias_ips):
+        hetzner_client.request.return_value = response_change_alias_ips
+        action = bound_server.change_alias_ips(network, ["10.0.1.2", "10.0.1.3"])
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/change_alias_ips", method="POST", json={"network": 4711, "alias_ips": ["10.0.1.2", "10.0.1.3"]})
+
+        assert action.id == 1
+        assert action.progress == 0
+        assert action.command == "change_alias_ips"
 
 
 class TestServersClient(object):
@@ -691,3 +730,36 @@ class TestServersClient(object):
         assert response.action.progress == 0
         assert response.wss_url == "wss://console.hetzner.cloud/?server_id=1&token=3db32d15-af2f-459c-8bf8-dee1fd05f49c"
         assert response.password == "9MQaTg2VAGI0FIpc10k3UpRXcHj2wQ6x"
+
+    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
+    def test_attach_to_network(self, servers_client, server, network, response_attach_to_network):
+        servers_client._client.request.return_value = response_attach_to_network
+        action = servers_client.attach_to_network(server, network, "10.0.1.1", ["10.0.1.2", "10.0.1.3"])
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/attach_to_network", method="POST", json={"network": 4711, "ip": "10.0.1.1", "alias_ips": ["10.0.1.2", "10.0.1.3"]})
+
+        assert action.id == 1
+        assert action.progress == 0
+        assert action.command == "attach_to_network"
+
+    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
+    def test_detach_from_network(self, servers_client, server, network, response_detach_from_network):
+        servers_client._client.request.return_value = response_detach_from_network
+        action = servers_client.detach_from_network(server, network)
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/detach_from_network", method="POST", json={"network": 4711})
+
+        assert action.id == 1
+        assert action.progress == 0
+        assert action.command == "detach_from_network"
+
+    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
+    def test_change_alias_ips(self, servers_client, server, network, response_change_alias_ips):
+        servers_client._client.request.return_value = response_change_alias_ips
+        action = servers_client.change_alias_ips(server, network, ["10.0.1.2", "10.0.1.3"])
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_alias_ips", method="POST", json={"network": 4711, "alias_ips": ["10.0.1.2", "10.0.1.3"]})
+
+        assert action.id == 1
+        assert action.progress == 0
+        assert action.command == "change_alias_ips"
