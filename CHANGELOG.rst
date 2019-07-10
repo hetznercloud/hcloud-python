@@ -2,7 +2,7 @@
 History
 =======
 
-1.3.0 (XXXX-XX-XX)
+1.3.0 (2019-07-10)
 ------------------
 
 * Feature: Add status filter for servers, images and volumes
