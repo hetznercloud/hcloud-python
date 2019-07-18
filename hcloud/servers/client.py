@@ -52,7 +52,7 @@ class BoundServer(BoundModelBase):
 
         private_nets = data.get("private_net")
         if private_nets:
-            private_nets = [PrivateNet(network=BoundNetwork(client._client.networks, {"id": private_net['network']}, complete=False), ip=private_net['ip'], alias_ips=private_net['alias_ips']) for private_net in private_nets]
+            private_nets = [PrivateNet(network=BoundNetwork(client._client.networks, {"id": private_net['network']}, complete=False), ip=private_net['ip'], alias_ips=private_net['alias_ips'], mac_address=private_net['mac_address']) for private_net in private_nets]
             data['private_net'] = private_nets
 
         super(BoundServer, self).__init__(client, data, complete)

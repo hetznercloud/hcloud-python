@@ -2,6 +2,10 @@
 History
 =======
 
+master (XXXX-XX-XX)
+
+* Feature: Add `mac_address` to Server PrivateNet domain
+
 1.3.0 (2019-07-10)
 ------------------
 

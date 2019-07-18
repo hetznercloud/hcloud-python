@@ -324,18 +324,23 @@ class PrivateNet(BaseDomain):
            The main IP Address of the server in the Network
     :param alias_ips: List[str]
            The alias ips for a server
+    :param mac_address: str
+           The mac address of the interface on the server
     """
     __slots__ = (
         "network",
         "ip",
-        "alias_ips"
+        "alias_ips",
+        "mac_address"
     )
 
     def __init__(self,
                  network,  # type: BoundNetwork
                  ip,  # type: str
                  alias_ips,  # type: List[str]
+                 mac_address,  # type: str
                  ):
         self.network = network
         self.ip = ip
         self.alias_ips = alias_ips
+        self.mac_address = mac_address

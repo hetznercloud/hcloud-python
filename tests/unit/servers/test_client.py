@@ -88,6 +88,7 @@ class TestBoundServer(object):
         assert isinstance(bound_server.private_net[0], PrivateNet)
         assert bound_server.private_net[0].network._client == bound_server._client._client.networks
         assert bound_server.private_net[0].ip == "10.1.1.5"
+        assert bound_server.private_net[0].mac_address == "86:00:ff:2a:7d:e1"
         assert len(bound_server.private_net[0].alias_ips) == 1
         assert bound_server.private_net[0].alias_ips[0] == "10.1.1.8"
 
