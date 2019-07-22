@@ -33,7 +33,8 @@ def response_simple_server():
                 {
                     "network": 4711,
                     "ip": "10.1.1.5",
-                    "alias_ips": ["10.1.1.8"]
+                    "alias_ips": ["10.1.1.8"],
+                    "mac_address": "86:00:ff:2a:7d:e1"
                 }
             ],
             "server_type": {
@@ -450,7 +451,8 @@ def response_simple_servers():
                 {
                     "network": 4711,
                     "ip": "10.1.1.5",
-                    "alias_ips": ["10.1.1.8"]
+                    "alias_ips": ["10.1.1.8"],
+                    "mac_address": "86:00:ff:2a:7d:e1"
                 }
             ],
             "server_type": {
@@ -570,7 +572,8 @@ def response_simple_servers():
                 {
                     "network": 4711,
                     "ip": "10.1.1.7",
-                    "alias_ips": ["10.1.1.99"]
+                    "alias_ips": ["10.1.1.99"],
+                    "mac_address": "86:00:ff:2a:7d:e1"
                 }
             ],
             "server_type": {
@@ -697,7 +700,8 @@ def response_full_server():
                 {
                     "network": 4711,
                     "ip": "10.1.1.5",
-                    "alias_ips": ["10.1.1.8"]
+                    "alias_ips": ["10.1.1.8"],
+                    "mac_address": "86:00:ff:2a:7d:e1"
                 }
             ],
             "server_type": {
