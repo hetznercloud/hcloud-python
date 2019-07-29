@@ -2,9 +2,12 @@
 History
 =======
 
-master (XXXX-XX-XX)
+1.4.0 (2019-07-29)
+------------------
 
 * Feature: Add `mac_address` to Server PrivateNet domain
+
+* Feature: Add python 3.8 support
 
 1.3.0 (2019-07-10)
 ------------------
