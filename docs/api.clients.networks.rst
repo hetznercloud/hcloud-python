@@ -14,7 +14,7 @@ NetworksClient
 .. autoclass:: hcloud.networks.domain.NetworkSubnet
     :members:
 
-.. autoclass:: hcloud.networks.domain.NetworkRoutes
+.. autoclass:: hcloud.networks.domain.NetworkRoute
     :members:
 
 .. autoclass:: hcloud.networks.domain.CreateNetworkResponse
