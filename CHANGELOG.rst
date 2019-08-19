@@ -2,6 +2,13 @@
 History
 =======
 
+1.4.1 (2019-08-19)
+------------------
+
+* Fix: Documentation for `NetworkRoute` domain was missing
+
+* Fix: `requests` dependency requirement was to strict
+
 1.4.0 (2019-07-29)
 ------------------
 
