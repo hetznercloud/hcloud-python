@@ -670,7 +670,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
             data.update({"type": type})
 
         if labels is not None:
-            data.update({"type": labels})
+            data.update({"labels": labels})
 
         response = self._client.request(url="/servers/{server_id}/actions/create_image".format(server_id=server.id),
                                         method="POST", json=data)
