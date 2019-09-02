@@ -2,6 +2,11 @@
 History
 =======
 
+master (XXXX-XX-XX)
+-------------------
+
+* Fix: ServersClient.create_image fails when specifying the `labels`
+
 1.4.1 (2019-08-19)
 ------------------
 
