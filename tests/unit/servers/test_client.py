@@ -651,8 +651,8 @@ class TestServersClient(object):
     @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
     def test_create_image(self, servers_client, server, response_server_create_image):
         servers_client._client.request.return_value = response_server_create_image
-        response = servers_client.create_image(server, description="my image", type="snapshot")
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/create_image", method="POST", json={"description": "my image", "type": "snapshot"})
+        response = servers_client.create_image(server, description="my image", type="snapshot", labels={"key": "value"})
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/create_image", method="POST", json={"description": "my image", "type": "snapshot", "labels": {"key": "value"}})
 
         assert response.action.id == 1
         assert response.action.progress == 0
