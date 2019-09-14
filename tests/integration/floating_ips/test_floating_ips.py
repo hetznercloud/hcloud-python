@@ -21,9 +21,10 @@ class TestBoundFloatingIPs(object):
         assert actions[0].command == "assign_floating_ip"
 
     def test_update(self, bound_floating_ip):
-        floating_ip = bound_floating_ip.update(description="New description", labels={})
+        floating_ip = bound_floating_ip.update(description="New description", labels={}, name="Web Frontend")
         assert floating_ip.id == 4711
         assert floating_ip.description == "New description"
+        assert floating_ip.name == "Web Frontend"
 
     def test_delete(self, bound_floating_ip):
         delete_success = bound_floating_ip.delete()
@@ -31,19 +32,19 @@ class TestBoundFloatingIPs(object):
 
     @pytest.mark.parametrize("server",
                              (Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))))
-    def test_assign(self, hetzner_client, bound_floating_ip, server):
+    def test_assign(self, bound_floating_ip, server):
         action = bound_floating_ip.assign(server)
         assert action.id == 13
         assert action.progress == 0
         assert action.command == "assign_floating_ip"
 
-    def test_unassign(self, hetzner_client, bound_floating_ip):
+    def test_unassign(self, bound_floating_ip):
         action = bound_floating_ip.unassign()
         assert action.id == 13
         assert action.progress == 0
         assert action.command == "unassign_floating_ip"
 
-    def test_change_dns_ptr(self, hetzner_client, bound_floating_ip):
+    def test_change_dns_ptr(self, bound_floating_ip):
         action = bound_floating_ip.change_dns_ptr("1.2.3.4", "server02.example.com")
         assert action.id == 13
         assert action.progress == 0
@@ -71,7 +72,8 @@ class TestFloatingIPsClient(object):
             type="ipv4",
             description="Web Frontend",
             # home_location=Location(description="fsn1"),
-            server=server
+            server=server,
+            name="Web Frontend"
         )
 
         floating_ip = response.floating_ip
@@ -80,6 +82,7 @@ class TestFloatingIPsClient(object):
         assert floating_ip.id == 4711
         assert floating_ip.description == "Web Frontend"
         assert floating_ip.type == "ipv4"
+        assert floating_ip.name == "Web Frontend"
 
         assert action.id == 13
         assert action.command == "assign_floating_ip"
@@ -94,10 +97,11 @@ class TestFloatingIPsClient(object):
 
     @pytest.mark.parametrize("floating_ip", [FloatingIP(id=1), BoundFloatingIP(mock.MagicMock(), dict(id=1))])
     def test_update(self, hetzner_client, floating_ip):
-        floating_ip = hetzner_client.floating_ips.update(floating_ip, description="New description", labels={})
+        floating_ip = hetzner_client.floating_ips.update(floating_ip, description="New description", labels={}, name="Web Frontend")
 
         assert floating_ip.id == 4711
         assert floating_ip.description == "New description"
+        assert floating_ip.name == "Web Frontend"
 
     @pytest.mark.parametrize("floating_ip", [FloatingIP(id=1), BoundFloatingIP(mock.MagicMock(), dict(id=1))])
     def test_delete(self, hetzner_client, floating_ip):
