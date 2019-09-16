@@ -24,6 +24,7 @@ class TestBoundFloatingIP(object):
 
         assert bound_floating_ip.id == 4711
         assert bound_floating_ip.description == "Web Frontend"
+        assert bound_floating_ip.name == "Web Frontend"
         assert bound_floating_ip.ip == "131.232.99.1"
         assert bound_floating_ip.type == "ipv4"
         assert bound_floating_ip.protection == {"delete": False}
@@ -55,12 +56,13 @@ class TestBoundFloatingIP(object):
 
     def test_update(self, hetzner_client, bound_floating_ip, response_update_floating_ip):
         hetzner_client.request.return_value = response_update_floating_ip
-        floating_ip = bound_floating_ip.update(description="New description")
+        floating_ip = bound_floating_ip.update(description="New description", name="New name")
         hetzner_client.request.assert_called_with(url="/floating_ips/14", method="PUT",
-                                                  json={"description": "New description"})
+                                                  json={"description": "New description", "name": "New name"})
 
         assert floating_ip.id == 4711
         assert floating_ip.description == "New description"
+        assert floating_ip.name == "New name"
 
     def test_delete(self, hetzner_client, bound_floating_ip, generic_action):
         hetzner_client.request.return_value = generic_action
@@ -221,6 +223,32 @@ class TestFloatingIPsClient(object):
         assert bound_floating_ip.description == "Web Frontend"
         assert action.id == 13
 
+    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    def test_create_with_name(self, floating_ips_client, server, floating_ip_create_response):
+        floating_ips_client._client.request.return_value = floating_ip_create_response
+        response = floating_ips_client.create(
+            type="ipv6",
+            description="Web Frontend",
+            name="Web Frontend"
+        )
+        floating_ips_client._client.request.assert_called_with(
+            url="/floating_ips",
+            method="POST",
+            json={
+                'description': "Web Frontend",
+                'type': "ipv6",
+                'name': "Web Frontend"
+            }
+        )
+        bound_floating_ip = response.floating_ip
+        action = response.action
+
+        assert bound_floating_ip._client is floating_ips_client
+        assert bound_floating_ip.id == 4711
+        assert bound_floating_ip.description == "Web Frontend"
+        assert bound_floating_ip.name == "Web Frontend"
+        assert action.id == 13
+
     @pytest.mark.parametrize("floating_ip", [FloatingIP(id=1), BoundFloatingIP(mock.MagicMock(), dict(id=1))])
     def test_get_actions(self, floating_ips_client, floating_ip, response_get_actions):
         floating_ips_client._client.request.return_value = response_get_actions
@@ -238,12 +266,13 @@ class TestFloatingIPsClient(object):
     @pytest.mark.parametrize("floating_ip", [FloatingIP(id=1), BoundFloatingIP(mock.MagicMock(), dict(id=1))])
     def test_update(self, floating_ips_client, floating_ip, response_update_floating_ip):
         floating_ips_client._client.request.return_value = response_update_floating_ip
-        floating_ip = floating_ips_client.update(floating_ip, description="New description")
+        floating_ip = floating_ips_client.update(floating_ip, description="New description", name="New name")
         floating_ips_client._client.request.assert_called_with(url="/floating_ips/1", method="PUT",
-                                                               json={"description": "New description"})
+                                                               json={"description": "New description", "name": "New name"})
 
         assert floating_ip.id == 4711
         assert floating_ip.description == "New description"
+        assert floating_ip.name == "New name"
 
     @pytest.mark.parametrize("floating_ip", [FloatingIP(id=1), BoundFloatingIP(mock.MagicMock(), dict(id=1))])
     def test_change_protection(self, floating_ips_client, floating_ip, generic_action):

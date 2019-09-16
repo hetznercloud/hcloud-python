@@ -29,6 +29,8 @@ class FloatingIP(BaseDomain):
            User-defined labels (key-value pairs)
     :param created: datetime
            Point in time when the Floating IP was created
+    :param name: str
+           Name of the Floating IP
     """
     __slots__ = (
         "id",
@@ -40,7 +42,8 @@ class FloatingIP(BaseDomain):
         "home_location",
         "blocked",
         "protection",
-        "labels"
+        "labels",
+        "name"
     )
     created = ISODateTime()
     supported_fields = ("created",)
@@ -57,7 +60,8 @@ class FloatingIP(BaseDomain):
         blocked=None,
         protection=None,
         labels=None,
-        created=None
+        created=None,
+        name=None
     ):
         self.id = id
         self.type = type
@@ -70,6 +74,7 @@ class FloatingIP(BaseDomain):
         self.protection = protection
         self.labels = labels
         self.created = created
+        self.name = name
 
 
 class CreateFloatingIPResponse(BaseDomain):

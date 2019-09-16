@@ -51,17 +51,19 @@ class BoundFloatingIP(BoundModelBase):
         """
         return self._client.get_actions(self, status, sort)
 
-    def update(self, description=None, labels=None):
-        # type: (Optional[str], Optional[Dict[str, str]]) -> BoundFloatingIP
+    def update(self, description=None, labels=None, name=None):
+        # type: (Optional[str], Optional[Dict[str, str]], Optional[str]) -> BoundFloatingIP
         """Updates the description or labels of a Floating IP.
 
         :param description: str (optional)
                New Description to set
         :param labels: Dict[str, str] (optional)
                User-defined labels (key-value pairs)
+        :param name: str (optional)
+               New Name to set
         :return: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`
         """
-        return self._client.update(self, description, labels)
+        return self._client.update(self, description, labels, name)
 
     def delete(self):
         # type: () -> bool
@@ -225,6 +227,7 @@ class FloatingIPsClient(ClientEntityBase):
                labels=None,  # type: Optional[str]
                home_location=None,  # type: Optional[Location]
                server=None,  # type: Optional[Server]
+               name=None,  # type: Optinal[str]
                ):
         # type: (...) -> CreateFloatingIPResponse
         """Creates a new Floating IP assigned to a server.
@@ -238,6 +241,7 @@ class FloatingIPsClient(ClientEntityBase):
                Home location (routing is optimized for that location). Only optional if server argument is passed.
         :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or  :class:`Server <hcloud.servers.domain.Server>`
                Server to assign the Floating IP to
+        :param name: str (optional)
         :return: :class:`CreateFloatingIPResponse <hcloud.floating_ips.domain.CreateFloatingIPResponse>`
         """
 
@@ -252,6 +256,8 @@ class FloatingIPsClient(ClientEntityBase):
             data['home_location'] = home_location.id_or_name
         if server is not None:
             data['server'] = server.id
+        if name is not None:
+            data['name'] = name
 
         response = self._client.request(url="/floating_ips", json=data, method="POST")
 
@@ -265,8 +271,8 @@ class FloatingIPsClient(ClientEntityBase):
         )
         return result
 
-    def update(self, floating_ip, description=None, labels=None):
-        # type: (FloatingIP,  Optional[str], Optional[Dict[str, str]]) -> BoundFloatingIP
+    def update(self, floating_ip, description=None, labels=None, name=None):
+        # type: (FloatingIP,  Optional[str], Optional[Dict[str, str]], Optional[str]) -> BoundFloatingIP
         """Updates the description or labels of a Floating IP.
 
         :param floating_ip: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>` or  :class:`FloatingIP <hcloud.floating_ips.domain.FloatingIP>`
@@ -274,6 +280,8 @@ class FloatingIPsClient(ClientEntityBase):
                New Description to set
         :param labels: Dict[str, str] (optional)
                User-defined labels (key-value pairs)
+        :param name: str (optional)
+               New name to set
         :return: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`
         """
         data = {}
@@ -281,6 +289,8 @@ class FloatingIPsClient(ClientEntityBase):
             data['description'] = description
         if labels is not None:
             data['labels'] = labels
+        if name is not None:
+            data['name'] = name
 
         response = self._client.request(url="/floating_ips/{floating_ip_id}".format(floating_ip_id=floating_ip.id),
                                         method="PUT", json=data)

@@ -6,6 +6,7 @@ master (XXXX-XX-XX)
 -------------------
 
 * Fix: ServersClient.create_image fails when specifying the `labels`
+* Feature: Add support for `name` on Floating IPs
 
 1.4.1 (2019-08-19)
 ------------------
