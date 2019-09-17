@@ -129,6 +129,15 @@ class TestFloatingIPsClient(object):
         assert bound_floating_ip.id == 4711
         assert bound_floating_ip.description == "Web Frontend"
 
+    def test_get_by_name(self, floating_ips_client, one_floating_ips_response):
+        floating_ips_client._client.request.return_value = one_floating_ips_response
+        bound_floating_ip = floating_ips_client.get_by_name("Web Frontend")
+        floating_ips_client._client.request.assert_called_with(url="/floating_ips", method="GET", params={"name": "Web Frontend"})
+        assert bound_floating_ip._client is floating_ips_client
+        assert bound_floating_ip.id == 4711
+        assert bound_floating_ip.name == "Web Frontend"
+        assert bound_floating_ip.description == "Web Frontend"
+
     @pytest.mark.parametrize("params", [{'label_selector': "label1", 'page': 1, 'per_page': 10}, {}])
     def test_get_list(self, floating_ips_client, two_floating_ips_response, params):
         floating_ips_client._client.request.return_value = two_floating_ips_response

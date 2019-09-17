@@ -37,6 +37,43 @@ def floating_ip_response():
 
 
 @pytest.fixture()
+def one_floating_ips_response():
+    return {
+        "floating_ips": [
+            {
+                "id": 4711,
+                "description": "Web Frontend",
+                "name": "Web Frontend",
+                "created": "2016-01-30T23:50+00:00",
+                "ip": "131.232.99.1",
+                "type": "ipv4",
+                "server": 42,
+                "dns_ptr": [
+                    {
+                        "ip": "2001:db8::1",
+                        "dns_ptr": "server.example.com"
+                    }
+                ],
+                "home_location": {
+                    "id": 1,
+                    "name": "fsn1",
+                    "description": "Falkenstein DC Park 1",
+                    "country": "DE",
+                    "city": "Falkenstein",
+                    "latitude": 50.47612,
+                    "longitude": 12.370071
+                },
+                "blocked": False,
+                "protection": {
+                    "delete": False
+                },
+                "labels": {}
+            },
+        ]
+    }
+
+
+@pytest.fixture()
 def two_floating_ips_response():
     return {
         "floating_ips": [

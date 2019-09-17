@@ -59,6 +59,13 @@ class TestFloatingIPsClient(object):
         assert bound_floating_ip.description == "Web Frontend"
         assert bound_floating_ip.type == "ipv4"
 
+    def test_get_by_name(self, hetzner_client):
+        bound_floating_ip = hetzner_client.floating_ips.get_by_name("Web Frontend")
+        assert bound_floating_ip.id == 4711
+        assert bound_floating_ip.name == "Web Frontend"
+        assert bound_floating_ip.description == "Web Frontend"
+        assert bound_floating_ip.type == "ipv4"
+
     def test_get_list(self, hetzner_client):
         result = hetzner_client.floating_ips.get_list()
         bound_floating_ips = result.floating_ips

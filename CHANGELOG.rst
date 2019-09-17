@@ -2,6 +2,11 @@
 History
 =======
 
+1.6.0 (2019-09-17)
+-------------------
+
+* Feature: Add missing `get_by_name` on `FloatingIPsClient`
+
 1.5.0 (2019-09-16)
 -------------------
 

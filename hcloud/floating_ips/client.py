@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from hcloud.actions.client import BoundAction
-from hcloud.core.client import BoundModelBase, ClientEntityBase
+from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from hcloud.core.domain import add_meta_to_result
 
 from hcloud.floating_ips.domain import FloatingIP, CreateFloatingIPResponse
@@ -114,7 +114,7 @@ class BoundFloatingIP(BoundModelBase):
         return self._client.change_dns_ptr(self, ip, dns_ptr)
 
 
-class FloatingIPsClient(ClientEntityBase):
+class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
     results_list_attribute_name = 'floating_ips'
 
     def get_actions_list(self,
@@ -184,7 +184,8 @@ class FloatingIPsClient(ClientEntityBase):
     def get_list(self,
                  label_selector=None,  # type: Optional[str]
                  page=None,  # type: Optional[int]
-                 per_page=None  # type: Optional[int]
+                 per_page=None,  # type: Optional[int]
+                 name=None,  # type: Optional[str]
                  ):
         # type: (...) -> PageResults[List[BoundFloatingIP]]
         """Get a list of floating ips from this account
@@ -195,6 +196,8 @@ class FloatingIPsClient(ClientEntityBase):
                Specifies the page to fetch
         :param per_page: int (optional)
                Specifies how many results are returned by page
+        :param name: str (optional)
+               Can be used to filter networks by their name.
         :return: (List[:class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
         params = {}
@@ -205,21 +208,35 @@ class FloatingIPsClient(ClientEntityBase):
             params['page'] = page
         if per_page:
             params['per_page'] = per_page
+        if name:
+            params['name'] = name
 
         response = self._client.request(url="/floating_ips", method="GET", params=params)
         floating_ips = [BoundFloatingIP(self, floating_ip_data) for floating_ip_data in response['floating_ips']]
 
         return self._add_meta_to_result(floating_ips, response)
 
-    def get_all(self, label_selector=None):
-        # type: (Optional[str]) -> List[BoundFloatingIP]
+    def get_all(self, label_selector=None, name=None):
+        # type: (Optional[str], Optional[str]) -> List[BoundFloatingIP]
         """Get all floating ips from this account
 
         :param label_selector: str (optional)
                Can be used to filter Floating IPs by labels. The response will only contain Floating IPs matching the label selector.able values.
+        :param name: str (optional)
+               Can be used to filter networks by their name.
         :return: List[:class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`]
         """
-        return super(FloatingIPsClient, self).get_all(label_selector=label_selector)
+        return super(FloatingIPsClient, self).get_all(label_selector=label_selector, name=name)
+
+    def get_by_name(self, name):
+        # type: (str) -> BoundFloatingIP
+        """Get Floating IP by name
+
+        :param name: str
+               Used to get Floating IP by name.
+        :return: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`
+        """
+        return super(FloatingIPsClient, self).get_by_name(name)
 
     def create(self,
                type,  # type: str
