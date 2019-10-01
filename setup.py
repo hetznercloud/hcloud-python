@@ -13,7 +13,7 @@ with open('CHANGELOG.rst') as changelog_file:
 
 requirements = [
     "future==0.17.1",
-    "python-dateutil==2.7.5",
+    "python-dateutil>=2.7.5,<2.9",
     "requests>=2.20,<2.23"
 ]
 
