@@ -2,6 +2,10 @@
 History
 =======
 
+1.6.1 (2019-10-01)
+-------------------
+* Fix: python-dateutil dependency requirement was to strict
+
 1.6.0 (2019-09-17)
 -------------------
 
