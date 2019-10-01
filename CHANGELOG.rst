@@ -2,6 +2,10 @@
 History
 =======
 
+1.6.1 (2019-10-01)
+-------------------
+* Fix: python-dateutil dependency requirement was too strict
+
 1.6.0 (2019-09-17)
 -------------------
 
@@ -18,7 +22,7 @@ History
 
 * Fix: Documentation for `NetworkRoute` domain was missing
 
-* Fix: `requests` dependency requirement was to strict
+* Fix: `requests` dependency requirement was to0 strict
 
 1.4.0 (2019-07-29)
 ------------------
