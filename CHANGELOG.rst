@@ -2,6 +2,10 @@
 History
 =======
 
+master (XXXX-XX-XX)
+-------------------
+* Fix: future dependency requirement was too strict
+
 1.6.1 (2019-10-01)
 -------------------
 * Fix: python-dateutil dependency requirement was too strict
