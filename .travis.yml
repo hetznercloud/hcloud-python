@@ -11,7 +11,7 @@ python:
 - '3.5'
 - '3.6'
 - '3.7'
-- "3.8-dev"
+- '3.8'
 
 before_script:
 - docker pull lkdevelopment/hetzner-cloud-api-mock
@@ -24,7 +24,9 @@ install:
 - pip install tox-travis
 
 script: tox
-
+matrix:
+  allow_failures:
+    python: 'nightly'
 jobs:
   include:
     - stage: codingstyle
