@@ -2,7 +2,7 @@
 History
 =======
 
-master (XXXX-XX-XX)
+1.6.2 (2019-10-15)
 -------------------
 * Fix: future dependency requirement was too strict
 
