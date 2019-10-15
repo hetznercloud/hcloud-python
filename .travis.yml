@@ -12,6 +12,7 @@ python:
 - '3.6'
 - '3.7'
 - '3.8'
+- 'nightly'
 
 before_script:
 - docker pull lkdevelopment/hetzner-cloud-api-mock
