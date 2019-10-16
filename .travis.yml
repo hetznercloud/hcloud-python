@@ -32,12 +32,12 @@ jobs:
   include:
     - stage: codingstyle
       env: STAGE=style_check
-      python: "3.6"
+      python: "3.7"
       script: tox -e flake8
     - stage: deploy
       env: STAGE=deploy
       if: tag IS present
-      python: "3.6"
+      python: "3.7"
       script: echo "Deploy to pypi"
       deploy:
         provider: pypi
