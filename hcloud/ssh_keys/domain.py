@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from hcloud.core.domain import BaseDomain, DomainIdentityMixin
 
+from hcloud.helpers.descriptors import ISODateTime
+
 
 class SSHKey(BaseDomain, DomainIdentityMixin):
     """SSHKey Domain
@@ -15,6 +17,8 @@ class SSHKey(BaseDomain, DomainIdentityMixin):
            Public Key
     :param labels: Dict
             User-defined labels (key-value pairs)
+    :param created: datetime
+           Point in time when the SSH Key was created
     """
     __slots__ = (
         "id",
@@ -24,16 +28,21 @@ class SSHKey(BaseDomain, DomainIdentityMixin):
         "labels"
     )
 
+    created = ISODateTime()
+    supported_fields = ("created",)
+
     def __init__(
         self,
         id=None,
         name=None,
         fingerprint=None,
         public_key=None,
-        labels=None
+        labels=None,
+        created=None
     ):
         self.id = id
         self.name = name
         self.fingerprint = fingerprint
         self.public_key = public_key
         self.labels = labels
+        self.created = created

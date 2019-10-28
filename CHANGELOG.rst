@@ -2,6 +2,11 @@
 History
 =======
 
+master (XXXX-XX-XX)
+--------------------
+
+* Feature: Add 'created' property to SSH Key domain
+
 1.6.2 (2019-10-15)
 -------------------
 * Fix: future dependency requirement was too strict
