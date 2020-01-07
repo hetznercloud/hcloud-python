@@ -7,7 +7,6 @@ stages:
   - name: deploy
     if: tag IS present
 python:
-- '2.7'
 - '3.5'
 - '3.6'
 - '3.7'

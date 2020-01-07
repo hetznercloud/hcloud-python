@@ -6,6 +6,7 @@ master (XXXX-XX-XX)
 --------------------
 
 * Feature: Add 'created' property to SSH Key domain
+* Remove Python 2.7 support
 
 1.6.2 (2019-10-15)
 -------------------

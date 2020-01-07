@@ -15,11 +15,6 @@ stages:
   tags:
   - fast
 
-python27:
-  <<: *tests_template
-  image: python:2.7
-  script: tox -e py27
-
 python35:
   <<: *tests_template
   image: python:3.5
@@ -35,10 +30,15 @@ python37:
   image: python:3.7
   script: tox -e py37
 
+python38:
+  <<: *tests_template
+  image: python:3.8
+  script: tox -e py38
+
 test-style:
   before_script:
   - pip install tox
-  image: python:3.6
+  image: python:3.7
   script: tox -e flake8
   tags:
   - fast
@@ -59,6 +59,6 @@ pages:
   artifacts:
     paths:
     - public
-  image: python:3.6-alpine
+  image: python:3.7-alpine
   tags:
   - fast
