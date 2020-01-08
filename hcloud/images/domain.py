@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+from dateutil.parser import isoparse
+
 from hcloud.core.domain import BaseDomain, DomainIdentityMixin
-from hcloud.helpers.descriptors import ISODateTime
 
 
 class Image(BaseDomain, DomainIdentityMixin):
@@ -39,8 +40,6 @@ class Image(BaseDomain, DomainIdentityMixin):
     :param labels: Dict
             User-defined labels (key-value pairs)
     """
-    created = ISODateTime()
-    deprecated = ISODateTime()
 
     __slots__ = (
         "id",
@@ -56,10 +55,10 @@ class Image(BaseDomain, DomainIdentityMixin):
         "created_from",
         "status",
         "protection",
-        "labels"
+        "labels",
+        "created",
+        "deprecated"
     )
-
-    supported_fields = ("created", "deprecated")
 
     def __init__(
             self,
@@ -84,11 +83,11 @@ class Image(BaseDomain, DomainIdentityMixin):
         self.id = id
         self.name = name
         self.type = type
-        self.created = created
+        self.created = isoparse(created) if created else None
         self.description = description
         self.image_size = image_size
         self.disk_size = disk_size
-        self.deprecated = deprecated
+        self.deprecated = isoparse(deprecated) if deprecated else None
         self.bound_to = bound_to
         self.os_flavor = os_flavor
         self.os_version = os_version

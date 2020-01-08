@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from hcloud.core.domain import BaseDomain
+from dateutil.parser import isoparse
 
-from hcloud.helpers.descriptors import ISODateTime
+from hcloud.core.domain import BaseDomain
 
 
 class Server(BaseDomain):
@@ -78,12 +78,9 @@ class Server(BaseDomain):
         "protection",
         "labels",
         "volumes",
-        "private_net"
+        "private_net",
+        "created"
     )
-
-    created = ISODateTime()
-
-    supported_fields = ("created",)
 
     def __init__(
             self,
@@ -110,7 +107,7 @@ class Server(BaseDomain):
         self.id = id
         self.name = name
         self.status = status
-        self.created = created
+        self.created = isoparse(created) if created else None
         self.public_net = public_net
         self.server_type = server_type
         self.datacenter = datacenter

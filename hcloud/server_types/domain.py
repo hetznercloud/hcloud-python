@@ -23,6 +23,8 @@ class ServerType(BaseDomain, DomainIdentityMixin):
            Type of server boot drive. Local has higher speed. Network has better availability. Choices: `local`, `network`
     :param cpu_type: string
            Type of cpu. Choices: `shared`, `dedicated`
+    :param deprecated: bool
+           True if server type is deprecated
     """
     __slots__ = (
         "id",
@@ -33,7 +35,8 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         "disk",
         "prices",
         "storage_type",
-        "cpu_type"
+        "cpu_type",
+        "deprecated"
     )
 
     def __init__(
@@ -46,8 +49,8 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         disk=None,
         prices=None,
         storage_type=None,
-        cpu_type=None
-
+        cpu_type=None,
+        deprecated=None
     ):
         self.id = id
         self.name = name
@@ -58,3 +61,4 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         self.prices = prices
         self.storage_type = storage_type
         self.cpu_type = cpu_type
+        self.deprecated = deprecated

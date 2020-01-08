@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+from dateutil.parser import isoparse
+
 from hcloud.core.domain import BaseDomain, DomainIdentityMixin
-from hcloud.helpers.descriptors import ISODateTime
 
 
 class Iso(BaseDomain, DomainIdentityMixin):
@@ -17,16 +18,14 @@ class Iso(BaseDomain, DomainIdentityMixin):
     :param deprecated: datetime, None
            ISO 8601 timestamp of deprecation, None if ISO is still available. After the deprecation time it will no longer be possible to attach the ISO to servers.
     """
-    deprecated = ISODateTime()
 
     __slots__ = (
         "id",
         "name",
         "type",
-        "description"
+        "description",
+        "deprecated"
     )
-
-    supported_fields = ("deprecated", )
 
     def __init__(
         self,
@@ -40,4 +39,4 @@ class Iso(BaseDomain, DomainIdentityMixin):
         self.name = name
         self.type = type
         self.description = description
-        self.deprecated = deprecated
+        self.deprecated = isoparse(deprecated) if deprecated else None

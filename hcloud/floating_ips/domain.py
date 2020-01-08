@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from hcloud.core.domain import BaseDomain
+from dateutil.parser import isoparse
 
-from hcloud.helpers.descriptors import ISODateTime
+from hcloud.core.domain import BaseDomain
 
 
 class FloatingIP(BaseDomain):
@@ -43,10 +43,9 @@ class FloatingIP(BaseDomain):
         "blocked",
         "protection",
         "labels",
-        "name"
+        "name",
+        "created"
     )
-    created = ISODateTime()
-    supported_fields = ("created",)
 
     def __init__(
         self,
@@ -73,7 +72,7 @@ class FloatingIP(BaseDomain):
         self.blocked = blocked
         self.protection = protection
         self.labels = labels
-        self.created = created
+        self.created = isoparse(created) if created else None
         self.name = name
 
 

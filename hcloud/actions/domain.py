@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from hcloud.core.domain import BaseDomain
+from dateutil.parser import isoparse
 
-from hcloud.helpers.descriptors import ISODateTime
+from hcloud.core.domain import BaseDomain
 
 
 class Action(BaseDomain):
@@ -23,9 +23,6 @@ class Action(BaseDomain):
     STATUS_ERROR = "error"
     """Action Status error"""
 
-    started = ISODateTime()
-    finished = ISODateTime()
-
     __slots__ = (
         "id",
         "command",
@@ -33,9 +30,9 @@ class Action(BaseDomain):
         "progress",
         "resources",
         "error",
+        "started",
+        "finished"
     )
-
-    supported_fields = ("started", "finished")
 
     def __init__(
             self,
@@ -53,8 +50,8 @@ class Action(BaseDomain):
 
         self.status = status
         self.progress = progress
-        self.started = started
-        self.finished = finished
+        self.started = isoparse(started) if started else None
+        self.finished = isoparse(finished) if finished else None
         self.resources = resources
         self.error = error
 
