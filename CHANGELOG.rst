@@ -2,7 +2,7 @@
 History
 =======
 
-master (XXXX-XX-XX)
+1.6.3 (2020-01-09)
 --------------------
 
 * Feature: Add 'created' property to SSH Key domain
