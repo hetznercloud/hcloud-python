@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+from dateutil.parser import isoparse
+
 from hcloud.core.domain import BaseDomain, DomainIdentityMixin
-from hcloud.helpers.descriptors import ISODateTime
 
 
 class Volume(BaseDomain, DomainIdentityMixin):
@@ -34,8 +35,6 @@ class Volume(BaseDomain, DomainIdentityMixin):
     STATUS_AVAILABLE = "available"
     """Volume Status available"""
 
-    created = ISODateTime()
-
     __slots__ = (
         "id",
         "name",
@@ -46,10 +45,9 @@ class Volume(BaseDomain, DomainIdentityMixin):
         "format",
         "protection",
         "labels",
-        "status"
+        "status",
+        "created"
     )
-
-    supported_fields = ("created",)
 
     def __init__(
             self,
@@ -69,7 +67,7 @@ class Volume(BaseDomain, DomainIdentityMixin):
         self.id = id
         self.name = name
         self.server = server
-        self.created = created
+        self.created = isoparse(created) if created else None
         self.location = location
         self.size = size
         self.linux_device = linux_device

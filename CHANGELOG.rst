@@ -6,6 +6,7 @@ master (XXXX-XX-XX)
 --------------------
 
 * Feature: Add 'created' property to SSH Key domain
+* Fix: Remove ISODatetime Descriptor because it leads to wrong dates
 
 1.6.2 (2019-10-15)
 -------------------

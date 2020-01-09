@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from hcloud.core.domain import BaseDomain, DomainIdentityMixin
+from dateutil.parser import isoparse
 
-from hcloud.helpers.descriptors import ISODateTime
+from hcloud.core.domain import BaseDomain, DomainIdentityMixin
 
 
 class SSHKey(BaseDomain, DomainIdentityMixin):
@@ -25,11 +25,9 @@ class SSHKey(BaseDomain, DomainIdentityMixin):
         "name",
         "fingerprint",
         "public_key",
-        "labels"
+        "labels",
+        "created"
     )
-
-    created = ISODateTime()
-    supported_fields = ("created",)
 
     def __init__(
         self,
@@ -45,4 +43,4 @@ class SSHKey(BaseDomain, DomainIdentityMixin):
         self.fingerprint = fingerprint
         self.public_key = public_key
         self.labels = labels
-        self.created = created
+        self.created = isoparse(created) if created else None

@@ -2,7 +2,6 @@ import pytest
 from dateutil.parser import isoparse
 
 from hcloud.core.domain import BaseDomain, DomainIdentityMixin, Meta, Pagination, add_meta_to_result
-from hcloud.helpers.descriptors import ISODateTime
 
 
 class TestMeta(object):
@@ -102,34 +101,8 @@ class ActionDomain(BaseDomain, DomainIdentityMixin):
         self.started = isoparse(started) if started else None
 
 
-class ActionDomainWithDescriptor(BaseDomain):
-    started = ISODateTime()
-
-    __slots__ = ("id", "name")
-
-    supported_fields = ("started",)
-
-    def __init__(self, id=None, name="name1", started=None):
-        self.id = id
-        self.name = name
-        self.started = started
-
-
-class ActionDomainWithSupportedFieldsOverride(BaseDomain):
-
-    @classmethod
-    def get_supported_fields(cls):
-        return set(["id", "started", "name"])
-
-    def __init__(self, id=None, name="name1", started=None):
-        self.id = id
-        self.name = name
-        self.started = isoparse(started) if started else None
-
-
 class TestBaseDomain(object):
 
-    @pytest.mark.parametrize("domain", [ActionDomain, ActionDomainWithDescriptor, ActionDomainWithSupportedFieldsOverride])
     @pytest.mark.parametrize(
         "data_dict,expected_result",
         [
@@ -146,7 +119,7 @@ class TestBaseDomain(object):
              {"id": 4, "name": "name-name3", "started": isoparse("2016-01-30T23:50+00:00")}
              ),
         ])
-    def test_from_dict_ok(self, domain, data_dict, expected_result):
-        model = domain.from_dict(data_dict)
+    def test_from_dict_ok(self, data_dict, expected_result):
+        model = ActionDomain.from_dict(data_dict)
         for k, v in expected_result.items():
             assert getattr(model, k) == v

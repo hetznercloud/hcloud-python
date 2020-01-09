@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+from dateutil.parser import isoparse
+
 from hcloud.core.domain import BaseDomain
-from hcloud.helpers.descriptors import ISODateTime
 
 
 class Network(BaseDomain):
@@ -32,11 +33,9 @@ class Network(BaseDomain):
         "routes",
         "servers",
         "protection",
-        "labels"
+        "labels",
+        "created"
     )
-
-    created = ISODateTime()
-    supported_fields = ("created",)
 
     def __init__(
             self,
@@ -52,7 +51,7 @@ class Network(BaseDomain):
     ):
         self.id = id
         self.name = name
-        self.created = created
+        self.created = isoparse(created) if created else None
         self.ip_range = ip_range
         self.subnets = subnets
         self.routes = routes
