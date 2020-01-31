@@ -3,6 +3,8 @@ from __future__ import absolute_import
 
 import time
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 from hcloud.actions.client import ActionsClient
 from hcloud.floating_ips.client import FloatingIPsClient
@@ -56,6 +58,16 @@ class Client(object):
         self._application_name = application_name
         self._application_version = application_version
         self.poll_interval = poll_interval
+        self.session = requests.Session()
+        self.session.headers.update(self._get_headers())
+        retry = Retry(
+            connect=3,
+            status=5,
+            status_forcelist=[429, 500, 503, 504],
+            backoff_factor=5
+        )
+        adapter = HTTPAdapter(max_retries=retry)
+        self.session.mount('https://', adapter)
 
         self.datacenters = DatacentersClient(self)
         """DatacentersClient Instance
@@ -168,7 +180,7 @@ class Client(object):
         :return: Response
         :rtype: requests.Response
         """
-        response = requests.request(
+        response = self.session.request(
             method,
             self._api_endpoint + url,
             headers=self._get_headers(),
@@ -182,14 +194,10 @@ class Client(object):
         except (TypeError, ValueError):
             self._raise_exception_from_response(response)
 
+        print(response.ok)
         if not response.ok:
             if json_content:
-                if json_content['error']['code'] == "rate_limit_exceeded" and tries < 5:
-                    time.sleep(tries * self._retry_wait_time)
-                    tries = tries + 1
-                    return self.request(method, url, tries, **kwargs)
-                else:
-                    self._raise_exception_from_json_content(json_content)
+                self._raise_exception_from_json_content(json_content)
             else:
                 self._raise_exception_from_response(response)
 
