@@ -5,7 +5,7 @@ from hcloud import Client
 
 @pytest.fixture(autouse=True, scope='function')
 def mocked_requests():
-    patcher = mock.patch('hcloud.hcloud.requests')
+    patcher = mock.patch('hcloud.hcloud.requests.Session.request')
     mocked_requests = patcher.start()
     yield mocked_requests
     patcher.stop()
