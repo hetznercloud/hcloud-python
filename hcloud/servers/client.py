@@ -392,6 +392,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                image,  # type: Image
                ssh_keys=None,  # type: Optional[List[SSHKey]]
                volumes=None,  # type: Optional[List[Volume]]
+               networks=None,  # type: Optional[List[Network]]
                user_data=None,  # type: Optional[str]
                labels=None,  # type: Optional[Dict[str, str]]
                location=None,  # type: Optional[Location]
@@ -412,6 +413,8 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                SSH keys which should be injected into the server at creation time
         :param volumes: List[:class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`] (optional)
                Volumes which should be attached to the server at the creation time. Volumes must be in the same location.
+        :param networks: List[:class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`] (optional)
+               Network which should be attached to the server private network interface at the creation time.
         :param user_data: str (optional)
                Cloud-Init user data to use during server creation. This field is limited to 32KiB.
         :param labels: Dict[str,str] (optional)
@@ -439,6 +442,8 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
             data['ssh_keys'] = [ssh_key.id_or_name for ssh_key in ssh_keys]
         if volumes is not None:
             data['volumes'] = [volume.id for volume in volumes]
+        if networks is not None:
+            data['networks'] = [network.id for network in networks]
         if user_data is not None:
             data['user_data'] = user_data
         if labels is not None:
