@@ -4,7 +4,7 @@ History
 
 master (XXXX-XX-XX)
 --------------------
-* Feature: Add support for the optional 'networks' paramater on server creation.
+* Feature: Add support for the optional 'networks' parameter on server creation.
 
 1.6.3 (2020-01-09)
 --------------------
