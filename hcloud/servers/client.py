@@ -414,7 +414,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :param volumes: List[:class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`] (optional)
                Volumes which should be attached to the server at the creation time. Volumes must be in the same location.
         :param networks: List[:class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`] (optional)
-               Network which should be attached to the server private network interface at the creation time.
+               Networks which should be attached to the server at the creation time.
         :param user_data: str (optional)
                Cloud-Init user data to use during server creation. This field is limited to 32KiB.
         :param labels: Dict[str,str] (optional)
