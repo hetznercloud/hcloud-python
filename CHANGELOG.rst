@@ -5,6 +5,7 @@ History
 master (XXXX-XX-XX)
 --------------------
 * Feature: Add support for the optional 'networks' parameter on server creation.
+* Feature: Add subnet type `cloud`
 
 1.6.3 (2020-01-09)
 --------------------

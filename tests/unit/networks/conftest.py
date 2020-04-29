@@ -11,7 +11,7 @@ def network_response():
             "ip_range": "10.0.0.0/16",
             "subnets": [
                 {
-                    "type": "server",
+                    "type": "cloud",
                     "ip_range": "10.0.1.0/24",
                     "network_zone": "eu-central",
                     "gateway": "10.0.0.1"
@@ -51,7 +51,7 @@ def two_networks_response():
                 "ip_range": "10.0.0.0/16",
                 "subnets": [
                     {
-                        "type": "server",
+                        "type": "cloud",
                         "ip_range": "10.0.1.0/24",
                         "network_zone": "eu-central",
                         "gateway": "10.0.0.1"
@@ -84,7 +84,7 @@ def two_networks_response():
                 "ip_range": "12.0.0.0/8",
                 "subnets": [
                     {
-                        "type": "server",
+                        "type": "cloud",
                         "ip_range": "12.0.1.0/24",
                         "network_zone": "eu-central",
                         "gateway": "12.0.0.1"
@@ -119,7 +119,7 @@ def one_network_response():
                 "ip_range": "10.0.0.0/16",
                 "subnets": [
                     {
-                        "type": "server",
+                        "type": "cloud",
                         "ip_range": "10.0.1.0/24",
                         "network_zone": "eu-central",
                         "gateway": "10.0.0.1"
@@ -158,7 +158,7 @@ def network_create_response():
             "ip_range": "10.0.0.0/16",
             "subnets": [
                 {
-                    "type": "server",
+                    "type": "cloud",
                     "ip_range": "10.0.1.0/24",
                     "network_zone": "eu-central",
                     "gateway": "10.0.0.1"
@@ -191,7 +191,7 @@ def response_update_network():
             "ip_range": "10.0.0.0/16",
             "subnets": [
                 {
-                    "type": "server",
+                    "type": "cloud",
                     "ip_range": "10.0.1.0/24",
                     "network_zone": "eu-central",
                     "gateway": "10.0.0.1"
