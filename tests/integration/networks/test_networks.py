@@ -13,7 +13,7 @@ class TestBoundNetwork(object):
 
     @pytest.fixture()
     def network_subnet(self):
-        return NetworkSubnet(type="server", ip_range="10.0.1.0/24", network_zone="eu-central")
+        return NetworkSubnet(type="cloud", ip_range="10.0.1.0/24", network_zone="eu-central")
 
     @pytest.fixture()
     def network_route(self):
@@ -77,7 +77,7 @@ class TestNetworksClient(object):
 
     @pytest.fixture()
     def network_subnet(self):
-        return NetworkSubnet(type="server", ip_range="10.0.1.0/24", network_zone="eu-central")
+        return NetworkSubnet(type="cloud", ip_range="10.0.1.0/24", network_zone="eu-central")
 
     @pytest.fixture()
     def network_route(self):

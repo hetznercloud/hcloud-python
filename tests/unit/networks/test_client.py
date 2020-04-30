@@ -33,7 +33,7 @@ class TestBoundNetwork(object):
 
         assert len(bound_network.subnets) == 2
         assert isinstance(bound_network.subnets[0], NetworkSubnet)
-        assert bound_network.subnets[0].type == "server"
+        assert bound_network.subnets[0].type == "cloud"
         assert bound_network.subnets[0].ip_range == "10.0.1.0/24"
         assert bound_network.subnets[0].network_zone == "eu-central"
         assert bound_network.subnets[0].gateway == "10.0.0.1"
@@ -80,10 +80,10 @@ class TestBoundNetwork(object):
 
     def test_add_subnet(self, hetzner_client, bound_network, generic_action):
         hetzner_client.request.return_value = generic_action
-        subnet = NetworkSubnet(type="server", ip_range="10.0.1.0/24", network_zone="eu-central")
+        subnet = NetworkSubnet(type="cloud", ip_range="10.0.1.0/24", network_zone="eu-central")
         action = bound_network.add_subnet(subnet)
         hetzner_client.request.assert_called_with(url="/networks/14/actions/add_subnet", method="POST",
-                                                  json={"type": "server", "ip_range": "10.0.1.0/24",
+                                                  json={"type": "cloud", "ip_range": "10.0.1.0/24",
                                                         "network_zone": "eu-central"})
 
         assert action.id == 1
@@ -137,7 +137,7 @@ class TestNetworksClient(object):
 
     @pytest.fixture()
     def network_subnet(self):
-        return NetworkSubnet(type="server", ip_range="10.0.1.0/24", network_zone="eu-central")
+        return NetworkSubnet(type="cloud", ip_range="10.0.1.0/24", network_zone="eu-central")
 
     @pytest.fixture()
     def network_route(self):
@@ -243,7 +243,7 @@ class TestNetworksClient(object):
                 'ip_range': "10.0.0.0/8",
                 'subnets': [
                     {
-                        'type': "server",
+                        'type': "cloud",
                         'ip_range': "10.0.1.0/24",
                         'network_zone': "eu-central"
                     }
@@ -290,7 +290,7 @@ class TestNetworksClient(object):
                 'ip_range': "10.0.0.0/8",
                 'subnets': [
                     {
-                        'type': "server",
+                        'type': "cloud",
                         'ip_range': "10.0.1.0/24",
                         'network_zone': "eu-central"
                     }
@@ -352,7 +352,7 @@ class TestNetworksClient(object):
 
         action = networks_client.add_subnet(network, network_subnet)
         networks_client._client.request.assert_called_with(url="/networks/1/actions/add_subnet", method="POST",
-                                                           json={"type": "server", "ip_range": "10.0.1.0/24",
+                                                           json={"type": "cloud", "ip_range": "10.0.1.0/24",
                                                                  "network_zone": "eu-central"})
 
         assert action.id == 1
