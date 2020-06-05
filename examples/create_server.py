@@ -6,4 +6,4 @@ client = Client(token="{YOUR_API_TOKEN}")  # Please paste your API token here be
 response = client.servers.create(name="my-server", server_type=ServerType("cx11"), image=Image(name="ubuntu-18.04"))
 server = response.server
 print(server)
-print("Root Passwort" + response.root_password)
+print("Root Password" + response.root_password)
