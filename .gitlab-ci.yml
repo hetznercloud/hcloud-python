@@ -42,6 +42,11 @@ python38:
   image: python:3.8-alpine
   script: tox -e py38
 
+python39:
+  <<: *tests_template
+  image: python:3.9-rc-alpine
+  script: tox -e py39
+
 test-style:
   before_script:
   - pip install tox
