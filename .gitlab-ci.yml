@@ -1,0 +1,56 @@
+stages:
+- test
+
+.tests_template: &tests_template
+  before_script:
+  - pip install tox
+  stage: test
+  script:
+    tox
+  variables:
+    FAKE_API_ENDPOINT: "http://apimock:8080/v1"
+  tags:
+  - hc-bladerunner
+  services:
+    - name: lkdevelopment/hetzner-cloud-api-mock
+      alias: apimock
+
+
+
+python27:
+  <<: *tests_template
+  image: python:2.7-alpine
+  script: tox -e py27
+
+python35:
+  <<: *tests_template
+  image: python:3.5-alpine
+  script: tox -e py35
+
+python36:
+  <<: *tests_template
+  image: python:3.6-alpine
+  script: tox -e py36
+
+python37:
+  <<: *tests_template
+  image: python:3.7-alpine
+  script: tox -e py37
+
+python38:
+  <<: *tests_template
+  image: python:3.8-alpine
+  script: tox -e py38
+
+python39:
+  <<: *tests_template
+  image: python:3.9-rc-alpine
+  script: tox -e py39
+
+test-style:
+  before_script:
+  - pip install tox
+  image: python:3.7-alpine
+  script: tox -e flake8
+  tags:
+  - hc-bladerunner
