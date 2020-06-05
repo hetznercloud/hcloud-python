@@ -2,7 +2,7 @@
 History
 =======
 
-master (XXXX-XX-XX)
+1.7.0 (2020-07-05)
 --------------------
 
 * Feature: Add support for the optional 'networks' parameter on server creation.
