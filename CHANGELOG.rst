@@ -2,6 +2,11 @@
 History
 =======
 
+1.7.1 (2020-06-55)
+--------------------
+
+* Feature: Add requests 2.23 support
+
 1.7.0 (2020-06-05)
 --------------------
 
@@ -39,7 +44,7 @@ History
 
 * Fix: Documentation for `NetworkRoute` domain was missing
 
-* Fix: `requests` dependency requirement was to0 strict
+* Fix: `requests` dependency requirement was to strict
 
 1.4.0 (2019-07-29)
 ------------------
