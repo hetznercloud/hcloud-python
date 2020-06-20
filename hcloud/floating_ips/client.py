@@ -244,7 +244,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
                labels=None,  # type: Optional[str]
                home_location=None,  # type: Optional[Location]
                server=None,  # type: Optional[Server]
-               name=None,  # type: Optinal[str]
+               name=None,  # type: Optional[str]
                ):
         # type: (...) -> CreateFloatingIPResponse
         """Creates a new Floating IP assigned to a server.

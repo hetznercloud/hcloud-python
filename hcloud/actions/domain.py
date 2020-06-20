@@ -14,7 +14,7 @@ class Action(BaseDomain):
     :param started: Point in time when the action was started
     :param datetime,None finished: Point in time when the action was finished. Only set if the action is finished otherwise None
     :param resources: Resources the action relates to
-    :param error: Error message for the action if error occured, otherwise None.
+    :param error: Error message for the action if error occurred, otherwise None.
     """
     STATUS_RUNNING = "running"
     """Action Status running"""
