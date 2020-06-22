@@ -9,7 +9,6 @@ stages:
     tox
   variables:
     FAKE_API_ENDPOINT: "http://apimock:8080/v1"
-    API_MOCK_source: "https://docs-internal.staging.hc-k8s.de/hc_public_internal.apib"
   tags:
   - hc-bladerunner
   services:
