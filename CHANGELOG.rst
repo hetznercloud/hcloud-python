@@ -2,7 +2,14 @@
 History
 =======
 
-1.7.1 (2020-06-55)
+1.8.0 (2020-06-22)
+--------------------
+
+* Feature: Add Load Balancers
+* Feature: Add Certificates
+
+
+1.7.1 (2020-06-15)
 --------------------
 
 * Feature: Add requests 2.23 support
