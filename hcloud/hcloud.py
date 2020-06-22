@@ -5,6 +5,7 @@ import time
 import requests
 
 from hcloud.actions.client import ActionsClient
+from hcloud.certificates.client import CertificatesClient
 from hcloud.floating_ips.client import FloatingIPsClient
 from hcloud.networks.client import NetworksClient
 from hcloud.isos.client import IsosClient
@@ -15,6 +16,8 @@ from hcloud.volumes.client import VolumesClient
 from hcloud.images.client import ImagesClient
 from hcloud.locations.client import LocationsClient
 from hcloud.datacenters.client import DatacentersClient
+from hcloud.load_balancers.client import LoadBalancersClient
+from hcloud.load_balancer_types.client import LoadBalancerTypesClient
 
 from .__version__ import VERSION
 
@@ -111,6 +114,23 @@ class Client(object):
         """NetworksClient Instance
 
         :type: :class:`NetworksClient <hcloud.networks.client.NetworksClient>`
+        """
+        self.certificates = CertificatesClient(self)
+        """CertificatesClient Instance
+
+        :type: :class:`CertificatesClient <hcloud.certificates.client.CertificatesClient>`
+        """
+
+        self.load_balancers = LoadBalancersClient(self)
+        """LoadBalancersClient Instance
+
+        :type: :class:`LoadBalancersClient <hcloud.load_balancers.client.LoadBalancersClient>`
+        """
+
+        self.load_balancer_types = LoadBalancerTypesClient(self)
+        """LoadBalancerTypesClient Instance
+
+        :type: :class:`LoadBalancerTypesClient <hcloud.load_balancer_types.client.LoadBalancerTypesClient>`
         """
 
     def _get_user_agent(self):

@@ -1,0 +1,30 @@
+LoadBalancerClient
+==================
+
+
+.. autoclass:: hcloud.load_balancers.client.LoadBalancerClient
+    :members:
+
+.. autoclass:: hcloud.load_balancers.client.BoundLoadBalancer
+    :members:
+
+.. autoclass:: hcloud.load_balancers.domain.LoadBalancer
+    :members:
+
+.. autoclass:: hcloud.load_balancers.domain.LoadBalancerService
+    :members:
+
+.. autoclass:: hcloud.load_balancers.domain.LoadBalancerServiceHttp
+    :members:
+
+.. autoclass:: hcloud.load_balancers.domain.LoadBalancerHealthCheck
+    :members:
+
+.. autoclass:: hcloud.load_balancers.domain.LoadBalancerHealthCheckHttp
+    :members:
+
+.. autoclass:: hcloud.load_balancers.domain.LoadBalancerTarget
+    :members:
+
+.. autoclass:: hcloud.load_balancers.domain.LoadBalancerAlgorithm
+    :members:
