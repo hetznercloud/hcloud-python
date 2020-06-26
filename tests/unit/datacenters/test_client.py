@@ -64,7 +64,7 @@ class TestDatacentersClient(object):
         assert datacenter.id == 1
         assert datacenter.name == "fsn1-dc8"
 
-    @pytest.mark.parametrize("params", [{'name': "fsn1", "page": 1, "per_page": 10}, {}])
+    @pytest.mark.parametrize("params", [{'name': "fsn1", "page": 1, "per_page": 10}, {'name': ""}, {}])
     def test_get_list(self, datacenters_client, two_datacenters_response, params):
         datacenters_client._client.request.return_value = two_datacenters_response
         result = datacenters_client.get_list(**params)

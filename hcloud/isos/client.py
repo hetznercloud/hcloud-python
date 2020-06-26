@@ -38,7 +38,7 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
         :return: (List[:class:`BoundIso <hcloud.isos.client.BoundIso>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
         params = {}
-        if name:
+        if name is not None:
             params['name'] = name
         if page is not None:
             params['page'] = page

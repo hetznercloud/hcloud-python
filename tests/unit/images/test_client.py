@@ -135,6 +135,7 @@ class TestImagesClient(object):
                 "page": 1,
                 "per_page": 10
             },
+            {'name': ""},
             {}
         ]
     )

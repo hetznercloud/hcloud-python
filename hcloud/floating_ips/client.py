@@ -202,13 +202,13 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         """
         params = {}
 
-        if label_selector:
+        if label_selector is not None:
             params['label_selector'] = label_selector
-        if page:
+        if page is not None:
             params['page'] = page
-        if per_page:
+        if per_page is not None:
             params['per_page'] = per_page
-        if name:
+        if name is not None:
             params['name'] = name
 
         response = self._client.request(url="/floating_ips", method="GET", params=params)

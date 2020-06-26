@@ -63,7 +63,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         if name is not None:
             params["name"] = name
 
-        if label_selector:
+        if label_selector is not None:
             params["label_selector"] = label_selector
 
         if page is not None:

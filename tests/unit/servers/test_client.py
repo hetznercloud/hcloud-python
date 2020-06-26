@@ -352,6 +352,7 @@ class TestServersClient(object):
         "params",
         [
             {'name': "server1", 'label_selector': "label1", 'page': 1, 'per_page': 10},
+            {'name': ""},
             {}
         ]
     )

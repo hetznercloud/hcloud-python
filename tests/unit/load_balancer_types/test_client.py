@@ -18,7 +18,7 @@ class TestLoadBalancerTypesClient(object):
         assert load_balancer_type.id == 1
         assert load_balancer_type.name == "LB11"
 
-    @pytest.mark.parametrize("params", [{'name': "LB11", 'page': 1, 'per_page': 10}])
+    @pytest.mark.parametrize("params", [{'name': "LB11", 'page': 1, 'per_page': 10}, {'name': ""}, {}])
     def test_get_list(self, load_balancer_types_client, two_load_balancer_types_response, params):
         load_balancer_types_client._client.request.return_value = two_load_balancer_types_response
         result = load_balancer_types_client.get_list(**params)

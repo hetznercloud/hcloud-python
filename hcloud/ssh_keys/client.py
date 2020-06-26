@@ -63,15 +63,15 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
         :return:  (List[:class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
         params = {}
-        if name:
+        if name is not None:
             params['name'] = name
-        if fingerprint:
+        if fingerprint is not None:
             params['fingerprint'] = fingerprint
-        if label_selector:
+        if label_selector is not None:
             params['label_selector'] = label_selector
-        if page:
+        if page is not None:
             params['page'] = page
-        if per_page:
+        if per_page is not None:
             params['per_page'] = per_page
 
         response = self._client.request(url="/ssh_keys", method="GET", params=params)

@@ -2,6 +2,11 @@
 History
 =======
 
+master (XXXX-XX-XX)
+--------------------
+
+* Fix: Unify setting of request parameters within `get_list` methods.
+
 1.8.0 (2020-06-22)
 --------------------
 

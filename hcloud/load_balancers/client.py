@@ -217,13 +217,13 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         :return: (List[:class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
         params = {}
-        if name:
+        if name is not None:
             params["name"] = name
-        if label_selector:
+        if label_selector is not None:
             params["label_selector"] = label_selector
-        if page:
+        if page is not None:
             params["page"] = page
-        if per_page:
+        if per_page is not None:
             params["per_page"] = per_page
 
         response = self._client.request(url="/load_balancers", method="GET", params=params)

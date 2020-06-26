@@ -56,6 +56,7 @@ class TestSSHKeysClient(object):
         "params",
         [
             {'name': "My ssh key", "fingerprint": "b7:2f:30:a0:2f:6c:58:6c:21:04:58:61:ba:06:3b:2f", "label_selector": "k==v", 'page': 1, 'per_page': 10},
+            {'name': ""},
             {}
         ]
     )

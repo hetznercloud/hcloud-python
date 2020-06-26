@@ -19,7 +19,7 @@ class TestLocationsClient(object):
         assert location.name == "fsn1"
         assert location.network_zone == "eu-central"
 
-    @pytest.mark.parametrize("params", [{'name': "fsn1", "page": 1, "per_page": 10}, {}])
+    @pytest.mark.parametrize("params", [{'name': "fsn1", "page": 1, "per_page": 10}, {'name': ""}, {}])
     def test_get_list(self, locations_client, two_locations_response, params):
         locations_client._client.request.return_value = two_locations_response
         result = locations_client.get_list(**params)

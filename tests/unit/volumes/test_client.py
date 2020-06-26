@@ -142,6 +142,7 @@ class TestVolumesClient(object):
         "params",
         [
             {'label_selector': "label1", 'page': 1, 'per_page': 10},
+            {'name': ""},
             {}
         ]
     )

@@ -60,6 +60,7 @@ class TestCertificatesClient(object):
         "params",
         [
             {'name': "My Certificate", "label_selector": "k==v", 'page': 1, 'per_page': 10},
+            {'name': ""},
             {}
         ]
     )
