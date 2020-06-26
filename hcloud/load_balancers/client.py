@@ -7,7 +7,8 @@ from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByName
 from hcloud.core.domain import add_meta_to_result
 
 from hcloud.actions.client import BoundAction
-from hcloud.load_balancers.domain import LoadBalancer, IPv4Address, IPv6Network, PublicNetwork, PrivateNet, CreateLoadBalancerResponse
+from hcloud.load_balancers.domain import LoadBalancer, IPv4Address, IPv6Network, PublicNetwork, PrivateNet, \
+    CreateLoadBalancerResponse
 
 
 class BoundLoadBalancer(BoundModelBase):
@@ -23,7 +24,8 @@ class BoundLoadBalancer(BoundModelBase):
         private_nets = data.get("private_net")
         if private_nets:
             private_nets = [PrivateNet(
-                network=BoundNetwork(client._client.networks, {"id": private_net['network']}, complete=False), ip=private_net['ip']) for private_net in private_nets]
+                network=BoundNetwork(client._client.networks, {"id": private_net['network']}, complete=False),
+                ip=private_net['ip']) for private_net in private_nets]
             data['private_net'] = private_nets
 
         load_balancer_type = data.get("load_balancer_type")
@@ -279,7 +281,8 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             network_zone=None,  # type: Optional[str]
             public_interface=None,  # type: Optional[bool]
             network=None  # type: Optional[Union[Network,BoundNetwork]]
-    ) -> CreateLoadBalancerResponse:
+    ):
+        # type: (...) -> CreateLoadBalancerResponse:
         """Creates a Load Balancer .
 
         :param name: str
@@ -367,7 +370,8 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
 
         response = self._client.request(url="/load_balancers", method="POST", json=data)
 
-        return CreateLoadBalancerResponse(load_balancer=BoundLoadBalancer(self, response["load_balancer"]), action=BoundAction(self._client.actions, response['action']))
+        return CreateLoadBalancerResponse(load_balancer=BoundLoadBalancer(self, response["load_balancer"]),
+                                          action=BoundAction(self._client.actions, response['action']))
 
     def update(self, load_balancer, name=None, labels=None):
         # type:(LoadBalancer,  Optional[str],  Optional[Dict[str, str]]) -> BoundLoadBalancer
@@ -659,8 +663,8 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
 
     def attach_to_network(self,
                           load_balancer,  # type: Union[LoadBalancer, BoundLoadBalancer]
-                          network,        # type: Union[Network, BoundNetwork]
-                          ip=None):       # type: Optional[str]
+                          network,  # type: Union[Network, BoundNetwork]
+                          ip=None):  # type: Optional[str]
         """Attach a Load Balancer to a Network.
 
         :param load_balancer: :class:` <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -691,7 +695,8 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             "network": network.id,
         }
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/detach_from_network".format(load_balancer_id=load_balancer.id), method="POST",
+            url="/load_balancers/{load_balancer_id}/actions/detach_from_network".format(
+                load_balancer_id=load_balancer.id), method="POST",
             json=data)
         return BoundAction(self._client.actions, response['action'])
 
