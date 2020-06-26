@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from hcloud.load_balancer_types.client import BoundLoadBalancerType
+from hcloud.locations.client import BoundLocation
 from hcloud.networks.client import BoundNetwork
 
 from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByNameMixin
@@ -28,6 +29,10 @@ class BoundLoadBalancer(BoundModelBase):
         load_balancer_type = data.get("load_balancer_type")
         if load_balancer_type is not None:
             data['load_balancer_type'] = BoundLoadBalancerType(client._client.load_balancer_types, load_balancer_type)
+
+        location = data.get("location")
+        if location is not None:
+            data['location'] = BoundLocation(client._client.locations, location)
 
         super(BoundLoadBalancer, self).__init__(client, data, complete)
 
