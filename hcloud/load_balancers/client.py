@@ -357,7 +357,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
 
         response = self._client.request(url="/load_balancers", method="POST", json=data)
 
-        return CreateLoadBalancerResponse(load_balancer=BoundLoadBalancer(self, response["load_balancer"]), action=BoundAction(self, response['action']))
+        return CreateLoadBalancerResponse(load_balancer=BoundLoadBalancer(self, response["load_balancer"]), action=BoundAction(self._client.actions, response['action']))
 
     def update(self, load_balancer, name=None, labels=None):
         # type:(LoadBalancer,  Optional[str],  Optional[Dict[str, str]]) -> BoundLoadBalancer
