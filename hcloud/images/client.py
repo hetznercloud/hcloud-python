@@ -178,21 +178,21 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         :return: (List[:class:`BoundImage <hcloud.images.client.BoundImage>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
         params = {}
-        if name:
+        if name is not None:
             params['name'] = name
-        if label_selector:
+        if label_selector is not None:
             params['label_selector'] = label_selector
-        if bound_to:
+        if bound_to is not None:
             params['bound_to'] = bound_to
-        if type:
+        if type is not None:
             params['type'] = type
-        if sort:
+        if sort is not None:
             params['sort'] = sort
-        if page:
+        if page is not None:
             params['page'] = page
-        if per_page:
+        if per_page is not None:
             params['per_page'] = per_page
-        if status:
+        if status is not None:
             params['status'] = per_page
 
         response = self._client.request(url="/images", method="GET", params=params)

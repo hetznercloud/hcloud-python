@@ -19,7 +19,7 @@ class TestServerTypesClient(object):
         assert server_type.id == 1
         assert server_type.name == "cx11"
 
-    @pytest.mark.parametrize("params", [{'name': "cx11", 'page': 1, 'per_page': 10}])
+    @pytest.mark.parametrize("params", [{'name': "cx11", 'page': 1, 'per_page': 10}, {'name': ""}, {}])
     def test_get_list(self, server_types_client, two_server_types_response, params):
         server_types_client._client.request.return_value = two_server_types_response
         result = server_types_client.get_list(**params)

@@ -140,9 +140,9 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         params = {}
         if name is not None:
             params['name'] = name
-        if label_selector:
+        if label_selector is not None:
             params['label_selector'] = label_selector
-        if status:
+        if status is not None:
             params["status"] = status
         if page is not None:
             params['page'] = page

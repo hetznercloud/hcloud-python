@@ -75,7 +75,7 @@ class TestBoundServer(object):
         assert isinstance(bound_server.image, BoundImage)
         assert bound_server.image._client == bound_server._client._client.images
         assert bound_server.image.id == 4711
-        assert bound_server.image.name == "ubuntu-16.04"
+        assert bound_server.image.name == "ubuntu-20.04"
         assert bound_server.image.complete is True
 
         assert isinstance(bound_server.iso, BoundIso)
@@ -239,8 +239,8 @@ class TestBoundServer(object):
 
     def test_rebuild(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
-        action = bound_server.rebuild(Image(name="ubuntu-16.04"))
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/rebuild", method="POST", json={"image": "ubuntu-16.04"})
+        action = bound_server.rebuild(Image(name="ubuntu-20.04"))
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/rebuild", method="POST", json={"image": "ubuntu-20.04"})
 
         assert action.id == 1
         assert action.progress == 0
@@ -352,6 +352,7 @@ class TestServersClient(object):
         "params",
         [
             {'name': "server1", 'label_selector': "label1", 'page': 1, 'per_page': 10},
+            {'name': ""},
             {}
         ]
     )
@@ -447,7 +448,7 @@ class TestServersClient(object):
         response = servers_client.create(
             "my-server",
             server_type=ServerType(name="cx11"),
-            image=Image(name="ubuntu-18.04"),
+            image=Image(name="ubuntu-20.04"),
             location=Location(name="fsn1")
         )
         servers_client._client.request.assert_called_with(
@@ -456,7 +457,7 @@ class TestServersClient(object):
             json={
                 'name': "my-server",
                 'server_type': "cx11",
-                'image': "ubuntu-18.04",
+                'image': "ubuntu-20.04",
                 'location': "fsn1",
                 "start_after_create": True
             }
@@ -701,8 +702,8 @@ class TestServersClient(object):
     @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
     def test_rebuild(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
-        action = servers_client.rebuild(server, Image(name="ubuntu-16.04"))
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/rebuild", method="POST", json={"image": "ubuntu-16.04"})
+        action = servers_client.rebuild(server, Image(name="ubuntu-20.04"))
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/rebuild", method="POST", json={"image": "ubuntu-20.04"})
 
         assert action.id == 1
         assert action.progress == 0

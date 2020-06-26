@@ -43,6 +43,7 @@ class TestIsosClient(object):
         "params",
         [
             {},
+            {'name': ""},
             {'name': "FreeBSD-11.0-RELEASE-amd64-dvd1",
              'page': 1,
              'per_page': 2}

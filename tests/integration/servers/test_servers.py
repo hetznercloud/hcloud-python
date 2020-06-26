@@ -93,7 +93,7 @@ class TestBoundServer(object):
         assert response.image.description == "my image"
 
     def test_rebuild(self, bound_server):
-        action = bound_server.rebuild(Image(name="ubuntu-16.04"))
+        action = bound_server.rebuild(Image(name="ubuntu-20.04"))
 
         assert action.id == 13
         assert action.command == "rebuild_server"
@@ -196,7 +196,7 @@ class TestServersClient(object):
         response = hetzner_client.servers.create(
             "my-server",
             server_type=ServerType(name="cx11"),
-            image=Image(name="ubuntu-16.04"),
+            image=Image(name="ubuntu-20.04"),
             ssh_keys=[SSHKey(name="my-ssh-key")],
             volumes=[Volume(id=1)],
             networks=[Network(id=1)],
@@ -323,7 +323,7 @@ class TestServersClient(object):
 
     @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
     def test_rebuild(self, hetzner_client, server):
-        action = hetzner_client.servers.rebuild(server, Image(name="ubuntu-16.04"))
+        action = hetzner_client.servers.rebuild(server, Image(name="ubuntu-20.04"))
 
         assert action.id == 13
         assert action.command == "rebuild_server"

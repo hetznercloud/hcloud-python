@@ -132,13 +132,14 @@ class TestFloatingIPsClient(object):
     def test_get_by_name(self, floating_ips_client, one_floating_ips_response):
         floating_ips_client._client.request.return_value = one_floating_ips_response
         bound_floating_ip = floating_ips_client.get_by_name("Web Frontend")
-        floating_ips_client._client.request.assert_called_with(url="/floating_ips", method="GET", params={"name": "Web Frontend"})
+        floating_ips_client._client.request.assert_called_with(url="/floating_ips", method="GET",
+                                                               params={"name": "Web Frontend"})
         assert bound_floating_ip._client is floating_ips_client
         assert bound_floating_ip.id == 4711
         assert bound_floating_ip.name == "Web Frontend"
         assert bound_floating_ip.description == "Web Frontend"
 
-    @pytest.mark.parametrize("params", [{'label_selector': "label1", 'page': 1, 'per_page': 10}, {}])
+    @pytest.mark.parametrize("params", [{'label_selector': "label1", 'page': 1, 'per_page': 10}, {'name': ""}, {}])
     def test_get_list(self, floating_ips_client, two_floating_ips_response, params):
         floating_ips_client._client.request.return_value = two_floating_ips_response
         result = floating_ips_client.get_list(**params)
@@ -277,7 +278,8 @@ class TestFloatingIPsClient(object):
         floating_ips_client._client.request.return_value = response_update_floating_ip
         floating_ip = floating_ips_client.update(floating_ip, description="New description", name="New name")
         floating_ips_client._client.request.assert_called_with(url="/floating_ips/1", method="PUT",
-                                                               json={"description": "New description", "name": "New name"})
+                                                               json={"description": "New description",
+                                                                     "name": "New name"})
 
         assert floating_ip.id == 4711
         assert floating_ip.description == "New description"
