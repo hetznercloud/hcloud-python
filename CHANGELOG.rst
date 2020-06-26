@@ -5,6 +5,7 @@ History
 master (XXXX-XX-XX)
 --------------------
 
+* Breaking Change: The LoadBalancerClient create methods returned only the created Load Balancer instead of the Load Balancer and the create Action.
 * Fix: Unify setting of request parameters within `get_list` methods.
 
 1.8.0 (2020-06-22)

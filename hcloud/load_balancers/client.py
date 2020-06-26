@@ -5,7 +5,7 @@ from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByName
 from hcloud.core.domain import add_meta_to_result
 
 from hcloud.actions.client import BoundAction
-from hcloud.load_balancers.domain import LoadBalancer, IPv4Address, IPv6Network, PublicNetwork, PrivateNet
+from hcloud.load_balancers.domain import LoadBalancer, IPv4Address, IPv6Network, PublicNetwork, PrivateNet, CreateLoadBalancerResponse
 
 
 class BoundLoadBalancer(BoundModelBase):
@@ -105,7 +105,7 @@ class BoundLoadBalancer(BoundModelBase):
         return self._client.delete_service(self, service)
 
     def add_target(self, target):
-        # type: (LoadBalancerService) -> List[BoundAction]
+        # type: (LoadBalancerTarget) -> List[BoundAction]
         """Adds a target to a Load Balancer.
 
         :param target: :class:`LoadBalancerTarget <hcloud.load_balancers.domain.LoadBalancerTarget>`
@@ -115,7 +115,7 @@ class BoundLoadBalancer(BoundModelBase):
         return self._client.add_target(self, target)
 
     def remove_target(self, target):
-        # type: (LoadBalancerService) -> List[BoundAction]
+        # type: (LoadBalancerTarget) -> List[BoundAction]
         """Removes a target from a Load Balancer.
 
         :param target: :class:`LoadBalancerTarget <hcloud.load_balancers.domain.LoadBalancerTarget>`
@@ -269,8 +269,8 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             network_zone=None,  # type: Optional[str]
             public_interface=None,  # type: Optional[bool]
             network=None  # type: Optional[Union[Network,BoundNetwork]]
-    ):
-        """Creates a Load Balancer with range ip_range.
+    ) -> CreateLoadBalancerResponse:
+        """Creates a Load Balancer .
 
         :param name: str
                 Name of the Load Balancer
@@ -280,10 +280,8 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                 User-defined labels (key-value pairs)
         :param location: Location
                 Location of the Load Balancer
-        :param ipv4: IP
-            IPv4 of the Load Balancer
-        :param ipv6: IP
-                IPv6 of the Load Balancer
+        :param network_zone: str
+                Network Zone of the Load Balancer
         :param algorithm: LoadBalancerAlgorithm (optional)
                 The algorithm the Load Balancer is currently using
         :param services: LoadBalancerService
@@ -294,7 +292,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                 Enable or disable the public interface of the Load Balancer
         :param network: Network
                 Adds the Load Balancer to a Network
-        :return: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>`
+        :return: :class:`CreateLoadBalancerResponse <hcloud.load_balancers.domain.CreateLoadBalancerResponse>`
         """
         data = {"name": name, "load_balancer_type": load_balancer_type.id_or_name}
         if network is not None:
@@ -355,11 +353,11 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         if network_zone is not None:
             data["network_zone"] = network_zone
         if location is not None:
-            data["location"] = location
+            data["location"] = location.id_or_name
 
         response = self._client.request(url="/load_balancers", method="POST", json=data)
 
-        return BoundLoadBalancer(self, response["load_balancer"])
+        return CreateLoadBalancerResponse(load_balancer=BoundLoadBalancer(self, response["load_balancer"]), action=BoundAction(self, response['action']))
 
     def update(self, load_balancer, name=None, labels=None):
         # type:(LoadBalancer,  Optional[str],  Optional[Dict[str, str]]) -> BoundLoadBalancer
@@ -576,7 +574,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, response['action'])
 
     def add_target(self, load_balancer, target):
-        # type: (Union[LoadBalancer, BoundLoadBalancer], LoadBalancerService) -> List[BoundAction]
+        # type: (Union[LoadBalancer, BoundLoadBalancer], LoadBalancerTarget) -> List[BoundAction]
         """Adds a target to a Load Balancer.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -596,7 +594,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, response['action'])
 
     def remove_target(self, load_balancer, target):
-        # type: (Union[LoadBalancer, BoundLoadBalancer], LoadBalancerService) -> List[BoundAction]
+        # type: (Union[LoadBalancer, BoundLoadBalancer], LoadBalancerTarget) -> List[BoundAction]
         """Removes a target from a Load Balancer.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
