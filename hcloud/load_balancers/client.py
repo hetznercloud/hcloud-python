@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from hcloud.load_balancer_types.client import BoundLoadBalancerType
 from hcloud.networks.client import BoundNetwork
 
 from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByNameMixin
@@ -23,6 +24,10 @@ class BoundLoadBalancer(BoundModelBase):
             private_nets = [PrivateNet(
                 network=BoundNetwork(client._client.networks, {"id": private_net['network']}, complete=False), ip=private_net['ip']) for private_net in private_nets]
             data['private_net'] = private_nets
+
+        load_balancer_type = data.get("load_balancer_type")
+        if load_balancer_type is not None:
+            data['load_balancer_type'] = BoundLoadBalancerType(client._client.load_balancer_types, load_balancer_type)
 
         super(BoundLoadBalancer, self).__init__(client, data, complete)
 
