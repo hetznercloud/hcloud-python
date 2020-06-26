@@ -40,21 +40,21 @@ class TestImagesClient(object):
     def test_get_by_id(self, hetzner_client):
         image = hetzner_client.images.get_by_id(1)
         assert image.id == 4711
-        assert image.name == "ubuntu-16.04"
-        assert image.description == "Ubuntu 16.04 Standard 64 bit"
+        assert image.name == "ubuntu-20.04"
+        assert image.description == "Ubuntu 20.04 Standard 64 bit"
 
     def test_get_by_name(self, hetzner_client):
-        image = hetzner_client.images.get_by_name("ubuntu-16.04")
+        image = hetzner_client.images.get_by_name("ubuntu-20.04")
         assert image.id == 4711
-        assert image.name == "ubuntu-16.04"
-        assert image.description == "Ubuntu 16.04 Standard 64 bit"
+        assert image.name == "ubuntu-20.04"
+        assert image.description == "Ubuntu 20.04 Standard 64 bit"
 
     def test_get_list(self, hetzner_client):
         result = hetzner_client.images.get_list()
         images = result.images
         assert images[0].id == 4711
-        assert images[0].name == "ubuntu-16.04"
-        assert images[0].description == "Ubuntu 16.04 Standard 64 bit"
+        assert images[0].name == "ubuntu-20.04"
+        assert images[0].description == "Ubuntu 20.04 Standard 64 bit"
 
     @pytest.mark.parametrize("image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))])
     def test_get_actions_list(self, hetzner_client, image):

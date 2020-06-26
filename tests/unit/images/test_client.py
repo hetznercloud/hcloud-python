@@ -24,8 +24,8 @@ class TestBoundImage(object):
         assert bound_image.id == 4711
         assert bound_image.type == "snapshot"
         assert bound_image.status == "available"
-        assert bound_image.name == "ubuntu-16.04"
-        assert bound_image.description == "Ubuntu 16.04 Standard 64 bit"
+        assert bound_image.name == "ubuntu-20.04"
+        assert bound_image.description == "Ubuntu 20.04 Standard 64 bit"
         assert bound_image.image_size == 2.3
         assert bound_image.disk_size == 10
         assert bound_image.created == datetime.datetime(2016, 1, 30, 23, 50, tzinfo=tzoffset(None, 0))
@@ -121,13 +121,13 @@ class TestImagesClient(object):
         images_client._client.request.assert_called_with(url="/images/1", method="GET")
         assert image._client is images_client
         assert image.id == 4711
-        assert image.name == "ubuntu-16.04"
+        assert image.name == "ubuntu-20.04"
 
     @pytest.mark.parametrize(
         "params",
         [
             {
-                'name': "ubuntu-16.04",
+                'name': "ubuntu-20.04",
                 "type": "system",
                 "sort": "id",
                 "bound_to": "1",
@@ -154,7 +154,7 @@ class TestImagesClient(object):
 
         assert images1._client is images_client
         assert images1.id == 4711
-        assert images1.name == "ubuntu-16.04"
+        assert images1.name == "ubuntu-20.04"
 
         assert images2._client is images_client
         assert images2.id == 4712
@@ -164,7 +164,7 @@ class TestImagesClient(object):
         "params",
         [
             {
-                'name': "ubuntu-16.04",
+                'name': "ubuntu-20.04",
                 "type": "system",
                 "sort": "id",
                 "bound_to": "1",
@@ -188,7 +188,7 @@ class TestImagesClient(object):
 
         assert images1._client is images_client
         assert images1.id == 4711
-        assert images1.name == "ubuntu-16.04"
+        assert images1.name == "ubuntu-20.04"
 
         assert images2._client is images_client
         assert images2.id == 4712
@@ -196,15 +196,15 @@ class TestImagesClient(object):
 
     def test_get_by_name(self, images_client, one_images_response):
         images_client._client.request.return_value = one_images_response
-        image = images_client.get_by_name("ubuntu-16.04")
+        image = images_client.get_by_name("ubuntu-20.04")
 
-        params = {"name": "ubuntu-16.04"}
+        params = {"name": "ubuntu-20.04"}
 
         images_client._client.request.assert_called_with(url="/images", method="GET", params=params)
 
         assert image._client is images_client
         assert image.id == 4711
-        assert image.name == "ubuntu-16.04"
+        assert image.name == "ubuntu-20.04"
 
     @pytest.mark.parametrize("image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))])
     def test_get_actions_list(self, images_client, image, response_get_actions):
