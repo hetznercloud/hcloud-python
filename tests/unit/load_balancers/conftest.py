@@ -21,8 +21,8 @@ def response_load_balancer():
             },
             "load_balancer_type": {
                 "id": 1,
-                "name": "lx11",
-                "description": "LX11",
+                "name": "lb11",
+                "description": "lb11",
                 "max_connections": 20000,
                 "max_services": 5,
                 "max_targets": 25,
@@ -59,7 +59,8 @@ def response_load_balancer():
                         "certificates": [
                             897
                         ],
-                        "redirect_http": True
+                        "redirect_http": True,
+                        "sticky_sessions": True
                     },
                     "health_check": {
                         "protocol": "http",
@@ -91,7 +92,8 @@ def response_load_balancer():
                             "status": "healthy"
                         }
                     ],
-                    "label_selector": None
+                    "label_selector": None,
+                    "use_private_ip": False
                 }
             ],
             "algorithm": {
@@ -107,7 +109,29 @@ def response_create_load_balancer():
         "load_balancer": {
             "id": 1,
             "name": "my-balancer",
-            "load_balancer_type": "lb1",
+            "load_balancer_type": {
+                "id": 1,
+                "name": "lb11",
+                "description": "lb11",
+                "max_connections": 20000,
+                "max_services": 5,
+                "max_targets": 25,
+                "max_assigned_certificates": 10,
+                "deprecated": "2016-01-30T23:50:00+00:00",
+                "prices": [
+                    {
+                        "location": "fsn-1",
+                        "price_hourly": {
+                            "net": "1.0000000000",
+                            "gross": "1.1900000000000000"
+                        },
+                        "price_monthly": {
+                            "net": "1.0000000000",
+                            "gross": "1.1900000000000000"
+                        }
+                    }
+                ]
+            },
             "network_zone": "eu-central",
             "algorithm": {
                 "type": "round_robin"
@@ -124,7 +148,8 @@ def response_create_load_balancer():
                         "certificates": [
                             897
                         ],
-                        "redirect_http": True
+                        "redirect_http": True,
+                        "sticky_sessions": True
                     },
                     "health_check": {
                         "protocol": "http",
@@ -150,7 +175,8 @@ def response_create_load_balancer():
                     "server": {
                         "id": 80
                     },
-                    "label_selector": None
+                    "label_selector": None,
+                    "use_private_ip": False
                 }
             ]
         },
@@ -195,8 +221,8 @@ def response_update_load_balancer():
             },
             "load_balancer_type": {
                 "id": 1,
-                "name": "lx11",
-                "description": "LX11",
+                "name": "lb11",
+                "description": "lb11",
                 "max_connections": 20000,
                 "max_services": 5,
                 "max_targets": 25,
@@ -235,7 +261,8 @@ def response_update_load_balancer():
                         "certificates": [
                             897
                         ],
-                        "redirect_http": True
+                        "redirect_http": True,
+                        "sticky_sessions": True
                     },
                     "health_check": {
                         "protocol": "http",
@@ -261,6 +288,7 @@ def response_update_load_balancer():
                     "server": {
                         "id": 80
                     },
+                    "use_private_ip": False,
                     "health_status": [
                         {
                             "listen_port": 443,
@@ -298,8 +326,8 @@ def response_simple_load_balancers():
                 },
                 "load_balancer_type": {
                     "id": 1,
-                    "name": "lx11",
-                    "description": "LX11",
+                    "name": "lb11",
+                    "description": "lb11",
                     "max_connections": 20000,
                     "max_services": 5,
                     "max_targets": 25,
@@ -363,6 +391,7 @@ def response_simple_load_balancers():
                         "server": {
                             "id": 80
                         },
+                        "use_private_ip": False,
                         "health_status": [
                             {
                                 "listen_port": 443,
@@ -393,8 +422,8 @@ def response_simple_load_balancers():
                 },
                 "load_balancer_type": {
                     "id": 1,
-                    "name": "lx11",
-                    "description": "LX11",
+                    "name": "lb11",
+                    "description": "lb11",
                     "max_connections": 20000,
                     "max_services": 5,
                     "max_targets": 25,
@@ -464,7 +493,8 @@ def response_simple_load_balancers():
                                 "status": "healthy"
                             }
                         ],
-                        "label_selector": None
+                        "label_selector": None,
+                        "use_private_ip": False
                     }
                 ],
                 "algorithm": {

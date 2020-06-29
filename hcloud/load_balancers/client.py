@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from hcloud.certificates.client import BoundCertificate
 from hcloud.servers.client import BoundServer
 
 from hcloud.load_balancer_types.client import BoundLoadBalancerType
@@ -10,13 +11,18 @@ from hcloud.core.domain import add_meta_to_result
 
 from hcloud.actions.client import BoundAction
 from hcloud.load_balancers.domain import LoadBalancer, IPv4Address, IPv6Network, PublicNetwork, PrivateNet, \
-    CreateLoadBalancerResponse, LoadBalancerTarget
+    CreateLoadBalancerResponse, LoadBalancerTarget, LoadBalancerService, LoadBalancerServiceHttp, \
+    LoadBalancerHealthCheck, LoadBalancerHealtCheckHttp, LoadBalancerAlgorithm
 
 
 class BoundLoadBalancer(BoundModelBase):
     model = LoadBalancer
 
     def __init__(self, client, data, complete=True):
+        algorithm = data.get("algorithm")
+        if algorithm:
+            data['algorithm'] = LoadBalancerAlgorithm(type=algorithm['type'])
+
         public_net = data.get("public_net")
         if public_net:
             ipv4_address = IPv4Address(**public_net['ipv4'])
@@ -39,6 +45,37 @@ class BoundLoadBalancer(BoundModelBase):
                     tmp_target.server = BoundServer(client._client.servers, data=target['server'], complete=False)
                 tmp_targets.append(tmp_target)
             data['targets'] = tmp_targets
+
+        services = data.get("services")
+        if services:
+            tmp_services = []
+            for service in services:
+                tmp_service = LoadBalancerService(protocol=service["protocol"], listen_port=service["listen_port"],
+                                                  destination_port=service["destination_port"],
+                                                  proxyprotocol=service["proxyprotocol"])
+                if service["protocol"] != "tcp":
+                    tmp_service = LoadBalancerServiceHttp(sticky_sessions=service['http']['sticky_sessions'],
+                                                          redirect_http=service['http']['redirect_http'],
+                                                          cookie_name=service['http']['cookie_name'],
+                                                          cookie_lifetime=service['http']['cookie_lifetime'])
+                    tmp_service.certificates = [
+                        BoundCertificate(client._client.certificates, {"id": certificate}, complete=False) for
+                        certificate in
+                        service['http']['certificates']]
+
+                tmp_service.health_check = LoadBalancerHealthCheck(protocol=service['health_check']['protocol'],
+                                                                   port=service['health_check']['port'],
+                                                                   interval=service['health_check']['interval'],
+                                                                   retries=service['health_check']['retries'],
+                                                                   timeout=service['health_check']['timeout'])
+                if tmp_service.health_check.protocol != "tcp":
+                    tmp_service.health_check.http = LoadBalancerHealtCheckHttp(
+                        domain=service['health_check']['http']['domain'], path=service['health_check']['http']['path'],
+                        response=service['health_check']['http']['response'],
+                        tls=service['health_check']['http']['tls'],
+                        status_codes=service['health_check']['http']['status_codes'])
+                tmp_services.append(tmp_service)
+            data['services'] = tmp_services
 
         load_balancer_type = data.get("load_balancer_type")
         if load_balancer_type is not None:
