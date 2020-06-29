@@ -2,16 +2,16 @@
 History
 =======
 
-master (XXXX-XX-XX)
+v1.8.1 (2020-06-29)
 --------------------
 
-* Breaking Change: The LoadBalancerClient create methods returned only the created Load Balancer instead of the Load Balancer and the create Action.
+* Fix Load Balancer Client.
 * Fix: Unify setting of request parameters within `get_list` methods.
 
 1.8.0 (2020-06-22)
 --------------------
 
-* Feature: Add Load Balancers
+* Feature: Add Load Balancers **Attention: The Load Balancer support in v1.8.0 is kind of broken. Please use v1.8.1**
 * Feature: Add Certificates
 
 
