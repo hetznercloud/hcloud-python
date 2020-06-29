@@ -37,11 +37,11 @@ class TestLoadBalancersClient(object):
         assert load_balancers[0].id == 4711
 
     def test_create(self, hetzner_client):
-        load_balancer = hetzner_client.load_balancers.create(
+        resp = hetzner_client.load_balancers.create(
             "Web Frontend",
             load_balancer_type=LoadBalancerType(name="lb1"),
             algorithm=LoadBalancerAlgorithm("round_robin"))
-
+        load_balancer = resp.load_balancer
         assert load_balancer.id == 4711
         assert load_balancer.name == "Web Frontend"
 

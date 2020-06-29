@@ -1,17 +1,28 @@
 # -*- coding: utf-8 -*-
+from hcloud.certificates.client import BoundCertificate
+from hcloud.servers.client import BoundServer
+
+from hcloud.load_balancer_types.client import BoundLoadBalancerType
+from hcloud.locations.client import BoundLocation
 from hcloud.networks.client import BoundNetwork
 
 from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByNameMixin
 from hcloud.core.domain import add_meta_to_result
 
 from hcloud.actions.client import BoundAction
-from hcloud.load_balancers.domain import LoadBalancer, IPv4Address, IPv6Network, PublicNetwork, PrivateNet
+from hcloud.load_balancers.domain import LoadBalancer, IPv4Address, IPv6Network, PublicNetwork, PrivateNet, \
+    CreateLoadBalancerResponse, LoadBalancerTarget, LoadBalancerService, LoadBalancerServiceHttp, \
+    LoadBalancerHealthCheck, LoadBalancerHealtCheckHttp, LoadBalancerAlgorithm
 
 
 class BoundLoadBalancer(BoundModelBase):
     model = LoadBalancer
 
     def __init__(self, client, data, complete=True):
+        algorithm = data.get("algorithm")
+        if algorithm:
+            data['algorithm'] = LoadBalancerAlgorithm(type=algorithm['type'])
+
         public_net = data.get("public_net")
         if public_net:
             ipv4_address = IPv4Address(**public_net['ipv4'])
@@ -21,8 +32,58 @@ class BoundLoadBalancer(BoundModelBase):
         private_nets = data.get("private_net")
         if private_nets:
             private_nets = [PrivateNet(
-                network=BoundNetwork(client._client.networks, {"id": private_net['network']}, complete=False), ip=private_net['ip']) for private_net in private_nets]
+                network=BoundNetwork(client._client.networks, {"id": private_net['network']}, complete=False),
+                ip=private_net['ip']) for private_net in private_nets]
             data['private_net'] = private_nets
+
+        targets = data.get("targets")
+        if targets:
+            tmp_targets = []
+            for target in targets:
+                tmp_target = LoadBalancerTarget(type=target["type"], use_private_ip=target["use_private_ip"])
+                if target["type"] == "server":
+                    tmp_target.server = BoundServer(client._client.servers, data=target['server'], complete=False)
+                tmp_targets.append(tmp_target)
+            data['targets'] = tmp_targets
+
+        services = data.get("services")
+        if services:
+            tmp_services = []
+            for service in services:
+                tmp_service = LoadBalancerService(protocol=service["protocol"], listen_port=service["listen_port"],
+                                                  destination_port=service["destination_port"],
+                                                  proxyprotocol=service["proxyprotocol"])
+                if service["protocol"] != "tcp":
+                    tmp_service.http = LoadBalancerServiceHttp(sticky_sessions=service['http']['sticky_sessions'],
+                                                               redirect_http=service['http']['redirect_http'],
+                                                               cookie_name=service['http']['cookie_name'],
+                                                               cookie_lifetime=service['http']['cookie_lifetime'])
+                    tmp_service.http.certificates = [
+                        BoundCertificate(client._client.certificates, {"id": certificate}, complete=False) for
+                        certificate in
+                        service['http']['certificates']]
+
+                tmp_service.health_check = LoadBalancerHealthCheck(protocol=service['health_check']['protocol'],
+                                                                   port=service['health_check']['port'],
+                                                                   interval=service['health_check']['interval'],
+                                                                   retries=service['health_check']['retries'],
+                                                                   timeout=service['health_check']['timeout'])
+                if tmp_service.health_check.protocol != "tcp":
+                    tmp_service.health_check.http = LoadBalancerHealtCheckHttp(
+                        domain=service['health_check']['http']['domain'], path=service['health_check']['http']['path'],
+                        response=service['health_check']['http']['response'],
+                        tls=service['health_check']['http']['tls'],
+                        status_codes=service['health_check']['http']['status_codes'])
+                tmp_services.append(tmp_service)
+            data['services'] = tmp_services
+
+        load_balancer_type = data.get("load_balancer_type")
+        if load_balancer_type is not None:
+            data['load_balancer_type'] = BoundLoadBalancerType(client._client.load_balancer_types, load_balancer_type)
+
+        location = data.get("location")
+        if location is not None:
+            data['location'] = BoundLocation(client._client.locations, location)
 
         super(BoundLoadBalancer, self).__init__(client, data, complete)
 
@@ -92,7 +153,7 @@ class BoundLoadBalancer(BoundModelBase):
                        The LoadBalancerService you  want to update
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.update_service(self, service)
+        return self._client.update_service(self, service=service)
 
     def delete_service(self, service):
         # type: (LoadBalancerService) -> List[BoundAction]
@@ -105,7 +166,7 @@ class BoundLoadBalancer(BoundModelBase):
         return self._client.delete_service(self, service)
 
     def add_target(self, target):
-        # type: (LoadBalancerService) -> List[BoundAction]
+        # type: (LoadBalancerTarget) -> List[BoundAction]
         """Adds a target to a Load Balancer.
 
         :param target: :class:`LoadBalancerTarget <hcloud.load_balancers.domain.LoadBalancerTarget>`
@@ -115,7 +176,7 @@ class BoundLoadBalancer(BoundModelBase):
         return self._client.add_target(self, target)
 
     def remove_target(self, target):
-        # type: (LoadBalancerService) -> List[BoundAction]
+        # type: (LoadBalancerTarget) -> List[BoundAction]
         """Removes a target from a Load Balancer.
 
         :param target: :class:`LoadBalancerTarget <hcloud.load_balancers.domain.LoadBalancerTarget>`
@@ -270,7 +331,8 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             public_interface=None,  # type: Optional[bool]
             network=None  # type: Optional[Union[Network,BoundNetwork]]
     ):
-        """Creates a Load Balancer with range ip_range.
+        # type: (...) -> CreateLoadBalancerResponse:
+        """Creates a Load Balancer .
 
         :param name: str
                 Name of the Load Balancer
@@ -280,10 +342,8 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                 User-defined labels (key-value pairs)
         :param location: Location
                 Location of the Load Balancer
-        :param ipv4: IP
-            IPv4 of the Load Balancer
-        :param ipv6: IP
-                IPv6 of the Load Balancer
+        :param network_zone: str
+                Network Zone of the Load Balancer
         :param algorithm: LoadBalancerAlgorithm (optional)
                 The algorithm the Load Balancer is currently using
         :param services: LoadBalancerService
@@ -294,7 +354,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                 Enable or disable the public interface of the Load Balancer
         :param network: Network
                 Adds the Load Balancer to a Network
-        :return: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>`
+        :return: :class:`CreateLoadBalancerResponse <hcloud.load_balancers.domain.CreateLoadBalancerResponse>`
         """
         data = {"name": name, "load_balancer_type": load_balancer_type.id_or_name}
         if network is not None:
@@ -308,36 +368,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         if services is not None:
             service_list = []
             for service in services:
-                service_data = {
-                    "protocol": service.protocol,
-                    "listen_port": service.listen_port,
-                    "destination_port": service.destination_port,
-                    "proxyprotocol": service.proxyprotocol,
-                }
-                if service.http is not None:
-                    service_data['http'] = {
-                        "cookie_name": service.http.cookie_name,
-                        "cookie_lifetime": service.http.cookie_lifetime,
-                        "certificates": service.http.certificates
-                    }
-                if service.health_check is not None:
-                    service_data['health_check'] = {
-                        "protocol": service.health_check.protocol,
-                        "port": service.health_check.port,
-                        "interval": service.health_check.interval,
-                        "timeout": service.health_check.timeout,
-                        "retries": service.health_check.retries,
-                    }
-
-                    if service.health_check.http is not None:
-                        service_data['health_check']['http'] = {
-                            "domain": service.health_check.http.domain,
-                            "path": service.health_check.http.path,
-                            "response": service.health_check.http.response,
-                            "status_codes": service.health_check.http.status_codes,
-                            "tls": service.health_check.http.tls
-                        }
-                service_list.append(service_data)
+                service_list.append(self.get_service_parameters(service))
             data["services"] = service_list
 
         if targets is not None:
@@ -355,11 +386,12 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         if network_zone is not None:
             data["network_zone"] = network_zone
         if location is not None:
-            data["location"] = location
+            data["location"] = location.id_or_name
 
         response = self._client.request(url="/load_balancers", method="POST", json=data)
 
-        return BoundLoadBalancer(self, response["load_balancer"])
+        return CreateLoadBalancerResponse(load_balancer=BoundLoadBalancer(self, response["load_balancer"]),
+                                          action=BoundAction(self._client.actions, response['action']))
 
     def update(self, load_balancer, name=None, labels=None):
         # type:(LoadBalancer,  Optional[str],  Optional[Dict[str, str]]) -> BoundLoadBalancer
@@ -458,24 +490,37 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                        The LoadBalancerService you want to add to the Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {
-            "protocol": service.protocol,
-            "listen_port": service.listen_port,
-            "destination_port": service.destination_port,
-            "proxyprotocol": service.proxyprotocol,
-        }
+        data = self.get_service_parameters(service)
+
+        response = self._client.request(
+            url="/load_balancers/{load_balancer_id}/actions/add_service".format(load_balancer_id=load_balancer.id),
+            method="POST", json=data)
+        return BoundAction(self._client.actions, response['action'])
+
+    def get_service_parameters(self, service):
+        data = {}
+        if service.protocol is not None:
+            data["protocol"] = service.protocol
+        if service.listen_port is not None:
+            data["listen_port"] = service.listen_port
+        if service.destination_port is not None:
+            data["destination_port"] = service.destination_port
+        if service.proxyprotocol is not None:
+            data["proxyprotocol"] = service.proxyprotocol
         if service.http is not None:
-            data["http"] = {
-                "cookie_name": service.http.cookie_name,
-                "cookie_lifetime": service.http.cookie_lifetime,
-                "redirect_http": service.http.redirect_http,
-                "sticky_sessions": service.http.sticky_sessions
-            }
+            data["http"] = {}
+            if service.http.cookie_name is not None:
+                data["http"]["cookie_name"] = service.http.cookie_name
+            if service.http.cookie_lifetime is not None:
+                data["http"]["cookie_lifetime"] = service.http.cookie_lifetime
+            if service.http.redirect_http is not None:
+                data["http"]["redirect_http"] = service.http.redirect_http
+            if service.http.sticky_sessions is not None:
+                data["http"]["sticky_sessions"] = service.http.sticky_sessions
             certificate_ids = []
             for certificate in service.http.certificates:
                 certificate_ids.append(certificate.id)
             data["http"]["certificates"] = certificate_ids
-
         if service.health_check is not None:
             data['health_check'] = {
                 "protocol": service.health_check.protocol,
@@ -484,20 +529,30 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                 "timeout": service.health_check.timeout,
                 "retries": service.health_check.retries,
             }
-
+            data["health_check"] = {}
+            if service.health_check.protocol is not None:
+                data["health_check"]["protocol"] = service.health_check.protocol
+            if service.health_check.port is not None:
+                data["health_check"]["port"] = service.health_check.port
+            if service.health_check.interval is not None:
+                data["health_check"]["interval"] = service.health_check.interval
+            if service.health_check.timeout is not None:
+                data["health_check"]["timeout"] = service.health_check.timeout
+            if service.health_check.retries is not None:
+                data["health_check"]["retries"] = service.health_check.retries
             if service.health_check.http is not None:
-                data['health_check']['http'] = {
-                    "domain": service.health_check.http.domain,
-                    "path": service.health_check.http.path,
-                    "response": service.health_check.http.response,
-                    "status_codes": service.health_check.http.status_codes,
-                    "tls": service.health_check.http.tls
-                }
-
-        response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/add_service".format(load_balancer_id=load_balancer.id),
-            method="POST", json=data)
-        return BoundAction(self._client.actions, response['action'])
+                data['health_check']['http'] = {}
+                if service.health_check.http.domain is not None:
+                    data['health_check']['http']['domain'] = service.health_check.http.domain
+                if service.health_check.http.path is not None:
+                    data['health_check']['http']['path'] = service.health_check.http.path
+                if service.health_check.http.response is not None:
+                    data['health_check']['http']['response'] = service.health_check.http.response
+                if service.health_check.http.status_codes is not None:
+                    data['health_check']['http']['status_codes'] = service.health_check.http.status_codes
+                if service.health_check.http.tls is not None:
+                    data['health_check']['http']['tls'] = service.health_check.http.tls
+        return data
 
     def update_service(self, load_balancer, service):
         # type: (Union[LoadBalancer, BoundLoadBalancer], LoadBalancerService) -> List[BoundAction]
@@ -508,49 +563,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                        The LoadBalancerService with updated values within for the Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {
-            "listen_port": service.listen_port,
-        }
-
-        if service.health_check is not None:
-            data["health_check"] = {
-                "protocol": service.health_check.protocol,
-                "port": service.health_check.port,
-                "interval": service.health_check.interval,
-                "timeout": service.health_check.timeout,
-                "retries": service.health_check.retries,
-            }
-
-        if service.destination_port is not None:
-            data["destination_port"] = service.destination_port
-
-        if service.protocol is not None:
-            data["protocol"] = service.protocol
-
-        if service.proxyprotocol is not None:
-            data["proxyprotocol"] = service.proxyprotocol
-
-        if service.http is not None:
-            data["http"] = {
-                "cookie_name": service.http.cookie_name,
-                "cookie_lifetime": service.http.cookie_lifetime,
-                "redirect_http": service.http.redirect_http,
-                "sticky_sessions": service.http.sticky_sessions
-            }
-            certificate_ids = []
-            for certificate in service.http.certificates:
-                certificate_ids.append(certificate.id)
-            data["http"]["certificates"] = certificate_ids
-
-        if service.health_check.http is not None:
-            data['health_check']['http'] = {
-                "domain": service.health_check.http.domain,
-                "path": service.health_check.http.path,
-                "response": service.health_check.http.response,
-                "status_codes": service.health_check.http.status_codes,
-                "tls": service.health_check.http.tls
-            }
-
+        data = self.get_service_parameters(service)
         response = self._client.request(
             url="/load_balancers/{load_balancer_id}/actions/update_service".format(
                 load_balancer_id=load_balancer.id),
@@ -576,7 +589,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, response['action'])
 
     def add_target(self, load_balancer, target):
-        # type: (Union[LoadBalancer, BoundLoadBalancer], LoadBalancerService) -> List[BoundAction]
+        # type: (Union[LoadBalancer, BoundLoadBalancer], LoadBalancerTarget) -> List[BoundAction]
         """Adds a target to a Load Balancer.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -596,7 +609,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, response['action'])
 
     def remove_target(self, load_balancer, target):
-        # type: (Union[LoadBalancer, BoundLoadBalancer], LoadBalancerService) -> List[BoundAction]
+        # type: (Union[LoadBalancer, BoundLoadBalancer], LoadBalancerTarget) -> List[BoundAction]
         """Removes a target from a Load Balancer.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -651,8 +664,9 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
 
     def attach_to_network(self,
                           load_balancer,  # type: Union[LoadBalancer, BoundLoadBalancer]
-                          network,        # type: Union[Network, BoundNetwork]
-                          ip=None):       # type: Optional[str]
+                          network,  # type: Union[Network, BoundNetwork]
+                          ip=None  # type: Optional[str]
+                          ):
         """Attach a Load Balancer to a Network.
 
         :param load_balancer: :class:` <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -683,7 +697,8 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             "network": network.id,
         }
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/detach_from_network".format(load_balancer_id=load_balancer.id), method="POST",
+            url="/load_balancers/{load_balancer_id}/actions/detach_from_network".format(
+                load_balancer_id=load_balancer.id), method="POST",
             json=data)
         return BoundAction(self._client.actions, response['action'])
 

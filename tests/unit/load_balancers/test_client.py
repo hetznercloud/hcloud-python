@@ -1,10 +1,12 @@
 import mock
 import pytest
-from hcloud.networks.domain import Network
 
+from hcloud.load_balancer_types.domain import LoadBalancerType
+from hcloud.locations.domain import Location
+from hcloud.networks.domain import Network
 from hcloud.servers.domain import Server
 
-from hcloud.load_balancers.client import BoundLoadBalancer
+from hcloud.load_balancers.client import BoundLoadBalancer, LoadBalancersClient
 
 from hcloud.load_balancers.domain import LoadBalancerAlgorithm, LoadBalancerHealtCheckHttp, LoadBalancerHealthCheck, \
     LoadBalancerService, LoadBalancerTarget
@@ -69,12 +71,12 @@ class TestBoundLoadBalancer(object):
 
     def test_update(self, hetzner_client, bound_load_balancer, response_update_load_balancer):
         hetzner_client.request.return_value = response_update_load_balancer
-        server = bound_load_balancer.update(name="new-name", labels={})
+        load_balancer = bound_load_balancer.update(name="new-name", labels={})
         hetzner_client.request.assert_called_with(url="/load_balancers/14", method="PUT",
                                                   json={"name": "new-name", "labels": {}})
 
-        assert server.id == 4711
-        assert server.name == "new-name"
+        assert load_balancer.id == 4711
+        assert load_balancer.name == "new-name"
 
     def test_delete(self, hetzner_client, generic_action, bound_load_balancer):
         hetzner_client.request.return_value = generic_action
@@ -85,15 +87,10 @@ class TestBoundLoadBalancer(object):
 
     def test_add_service(self, hetzner_client, response_add_service, bound_load_balancer):
         hetzner_client.request.return_value = response_add_service
-        health_check_http = LoadBalancerHealtCheckHttp()
-        health_check = LoadBalancerHealthCheck(http=health_check_http)
-        service = LoadBalancerService(health_check=health_check)
+        service = LoadBalancerService(listen_port=80, protocol="http")
         action = bound_load_balancer.add_service(service)
         hetzner_client.request.assert_called_with(
-            json={'protocol': None, 'listen_port': None, 'destination_port': None, 'proxyprotocol': None,
-                  'health_check': {'protocol': None, 'port': None, 'interval': None, 'timeout': None, 'retries': None,
-                                   'http': {'domain': None, 'path': None, 'response': None, 'status_codes': None,
-                                            'tls': None}}},
+            json={'protocol': 'http', 'listen_port': 80},
             url="/load_balancers/14/actions/add_service", method="POST")
 
         assert action.id == 13
@@ -208,3 +205,110 @@ class TestBoundLoadBalancer(object):
         assert action.id == 13
         assert action.progress == 100
         assert action.command == "detach_from_network"
+
+
+class TestLoadBalancerslient(object):
+
+    @pytest.fixture()
+    def load_balancers_client(self):
+        return LoadBalancersClient(client=mock.MagicMock())
+
+    def test_get_by_id(self, load_balancers_client, response_load_balancer):
+        load_balancers_client._client.request.return_value = response_load_balancer
+        bound_load_balancer = load_balancers_client.get_by_id(1)
+        load_balancers_client._client.request.assert_called_with(url="/load_balancers/1", method="GET")
+        assert bound_load_balancer._client is load_balancers_client
+        assert bound_load_balancer.id == 4711
+        assert bound_load_balancer.name == "Web Frontend"
+
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {'name': "load_balancer1", 'label_selector': "label1", 'page': 1, 'per_page': 10},
+            {'name': ""},
+            {}
+        ]
+    )
+    def test_get_list(self, load_balancers_client, response_simple_load_balancers, params):
+        load_balancers_client._client.request.return_value = response_simple_load_balancers
+        result = load_balancers_client.get_list(**params)
+        load_balancers_client._client.request.assert_called_with(url="/load_balancers", method="GET", params=params)
+
+        bound_load_balancers = result.load_balancers
+        assert result.meta is None
+
+        assert len(bound_load_balancers) == 2
+
+        bound_load_balancer1 = bound_load_balancers[0]
+        bound_load_balancer2 = bound_load_balancers[1]
+
+        assert bound_load_balancer1._client is load_balancers_client
+        assert bound_load_balancer1.id == 4711
+        assert bound_load_balancer1.name == "Web Frontend"
+
+        assert bound_load_balancer2._client is load_balancers_client
+        assert bound_load_balancer2.id == 4712
+        assert bound_load_balancer2.name == "Web Frontend2"
+
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {'name': "loadbalancer1", 'label_selector': "label1"},
+            {}
+        ]
+    )
+    def test_get_all(self, load_balancers_client, response_simple_load_balancers, params):
+        load_balancers_client._client.request.return_value = response_simple_load_balancers
+        bound_load_balancers = load_balancers_client.get_all(**params)
+
+        params.update({'page': 1, 'per_page': 50})
+
+        load_balancers_client._client.request.assert_called_with(url="/load_balancers", method="GET", params=params)
+
+        assert len(bound_load_balancers) == 2
+
+        bound_load_balancer1 = bound_load_balancers[0]
+        bound_load_balancer2 = bound_load_balancers[1]
+
+        assert bound_load_balancer1._client is load_balancers_client
+        assert bound_load_balancer1.id == 4711
+        assert bound_load_balancer1.name == "Web Frontend"
+
+        assert bound_load_balancer2._client is load_balancers_client
+        assert bound_load_balancer2.id == 4712
+        assert bound_load_balancer2.name == "Web Frontend2"
+
+    def test_get_by_name(self, load_balancers_client, response_simple_load_balancers):
+        load_balancers_client._client.request.return_value = response_simple_load_balancers
+        bound_load_balancer = load_balancers_client.get_by_name("Web Frontend")
+
+        params = {'name': "Web Frontend"}
+
+        load_balancers_client._client.request.assert_called_with(url="/load_balancers", method="GET", params=params)
+
+        assert bound_load_balancer._client is load_balancers_client
+        assert bound_load_balancer.id == 4711
+        assert bound_load_balancer.name == "Web Frontend"
+
+    def test_create(self, load_balancers_client, response_create_load_balancer):
+        load_balancers_client._client.request.return_value = response_create_load_balancer
+        response = load_balancers_client.create(
+            "my-balancer",
+            load_balancer_type=LoadBalancerType(name="lb11"),
+            location=Location(id=1)
+        )
+        load_balancers_client._client.request.assert_called_with(
+            url="/load_balancers",
+            method="POST",
+            json={
+                'name': "my-balancer",
+                'load_balancer_type': "lb11",
+                'location': 1
+            }
+        )
+
+        bound_load_balancer = response.load_balancer
+
+        assert bound_load_balancer._client is load_balancers_client
+        assert bound_load_balancer.id == 1
+        assert bound_load_balancer.name == "my-balancer"
