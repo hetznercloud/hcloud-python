@@ -87,15 +87,10 @@ class TestBoundLoadBalancer(object):
 
     def test_add_service(self, hetzner_client, response_add_service, bound_load_balancer):
         hetzner_client.request.return_value = response_add_service
-        health_check_http = LoadBalancerHealtCheckHttp()
-        health_check = LoadBalancerHealthCheck(http=health_check_http)
-        service = LoadBalancerService(health_check=health_check)
+        service = LoadBalancerService(listen_port=80, protocol="http")
         action = bound_load_balancer.add_service(service)
         hetzner_client.request.assert_called_with(
-            json={'protocol': None, 'listen_port': None, 'destination_port': None, 'proxyprotocol': None,
-                  'health_check': {'protocol': None, 'port': None, 'interval': None, 'timeout': None, 'retries': None,
-                                   'http': {'domain': None, 'path': None, 'response': None, 'status_codes': None,
-                                            'tls': None}}},
+            json={'protocol': 'http', 'listen_port': 80},
             url="/load_balancers/14/actions/add_service", method="POST")
 
         assert action.id == 13

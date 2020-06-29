@@ -665,7 +665,8 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
     def attach_to_network(self,
                           load_balancer,  # type: Union[LoadBalancer, BoundLoadBalancer]
                           network,  # type: Union[Network, BoundNetwork]
-                          ip=None):  # type: Optional[str]
+                          ip=None  # type: Optional[str]
+                          ):
         """Attach a Load Balancer to a Network.
 
         :param load_balancer: :class:` <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
