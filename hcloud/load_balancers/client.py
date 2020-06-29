@@ -54,11 +54,11 @@ class BoundLoadBalancer(BoundModelBase):
                                                   destination_port=service["destination_port"],
                                                   proxyprotocol=service["proxyprotocol"])
                 if service["protocol"] != "tcp":
-                    tmp_service = LoadBalancerServiceHttp(sticky_sessions=service['http']['sticky_sessions'],
+                    tmp_service.http = LoadBalancerServiceHttp(sticky_sessions=service['http']['sticky_sessions'],
                                                           redirect_http=service['http']['redirect_http'],
                                                           cookie_name=service['http']['cookie_name'],
                                                           cookie_lifetime=service['http']['cookie_lifetime'])
-                    tmp_service.certificates = [
+                    tmp_service.http.certificates = [
                         BoundCertificate(client._client.certificates, {"id": certificate}, complete=False) for
                         certificate in
                         service['http']['certificates']]
