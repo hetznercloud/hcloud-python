@@ -36,7 +36,7 @@ class BoundLoadBalancer(BoundModelBase):
             for target in targets:
                 tmp_target = LoadBalancerTarget(type=target["type"], use_private_ip=target["use_private_ip"])
                 if target["type"] == "server":
-                    tmp_target.server = BoundServer(**target['server'])
+                    tmp_target.server = BoundServer(client._client.servers, data=target['server'], complete=False)
                 tmp_targets.append(tmp_target)
             data['targets'] = tmp_targets
 
