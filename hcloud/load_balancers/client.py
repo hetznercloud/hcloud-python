@@ -153,7 +153,7 @@ class BoundLoadBalancer(BoundModelBase):
                        The LoadBalancerService you  want to update
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.update_service(self, service)
+        return self._client.update_service(self, service=service)
 
     def delete_service(self, service):
         # type: (LoadBalancerService) -> List[BoundAction]
