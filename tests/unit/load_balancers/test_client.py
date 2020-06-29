@@ -8,7 +8,7 @@ from hcloud.servers.domain import Server
 
 from hcloud.load_balancers.client import BoundLoadBalancer, LoadBalancersClient
 
-from hcloud.load_balancers.domain import LoadBalancerAlgorithm, LoadBalancerHealtCheckHttp, LoadBalancerHealthCheck, \
+from hcloud.load_balancers.domain import LoadBalancerAlgorithm, LoadBalancerHealthCheck, \
     LoadBalancerService, LoadBalancerTarget
 from hcloud.actions.client import BoundAction
 
