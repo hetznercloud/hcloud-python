@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from hcloud.servers.client import BoundServer
+
 from hcloud.load_balancer_types.client import BoundLoadBalancerType
 from hcloud.locations.client import BoundLocation
 from hcloud.networks.client import BoundNetwork
@@ -8,7 +10,7 @@ from hcloud.core.domain import add_meta_to_result
 
 from hcloud.actions.client import BoundAction
 from hcloud.load_balancers.domain import LoadBalancer, IPv4Address, IPv6Network, PublicNetwork, PrivateNet, \
-    CreateLoadBalancerResponse
+    CreateLoadBalancerResponse, LoadBalancerTarget
 
 
 class BoundLoadBalancer(BoundModelBase):
@@ -27,6 +29,16 @@ class BoundLoadBalancer(BoundModelBase):
                 network=BoundNetwork(client._client.networks, {"id": private_net['network']}, complete=False),
                 ip=private_net['ip']) for private_net in private_nets]
             data['private_net'] = private_nets
+
+        targets = data.get("targets")
+        if targets:
+            tmp_targets = []
+            for target in targets:
+                tmp_target = LoadBalancerTarget(type=target["type"], use_private_ip=target["use_private_ip"])
+                if target["type"] == "server":
+                    tmp_target.server = BoundServer(**target['server'])
+                tmp_targets.append(tmp_target)
+            data['targets'] = tmp_targets
 
         load_balancer_type = data.get("load_balancer_type")
         if load_balancer_type is not None:
