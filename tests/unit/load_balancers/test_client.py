@@ -9,7 +9,7 @@ from hcloud.servers.domain import Server
 from hcloud.load_balancers.client import BoundLoadBalancer, LoadBalancersClient
 
 from hcloud.load_balancers.domain import LoadBalancerAlgorithm, LoadBalancerHealthCheck, \
-    LoadBalancerService, LoadBalancerTarget
+    LoadBalancerService, LoadBalancerTarget, LoadBalancer
 from hcloud.actions.client import BoundAction
 
 
@@ -206,6 +206,14 @@ class TestBoundLoadBalancer(object):
         assert action.progress == 100
         assert action.command == "detach_from_network"
 
+    def test_change_type(self, hetzner_client, bound_load_balancer, generic_action):
+        hetzner_client.request.return_value = generic_action
+        action = bound_load_balancer.change_type(LoadBalancerType(name="lb21"))
+        hetzner_client.request.assert_called_with(url="/load_balancers/14/actions/change_type", method="POST", json={"load_balancer_type": "lb21"})
+
+        assert action.id == 1
+        assert action.progress == 0
+
 
 class TestLoadBalancerslient(object):
 
@@ -315,3 +323,21 @@ class TestLoadBalancerslient(object):
         assert bound_load_balancer._client is load_balancers_client
         assert bound_load_balancer.id == 1
         assert bound_load_balancer.name == "my-balancer"
+
+    @pytest.mark.parametrize("load_balancer", [LoadBalancer(id=1), BoundLoadBalancer(mock.MagicMock(), dict(id=1))])
+    def test_change_type_with_load_balancer_type_name(self, load_balancers_client, load_balancer, generic_action):
+        load_balancers_client._client.request.return_value = generic_action
+        action = load_balancers_client.change_type(load_balancer, LoadBalancerType(name="lb11"))
+        load_balancers_client._client.request.assert_called_with(url="/load_balancers/1/actions/change_type", method="POST", json={"load_balancer_type": "lb11"})
+
+        assert action.id == 1
+        assert action.progress == 0
+
+    @pytest.mark.parametrize("load_balancer", [LoadBalancer(id=1), BoundLoadBalancer(mock.MagicMock(), dict(id=1))])
+    def test_change_type_with_load_balancer_type_id(self, load_balancers_client, load_balancer, generic_action):
+        load_balancers_client._client.request.return_value = generic_action
+        action = load_balancers_client.change_type(load_balancer, LoadBalancerType(id=1))
+        load_balancers_client._client.request.assert_called_with(url="/load_balancers/1/actions/change_type", method="POST", json={"load_balancer_type": 1})
+
+        assert action.id == 1
+        assert action.progress == 0

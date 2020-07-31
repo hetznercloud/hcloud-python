@@ -234,12 +234,22 @@ class BoundLoadBalancer(BoundModelBase):
         return self._client.enable_public_interface(self)
 
     def disable_public_interface(self):
-        # type: ( Union[Network,BoundNetwork]) -> BoundAction
+        # type: () -> BoundAction
         """Disables the public interface of a Load Balancer.
 
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         return self._client.disable_public_interface(self)
+
+    def change_type(self, load_balancer_type):
+        # type: (Union[LoadBalancerType,BoundLoadBalancerType]) -> BoundAction
+        """Changes the type of a Load Balancer.
+
+        :param load_balancer_type: :class:`BoundLoadBalancerType <hcloud.load_balancer_types.client.BoundLoadBalancerType>` or :class:`LoadBalancerType <hcloud.load_balancer_types.domain.LoadBalancerType>`
+               Load Balancer type the Load Balancer should migrate to
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        return self._client.change_type(self, load_balancer_type)
 
 
 class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
@@ -730,4 +740,20 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             url="/load_balancers/{load_balancer_id}/actions/disable_public_interface".format(
                 load_balancer_id=load_balancer.id),
             method="POST")
+        return BoundAction(self._client.actions, response['action'])
+
+    def change_type(self, load_balancer, load_balancer_type):
+        # type: ([LoadBalancer, BoundLoadBalancer], [LoadBalancerType, BoundLoadBalancerType]) ->BoundAction
+        """Changes the type of a Load Balancer.
+
+        :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
+        :param load_balancer_type: :class:`BoundLoadBalancerType <hcloud.load_balancer_types.client.BoundLoadBalancerType>` or :class:`LoadBalancerType <hcloud.load_balancer_types.domain.LoadBalancerType>`
+               Load Balancer type the Load Balancer should migrate to
+        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        data = {
+            "load_balancer_type": load_balancer_type.id_or_name,
+        }
+        response = self._client.request(url="/load_balancers/{load_balancer_id}/actions/change_type".format(load_balancer_id=load_balancer.id),
+                                        method="POST", json=data)
         return BoundAction(self._client.actions, response['action'])

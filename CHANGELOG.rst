@@ -4,7 +4,8 @@ History
 master (XXXX-XX-XX)
 --------------------
 
-* Add `included_traffic`, `outgoing_traffic` and `ingoing_traffic` properties to Load Balancer domain
+* Feature:Add `included_traffic`, `outgoing_traffic` and `ingoing_traffic` properties to Load Balancer domain
+* Feature: Add `change_type`-method to `LoadBalancersClient`
 
 v1.8.2 (2020-07-20)
 --------------------
