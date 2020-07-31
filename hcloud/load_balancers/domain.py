@@ -31,8 +31,12 @@ class LoadBalancer(BaseDomain):
             The targets the LoadBalancer is currently serving
     :param load_balancer_type: LoadBalancerType
             The type of the Load Balancer
-
-
+    :param outgoing_traffic: int, None
+           Outbound Traffic for the current billing period in bytes
+    :param ingoing_traffic: int, None
+           Inbound Traffic for the current billing period in bytes
+    :param included_traffic: int
+           Free Traffic for the current billing period in bytes
     """
 
     __slots__ = (
@@ -47,7 +51,10 @@ class LoadBalancer(BaseDomain):
         "protection",
         "labels",
         "targets",
-        "created"
+        "created",
+        "outgoing_traffic",
+        "ingoing_traffic",
+        "included_traffic",
     )
 
     def __init__(
@@ -63,7 +70,10 @@ class LoadBalancer(BaseDomain):
             protection=None,
             labels=None,
             targets=None,
-            created=None
+            created=None,
+            outgoing_traffic=None,
+            ingoing_traffic=None,
+            included_traffic=None,
     ):
         self.id = id
         self.name = name
@@ -77,6 +87,9 @@ class LoadBalancer(BaseDomain):
         self.targets = targets
         self.protection = protection
         self.labels = labels
+        self.outgoing_traffic = outgoing_traffic
+        self.ingoing_traffic = ingoing_traffic
+        self.included_traffic = included_traffic
 
 
 class LoadBalancerService(BaseDomain):
