@@ -220,6 +220,9 @@ class TestLoadBalancerslient(object):
         assert bound_load_balancer._client is load_balancers_client
         assert bound_load_balancer.id == 4711
         assert bound_load_balancer.name == "Web Frontend"
+        assert bound_load_balancer.outgoing_traffic == 123456
+        assert bound_load_balancer.ingoing_traffic == 123456
+        assert bound_load_balancer.included_traffic == 654321
 
     @pytest.mark.parametrize(
         "params",

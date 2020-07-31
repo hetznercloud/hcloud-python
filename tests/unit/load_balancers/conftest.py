@@ -47,6 +47,9 @@ def response_load_balancer():
             },
             "labels": {},
             "created": "2016-01-30T23:50:00+00:00",
+            "outgoing_traffic": 123456,
+            "ingoing_traffic": 123456,
+            "included_traffic": 654321,
             "services": [
                 {
                     "protocol": "https",
@@ -136,6 +139,9 @@ def response_create_load_balancer():
             "algorithm": {
                 "type": "round_robin"
             },
+            "outgoing_traffic": 123456,
+            "ingoing_traffic": 123456,
+            "included_traffic": 654321,
             "services": [
                 {
                     "protocol": "https",
@@ -219,6 +225,9 @@ def response_update_load_balancer():
                 "longitude": 12.370071,
                 "network_zone": "eu-central"
             },
+            "outgoing_traffic": 123456,
+            "ingoing_traffic": 123456,
+            "included_traffic": 654321,
             "load_balancer_type": {
                 "id": 1,
                 "name": "lb11",
@@ -324,6 +333,9 @@ def response_simple_load_balancers():
                     "longitude": 12.370071,
                     "network_zone": "eu-central"
                 },
+                "outgoing_traffic": 123456,
+                "ingoing_traffic": 123456,
+                "included_traffic": 654321,
                 "load_balancer_type": {
                     "id": 1,
                     "name": "lb11",
@@ -448,6 +460,9 @@ def response_simple_load_balancers():
                 },
                 "labels": {},
                 "created": "2016-01-30T23:50:00+00:00",
+                "outgoing_traffic": 123456,
+                "ingoing_traffic": 123456,
+                "included_traffic": 654321,
                 "services": [
                     {
                         "protocol": "https",

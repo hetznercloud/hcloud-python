@@ -1,6 +1,10 @@
 =======
 History
 =======
+master (XXXX-XX-XX)
+--------------------
+
+* Add `included_traffic`, `outgoing_traffic` and `ingoing_traffic` properties to Load Balancer domain
 
 v1.8.2 (2020-07-20)
 --------------------
