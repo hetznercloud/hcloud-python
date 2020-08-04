@@ -20,6 +20,11 @@ class TestBoundLoadBalancer(object):
         assert actions[0].id == 13
         assert actions[0].command == "add_service"
 
+    def test_change_type(self, bound_load_balancer):
+        action = bound_load_balancer.change_type(LoadBalancerType(name="lb211"))
+        assert action.id == 13
+        assert action.command == "change_load_balancer_type"
+
 
 class TestLoadBalancersClient(object):
     def test_get_by_id(self, hetzner_client):
@@ -115,3 +120,10 @@ class TestLoadBalancersClient(object):
     def test_change_protection(self, hetzner_client, load_balancer):
         action = hetzner_client.load_balancers.change_protection(load_balancer, {"delete": True})
         assert action.command == "change_protection"
+
+    @pytest.mark.parametrize("load_balancer", [LoadBalancer(id=1), BoundLoadBalancer(mock.MagicMock(), dict(id=1))])
+    def test_change_type(self, hetzner_client, load_balancer):
+        action = hetzner_client.load_balancers.change_type(load_balancer, LoadBalancerType(name="lb21"))
+
+        assert action.id == 13
+        assert action.command == "change_load_balancer_type"
