@@ -2,7 +2,7 @@ LoadBalancerClient
 ==================
 
 
-.. autoclass:: hcloud.load_balancers.client.LoadBalancerClient
+.. autoclass:: hcloud.load_balancers.client.LoadBalancersClient
     :members:
 
 .. autoclass:: hcloud.load_balancers.client.BoundLoadBalancer
@@ -24,6 +24,12 @@ LoadBalancerClient
     :members:
 
 .. autoclass:: hcloud.load_balancers.domain.LoadBalancerTarget
+    :members:
+
+.. autoclass:: hcloud.load_balancers.domain.LoadBalancerTargetLabelSelector
+    :members:
+
+.. autoclass:: hcloud.load_balancers.domain.LoadBalancerTargetIP
     :members:
 
 .. autoclass:: hcloud.load_balancers.domain.LoadBalancerAlgorithm
