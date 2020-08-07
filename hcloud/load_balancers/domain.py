@@ -197,17 +197,40 @@ class LoadBalancerTarget(BaseDomain):
                         Type of the resource, can be server or label_selector
                 :param server: Server
                         Target server
-                :param label_selector: str
-                        Target label selector string
+                :param label_selector: LoadBalancerTargetLabelSelector
+                        Target label selector
+                :param ip: LoadBalancerTargetIP
+                        Target IP
                 :param use_private_ip: bool
                         use the private IP instead of primary public IP
     """
 
-    def __init__(self, type=None, server=None, label_selector=None, use_private_ip=None):
+    def __init__(self, type=None, server=None, label_selector=None, ip=None, use_private_ip=None):
         self.type = type
         self.server = server
         self.label_selector = label_selector
+        self.ip = ip
         self.use_private_ip = use_private_ip
+
+
+class LoadBalancerTargetLabelSelector(BaseDomain):
+    """LoadBalancerTargetLabelSelector Domain
+            :param selector: str
+                    Target label selector
+    """
+
+    def __init__(self, selector=None):
+        self.selector = selector
+
+
+class LoadBalancerTargetIP(BaseDomain):
+    """LoadBalancerTargetIP Domain
+            :param ip: str
+                    Target IP
+    """
+
+    def __init__(self, ip=None):
+        self.ip = ip
 
 
 class LoadBalancerAlgorithm(BaseDomain):

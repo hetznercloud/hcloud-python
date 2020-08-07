@@ -9,7 +9,7 @@ from hcloud.servers.domain import Server
 from hcloud.load_balancers.client import BoundLoadBalancer, LoadBalancersClient
 
 from hcloud.load_balancers.domain import LoadBalancerAlgorithm, LoadBalancerHealthCheck, \
-    LoadBalancerService, LoadBalancerTarget, LoadBalancer
+    LoadBalancerService, LoadBalancerTarget, LoadBalancer, LoadBalancerTargetIP, LoadBalancerTargetLabelSelector
 from hcloud.actions.client import BoundAction
 
 
@@ -108,22 +108,32 @@ class TestBoundLoadBalancer(object):
         assert action.progress == 100
         assert action.command == "delete_service"
 
-    def test_add_target(self, hetzner_client, response_add_target, bound_load_balancer):
+    @pytest.mark.parametrize("target,params", [
+        (LoadBalancerTarget(type="server", server=Server(id=1), use_private_ip=True), {'server': {"id": 1}}),
+        (LoadBalancerTarget(type="ip", ip=LoadBalancerTargetIP(ip="127.0.0.1")), {'ip': {"ip": "127.0.0.1"}}),
+        (LoadBalancerTarget(type="label_selector", label_selector=LoadBalancerTargetLabelSelector(selector="abc=def")), {'label_selector': {"selector": "abc=def"}})
+    ])
+    def test_add_target(self, hetzner_client, response_add_target, bound_load_balancer, target, params):
         hetzner_client.request.return_value = response_add_target
-        target = LoadBalancerTarget(server=Server(id=1), use_private_ip=True)
         action = bound_load_balancer.add_target(target)
-        hetzner_client.request.assert_called_with(json={'type': None, 'server': {"id": 1}, 'use_private_ip': True},
+        params.update({'type': target.type, 'use_private_ip': target.use_private_ip})
+        hetzner_client.request.assert_called_with(json=params,
                                                   url="/load_balancers/14/actions/add_target", method="POST")
 
         assert action.id == 13
         assert action.progress == 100
         assert action.command == "add_target"
 
-    def test_remove_target(self, hetzner_client, response_remove_target, bound_load_balancer):
+    @pytest.mark.parametrize("target,params", [
+        (LoadBalancerTarget(type="server", server=Server(id=1), use_private_ip=True), {'server': {"id": 1}}),
+        (LoadBalancerTarget(type="ip", ip=LoadBalancerTargetIP(ip="127.0.0.1")), {'ip': {"ip": "127.0.0.1"}}),
+        (LoadBalancerTarget(type="label_selector", label_selector=LoadBalancerTargetLabelSelector(selector="abc=def")), {'label_selector': {"selector": "abc=def"}})
+    ])
+    def test_remove_target(self, hetzner_client, response_remove_target, bound_load_balancer, target, params):
         hetzner_client.request.return_value = response_remove_target
-        target = LoadBalancerTarget(server=Server(id=100))
         action = bound_load_balancer.remove_target(target)
-        hetzner_client.request.assert_called_with(json={'type': None, 'server': {"id": 100}},
+        params.update({'type': target.type})
+        hetzner_client.request.assert_called_with(json=params,
                                                   url="/load_balancers/14/actions/remove_target", method="POST")
 
         assert action.id == 13

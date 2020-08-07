@@ -12,7 +12,8 @@ from hcloud.core.domain import add_meta_to_result
 from hcloud.actions.client import BoundAction
 from hcloud.load_balancers.domain import LoadBalancer, IPv4Address, IPv6Network, PublicNetwork, PrivateNet, \
     CreateLoadBalancerResponse, LoadBalancerTarget, LoadBalancerService, LoadBalancerServiceHttp, \
-    LoadBalancerHealthCheck, LoadBalancerHealtCheckHttp, LoadBalancerAlgorithm
+    LoadBalancerHealthCheck, LoadBalancerHealtCheckHttp, LoadBalancerAlgorithm, LoadBalancerTargetLabelSelector, \
+    LoadBalancerTargetIP
 
 
 class BoundLoadBalancer(BoundModelBase):
@@ -43,6 +44,11 @@ class BoundLoadBalancer(BoundModelBase):
                 tmp_target = LoadBalancerTarget(type=target["type"], use_private_ip=target["use_private_ip"])
                 if target["type"] == "server":
                     tmp_target.server = BoundServer(client._client.servers, data=target['server'], complete=False)
+                elif target["type"] == "label_selector":
+                    tmp_target.label_selector = LoadBalancerTargetLabelSelector(
+                        selector=target['label_selector']['selector'])
+                elif target["type"] == "ip":
+                    tmp_target.label_selector = LoadBalancerTargetIP(ip=target['ip']['ip'])
                 tmp_targets.append(tmp_target)
             data['targets'] = tmp_targets
 
@@ -186,7 +192,7 @@ class BoundLoadBalancer(BoundModelBase):
         return self._client.remove_target(self, target)
 
     def change_algorithm(self, algorithm):
-        # type: (LoadBalancerService) -> List[BoundAction]
+        # type: (LoadBalancerAlgorithm) -> List[BoundAction]
         """Changes the algorithm used by the Load Balancer
 
         :param algorithm: :class:`LoadBalancerAlgorithm <hcloud.load_balancers.domain.LoadBalancerAlgorithm>`
@@ -386,9 +392,14 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             for target in targets:
                 target_data = {
                     "type": target.type,
-                    "server": target.server,
                     "use_private_ip": target.use_private_ip
                 }
+                if target.type == "server":
+                    target_data['server'] = {"id": target.server.id}
+                elif target.type == "label_selector":
+                    target_data['label_selector'] = {"selector": target.label_selector.selector}
+                elif target.type == "ip":
+                    target_data['ip'] = {"ip": target.ip.ip}
                 target_list.append(target_data)
 
             data["targets"] = target_list
@@ -609,9 +620,14 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data = {
             "type": target.type,
-            "server": {"id": target.server.id},
             "use_private_ip": target.use_private_ip
         }
+        if target.type == "server":
+            data['server'] = {"id": target.server.id}
+        elif target.type == "label_selector":
+            data['label_selector'] = {"selector": target.label_selector.selector}
+        elif target.type == "ip":
+            data['ip'] = {"ip": target.ip.ip}
 
         response = self._client.request(
             url="/load_balancers/{load_balancer_id}/actions/add_target".format(load_balancer_id=load_balancer.id),
@@ -629,8 +645,13 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data = {
             "type": target.type,
-            "server": {"id": target.server.id},
         }
+        if target.type == "server":
+            data['server'] = {"id": target.server.id}
+        elif target.type == "label_selector":
+            data['label_selector'] = {"selector": target.label_selector.selector}
+        elif target.type == "ip":
+            data['ip'] = {"ip": target.ip.ip}
 
         response = self._client.request(
             url="/load_balancers/{load_balancer_id}/actions/remove_target".format(load_balancer_id=load_balancer.id),
@@ -754,6 +775,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         data = {
             "load_balancer_type": load_balancer_type.id_or_name,
         }
-        response = self._client.request(url="/load_balancers/{load_balancer_id}/actions/change_type".format(load_balancer_id=load_balancer.id),
-                                        method="POST", json=data)
+        response = self._client.request(
+            url="/load_balancers/{load_balancer_id}/actions/change_type".format(load_balancer_id=load_balancer.id),
+            method="POST", json=data)
         return BoundAction(self._client.actions, response['action'])
