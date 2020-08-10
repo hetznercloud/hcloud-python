@@ -1,7 +1,7 @@
 =======
 History
 =======
-master (XXXX-XX-XX)
+v1.9.0 (2020-08-11)
 --------------------
 
 * Feature: Add `included_traffic`, `outgoing_traffic` and `ingoing_traffic` properties to Load Balancer domain
