@@ -50,7 +50,7 @@ class BoundLoadBalancer(BoundModelBase):
                         selector=target['label_selector']['selector'])
                     tmp_target.use_private_ip = target["use_private_ip"]
                 elif target["type"] == "ip":
-                    tmp_target.label_selector = LoadBalancerTargetIP(ip=target['ip']['ip'])
+                    tmp_target.ip = LoadBalancerTargetIP(ip=target['ip']['ip'])
                 tmp_targets.append(tmp_target)
             data['targets'] = tmp_targets
 
