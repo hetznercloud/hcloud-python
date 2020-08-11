@@ -2,12 +2,12 @@
 History
 =======
 
-master (XXXX-XX-XX)
+v1.9.1 (2020-08-11)
 --------------------
 
 * Bugfix: BoundLoadBalancer serialization failed when using IP targets
 
-v1.9.0 (2020-08-11)
+v1.9.0 (2020-08-10)
 --------------------
 
 * Feature: Add `included_traffic`, `outgoing_traffic` and `ingoing_traffic` properties to Load Balancer domain
