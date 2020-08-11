@@ -41,14 +41,16 @@ class BoundLoadBalancer(BoundModelBase):
         if targets:
             tmp_targets = []
             for target in targets:
-                tmp_target = LoadBalancerTarget(type=target["type"], use_private_ip=target["use_private_ip"])
+                tmp_target = LoadBalancerTarget(type=target["type"])
                 if target["type"] == "server":
                     tmp_target.server = BoundServer(client._client.servers, data=target['server'], complete=False)
+                    tmp_target.use_private_ip = target["use_private_ip"]
                 elif target["type"] == "label_selector":
                     tmp_target.label_selector = LoadBalancerTargetLabelSelector(
                         selector=target['label_selector']['selector'])
+                    tmp_target.use_private_ip = target["use_private_ip"]
                 elif target["type"] == "ip":
-                    tmp_target.label_selector = LoadBalancerTargetIP(ip=target['ip']['ip'])
+                    tmp_target.ip = LoadBalancerTargetIP(ip=target['ip']['ip'])
                 tmp_targets.append(tmp_target)
             data['targets'] = tmp_targets
 

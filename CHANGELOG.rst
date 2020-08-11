@@ -1,6 +1,12 @@
 =======
 History
 =======
+
+master (XXXX-XX-XX)
+--------------------
+
+* Bugfix: BoundLoadBalancer serialization failed when using IP targets
+
 v1.9.0 (2020-08-11)
 --------------------
 
