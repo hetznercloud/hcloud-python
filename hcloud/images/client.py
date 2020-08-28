@@ -154,7 +154,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                  sort=None,            # type: Optional[List[str]]
                  page=None,            # type: Optional[int]
                  per_page=None,        # type: Optional[int]
-                 status=None           # type: Optional[List[str]]
+                 status=None,           # type: Optional[List[str]]
+                 include_deprecated=None    # type: Optional[bool]
                  ):
         # type: (...) -> PageResults[List[BoundImage]]
         """Get all images
@@ -171,6 +172,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter images by their status. The response will only contain images matching the status.
         :param sort: List[str] (optional)
                Choices: id id:asc id:desc name name:asc name:desc created created:asc created:desc
+        :param include_deprecated: bool (optional)
+               Include deprecated images in the response. Default: False
         :param page: int (optional)
                Specifies the page to fetch
         :param per_page: int (optional)
@@ -194,7 +197,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
             params['per_page'] = per_page
         if status is not None:
             params['status'] = per_page
-
+        if include_deprecated is not None:
+            params['include_deprecated'] = include_deprecated
         response = self._client.request(url="/images", method="GET", params=params)
         images = [BoundImage(self, image_data) for image_data in response['images']]
 
@@ -207,6 +211,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                 type=None,            # type: Optional[List[str]]
                 sort=None,            # type: Optional[List[str]]
                 status=None,          # type: Optional[List[str]]
+                include_deprecated=None  # type: Optional[bool]
                 ):
         # type: (...) -> List[BoundImage]
         """Get all images
@@ -223,9 +228,11 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter images by their status. The response will only contain images matching the status.
         :param sort: List[str] (optional)
                Choices: id name created (You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default))
+        :param include_deprecated: bool (optional)
+               Include deprecated images in the response. Default: False
         :return: List[:class:`BoundImage <hcloud.images.client.BoundImage>`]
         """
-        return super(ImagesClient, self).get_all(name=name, label_selector=label_selector, bound_to=bound_to, type=type, sort=sort, status=status)
+        return super(ImagesClient, self).get_all(name=name, label_selector=label_selector, bound_to=bound_to, type=type, sort=sort, status=status, include_deprecated=include_deprecated)
 
     def get_by_name(self, name):
         # type: (str) -> BoundImage

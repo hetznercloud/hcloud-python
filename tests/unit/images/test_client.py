@@ -136,6 +136,7 @@ class TestImagesClient(object):
                 "per_page": 10
             },
             {'name': ""},
+            {'include_deprecated': True},
             {}
         ]
     )
@@ -170,6 +171,7 @@ class TestImagesClient(object):
                 "bound_to": "1",
                 "label_selector": "k==v",
             },
+            {'include_deprecated': True},
             {}
         ]
     )
