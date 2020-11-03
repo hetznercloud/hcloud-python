@@ -6,6 +6,8 @@ master (XXXX-XX-XX)
 -------------------
 
 * Feature: Add `include_deprecated` filter to `get_list` and `get_all` on `ImagesClient`
+* Feature: Add vSwitch support to `add_subnet` on `NetworksClient`
+* Feature: Add subnet type constants to `NetworkSubnet` domain (`NetworkSubnet.TYPE_CLOUD`, `NetworkSubnet.TYPE_VSWITCH`)
 
 v1.9.1 (2020-08-11)
 --------------------

@@ -33,7 +33,7 @@ class TestBoundNetwork(object):
 
         assert len(bound_network.subnets) == 2
         assert isinstance(bound_network.subnets[0], NetworkSubnet)
-        assert bound_network.subnets[0].type == "cloud"
+        assert bound_network.subnets[0].type == NetworkSubnet.TYPE_CLOUD
         assert bound_network.subnets[0].ip_range == "10.0.1.0/24"
         assert bound_network.subnets[0].network_zone == "eu-central"
         assert bound_network.subnets[0].gateway == "10.0.0.1"
@@ -80,10 +80,10 @@ class TestBoundNetwork(object):
 
     def test_add_subnet(self, hetzner_client, bound_network, generic_action):
         hetzner_client.request.return_value = generic_action
-        subnet = NetworkSubnet(type="cloud", ip_range="10.0.1.0/24", network_zone="eu-central")
+        subnet = NetworkSubnet(type=NetworkSubnet.TYPE_CLOUD, ip_range="10.0.1.0/24", network_zone="eu-central")
         action = bound_network.add_subnet(subnet)
         hetzner_client.request.assert_called_with(url="/networks/14/actions/add_subnet", method="POST",
-                                                  json={"type": "cloud", "ip_range": "10.0.1.0/24",
+                                                  json={"type": NetworkSubnet.TYPE_CLOUD, "ip_range": "10.0.1.0/24",
                                                         "network_zone": "eu-central"})
 
         assert action.id == 1
@@ -137,7 +137,11 @@ class TestNetworksClient(object):
 
     @pytest.fixture()
     def network_subnet(self):
-        return NetworkSubnet(type="cloud", ip_range="10.0.1.0/24", network_zone="eu-central")
+        return NetworkSubnet(type=NetworkSubnet.TYPE_CLOUD, ip_range="10.0.1.0/24", network_zone="eu-central")
+
+    @pytest.fixture()
+    def network_vswitch_subnet(self):
+        return NetworkSubnet(type=NetworkSubnet.TYPE_VSWITCH, ip_range="10.0.1.0/24", network_zone="eu-central", vswitch_id=123)
 
     @pytest.fixture()
     def network_route(self):
@@ -244,7 +248,7 @@ class TestNetworksClient(object):
                 'ip_range': "10.0.0.0/8",
                 'subnets': [
                     {
-                        'type': "cloud",
+                        'type': NetworkSubnet.TYPE_CLOUD,
                         'ip_range': "10.0.1.0/24",
                         'network_zone': "eu-central"
                     }
@@ -291,7 +295,7 @@ class TestNetworksClient(object):
                 'ip_range': "10.0.0.0/8",
                 'subnets': [
                     {
-                        'type': "cloud",
+                        'type': NetworkSubnet.TYPE_CLOUD,
                         'ip_range': "10.0.1.0/24",
                         'network_zone': "eu-central"
                     }
@@ -353,8 +357,20 @@ class TestNetworksClient(object):
 
         action = networks_client.add_subnet(network, network_subnet)
         networks_client._client.request.assert_called_with(url="/networks/1/actions/add_subnet", method="POST",
-                                                           json={"type": "cloud", "ip_range": "10.0.1.0/24",
+                                                           json={"type": NetworkSubnet.TYPE_CLOUD, "ip_range": "10.0.1.0/24",
                                                                  "network_zone": "eu-central"})
+
+        assert action.id == 1
+        assert action.progress == 0
+
+    @pytest.mark.parametrize("network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))])
+    def test_add_subnet_vswitch(self, networks_client, network, generic_action, network_vswitch_subnet):
+        networks_client._client.request.return_value = generic_action
+
+        action = networks_client.add_subnet(network, network_vswitch_subnet)
+        networks_client._client.request.assert_called_with(url="/networks/1/actions/add_subnet", method="POST",
+                                                           json={"type": NetworkSubnet.TYPE_VSWITCH, "ip_range": "10.0.1.0/24",
+                                                                 "network_zone": "eu-central", "vswitch_id": 123})
 
         assert action.id == 1
         assert action.progress == 0
