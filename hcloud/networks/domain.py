@@ -71,14 +71,23 @@ class NetworkSubnet(BaseDomain):
               Name of network zone.
     :param gateway: str
               Gateway for the route.
+    :param vswitch_id: int
+              ID of the vSwitch.
     """
-    __slots__ = ("type", "ip_range", "network_zone", "gateway")
+    TYPE_SERVER = "server"
+    """Subnet Type server, deprecated, use TYPE_CLOUD instead"""
+    TYPE_CLOUD = "cloud"
+    """Subnet Type cloud"""
+    TYPE_VSWITCH = "vswitch"
+    """Subnet Type vSwitch"""
+    __slots__ = ("type", "ip_range", "network_zone", "gateway", "vswitch_id")
 
-    def __init__(self, ip_range, type=None, network_zone=None, gateway=None):
+    def __init__(self, ip_range, type=None, network_zone=None, gateway=None, vswitch_id=None):
         self.type = type
         self.ip_range = ip_range
         self.network_zone = network_zone
         self.gateway = gateway
+        self.vswitch_id = vswitch_id
 
 
 class NetworkRoute(BaseDomain):

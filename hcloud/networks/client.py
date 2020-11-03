@@ -351,6 +351,8 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         }
         if subnet.ip_range is not None:
             data["ip_range"] = subnet.ip_range
+        if subnet.vswitch_id is not None:
+            data["vswitch_id"] = subnet.vswitch_id
 
         response = self._client.request(
             url="/networks/{network_id}/actions/add_subnet".format(network_id=network.id),
