@@ -3,7 +3,7 @@ History
 =======
 
 v1.10.0 (2020-10-03)
--------------------
+---------------------
 
 * Feature: Add `include_deprecated` filter to `get_list` and `get_all` on `ImagesClient`
 * Feature: Add vSwitch support to `add_subnet` on `NetworksClient`
