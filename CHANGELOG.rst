@@ -2,7 +2,7 @@
 History
 =======
 
-master (XXXX-XX-XX)
+v1.10.0 (2020-10-03)
 -------------------
 
 * Feature: Add `include_deprecated` filter to `get_list` and `get_all` on `ImagesClient`
