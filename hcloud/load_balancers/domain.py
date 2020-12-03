@@ -25,7 +25,7 @@ class LoadBalancer(BaseDomain):
             Private networks information.
     :param algorithm: LoadBalancerAlgorithm
             The algorithm the Load Balancer is currently using
-    :param services: LoadBalancerService
+    :param services: List[LoadBalancerService]
             The services the LoadBalancer is currently serving
     :param targets: LoadBalancerTarget
             The targets the LoadBalancer is currently serving

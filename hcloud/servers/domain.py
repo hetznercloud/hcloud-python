@@ -239,21 +239,49 @@ class PublicNetwork(BaseDomain):
     :param ipv4: :class:`IPv4Address <hcloud.servers.domain.IPv4Address>`
     :param ipv6: :class:`IPv6Network <hcloud.servers.domain.IPv6Network>`
     :param floating_ips: List[:class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`]
+    :param firewalls: List[:class:`PublicNetworkFirewall <hcloud.servers.client.PublicNetworkFirewall>`]
     """
     __slots__ = (
         "ipv4",
         "ipv6",
-        "floating_ips"
+        "floating_ips",
+        "firewalls"
     )
 
     def __init__(self,
                  ipv4,  # type: IPv4Address
                  ipv6,  # type: IPv6Network
                  floating_ips,  # type: List[BoundFloatingIP]
+                 firewalls=None,  # type: List[PublicNetworkFirewall]
                  ):
         self.ipv4 = ipv4
         self.ipv6 = ipv6
         self.floating_ips = floating_ips
+        self.firewalls = firewalls
+
+
+class PublicNetworkFirewall(BaseDomain):
+    """Public Network Domain
+
+    :param firewall: :class:`BoundFirewall <hcloud.firewalls.domain.BoundFirewall>`
+    :param status: str
+    """
+    __slots__ = (
+        "firewall",
+        "status"
+    )
+
+    STATUS_APPLIED = "applied"
+    """Public Network Firewall Status applied"""
+    STATUS_PENDING = "pending"
+    """Public Network Firewall Status pending"""
+
+    def __init__(self,
+                 firewall,  # type: BoundFirewall
+                 status,  # type: str
+                 ):
+        self.firewall = firewall
+        self.status = status
 
 
 class IPv4Address(BaseDomain):
