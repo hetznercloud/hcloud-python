@@ -2,8 +2,10 @@ Hetzner Cloud Python
 ====================
 
 
-.. image:: https://travis-ci.com/hetznercloud/hcloud-python.svg?branch=master
-    :target: https://travis-ci.com/hetznercloud/hcloud-python
+.. image:: https://github.com/hetznercloud/hcloud-python/workflows/Unit%20Tests/badge.svg
+    :target: https://github.com/hetznercloud/hcloud-cloud-controller-manager/actions
+.. image:: https://github.com/hetznercloud/hcloud-python/workflows/Code%20Style/badge.svg
+    :target: https://github.com/hetznercloud/hcloud-cloud-controller-manager/actions
 .. image:: https://readthedocs.org/projects/hcloud-python/badge/?version=latest
     :target: https://hcloud-python.readthedocs.io
 .. image:: https://img.shields.io/pypi/pyversions/hcloud.svg
