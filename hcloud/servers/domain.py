@@ -106,7 +106,7 @@ class Server(BaseDomain):
             labels=None,
             volumes=None,
             private_net=None,
-            primary_disk_size=None
+            primary_disk_size=None,
     ):
         self.id = id
         self.name = name
