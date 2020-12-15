@@ -138,6 +138,7 @@ def response_create_simple_server():
             "name": "my-server",
             "status": "running",
             "created": "2016-01-30T23:50+00:00",
+            "primary_disk_size": 20,
             "public_net": {
                 "ipv4": {
                     "ip": "1.2.3.4",
@@ -662,6 +663,7 @@ def response_simple_servers():
             "outgoing_traffic": 123456,
             "ingoing_traffic": 123456,
             "included_traffic": 654321,
+            "primary_disk_size": 20,
             "protection": {},
             "labels": {},
             "volumes": []
@@ -677,6 +679,7 @@ def response_full_server():
             "name": "my-server",
             "status": "running",
             "created": "2016-01-30T23:50+00:00",
+            "primary_disk_size": 20,
             "public_net": {
                 "ipv4": {
                     "ip": "1.2.3.4",
