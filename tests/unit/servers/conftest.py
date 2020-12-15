@@ -122,6 +122,7 @@ def response_simple_server():
             "outgoing_traffic": 123456,
             "ingoing_traffic": 123456,
             "included_traffic": 654321,
+            "primary_disk_size" 20,
             "protection": {},
             "labels": {},
             "volumes": []
