@@ -33,6 +33,8 @@ class Server(BaseDomain):
            Inbound Traffic for the current billing period in bytes
     :param included_traffic: int
            Free Traffic for the current billing period in bytes
+    :param primary_disk_size: int
+           Size of the primary Disk
     :param protection: dict
            Protection configuration for the server
     :param labels: dict
@@ -79,7 +81,8 @@ class Server(BaseDomain):
         "labels",
         "volumes",
         "private_net",
-        "created"
+        "created",
+        "primary_disk_size"
     )
 
     def __init__(
@@ -103,6 +106,7 @@ class Server(BaseDomain):
             labels=None,
             volumes=None,
             private_net=None,
+            primary_disk_size=None,
     ):
         self.id = id
         self.name = name
@@ -123,6 +127,7 @@ class Server(BaseDomain):
         self.labels = labels
         self.volumes = volumes
         self.private_net = private_net
+        self.primary_disk_size = primary_disk_size
 
 
 class CreateServerResponse(BaseDomain):

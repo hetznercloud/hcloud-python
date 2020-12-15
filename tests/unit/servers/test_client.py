@@ -35,6 +35,7 @@ class TestBoundServer(object):
 
         assert bound_server.id == 42
         assert bound_server.name == "my-server"
+        assert bound_server.primary_disk_size == 20
         assert isinstance(bound_server.public_net, PublicNetwork)
         assert isinstance(bound_server.public_net.ipv4, IPv4Address)
         assert bound_server.public_net.ipv4.ip == "1.2.3.4"
