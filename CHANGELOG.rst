@@ -2,6 +2,10 @@
 History
 =======
 
+v1.12.0 (2021-04-06)
+---------------------
+* Feature: Add support for managed Certificates
+
 v1.11.0 (2021-03-11)
 ---------------------
 * Feature: Add support for Firewalls
