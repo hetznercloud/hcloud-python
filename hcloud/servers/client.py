@@ -3,10 +3,11 @@ from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByName
 
 from hcloud.actions.client import BoundAction
 from hcloud.core.domain import add_meta_to_result
+from hcloud.firewalls.client import BoundFirewall
 from hcloud.floating_ips.client import BoundFloatingIP
 from hcloud.isos.client import BoundIso
 from hcloud.servers.domain import Server, CreateServerResponse, ResetPasswordResponse, EnableRescueResponse, \
-    RequestConsoleResponse, PublicNetwork, IPv4Address, IPv6Network, PrivateNet
+    RequestConsoleResponse, PublicNetwork, IPv4Address, IPv6Network, PrivateNet, PublicNetworkFirewall
 from hcloud.volumes.client import BoundVolume
 from hcloud.images.domain import CreateImageResponse
 from hcloud.images.client import BoundImage
@@ -48,11 +49,21 @@ class BoundServer(BoundModelBase):
             ipv6_network = IPv6Network(**public_net['ipv6'])
             floating_ips = [BoundFloatingIP(client._client.floating_ips, {"id": floating_ip}, complete=False) for
                             floating_ip in public_net['floating_ips']]
-            data['public_net'] = PublicNetwork(ipv4=ipv4_address, ipv6=ipv6_network, floating_ips=floating_ips)
+            firewalls = [
+                PublicNetworkFirewall(
+                    BoundFirewall(client._client.firewalls, {"id": firewall["id"]}, complete=False),
+                    status=firewall["status"]
+                ) for firewall in public_net.get("firewalls", [])
+            ]
+            data['public_net'] = PublicNetwork(ipv4=ipv4_address, ipv6=ipv6_network, floating_ips=floating_ips,
+                                               firewalls=firewalls)
 
         private_nets = data.get("private_net")
         if private_nets:
-            private_nets = [PrivateNet(network=BoundNetwork(client._client.networks, {"id": private_net['network']}, complete=False), ip=private_net['ip'], alias_ips=private_net['alias_ips'], mac_address=private_net['mac_address']) for private_net in private_nets]
+            private_nets = [PrivateNet(
+                network=BoundNetwork(client._client.networks, {"id": private_net['network']}, complete=False),
+                ip=private_net['ip'], alias_ips=private_net['alias_ips'], mac_address=private_net['mac_address']) for
+                private_net in private_nets]
             data['private_net'] = private_nets
 
         super(BoundServer, self).__init__(client, data, complete)
@@ -392,6 +403,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                image,  # type: Image
                ssh_keys=None,  # type: Optional[List[SSHKey]]
                volumes=None,  # type: Optional[List[Volume]]
+               firewalls=None,  # type: Optional[List[Firewall]]
                networks=None,  # type: Optional[List[Network]]
                user_data=None,  # type: Optional[str]
                labels=None,  # type: Optional[Dict[str, str]]
@@ -444,6 +456,8 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
             data['volumes'] = [volume.id for volume in volumes]
         if networks is not None:
             data['networks'] = [network.id for network in networks]
+        if firewalls is not None:
+            data['firewalls'] = [firewall.id for firewall in firewalls]
         if user_data is not None:
             data['user_data'] = user_data
         if labels is not None:

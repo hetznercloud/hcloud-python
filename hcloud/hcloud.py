@@ -20,6 +20,7 @@ from hcloud.load_balancers.client import LoadBalancersClient
 from hcloud.load_balancer_types.client import LoadBalancerTypesClient
 
 from .__version__ import VERSION
+from .firewalls.client import FirewallsClient
 
 
 class APIException(Exception):
@@ -131,6 +132,12 @@ class Client(object):
         """LoadBalancerTypesClient Instance
 
         :type: :class:`LoadBalancerTypesClient <hcloud.load_balancer_types.client.LoadBalancerTypesClient>`
+        """
+
+        self.firewalls = FirewallsClient(self)
+        """FirewallsClient Instance
+
+        :type: :class:`FirewallsClient <hcloud.firewalls.client.FirewallsClient>`
         """
 
     def _get_user_agent(self):

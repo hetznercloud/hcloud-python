@@ -44,7 +44,7 @@ python38:
 
 python39:
   <<: *tests_template
-  image: python:3.9-rc-alpine
+  image: python:3.9-alpine
   script: tox -e py39
 
 test-style:

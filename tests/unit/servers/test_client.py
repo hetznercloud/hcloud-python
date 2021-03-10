@@ -1,11 +1,12 @@
 import mock
 import pytest
 
+from hcloud.firewalls.client import BoundFirewall
 from hcloud.floating_ips.client import BoundFloatingIP
 from hcloud.isos.client import BoundIso
 from hcloud.servers.client import ServersClient, BoundServer
 
-from hcloud.servers.domain import Server, PublicNetwork, IPv4Address, IPv6Network, PrivateNet
+from hcloud.servers.domain import Server, PublicNetwork, IPv4Address, IPv6Network, PublicNetworkFirewall, PrivateNet
 from hcloud.volumes.client import BoundVolume
 from hcloud.volumes.domain import Volume
 from hcloud.images.domain import Image
@@ -47,6 +48,13 @@ class TestBoundServer(object):
         assert bound_server.public_net.ipv6.blocked is False
         assert bound_server.public_net.ipv6.network == "2001:db8::"
         assert bound_server.public_net.ipv6.network_mask == "64"
+
+        assert isinstance(bound_server.public_net.firewalls, list)
+        assert isinstance(bound_server.public_net.firewalls[0], PublicNetworkFirewall)
+        firewall = bound_server.public_net.firewalls[0]
+        assert isinstance(firewall.firewall, BoundFirewall)
+        assert bound_server.public_net.ipv6.blocked is False
+        assert firewall.status == PublicNetworkFirewall.STATUS_APPLIED
 
         assert isinstance(bound_server.public_net.floating_ips[0], BoundFloatingIP)
         assert bound_server.public_net.floating_ips[0].id == 478
@@ -142,7 +150,8 @@ class TestBoundServer(object):
     def test_update(self, hetzner_client, bound_server, response_update_server):
         hetzner_client.request.return_value = response_update_server
         server = bound_server.update(name="new-name", labels={})
-        hetzner_client.request.assert_called_with(url="/servers/14", method="PUT", json={"name": "new-name", "labels": {}})
+        hetzner_client.request.assert_called_with(url="/servers/14", method="PUT",
+                                                  json={"name": "new-name", "labels": {}})
 
         assert server.id == 14
         assert server.name == "new-name"
@@ -207,7 +216,8 @@ class TestBoundServer(object):
     def test_change_type(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.change_type(ServerType(name="cx11"), upgrade_disk=True)
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/change_type", method="POST", json={"server_type": "cx11", "upgrade_disk": True})
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/change_type", method="POST",
+                                                  json={"server_type": "cx11", "upgrade_disk": True})
 
         assert action.id == 1
         assert action.progress == 0
@@ -215,7 +225,8 @@ class TestBoundServer(object):
     def test_enable_rescue(self, hetzner_client, bound_server, response_server_enable_rescue):
         hetzner_client.request.return_value = response_server_enable_rescue
         response = bound_server.enable_rescue(type="linux64")
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/enable_rescue", method="POST", json={"type": "linux64"})
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/enable_rescue", method="POST",
+                                                  json={"type": "linux64"})
 
         assert response.action.id == 1
         assert response.action.progress == 0
@@ -232,7 +243,8 @@ class TestBoundServer(object):
     def test_create_image(self, hetzner_client, bound_server, response_server_create_image):
         hetzner_client.request.return_value = response_server_create_image
         response = bound_server.create_image(description="my image", type="snapshot")
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/create_image", method="POST", json={"description": "my image", "type": "snapshot"})
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/create_image", method="POST",
+                                                  json={"description": "my image", "type": "snapshot"})
 
         assert response.action.id == 1
         assert response.action.progress == 0
@@ -241,7 +253,8 @@ class TestBoundServer(object):
     def test_rebuild(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.rebuild(Image(name="ubuntu-20.04"))
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/rebuild", method="POST", json={"image": "ubuntu-20.04"})
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/rebuild", method="POST",
+                                                  json={"image": "ubuntu-20.04"})
 
         assert action.id == 1
         assert action.progress == 0
@@ -265,7 +278,8 @@ class TestBoundServer(object):
     def test_attach_iso(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.attach_iso(Iso(name="FreeBSD-11.0-RELEASE-amd64-dvd1"))
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/attach_iso", method="POST", json={"iso": "FreeBSD-11.0-RELEASE-amd64-dvd1"})
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/attach_iso", method="POST",
+                                                  json={"iso": "FreeBSD-11.0-RELEASE-amd64-dvd1"})
 
         assert action.id == 1
         assert action.progress == 0
@@ -281,7 +295,8 @@ class TestBoundServer(object):
     def test_change_dns_ptr(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.change_dns_ptr("1.2.3.4", "example.com")
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/change_dns_ptr", method="POST", json={"ip": "1.2.3.4", "dns_ptr": "example.com"})
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/change_dns_ptr", method="POST",
+                                                  json={"ip": "1.2.3.4", "dns_ptr": "example.com"})
 
         assert action.id == 1
         assert action.progress == 0
@@ -289,7 +304,8 @@ class TestBoundServer(object):
     def test_change_protection(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.change_protection(True, True)
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/change_protection", method="POST", json={"delete": True, "rebuild": True})
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/change_protection", method="POST",
+                                                  json={"delete": True, "rebuild": True})
 
         assert action.id == 1
         assert action.progress == 0
@@ -308,7 +324,9 @@ class TestBoundServer(object):
     def test_attach_to_network(self, hetzner_client, bound_server, network, response_attach_to_network):
         hetzner_client.request.return_value = response_attach_to_network
         action = bound_server.attach_to_network(network, "10.0.1.1", ["10.0.1.2", "10.0.1.3"])
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/attach_to_network", method="POST", json={"network": 4711, "ip": "10.0.1.1", "alias_ips": ["10.0.1.2", "10.0.1.3"]})
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/attach_to_network", method="POST",
+                                                  json={"network": 4711, "ip": "10.0.1.1",
+                                                        "alias_ips": ["10.0.1.2", "10.0.1.3"]})
 
         assert action.id == 1
         assert action.progress == 0
@@ -318,7 +336,8 @@ class TestBoundServer(object):
     def test_detach_from_network(self, hetzner_client, bound_server, network, response_detach_from_network):
         hetzner_client.request.return_value = response_detach_from_network
         action = bound_server.detach_from_network(network)
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/detach_from_network", method="POST", json={"network": 4711})
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/detach_from_network", method="POST",
+                                                  json={"network": 4711})
 
         assert action.id == 1
         assert action.progress == 0
@@ -328,7 +347,8 @@ class TestBoundServer(object):
     def test_change_alias_ips(self, hetzner_client, bound_server, network, response_change_alias_ips):
         hetzner_client.request.return_value = response_change_alias_ips
         action = bound_server.change_alias_ips(network, ["10.0.1.2", "10.0.1.3"])
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/change_alias_ips", method="POST", json={"network": 4711, "alias_ips": ["10.0.1.2", "10.0.1.3"]})
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/change_alias_ips", method="POST",
+                                                  json={"network": 4711, "alias_ips": ["10.0.1.2", "10.0.1.3"]})
 
         assert action.id == 1
         assert action.progress == 0
@@ -576,7 +596,8 @@ class TestServersClient(object):
     def test_update(self, servers_client, server, response_update_server):
         servers_client._client.request.return_value = response_update_server
         server = servers_client.update(server, name="new-name", labels={})
-        servers_client._client.request.assert_called_with(url="/servers/1", method="PUT", json={"name": "new-name", "labels": {}})
+        servers_client._client.request.assert_called_with(url="/servers/1", method="PUT",
+                                                          json={"name": "new-name", "labels": {}})
 
         assert server.id == 14
         assert server.name == "new-name"
@@ -649,7 +670,8 @@ class TestServersClient(object):
     def test_change_type_with_server_type_name(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.change_type(server, ServerType(name="cx11"), upgrade_disk=True)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_type", method="POST", json={"server_type": "cx11", "upgrade_disk": True})
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_type", method="POST",
+                                                          json={"server_type": "cx11", "upgrade_disk": True})
 
         assert action.id == 1
         assert action.progress == 0
@@ -675,7 +697,8 @@ class TestServersClient(object):
     def test_enable_rescue(self, servers_client, server, response_server_enable_rescue):
         servers_client._client.request.return_value = response_server_enable_rescue
         response = servers_client.enable_rescue(server, "linux64", [2323])
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/enable_rescue", method="POST", json={"type": "linux64", "ssh_keys": [2323]})
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/enable_rescue", method="POST",
+                                                          json={"type": "linux64", "ssh_keys": [2323]})
 
         assert response.action.id == 1
         assert response.action.progress == 0
@@ -694,7 +717,9 @@ class TestServersClient(object):
     def test_create_image(self, servers_client, server, response_server_create_image):
         servers_client._client.request.return_value = response_server_create_image
         response = servers_client.create_image(server, description="my image", type="snapshot", labels={"key": "value"})
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/create_image", method="POST", json={"description": "my image", "type": "snapshot", "labels": {"key": "value"}})
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/create_image", method="POST",
+                                                          json={"description": "my image", "type": "snapshot",
+                                                                "labels": {"key": "value"}})
 
         assert response.action.id == 1
         assert response.action.progress == 0
@@ -704,7 +729,8 @@ class TestServersClient(object):
     def test_rebuild(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.rebuild(server, Image(name="ubuntu-20.04"))
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/rebuild", method="POST", json={"image": "ubuntu-20.04"})
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/rebuild", method="POST",
+                                                          json={"image": "ubuntu-20.04"})
 
         assert action.id == 1
         assert action.progress == 0
@@ -731,7 +757,8 @@ class TestServersClient(object):
     def test_attach_iso(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.attach_iso(server, Iso(name="FreeBSD-11.0-RELEASE-amd64-dvd1"))
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/attach_iso", method="POST", json={"iso": "FreeBSD-11.0-RELEASE-amd64-dvd1"})
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/attach_iso", method="POST",
+                                                          json={"iso": "FreeBSD-11.0-RELEASE-amd64-dvd1"})
 
         assert action.id == 1
         assert action.progress == 0
@@ -749,7 +776,8 @@ class TestServersClient(object):
     def test_change_dns_ptr(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.change_dns_ptr(server, "1.2.3.4", "example.com")
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_dns_ptr", method="POST", json={"ip": "1.2.3.4", "dns_ptr": "example.com"})
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_dns_ptr", method="POST",
+                                                          json={"ip": "1.2.3.4", "dns_ptr": "example.com"})
 
         assert action.id == 1
         assert action.progress == 0
@@ -758,7 +786,8 @@ class TestServersClient(object):
     def test_change_protection(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.change_protection(server, True, True)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_protection", method="POST", json={"delete": True, "rebuild": True})
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_protection", method="POST",
+                                                          json={"delete": True, "rebuild": True})
 
         assert action.id == 1
         assert action.progress == 0
@@ -779,7 +808,9 @@ class TestServersClient(object):
     def test_attach_to_network(self, servers_client, server, network, response_attach_to_network):
         servers_client._client.request.return_value = response_attach_to_network
         action = servers_client.attach_to_network(server, network, "10.0.1.1", ["10.0.1.2", "10.0.1.3"])
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/attach_to_network", method="POST", json={"network": 4711, "ip": "10.0.1.1", "alias_ips": ["10.0.1.2", "10.0.1.3"]})
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/attach_to_network", method="POST",
+                                                          json={"network": 4711, "ip": "10.0.1.1",
+                                                                "alias_ips": ["10.0.1.2", "10.0.1.3"]})
 
         assert action.id == 1
         assert action.progress == 0
@@ -790,7 +821,8 @@ class TestServersClient(object):
     def test_detach_from_network(self, servers_client, server, network, response_detach_from_network):
         servers_client._client.request.return_value = response_detach_from_network
         action = servers_client.detach_from_network(server, network)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/detach_from_network", method="POST", json={"network": 4711})
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/detach_from_network", method="POST",
+                                                          json={"network": 4711})
 
         assert action.id == 1
         assert action.progress == 0
@@ -801,7 +833,8 @@ class TestServersClient(object):
     def test_change_alias_ips(self, servers_client, server, network, response_change_alias_ips):
         servers_client._client.request.return_value = response_change_alias_ips
         action = servers_client.change_alias_ips(server, network, ["10.0.1.2", "10.0.1.3"])
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_alias_ips", method="POST", json={"network": 4711, "alias_ips": ["10.0.1.2", "10.0.1.3"]})
+        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_alias_ips", method="POST",
+                                                          json={"network": 4711, "alias_ips": ["10.0.1.2", "10.0.1.3"]})
 
         assert action.id == 1
         assert action.progress == 0

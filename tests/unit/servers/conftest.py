@@ -27,6 +27,12 @@ def response_simple_server():
                 },
                 "floating_ips": [
                     478
+                ],
+                "firewalls": [
+                    {
+                        "id": 38,
+                        "status": "applied"
+                    }
                 ]
             },
             "private_net": [
@@ -155,7 +161,12 @@ def response_create_simple_server():
                         }
                     ]
                 },
-                "floating_ips": [
+                "floating_ips": [],
+                "firewalls": [
+                    {
+                        "id": 38,
+                        "status": "applied"
+                    }
                 ]
             },
             "private_net": [],
@@ -318,7 +329,8 @@ def response_update_server():
                 },
                 "floating_ips": [
                     478
-                ]
+                ],
+                "firewalls": []
             },
             "private_net": [],
             "server_type": {
@@ -447,7 +459,8 @@ def response_simple_servers():
                 },
                 "floating_ips": [
                     478
-                ]
+                ],
+                "firewalls": []
             },
             "private_net": [
                 {
@@ -568,7 +581,8 @@ def response_simple_servers():
                 },
                 "floating_ips": [
                     478
-                ]
+                ],
+                "firewalls": []
             },
             "private_net": [
                 {
@@ -698,6 +712,12 @@ def response_full_server():
                 },
                 "floating_ips": [
                     478
+                ],
+                "firewalls": [
+                    {
+                        "id": 38,
+                        "status": "applied"
+                    }
                 ]
             },
             "private_net": [
@@ -1016,6 +1036,54 @@ def response_change_alias_ips():
                 {
                     "id": 4711,
                     "type": "network"
+                }
+            ],
+            "error": {
+                "code": "action_failed",
+                "message": "Action failed"
+            }
+        }
+    }
+
+
+@pytest.fixture()
+def response_apply_firewall():
+    return {
+        "action": {
+            "id": 1,
+            "command": "apply_firewall",
+            "status": "running",
+            "progress": 0,
+            "started": "2016-01-30T23:50:00+00:00",
+            "finished": None,
+            "resources": [
+                {
+                    "id": 42,
+                    "type": "server"
+                }
+            ],
+            "error": {
+                "code": "action_failed",
+                "message": "Action failed"
+            }
+        }
+    }
+
+
+@pytest.fixture()
+def response_remove_firewall():
+    return {
+        "action": {
+            "id": 1,
+            "command": "remove_firewall",
+            "status": "running",
+            "progress": 0,
+            "started": "2016-01-30T23:50:00+00:00",
+            "finished": None,
+            "resources": [
+                {
+                    "id": 42,
+                    "type": "server"
                 }
             ],
             "error": {
