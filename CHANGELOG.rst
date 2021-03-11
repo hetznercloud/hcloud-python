@@ -2,7 +2,12 @@
 History
 =======
 
-v1.10.0 (2020-10-03)
+v1.11.0 (2021-03-11)
+---------------------
+* Feature: Add support for Firewalls
+* Feature: Add `primary_disk_size` to `Server` Domain
+
+v1.10.0 (2020-11-03)
 ---------------------
 
 * Feature: Add `include_deprecated` filter to `get_list` and `get_all` on `ImagesClient`
