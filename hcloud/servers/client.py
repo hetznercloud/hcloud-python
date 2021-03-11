@@ -465,7 +465,6 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         if automount is not None:
             data["automount"] = automount
 
-        print(data)
         response = self._client.request(url="/servers", method="POST", json=data)
 
         result = CreateServerResponse(
