@@ -594,7 +594,7 @@ class TestServersClient(object):
                 'name': "my-server",
                 'server_type': "cx11",
                 'image': 4711,
-                'firewalls': [{"id": 1}, {"id": 2}],
+                'firewalls': [{"firewall": 1}, {"firewall": 2}],
                 "start_after_create": False
             }
         )
