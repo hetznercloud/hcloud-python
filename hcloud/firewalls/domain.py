@@ -87,13 +87,13 @@ class FirewallRule:
             protocol,  # type: str
             source_ips,  # type: List[str]
             port=None,  # type: Optional[str]
-            destination_ips=[],  # type: Optional[List[str]]
+            destination_ips=None,  # type: Optional[List[str]]
     ):
         self.direction = direction
         self.port = port
         self.protocol = protocol
         self.source_ips = source_ips
-        self.destination_ips = destination_ips
+        self.destination_ips = destination_ips or []
 
     def to_payload(self):
         payload = {
