@@ -2,6 +2,7 @@ import mock
 import pytest
 
 from hcloud.firewalls.client import BoundFirewall
+from hcloud.firewalls.domain import Firewall
 from hcloud.floating_ips.client import BoundFloatingIP
 from hcloud.isos.client import BoundIso
 from hcloud.servers.client import ServersClient, BoundServer
@@ -554,6 +555,46 @@ class TestServersClient(object):
                 'server_type': "cx11",
                 'image': 4711,
                 'networks': [1, 2],
+                "start_after_create": False
+            }
+        )
+
+        bound_server = response.server
+        bound_action = response.action
+        next_actions = response.next_actions
+        root_password = response.root_password
+
+        assert root_password == "YItygq1v3GYjjMomLaKc"
+
+        assert bound_server._client is servers_client
+        assert bound_server.id == 1
+        assert bound_server.name == "my-server"
+
+        assert isinstance(bound_action, BoundAction)
+        assert bound_action._client == servers_client._client.actions
+        assert bound_action.id == 1
+        assert bound_action.command == "create_server"
+
+        assert next_actions[0].id == 13
+
+    def test_create_with_firewalls(self, servers_client, response_create_simple_server):
+        servers_client._client.request.return_value = response_create_simple_server
+        firewalls = [Firewall(id=1), BoundFirewall(mock.MagicMock(), dict(id=2))]
+        response = servers_client.create(
+            "my-server",
+            server_type=ServerType(name="cx11"),
+            image=Image(id=4711),
+            firewalls=firewalls,
+            start_after_create=False
+        )
+        servers_client._client.request.assert_called_with(
+            url="/servers",
+            method="POST",
+            json={
+                'name': "my-server",
+                'server_type': "cx11",
+                'image': 4711,
+                'firewalls': [{"id": 1}, {"id": 2}],
                 "start_after_create": False
             }
         )

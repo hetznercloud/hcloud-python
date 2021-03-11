@@ -457,7 +457,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         if networks is not None:
             data['networks'] = [network.id for network in networks]
         if firewalls is not None:
-            data['firewalls'] = [firewall.id for firewall in firewalls]
+            data['firewalls'] = [{"id": firewall.id} for firewall in firewalls]
         if user_data is not None:
             data['user_data'] = user_data
         if labels is not None:
