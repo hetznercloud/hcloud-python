@@ -1,8 +1,9 @@
 import pytest
 import mock
 
+from hcloud.actions.client import BoundAction
 from hcloud.certificates.client import CertificatesClient, BoundCertificate
-from hcloud.certificates.domain import Certificate
+from hcloud.certificates.domain import Certificate, ManagedCertificateStatus
 
 
 class TestBoundCertificate(object):
@@ -10,6 +11,42 @@ class TestBoundCertificate(object):
     @pytest.fixture()
     def bound_certificate(self, hetzner_client):
         return BoundCertificate(client=hetzner_client.certificates, data=dict(id=14))
+
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {
+                "page": 1,
+                "per_page": 10},
+            {}
+
+        ]
+    )
+    def test_get_actions_list(self, hetzner_client, bound_certificate, response_get_actions, params):
+        hetzner_client.request.return_value = response_get_actions
+        result = bound_certificate.get_actions_list(**params)
+        hetzner_client.request.assert_called_with(url="/certificates/14/actions", method="GET", params=params)
+
+        actions = result.actions
+        assert result.meta is None
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0].id == 13
+        assert actions[0].command == "change_protection"
+
+    def test_get_actions(self, hetzner_client, bound_certificate, response_get_actions):
+        hetzner_client.request.return_value = response_get_actions
+        actions = bound_certificate.get_actions()
+
+        params = {'page': 1, 'per_page': 50}
+
+        hetzner_client.request.assert_called_with(url="/certificates/14/actions", method="GET", params=params)
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0].id == 13
+        assert actions[0].command == "change_protection"
 
     def test_bound_certificate_init(self, certificate_response):
         bound_certificate = BoundCertificate(
@@ -19,12 +56,18 @@ class TestBoundCertificate(object):
 
         assert bound_certificate.id == 2323
         assert bound_certificate.name == "My Certificate"
+        assert bound_certificate.type == "managed"
         assert bound_certificate.fingerprint == "03:c7:55:9b:2a:d1:04:17:09:f6:d0:7f:18:34:63:d4:3e:5f"
         assert bound_certificate.certificate == "-----BEGIN CERTIFICATE-----\n..."
         assert len(bound_certificate.domain_names) == 3
         assert bound_certificate.domain_names[0] == "example.com"
         assert bound_certificate.domain_names[1] == "webmail.example.com"
         assert bound_certificate.domain_names[2] == "www.example.com"
+        assert isinstance(bound_certificate.status, ManagedCertificateStatus)
+        assert bound_certificate.status.issuance == "failed"
+        assert bound_certificate.status.renewal == "scheduled"
+        assert bound_certificate.status.error.code == "error_code"
+        assert bound_certificate.status.error.message == "error message"
 
     def test_update(self, hetzner_client, bound_certificate, response_update_certificate):
         hetzner_client.request.return_value = response_update_certificate
@@ -40,6 +83,14 @@ class TestBoundCertificate(object):
         hetzner_client.request.assert_called_with(url="/certificates/14", method="DELETE")
 
         assert delete_success is True
+
+    def test_retry_issuance(self, hetzner_client, bound_certificate, response_retry_issuance_action):
+        hetzner_client.request.return_value = response_retry_issuance_action
+        action = bound_certificate.retry_issuance()
+        hetzner_client.request.assert_called_with(url="/certificates/14/actions/retry", method="POST")
+
+        assert action.id == 14
+        assert action.command == "issue_certificate"
 
 
 class TestCertificatesClient(object):
@@ -123,17 +174,38 @@ class TestCertificatesClient(object):
 
     def test_create(self, certificates_client, certificate_response):
         certificates_client._client.request.return_value = certificate_response
-        certificate = certificates_client.create(name="My Certificate", certificate="-----BEGIN CERTIFICATE-----\n...", private_key="-----BEGIN PRIVATE KEY-----\n...")
-        certificates_client._client.request.assert_called_with(url="/certificates", method="POST", json={"name": "My Certificate", "certificate": "-----BEGIN CERTIFICATE-----\n...", "private_key": "-----BEGIN PRIVATE KEY-----\n..."})
+        certificate = certificates_client.create(name="My Certificate", certificate="-----BEGIN CERTIFICATE-----\n...",
+                                                 private_key="-----BEGIN PRIVATE KEY-----\n...")
+        certificates_client._client.request.assert_called_with(url="/certificates", method="POST",
+                                                               json={"name": "My Certificate",
+                                                                     "certificate": "-----BEGIN CERTIFICATE-----\n...",
+                                                                     "private_key": "-----BEGIN PRIVATE KEY-----\n...",
+                                                                     "type": "uploaded"})
 
         assert certificate.id == 2323
         assert certificate.name == "My Certificate"
+
+    def test_create_managed(self, certificates_client, create_managed_certificate_response):
+        certificates_client._client.request.return_value = create_managed_certificate_response
+        create_managed_certificate_rsp = certificates_client.create_managed(name="My Certificate",
+                                                                            domain_names=["example.com",
+                                                                                          "*.example.org"])
+        certificates_client._client.request.assert_called_with(url="/certificates", method="POST",
+                                                               json={"name": "My Certificate",
+                                                                     "domain_names": ["example.com", "*.example.org"],
+                                                                     "type": "managed"})
+
+        assert create_managed_certificate_rsp.certificate.id == 2323
+        assert create_managed_certificate_rsp.certificate.name == "My Certificate"
+        assert create_managed_certificate_rsp.action.id == 14
+        assert create_managed_certificate_rsp.action.command == "issue_certificate"
 
     @pytest.mark.parametrize("certificate", [Certificate(id=1), BoundCertificate(mock.MagicMock(), dict(id=1))])
     def test_update(self, certificates_client, certificate, response_update_certificate):
         certificates_client._client.request.return_value = response_update_certificate
         certificate = certificates_client.update(certificate, name="New name")
-        certificates_client._client.request.assert_called_with(url="/certificates/1", method="PUT", json={"name": "New name"})
+        certificates_client._client.request.assert_called_with(url="/certificates/1", method="PUT",
+                                                               json={"name": "New name"})
 
         assert certificate.id == 2323
         assert certificate.name == "New name"
@@ -145,3 +217,12 @@ class TestCertificatesClient(object):
         certificates_client._client.request.assert_called_with(url="/certificates/1", method="DELETE")
 
         assert delete_success is True
+
+    @pytest.mark.parametrize("certificate", [Certificate(id=1), BoundCertificate(mock.MagicMock(), dict(id=1))])
+    def test_retry_issuance(self, certificates_client, certificate, response_retry_issuance_action):
+        certificates_client._client.request.return_value = response_retry_issuance_action
+        action = certificates_client.retry_issuance(certificate)
+        certificates_client._client.request.assert_called_with(url="/certificates/1/actions/retry", method="POST")
+
+        assert action.id == 14
+        assert action.command == "issue_certificate"
