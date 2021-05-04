@@ -186,7 +186,7 @@ class BoundServer(BoundModelBase):
         return self._client.disable_rescue(self)
 
     def create_image(self, description=None, type=None, labels=None):
-        # type: (str, str, Optional[Dict[str, str]]) -> BoundAction
+        # type: (str, str, Optional[Dict[str, str]]) -> CreateImageResponse
         """Creates an image (snapshot) from a server by copying the contents of its disks.
 
         :param description: str (optional)
@@ -196,7 +196,7 @@ class BoundServer(BoundModelBase):
                Choices: snapshot, backup
         :param labels: Dict[str, str]
                User-defined labels (key-value pairs)
-        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        :return:  :class:`CreateImageResponse <hcloud.images.domain.CreateImageResponse>`
         """
         return self._client.create_image(self, description, type, labels)
 
@@ -679,7 +679,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                Choices: snapshot, backup
         :param labels: Dict[str, str]
                User-defined labels (key-value pairs)
-        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        :return:  :class:`CreateImageResponse <hcloud.images.domain.CreateImageResponse>`
         """
         data = {}
         if description is not None:
