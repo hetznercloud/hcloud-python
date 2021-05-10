@@ -60,6 +60,7 @@ class Client(object):
         self._application_name = application_name
         self._application_version = application_version
         self.poll_interval = poll_interval
+        self.requests_session = requests.Session()
 
         self.datacenters = DatacentersClient(self)
         """DatacentersClient Instance
@@ -195,7 +196,7 @@ class Client(object):
         :return: Response
         :rtype: requests.Response
         """
-        response = requests.request(
+        response = self.requests_session.request(
             method,
             self._api_endpoint + url,
             headers=self._get_headers(),
