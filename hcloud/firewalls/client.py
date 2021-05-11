@@ -329,7 +329,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         """Applies one Firewall to multiple resources.
 
         :param firewall: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>` or  :class:`Firewall <hcloud.firewalls.domain.Firewall>`
-        :param rules: List[:class:`FirewallResource <hcloud.firewalls.domain.FirewallResource>`]
+        :param resources: List[:class:`FirewallResource <hcloud.firewalls.domain.FirewallResource>`]
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
         data = {
@@ -347,7 +347,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         """Removes one Firewall from multiple resources.
 
         :param firewall: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>` or  :class:`Firewall <hcloud.firewalls.domain.Firewall>`
-        :param rules: List[:class:`FirewallResource <hcloud.firewalls.domain.FirewallResource>`]
+        :param resources: List[:class:`FirewallResource <hcloud.firewalls.domain.FirewallResource>`]
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
         data = {
