@@ -27,6 +27,15 @@ Or open `docs/usage.rst`
 You can find some more examples under `examples/`.
 
 
+Supported Python versions
+-------------------------
+
+We support python versions until `end-of-life`_.
+
+.. _end-of-life: https://devguide.python.org/#status-of-python-branches
+
+Please note that python2.7 and python3.5 have already reached the end of life. We will stop supporting them from June 7th.
+
 Development
 -----------
 
