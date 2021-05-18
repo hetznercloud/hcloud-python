@@ -10,7 +10,7 @@ class Image(BaseDomain, DomainIdentityMixin):
     :param id: int
            ID of the image
     :param type: str
-           Type of the image Choices: `system`, `snapshot`, `backup`
+           Type of the image Choices: `system`, `snapshot`, `backup`, `app`
     :param status: str
            Whether the image can be used or if it’s still being created Choices: `available`, `creating`
     :param name: str, None
