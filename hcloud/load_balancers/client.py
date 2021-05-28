@@ -268,7 +268,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         """Get a specific Load Balancer
 
         :param id: int
-        :return: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>
+        :return: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>`
         """
         response = self._client.request(
             url="/load_balancers/{load_balancer_id}".format(load_balancer_id=id), method="GET"

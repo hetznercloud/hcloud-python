@@ -160,7 +160,3 @@ texinfo_documents = [
 ]
 
 source_suffix = ['.rst']
-
-
-def setup(app):
-    app.add_javascript('js/open_links_in_new_tab.js')

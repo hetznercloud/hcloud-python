@@ -193,6 +193,7 @@ class LoadBalancerHealtCheckHttp(BaseDomain):
 
 class LoadBalancerTarget(BaseDomain):
     """LoadBalancerTarget Domain
+
                 :param type: str
                         Type of the resource, can be server or label_selector
                 :param server: Server
@@ -215,8 +216,8 @@ class LoadBalancerTarget(BaseDomain):
 
 class LoadBalancerTargetLabelSelector(BaseDomain):
     """LoadBalancerTargetLabelSelector Domain
-            :param selector: str
-                    Target label selector
+
+    :param selector: str Target label selector
     """
 
     def __init__(self, selector=None):
@@ -225,8 +226,8 @@ class LoadBalancerTargetLabelSelector(BaseDomain):
 
 class LoadBalancerTargetIP(BaseDomain):
     """LoadBalancerTargetIP Domain
-            :param ip: str
-                    Target IP
+
+    :param ip: str Target IP
     """
 
     def __init__(self, ip=None):
@@ -235,9 +236,10 @@ class LoadBalancerTargetIP(BaseDomain):
 
 class LoadBalancerAlgorithm(BaseDomain):
     """LoadBalancerAlgorithm Domain
-                    :param type: str
-                            Algorithm of the Load Balancer. Choices: round_robin, least_connections
-        """
+
+    :param type: str
+            Algorithm of the Load Balancer. Choices: round_robin, least_connections
+    """
 
     def __init__(self, type=None):
         self.type = type
