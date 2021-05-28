@@ -2,7 +2,7 @@ CertificateClient
 ==================
 
 
-.. autoclass:: hcloud.certificates.client.CertificateClient
+.. autoclass:: hcloud.certificates.client.CertificatesClient
     :members:
 
 .. autoclass:: hcloud.certificates.client.BoundCertificate

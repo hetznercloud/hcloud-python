@@ -1,5 +1,5 @@
 LoadBalancerTypesClient
-==================
+========================
 
 
 .. autoclass:: hcloud.load_balancer_types.client.LoadBalancerTypesClient
