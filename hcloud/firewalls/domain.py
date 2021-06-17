@@ -80,6 +80,10 @@ class FirewallRule:
     """Firewall Rule Protocol ICMP"""
     PROTOCOL_TCP = "tcp"
     """Firewall Rule Protocol TCP"""
+    PROTOCOL_ESP = "esp"
+    """Firewall Rule Protocol ESP"""
+    PROTOCOL_GRE = "gre"
+    """Firewall Rule Protocol GRE"""
 
     def __init__(
             self,
