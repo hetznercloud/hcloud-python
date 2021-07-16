@@ -39,6 +39,12 @@ def response_create_firewall():
                         "id": 42
                     },
                     "type": "server"
+                },
+                {
+                    "type": "label_selector",
+                    "label_selector": {
+                        "selector": "key==value"
+                    }
                 }
             ]
         },
@@ -125,6 +131,12 @@ def firewall_response():
                         "id": 42
                     },
                     "type": "server"
+                },
+                {
+                    "type": "label_selector",
+                    "label_selector": {
+                        "selector": "key==value"
+                    }
                 }
             ]
         }

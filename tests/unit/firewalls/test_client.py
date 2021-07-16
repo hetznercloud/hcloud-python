@@ -3,7 +3,7 @@ import mock
 
 from hcloud.firewalls.client import FirewallsClient, BoundFirewall
 from hcloud.actions.client import BoundAction
-from hcloud.firewalls.domain import Firewall, FirewallRule, FirewallResource
+from hcloud.firewalls.domain import Firewall, FirewallRule, FirewallResource, FirewallResourceLabelSelector
 from hcloud.servers.domain import Server
 
 
@@ -26,9 +26,11 @@ class TestBoundFirewall(object):
         assert len(bound_firewall.rules) == 2
 
         assert isinstance(bound_firewall.applied_to, list)
-        assert len(bound_firewall.applied_to) == 1
+        assert len(bound_firewall.applied_to) == 2
         assert bound_firewall.applied_to[0].server.id == 42
         assert bound_firewall.applied_to[0].type == "server"
+        assert bound_firewall.applied_to[1].label_selector.selector == "key==value"
+        assert bound_firewall.applied_to[1].type == "label_selector"
 
         firewall_in_rule = bound_firewall.rules[0]
         assert isinstance(firewall_in_rule, FirewallRule)
@@ -276,7 +278,10 @@ class TestFirewallsClient(object):
             "Corporate Intranet Protection",
             rules=[FirewallRule(direction=FirewallRule.DIRECTION_IN, protocol=FirewallRule.PROTOCOL_ICMP,
                                 source_ips=["0.0.0.0/0"])],
-            resources=[FirewallResource(type=FirewallResource.TYPE_SERVER, server=Server(id=4711))]
+            resources=[
+                FirewallResource(type=FirewallResource.TYPE_SERVER, server=Server(id=4711)),
+                FirewallResource(type=FirewallResource.TYPE_LABEL_SELECTOR, label_selector=FirewallResourceLabelSelector(selector="key==value"))
+            ]
         )
         firewalls_client._client.request.assert_called_with(
             url="/firewalls",
@@ -298,6 +303,12 @@ class TestFirewallsClient(object):
                         "server": {
                             "id": 4711
                         }
+                    },
+                    {
+                        "type": "label_selector",
+                        "label_selector": {
+                            "selector": "key==value"
+                        }
                     }
                 ],
             }
@@ -309,6 +320,7 @@ class TestFirewallsClient(object):
         assert bound_firewall._client is firewalls_client
         assert bound_firewall.id == 38
         assert bound_firewall.name == "Corporate Intranet Protection"
+        assert len(bound_firewall.applied_to) == 2
 
         assert len(actions) == 2
 
