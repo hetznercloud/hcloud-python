@@ -2,6 +2,16 @@
 History
 =======
 
+v1.13.0 (2021-07-16)
+---------------------
+* Feature: Add support for Firewall Protocols ESP and GRE
+* Feature: Add support for Image Type APP
+* Feature: Add support for creating Firewalls with Firewalls
+* Feature: Add support for Label Selectors in Firewalls
+* Improvement: Improve handling of underlying TCP connections. Now for every client instance a single TCP connection is used instead of one per call.
+
+* Note: Support for Python 2.7 and Python 3.5 was removed
+
 v1.12.0 (2021-04-06)
 ---------------------
 * Feature: Add support for managed Certificates
