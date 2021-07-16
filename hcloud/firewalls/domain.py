@@ -119,22 +119,30 @@ class FirewallResource:
            Type of resource referenced
     :param server: Optional[Server]
            Server the Firewall is applied to
+    :param label_selector: Optional[FirewallResourceLabelSelector]
+           Label Selector for Servers the Firewall should be applied to
     """
     __slots__ = (
         "type",
         "server",
+        "label_selector"
     )
 
     TYPE_SERVER = "server"
     """Firewall Used By Type Server"""
+    TYPE_LABEL_SELECTOR = "label_selector"
+    """Firewall Used By Type label_selector"""
 
     def __init__(
             self,
             type,  # type: str
             server=None,  # type: Optional[Server]
+            label_selector=None,  # type: Optional[FirewallResourceLabelSelector]
+
     ):
         self.type = type
         self.server = server
+        self.label_selector = label_selector
 
     def to_payload(self):
         payload = {
@@ -142,7 +150,20 @@ class FirewallResource:
         }
         if self.server is not None:
             payload.update({"server": {"id": self.server.id}})
+
+        if self.label_selector is not None:
+            payload.update({"label_selector": {"selector": self.label_selector.selector}})
         return payload
+
+
+class FirewallResourceLabelSelector(BaseDomain):
+    """FirewallResourceLabelSelector Domain
+
+    :param selector: str Target label selector
+    """
+
+    def __init__(self, selector=None):
+        self.selector = selector
 
 
 class CreateFirewallResponse(BaseDomain):

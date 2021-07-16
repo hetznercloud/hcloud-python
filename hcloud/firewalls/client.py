@@ -3,7 +3,8 @@ from hcloud.actions.client import BoundAction
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from hcloud.core.domain import add_meta_to_result
 
-from hcloud.firewalls.domain import Firewall, CreateFirewallResponse, FirewallRule, FirewallResource
+from hcloud.firewalls.domain import Firewall, CreateFirewallResponse, FirewallRule, FirewallResource, \
+    FirewallResourceLabelSelector
 
 
 class BoundFirewall(BoundModelBase):
@@ -22,9 +23,11 @@ class BoundFirewall(BoundModelBase):
             from hcloud.servers.client import BoundServer
             ats = []
             for a in applied_to:
-                if a["type"] == "server":
+                if a["type"] == FirewallResource.TYPE_SERVER:
                     ats.append(FirewallResource(type=a["type"], server=BoundServer(client._client.servers, a["server"],
                                                                                    complete=False)))
+                elif a["type"] == FirewallResource.TYPE_LABEL_SELECTOR:
+                    ats.append(FirewallResource(type=a["type"], label_selector=FirewallResourceLabelSelector(selector=a['label_selector']['selector'])))
             data['applied_to'] = ats
 
         super(BoundFirewall, self).__init__(client, data, complete)
