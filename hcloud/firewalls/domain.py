@@ -150,18 +150,18 @@ class CreateFirewallResponse(BaseDomain):
 
     :param firewall: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>`
            The Firewall which was created
-    :param action: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+    :param actions: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
            The Action which shows the progress of the Firewall Creation
     """
     __slots__ = (
         "firewall",
-        "action"
+        "actions"
     )
 
     def __init__(
             self,
             firewall,  # type: BoundFirewall
-            action,  # type: BoundAction
+            actions,  # type: BoundAction
     ):
         self.firewall = firewall
-        self.action = action
+        self.actions = actions
