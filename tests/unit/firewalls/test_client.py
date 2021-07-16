@@ -270,6 +270,48 @@ class TestFirewallsClient(object):
         assert actions[0].id == 13
         assert actions[0].command == "set_firewall_rules"
 
+    def test_create(self, firewalls_client, response_create_firewall):
+        firewalls_client._client.request.return_value = response_create_firewall
+        response = firewalls_client.create(
+            "Corporate Intranet Protection",
+            rules=[FirewallRule(direction=FirewallRule.DIRECTION_IN, protocol=FirewallRule.PROTOCOL_ICMP,
+                                source_ips=["0.0.0.0/0"])],
+            resources=[FirewallResource(type=FirewallResource.TYPE_SERVER, server=Server(id=4711))]
+        )
+        firewalls_client._client.request.assert_called_with(
+            url="/firewalls",
+            method="POST",
+            json={
+                'name': "Corporate Intranet Protection",
+                'rules': [
+                    {
+                        "direction": "in",
+                        "protocol": "icmp",
+                        "source_ips": [
+                            "0.0.0.0/0"
+                        ]
+                    }
+                ],
+                "apply_to": [
+                    {
+                        "type": "server",
+                        "server": {
+                            "id": 4711
+                        }
+                    }
+                ],
+            }
+        )
+
+        bound_firewall = response.firewall
+        actions = response.actions
+
+        assert bound_firewall._client is firewalls_client
+        assert bound_firewall.id == 38
+        assert bound_firewall.name == "Corporate Intranet Protection"
+
+        assert len(actions) == 2
+
     @pytest.mark.parametrize("firewall", [Firewall(id=38), BoundFirewall(mock.MagicMock(), dict(id=38))])
     def test_update(self, firewalls_client, firewall, response_update_firewall):
         firewalls_client._client.request.return_value = response_update_firewall

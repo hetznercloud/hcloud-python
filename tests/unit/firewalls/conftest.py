@@ -2,6 +2,92 @@ import pytest
 
 
 @pytest.fixture()
+def response_create_firewall():
+    return {
+        "firewall": {
+            "id": 38,
+            "name": "Corporate Intranet Protection",
+            "labels": {},
+            "created": "2016-01-30T23:50:00+00:00",
+            "rules": [
+                {
+                    "direction": "in",
+                    "source_ips": [
+                        "28.239.13.1/32",
+                        "28.239.14.0/24",
+                        "ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128"
+                    ],
+                    "destination_ips": [],
+                    "protocol": "tcp",
+                    "port": "80"
+                },
+                {
+                    "direction": "out",
+                    "source_ips": [],
+                    "destination_ips": [
+                        "28.239.13.1/32",
+                        "28.239.14.0/24",
+                        "ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128"
+                    ],
+                    "protocol": "tcp",
+                    "port": "80"
+                }
+            ],
+            "applied_to": [
+                {
+                    "server": {
+                        "id": 42
+                    },
+                    "type": "server"
+                }
+            ]
+        },
+        "actions": [
+            {
+                "command": "set_firewall_rules",
+                "error": {
+                    "code": "action_failed",
+                    "message": "Action failed"
+                },
+                "finished": "2016-01-30T23:56:00+00:00",
+                "id": 13,
+                "progress": 100,
+                "resources": [
+                    {
+                        "id": 38,
+                        "type": "firewall"
+                    }
+                ],
+                "started": "2016-01-30T23:55:00+00:00",
+                "status": "success"
+            },
+            {
+                "command": "apply_firewall",
+                "error": {
+                    "code": "action_failed",
+                    "message": "Action failed"
+                },
+                "finished": "2016-01-30T23:56:00+00:00",
+                "id": 14,
+                "progress": 100,
+                "resources": [
+                    {
+                        "id": 42,
+                        "type": "server"
+                    },
+                    {
+                        "id": 38,
+                        "type": "firewall"
+                    }
+                ],
+                "started": "2016-01-30T23:55:00+00:00",
+                "status": "success"
+            }
+        ]
+    }
+
+
+@pytest.fixture()
 def firewall_response():
     return {
         "firewall": {

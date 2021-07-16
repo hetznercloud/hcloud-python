@@ -238,6 +238,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
                name,  # type: str
                rules=None,  # type: Optional[List[FirewallRule]]
                labels=None,  # type: Optional[str]
+               resources=None,  # type: Optional[List[FirewallResource]]
                ):
         # type: (...) -> CreateFirewallResponse
         """Creates a new Firewall.
@@ -247,6 +248,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         :param rules: List[:class:`FirewallRule <hcloud.firewalls.domain.FirewallRule>`] (optional)
         :param labels: Dict[str, str] (optional)
                User-defined labels (key-value pairs)
+        :param resources: List[:class:`FirewallResource <hcloud.firewalls.domain.FirewallResource>`] (optional)
         :return: :class:`CreateFirewallResponse <hcloud.firewalls.domain.CreateFirewallResponse>`
         """
 
@@ -260,16 +262,19 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
             data.update({"rules": []})
             for rule in rules:
                 data['rules'].append(rule.to_payload())
-
+        if resources is not None:
+            data.update({"apply_to": []})
+            for resource in resources:
+                data['apply_to'].append(resource.to_payload())
         response = self._client.request(url="/firewalls", json=data, method="POST")
 
-        action = None
-        if response.get('action') is not None:
-            action = BoundAction(self._client.actions, response['action'])
+        actions = []
+        if response.get('actions') is not None:
+            actions = [BoundAction(self._client.actions, _) for _ in response['actions']]
 
         result = CreateFirewallResponse(
             firewall=BoundFirewall(self, response['firewall']),
-            action=action
+            actions=actions
         )
         return result
 
