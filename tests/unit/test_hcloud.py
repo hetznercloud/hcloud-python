@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import json
+from unittest.mock import MagicMock
+
 import requests
 import pytest
 from hcloud import Client, APIException
@@ -11,7 +13,10 @@ class TestHetznerClient(object):
     @pytest.fixture()
     def client(self):
         Client._version = '0.0.0'
-        return Client(token="project_token")
+        client = Client(token="project_token")
+
+        client._requests_session = MagicMock()
+        return client
 
     @pytest.fixture()
     def response(self):
@@ -76,17 +81,17 @@ class TestHetznerClient(object):
         response = client.request("POST", "url", params={"1": 2})
         assert response.__class__.__name__ == 'MagicMock'
 
-    def test_request_ok(self, mocked_requests, client, response):
-        mocked_requests.request.return_value = response
+    def test_request_ok(self, client, response):
+        client._requests_session.request.return_value = response
         response = client.request("POST", "/servers", params={"argument": "value"}, timeout=2)
-        mocked_requests.request.assert_called_once()
-        assert mocked_requests.request.call_args[0] == ('POST', 'https://api.hetzner.cloud/v1/servers')
-        assert mocked_requests.request.call_args[1]['params'] == {'argument': 'value'}
-        assert mocked_requests.request.call_args[1]['timeout'] == 2
+        client._requests_session.request.assert_called_once()
+        assert client._requests_session.request.call_args[0] == ('POST', 'https://api.hetzner.cloud/v1/servers')
+        assert client._requests_session.request.call_args[1]['params'] == {'argument': 'value'}
+        assert client._requests_session.request.call_args[1]['timeout'] == 2
         assert response == {"result": "data"}
 
-    def test_request_fails(self, mocked_requests, client, fail_response):
-        mocked_requests.request.return_value = fail_response
+    def test_request_fails(self, client, fail_response):
+        client._requests_session.request.return_value = fail_response
         with pytest.raises(APIException) as exception_info:
             client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
         error = exception_info.value
@@ -94,11 +99,11 @@ class TestHetznerClient(object):
         assert error.message == "invalid input in field 'broken_field': is too long"
         assert error.details['fields'][0]['name'] == "broken_field"
 
-    def test_request_500(self, mocked_requests, client, fail_response):
+    def test_request_500(self, client, fail_response):
         fail_response.status_code = 500
         fail_response.reason = "Internal Server Error"
         fail_response._content = "Internal Server Error"
-        mocked_requests.request.return_value = fail_response
+        client._requests_session.request.return_value = fail_response
         with pytest.raises(APIException) as exception_info:
             client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
         error = exception_info.value
@@ -106,11 +111,11 @@ class TestHetznerClient(object):
         assert error.message == "Internal Server Error"
         assert error.details['content'] == "Internal Server Error"
 
-    def test_request_broken_json_200(self, mocked_requests, client, response):
+    def test_request_broken_json_200(self, client, response):
         content = "{'key': 'value'".encode('utf-8')
         response.reason = "OK"
         response._content = content
-        mocked_requests.request.return_value = response
+        client._requests_session.request.return_value = response
         with pytest.raises(APIException) as exception_info:
             client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
         error = exception_info.value
@@ -118,19 +123,19 @@ class TestHetznerClient(object):
         assert error.message == "OK"
         assert error.details['content'] == content
 
-    def test_request_empty_content_200(self, mocked_requests, client, response):
+    def test_request_empty_content_200(self, client, response):
         content = ""
         response.reason = "OK"
         response._content = content
-        mocked_requests.request.return_value = response
+        client._requests_session.request.return_value = response
         response = client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
         assert response == ""
 
-    def test_request_500_empty_content(self, mocked_requests, client, fail_response):
+    def test_request_500_empty_content(self, client, fail_response):
         fail_response.status_code = 500
         fail_response.reason = "Internal Server Error"
         fail_response._content = ""
-        mocked_requests.request.return_value = fail_response
+        client._requests_session.request.return_value = fail_response
         with pytest.raises(APIException) as exception_info:
             client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
         error = exception_info.value
@@ -139,22 +144,22 @@ class TestHetznerClient(object):
         assert error.details["content"] == ""
         assert str(error) == "Internal Server Error"
 
-    def test_request_limit(self, mocked_requests, client, rate_limit_response):
+    def test_request_limit(self, client, rate_limit_response):
         client._retry_wait_time = 0
-        mocked_requests.request.return_value = rate_limit_response
+        client._requests_session.request.return_value = rate_limit_response
         with pytest.raises(APIException) as exception_info:
             client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
         error = exception_info.value
-        assert mocked_requests.request.call_count == 5
+        assert client._requests_session.request.call_count == 5
         assert error.code == "rate_limit_exceeded"
         assert error.message == "limit of 10 requests per hour reached"
 
-    def test_request_limit_then_success(self, mocked_requests, client, rate_limit_response):
+    def test_request_limit_then_success(self, client, rate_limit_response):
         client._retry_wait_time = 0
         response = requests.Response()
         response.status_code = 200
         response._content = json.dumps({"result": "data"}).encode('utf-8')
-        mocked_requests.request.side_effect = [rate_limit_response, response]
+        client._requests_session.request.side_effect = [rate_limit_response, response]
 
         client.request("POST", "http://url.com", params={"argument": "value"}, timeout=2)
-        assert mocked_requests.request.call_count == 2
+        assert client._requests_session.request.call_count == 2
