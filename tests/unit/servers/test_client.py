@@ -28,6 +28,8 @@ from hcloud.server_types.client import BoundServerType
 from hcloud.server_types.domain import ServerType
 from hcloud.networks.domain import Network
 from hcloud.networks.client import BoundNetwork
+from hcloud.placement_groups.domain import PlacementGroup
+from hcloud.placement_groups.client import BoundPlacementGroup
 
 
 class TestBoundServer(object):
@@ -451,6 +453,26 @@ class TestBoundServer(object):
         assert action.id == 1
         assert action.progress == 0
         assert action.command == "change_alias_ips"
+
+    @pytest.mark.parametrize("placement_group", [PlacementGroup(id=897), BoundPlacementGroup(mock.MagicMock, dict(id=897))])
+    def test_add_to_placement_group(self, hetzner_client, bound_server, placement_group, response_add_to_placement_group):
+        hetzner_client.request.return_value = response_add_to_placement_group
+        action = bound_server.add_to_placement_group(placement_group)
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/add_to_placement_group", method="POST",
+                                                  json={"placement_group": "897"})
+
+        assert action.id == 13
+        assert action.progress == 0
+        assert action.command == "add_to_placement_group"
+
+    def test_remove_from_placement_group(self, hetzner_client, bound_server, response_remove_from_placement_group):
+        hetzner_client.request.return_value = response_remove_from_placement_group
+        action = bound_server.remove_from_placement_group()
+        hetzner_client.request.assert_called_with(url="/servers/14/actions/remove_from_placement_group", method="POST")
+
+        assert action.id == 13
+        assert action.progress == 100
+        assert action.command == "remove_from_placement_group"
 
 
 class TestServersClient(object):

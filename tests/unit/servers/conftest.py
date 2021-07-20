@@ -831,3 +831,51 @@ def response_remove_firewall():
             "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
+
+
+@pytest.fixture()
+def response_add_to_placement_group():
+    return {
+        "action": {
+            "command": "add_to_placement_group",
+            "error": {
+                "code": "action_failed",
+                "message": "Action failed"
+            },
+            "finished": None,
+            "id": 13,
+            "progress": 0,
+            "resources": [
+                {
+                    "id": 42,
+                    "type": "server"
+                }
+            ],
+            "started": "2016-01-30T23:50:00+00:00",
+            "status": "running"
+        }
+    }
+
+
+@pytest.fixture()
+def response_remove_from_placement_group():
+    return {
+        "action": {
+            "command": "remove_from_placement_group",
+            "error": {
+                "code": "action_failed",
+                "message": "Action failed"
+            },
+            "finished": "2016-01-30T23:56:00+00:00",
+            "id": 13,
+            "progress": 100,
+            "resources": [
+                {
+                    "id": 42,
+                    "type": "server"
+                }
+            ],
+            "started": "2016-01-30T23:55:00+00:00",
+            "status": "success"
+        }
+    }

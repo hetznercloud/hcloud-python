@@ -355,6 +355,23 @@ class BoundServer(BoundModelBase):
         """
         return self._client.change_alias_ips(self, network, alias_ips)
 
+    def add_to_placement_group(self, placement_group):
+        # type: (Union[PlacementGroup,BoundPlacementGroup]) -> BoundAction
+        """Adds a server to a placement group.
+
+        :param placement_group: :class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>` or :class:`Network <hcloud.placement_groups.domain.PlacementGroup>`
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        return self._client.add_to_placement_group(self, placement_group)
+
+    def remove_from_placement_group(self):
+        # type: () -> BoundAction
+        """Removes a server from a placement group.
+
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        return self._client.remove_from_placement_group(self)
+
 
 class ServersClient(ClientEntityBase, GetEntityByNameMixin):
     results_list_attribute_name = "servers"
@@ -987,10 +1004,33 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data = {"network": network.id, "alias_ips": alias_ips}
         response = self._client.request(
-            url="/servers/{server_id}/actions/change_alias_ips".format(
-                server_id=server.id
-            ),
-            method="POST",
-            json=data,
-        )
-        return BoundAction(self._client.actions, response["action"])
+            url="/servers/{server_id}/actions/change_alias_ips".format(server_id=server.id), method="POST",
+            json=data)
+        return BoundAction(self._client.actions, response['action'])
+
+    def add_to_placement_group(self, server, placement_group):
+        # type: (Union[Server,BoundServer], Union[PlacementGroup,BoundPlacementGroup]) -> BoundAction
+        """Adds a server to a placement group.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :param placement_group: :class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>` or :class:`Network <hcloud.placement_groups.domain.PlacementGroup>`
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        data = {
+            "placement_group": str(placement_group.id),
+        }
+        response = self._client.request(
+            url="/servers/{server_id}/actions/add_to_placement_group".format(server_id=server.id), method="POST",
+            json=data)
+        return BoundAction(self._client.actions, response['action'])
+
+    def remove_from_placement_group(self, server):
+        # type: (Union[Server,BoundServer]) -> BoundAction
+        """Removes a server from a placement group.
+
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        response = self._client.request(
+            url="/servers/{server_id}/actions/remove_from_placement_group".format(server_id=server.id), method="POST")
+        return BoundAction(self._client.actions, response['action'])
