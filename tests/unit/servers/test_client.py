@@ -117,6 +117,12 @@ class TestBoundServer(object):
         assert len(bound_server.private_net[0].alias_ips) == 1
         assert bound_server.private_net[0].alias_ips[0] == "10.1.1.8"
 
+        assert isinstance(bound_server.placement_group, BoundPlacementGroup)
+        assert bound_server.placement_group._client == bound_server._client._client.placement_groups
+        assert bound_server.placement_group.id == 897
+        assert bound_server.placement_group.name == "my Placement Group"
+        assert bound_server.placement_group.complete is True
+
     @pytest.mark.parametrize(
         "params",
         [
@@ -741,9 +747,48 @@ class TestServersClient(object):
 
         assert next_actions[0].id == 13
 
-    @pytest.mark.parametrize(
-        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
-    )
+    def test_create_with_placement_group(self, servers_client, response_create_simple_server):
+        servers_client._client.request.return_value = response_create_simple_server
+        placement_group = PlacementGroup(id=1)
+        response = servers_client.create(
+            "my-server",
+            server_type=ServerType(name="cx11"),
+            image=Image(id=4711),
+            start_after_create=False,
+            placement_group=placement_group
+        )
+
+        servers_client._client.request.assert_called_with(
+            url="/servers",
+            method="POST",
+            json={
+                'name': "my-server",
+                'server_type': "cx11",
+                'image': 4711,
+                'placement_group': 1,
+                "start_after_create": False
+            }
+        )
+
+        bound_server = response.server
+        bound_action = response.action
+        next_actions = response.next_actions
+        root_password = response.root_password
+
+        assert root_password == "YItygq1v3GYjjMomLaKc"
+
+        assert bound_server._client is servers_client
+        assert bound_server.id == 1
+        assert bound_server.name == "my-server"
+
+        assert isinstance(bound_action, BoundAction)
+        assert bound_action._client == servers_client._client.actions
+        assert bound_action.id == 1
+        assert bound_action.command == "create_server"
+
+        assert next_actions[0].id == 13
+
+    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
     def test_get_actions_list(self, servers_client, server, response_get_actions):
         servers_client._client.request.return_value = response_get_actions
         result = servers_client.get_actions_list(server)

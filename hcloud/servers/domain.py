@@ -84,30 +84,32 @@ class Server(BaseDomain):
         "private_net",
         "created",
         "primary_disk_size",
+        "placement_group"
     )
 
     def __init__(
-        self,
-        id,
-        name=None,
-        status=None,
-        created=None,
-        public_net=None,
-        server_type=None,
-        datacenter=None,
-        image=None,
-        iso=None,
-        rescue_enabled=None,
-        locked=None,
-        backup_window=None,
-        outgoing_traffic=None,
-        ingoing_traffic=None,
-        included_traffic=None,
-        protection=None,
-        labels=None,
-        volumes=None,
-        private_net=None,
-        primary_disk_size=None,
+            self,
+            id,
+            name=None,
+            status=None,
+            created=None,
+            public_net=None,
+            server_type=None,
+            datacenter=None,
+            image=None,
+            iso=None,
+            rescue_enabled=None,
+            locked=None,
+            backup_window=None,
+            outgoing_traffic=None,
+            ingoing_traffic=None,
+            included_traffic=None,
+            protection=None,
+            labels=None,
+            volumes=None,
+            private_net=None,
+            primary_disk_size=None,
+            placement_group=None,
     ):
         self.id = id
         self.name = name
@@ -129,6 +131,7 @@ class Server(BaseDomain):
         self.volumes = volumes
         self.private_net = private_net
         self.primary_disk_size = primary_disk_size
+        self.placement_group = placement_group
 
 
 class CreateServerResponse(BaseDomain):

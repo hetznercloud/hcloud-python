@@ -25,6 +25,7 @@ from hcloud.server_types.client import BoundServerType
 from hcloud.datacenters.client import BoundDatacenter
 from hcloud.networks.client import BoundNetwork  # noqa
 from hcloud.networks.domain import Network  # noqa
+from hcloud.placement_groups.client import BoundPlacementGroup
 
 
 class BoundServer(BoundModelBase):
@@ -100,6 +101,11 @@ class BoundServer(BoundModelBase):
                 for private_net in private_nets
             ]
             data["private_net"] = private_nets
+
+        placement_group = data.get("placement_group")
+        if placement_group:
+            placement_group = BoundPlacementGroup(client._client.placement_groups, placement_group)
+            data['placement_group'] = placement_group
 
         super(BoundServer, self).__init__(client, data, complete)
 
@@ -456,22 +462,22 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super(ServersClient, self).get_by_name(name)
 
-    def create(
-        self,
-        name,  # type: str
-        server_type,  # type: ServerType
-        image,  # type: Image
-        ssh_keys=None,  # type: Optional[List[SSHKey]]
-        volumes=None,  # type: Optional[List[Volume]]
-        firewalls=None,  # type: Optional[List[Firewall]]
-        networks=None,  # type: Optional[List[Network]]
-        user_data=None,  # type: Optional[str]
-        labels=None,  # type: Optional[Dict[str, str]]
-        location=None,  # type: Optional[Location]
-        datacenter=None,  # type: Optional[Datacenter]
-        start_after_create=True,  # type: Optional[bool]
-        automount=None,  # type: Optional[bool]
-    ):
+    def create(self,
+               name,  # type: str
+               server_type,  # type: ServerType
+               image,  # type: Image
+               ssh_keys=None,  # type: Optional[List[SSHKey]]
+               volumes=None,  # type: Optional[List[Volume]]
+               firewalls=None,  # type: Optional[List[Firewall]]
+               networks=None,  # type: Optional[List[Network]]
+               user_data=None,  # type: Optional[str]
+               labels=None,  # type: Optional[Dict[str, str]]
+               location=None,  # type: Optional[Location]
+               datacenter=None,  # type: Optional[Datacenter]
+               start_after_create=True,  # type: Optional[bool]
+               automount=None,  # type: Optional[bool]
+               placement_group=None  # type: Optional[PlacementGroup]
+               ):
         # type: (...) -> CreateServerResponse
         """Creates a new server. Returns preliminary information about the server as well as an action that covers progress of creation.
 
@@ -497,6 +503,8 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                Start Server right after creation. Defaults to True.
         :param automount: boolean (optional)
                Auto mount volumes after attach.
+        :param placement_group: :class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>` or :class:`Location <hcloud.placement_groups.domain.PlacementGroup>`
+               Placement Group where server should be added during creation
         :return: :class:`CreateServerResponse <hcloud.servers.domain.CreateServerResponse>`
         """
         data = {
@@ -524,6 +532,8 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
             data["labels"] = labels
         if automount is not None:
             data["automount"] = automount
+        if placement_group is not None:
+            data['placement_group'] = placement_group.id
 
         response = self._client.request(url="/servers", method="POST", json=data)
 

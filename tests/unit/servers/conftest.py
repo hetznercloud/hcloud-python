@@ -627,6 +627,19 @@ def response_full_server():
                 "type": "public",
                 "deprecated": "2018-02-28T00:00:00+00:00",
             },
+            "placement_group": {
+                "created": "2019-01-08T12:10:00+00:00",
+                "id": 897,
+                "labels": {
+                    "key": "value"
+                },
+                "name": "my Placement Group",
+                "servers": [
+                    4711,
+                    4712
+                ],
+                "type": "spread"
+            },
             "rescue_enabled": False,
             "locked": False,
             "backup_window": "22-02",
