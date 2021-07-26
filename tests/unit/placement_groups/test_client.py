@@ -120,3 +120,23 @@ class TestPlacementGroupsClient(object):
         placement_groups_client._client.request.assert_called_with(url="/placement_groups", method="GET", params=params)
 
         check_variables(placement_group, one_placement_group_response['placement_groups'][0])
+
+    def test_create(self, placement_groups_client, response_create_placement_group):
+        placement_groups_client._client.request.return_value = response_create_placement_group
+        response = placement_groups_client.create(
+            response_create_placement_group['placement_group']['name'],
+            response_create_placement_group['placement_group']['labels'],
+            response_create_placement_group['placement_group']['type']
+        )
+
+        json = {
+            'name': response_create_placement_group['placement_group']['name'],
+            'labels': response_create_placement_group['placement_group']['labels'],
+            'type': response_create_placement_group['placement_group']['type']
+        }
+        placement_groups_client._client.request.assert_called_with(url="/placement_groups", method="POST", json=json)
+
+        bound_placement_group = response.placement_group
+
+        assert bound_placement_group._client is placement_groups_client
+        check_variables(bound_placement_group, response_create_placement_group['placement_group'])

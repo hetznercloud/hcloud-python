@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+from hcloud.actions.client import BoundAction
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 
-from hcloud.placement_groups.domain import PlacementGroup
+from hcloud.placement_groups.domain import PlacementGroup, CreatePlacementGroupResponse
 
 
 class BoundPlacementGroup(BoundModelBase):
@@ -107,6 +108,40 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>`
         """
         return super(PlacementGroupsClient, self).get_by_name(name)
+
+    def create(self,
+               name,  # type: str
+               labels=None,  # type: Optional[Dict[str, str]]
+               type=PlacementGroup.TYPE_SPREAD  # type: Optional[str]
+               ):
+        # type: (...) -> CreatePlacementGroupResponse
+        """Creates a new Placement Group.
+
+        :param name: str
+               Placement Group Name
+        :param labels: Dict[str, str] (optional)
+               User-defined labels (key-value pairs)
+        :param type: str
+           Type of the Placement Group
+        :return: :class:`CreatePlacementGroupResponse <hcloud.placement_groups.domain.CreatePlacementGroupResponse>`
+        """
+        data = {
+            'name': name,
+            'type': type
+        }
+        if labels is not None:
+            data['labels'] = labels
+        response = self._client.request(url="/placement_groups", json=data, method="POST")
+
+        action = None
+        if response.get('action') is not None:
+            action = BoundAction(self._client.action, response['action'])
+
+        result = CreatePlacementGroupResponse(
+            placement_group=BoundPlacementGroup(self, response['placement_group']),
+            action=action
+        )
+        return result
 
     def update(self, placement_group, labels=None, name=None):
         # type: (PlacementGroup, Optional[Dict[str, str]], Optional[str]) -> BoundPlacementGroup

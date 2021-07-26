@@ -2,6 +2,22 @@ import pytest
 
 
 @pytest.fixture()
+def response_create_placement_group():
+    return {
+        "placement_group": {
+            "created": "2019-01-08T12:10:00+00:00",
+            "id": 897,
+            "labels": {
+                "key": "value"
+            },
+            "name": "my Placement Group",
+            "servers": [],
+            "type": "spread"
+        }
+    }
+
+
+@pytest.fixture()
 def one_placement_group_response():
     return {
         "placement_groups": [

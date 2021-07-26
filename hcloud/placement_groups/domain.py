@@ -50,3 +50,25 @@ class PlacementGroup(BaseDomain):
         self.servers = servers
         self.type = type
         self.created = isoparse(created) if created else None
+
+
+class CreatePlacementGroupResponse(BaseDomain):
+    """Create Placement Group Response Domain
+
+    :param placement_group: :class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>`
+           The Placement Group which was created
+    :param action: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+           The Action which shows the progress of the Placement Group Creation
+    """
+    __slots__ = (
+        "placement_group",
+        "action"
+    )
+
+    def __init__(
+            self,
+            placement_group,  # type: BoundPlacementGroup
+            action,  # type: BoundAction
+    ):
+        self.placement_group = placement_group
+        self.action = action
