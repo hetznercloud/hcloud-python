@@ -46,6 +46,7 @@ class TestBoundFirewall(object):
         ]
         assert isinstance(firewall_in_rule.destination_ips, list)
         assert len(firewall_in_rule.destination_ips) == 0
+        assert firewall_in_rule.description == "allow http in"
 
         firewall_out_rule = bound_firewall.rules[1]
         assert isinstance(firewall_out_rule, FirewallRule)
@@ -61,6 +62,7 @@ class TestBoundFirewall(object):
             "28.239.14.0/24",
             "ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128"
         ]
+        assert firewall_out_rule.description == "allow http out"
 
     @pytest.mark.parametrize(
         "params",
@@ -123,9 +125,9 @@ class TestBoundFirewall(object):
         hetzner_client.request.return_value = response_set_rules
         actions = bound_firewall.set_rules([
             FirewallRule(direction=FirewallRule.DIRECTION_IN, protocol=FirewallRule.PROTOCOL_ICMP,
-                         source_ips=["0.0.0.0/0", "::/0"])])
+                         source_ips=["0.0.0.0/0", "::/0"], description="New firewall description")])
         hetzner_client.request.assert_called_with(url="/firewalls/1/actions/set_rules", method="POST", json={
-            "rules": [{"direction": "in", "protocol": "icmp", "source_ips": ["0.0.0.0/0", "::/0"]}]})
+            "rules": [{"direction": "in", "protocol": "icmp", "source_ips": ["0.0.0.0/0", "::/0"], "description": "New firewall description"}]})
 
         assert actions[0].id == 13
         assert actions[0].progress == 100
