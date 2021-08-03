@@ -19,7 +19,8 @@ def response_create_firewall():
                     ],
                     "destination_ips": [],
                     "protocol": "tcp",
-                    "port": "80"
+                    "port": "80",
+                    "description": None
                 },
                 {
                     "direction": "out",
@@ -30,7 +31,8 @@ def response_create_firewall():
                         "ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128"
                     ],
                     "protocol": "tcp",
-                    "port": "80"
+                    "port": "80",
+                    "description": "allow http out"
                 }
             ],
             "applied_to": [
@@ -111,7 +113,8 @@ def firewall_response():
                     ],
                     "destination_ips": [],
                     "protocol": "tcp",
-                    "port": "80"
+                    "port": "80",
+                    "description": "allow http in"
                 },
                 {
                     "direction": "out",
@@ -122,7 +125,8 @@ def firewall_response():
                         "ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128"
                     ],
                     "protocol": "tcp",
-                    "port": "80"
+                    "port": "80",
+                    "description": "allow http out"
                 }
             ],
             "applied_to": [
@@ -162,7 +166,8 @@ def two_firewalls_response():
                         ],
                         "destination_ips": [],
                         "protocol": "tcp",
-                        "port": "80"
+                        "port": "80",
+                        "description": "allow http in"
                     }
                 ],
                 "applied_to": [
@@ -189,7 +194,8 @@ def two_firewalls_response():
                             "ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128"
                         ],
                         "protocol": "tcp",
-                        "port": "443"
+                        "port": "443",
+                        "description": "allow https in"
                     }
                 ],
                 "applied_to": [
@@ -224,7 +230,8 @@ def one_firewalls_response():
                             "ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128"
                         ],
                         "protocol": "tcp",
-                        "port": "80"
+                        "port": "80",
+                        "description": "allow http in"
                     }
                 ],
                 "applied_to": [
@@ -258,7 +265,8 @@ def response_update_firewall():
                     ],
                     "destination_ips": [],
                     "protocol": "tcp",
-                    "port": "80"
+                    "port": "80",
+                    "description": "allow http in"
                 }
             ],
             "applied_to": [

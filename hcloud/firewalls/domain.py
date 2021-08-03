@@ -60,13 +60,16 @@ class FirewallRule:
             List of permitted IPv4/IPv6 addresses in CIDR notation. Use 0.0.0.0/0 to allow all IPv4 addresses and ::/0 to allow all IPv6 addresses. You can specify 100 CIDRs at most.
     :param destination_ips: List[str]
            List of permitted IPv4/IPv6 addresses in CIDR notation. Use 0.0.0.0/0 to allow all IPv4 addresses and ::/0 to allow all IPv6 addresses. You can specify 100 CIDRs at most.
+    :param description: str
+           Short description of the firewall rule
     """
     __slots__ = (
         "direction",
         "port",
         "protocol",
         "source_ips",
-        "destination_ips"
+        "destination_ips",
+        "description"
     )
 
     DIRECTION_IN = "in"
@@ -92,12 +95,14 @@ class FirewallRule:
             source_ips,  # type: List[str]
             port=None,  # type: Optional[str]
             destination_ips=None,  # type: Optional[List[str]]
+            description=None,  # type: Optional[str]
     ):
         self.direction = direction
         self.port = port
         self.protocol = protocol
         self.source_ips = source_ips
         self.destination_ips = destination_ips or []
+        self.description = description
 
     def to_payload(self):
         payload = {
@@ -109,6 +114,8 @@ class FirewallRule:
             payload.update({"destination_ips": self.destination_ips})
         if self.port is not None:
             payload.update({"port": self.port})
+        if self.description is not None:
+            payload.update({"description": self.description})
         return payload
 
 

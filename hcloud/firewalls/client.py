@@ -14,7 +14,7 @@ class BoundFirewall(BoundModelBase):
         rules = data.get('rules', [])
         if rules:
             rules = [FirewallRule(direction=rule["direction"], source_ips=rule["source_ips"],
-                                  destination_ips=rule["destination_ips"], protocol=rule['protocol'], port=rule["port"])
+                                  destination_ips=rule["destination_ips"], protocol=rule['protocol'], port=rule["port"], description=rule["description"])
                      for rule in rules]
             data['rules'] = rules
 
