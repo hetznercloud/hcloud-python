@@ -2,6 +2,10 @@
 History
 =======
 
+v1.14.0 (2021-08-03)
+---------------------
+* Feature: Add support for Firewall rule descriptions
+
 v1.13.0 (2021-07-16)
 ---------------------
 * Feature: Add support for Firewall Protocols ESP and GRE
@@ -143,7 +147,7 @@ v1.8.1 (2020-06-29)
 ------------------
 
 * First stable release.
-  
+
   You can find the documentation under https://hcloud-python.readthedocs.io/en/latest/
 
 0.1.0 (2018-12-20)
