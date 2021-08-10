@@ -9,15 +9,11 @@ client = Client(token="project-token")
 
 # Create 2 servers
 response1 = client.servers.create(
-    name="Server1",
-    server_type=ServerType(name="cx11"),
-    image=Image(id=4711)
+    name="Server1", server_type=ServerType(name="cx11"), image=Image(id=4711)
 )
 
 response2 = client.servers.create(
-    "Server2",
-    server_type=ServerType(name="cx11"),
-    image=Image(id=4711)
+    "Server2", server_type=ServerType(name="cx11"), image=Image(id=4711)
 )
 
 server1 = response1.server
@@ -32,16 +28,8 @@ assert servers[1].id == server2.id
 
 # Create 2 volumes
 
-response1 = client.volumes.create(
-    size=15,
-    name="Volume1",
-    location=server1.location
-)
-response2 = client.volumes.create(
-    size=10,
-    name="Volume2",
-    location=server2.location
-)
+response1 = client.volumes.create(size=15, name="Volume1", location=server1.location)
+response2 = client.volumes.create(size=10, name="Volume2", location=server2.location)
 
 volume1 = response1.volume
 volume2 = response2.volume
@@ -61,11 +49,7 @@ client.servers.power_off(server2)
 # Create one more volume and attach it to server with id=33
 
 server33 = Server(id=33)
-response = client.volumes.create(
-    size=33,
-    name="Volume33",
-    server=server33
-)
+response = client.volumes.create(size=33, name="Volume33", server=server33)
 
 print(response.action.status)
 
@@ -74,5 +58,5 @@ client.servers.create(
     "Server3",
     server_type=ServerType(name="cx11"),
     image=Image(id=4711),
-    volumes = [Volume(id=221), Volume(id=222)]
+    volumes=[Volume(id=221), Volume(id=222)],
 )

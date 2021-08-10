@@ -23,6 +23,7 @@ class Certificate(BaseDomain, DomainIdentityMixin):
     :param type: str Type of Certificate
     :param status: ManagedCertificateStatus Current status of a type managed Certificate, always none for type uploaded Certificates
     """
+
     __slots__ = (
         "id",
         "name",
@@ -34,24 +35,24 @@ class Certificate(BaseDomain, DomainIdentityMixin):
         "created",
         "labels",
         "type",
-        "status"
+        "status",
     )
     TYPE_UPLOADED = "uploaded"
     TYPE_MANAGED = "managed"
 
     def __init__(
-            self,
-            id=None,
-            name=None,
-            certificate=None,
-            not_valid_before=None,
-            not_valid_after=None,
-            domain_names=None,
-            fingerprint=None,
-            created=None,
-            labels=None,
-            type=None,
-            status=None,
+        self,
+        id=None,
+        name=None,
+        certificate=None,
+        not_valid_before=None,
+        not_valid_after=None,
+        domain_names=None,
+        fingerprint=None,
+        created=None,
+        labels=None,
+        type=None,
+        status=None,
     ):
         self.id = id
         self.name = name
@@ -75,7 +76,7 @@ class ManagedCertificateStatus(BaseDomain):
            Status of the renewal process of the Certificate
     :param error: ManagedCertificateError
           If issuance or renewal reports failure, this property contains information about what happened
-        """
+    """
 
     def __init__(self, issuance=None, renewal=None, error=None):
         self.issuance = issuance
@@ -91,6 +92,7 @@ class ManagedCertificateError(BaseDomain):
     :param message:
         Message detailing the error
     """
+
     def __init__(self, code=None, message=None):
         self.code = code
         self.message = message
@@ -104,15 +106,16 @@ class CreateManagedCertificateResponse(BaseDomain):
     :param action: :class:`BoundAction <hcloud.actions.client.BoundAction>`
            Shows the progress of the certificate creation
     """
+
     __slots__ = (
         "certificate",
         "action",
     )
 
     def __init__(
-            self,
-            certificate,  # type: BoundCertificate
-            action,  # type: BoundAction
+        self,
+        certificate,  # type: BoundCertificate
+        action,  # type: BoundAction
     ):
         self.certificate = certificate
         self.action = action

@@ -32,6 +32,7 @@ class FloatingIP(BaseDomain):
     :param name: str
            Name of the Floating IP
     """
+
     __slots__ = (
         "id",
         "type",
@@ -44,7 +45,7 @@ class FloatingIP(BaseDomain):
         "protection",
         "labels",
         "name",
-        "created"
+        "created",
     )
 
     def __init__(
@@ -60,7 +61,7 @@ class FloatingIP(BaseDomain):
         protection=None,
         labels=None,
         created=None,
-        name=None
+        name=None,
     ):
         self.id = id
         self.type = type
@@ -84,15 +85,13 @@ class CreateFloatingIPResponse(BaseDomain):
     :param action: :class:`BoundAction <hcloud.actions.client.BoundAction>`
            The Action which shows the progress of the Floating IP Creation
     """
-    __slots__ = (
-        "floating_ip",
-        "action"
-    )
+
+    __slots__ = ("floating_ip", "action")
 
     def __init__(
-            self,
-            floating_ip,     # type: BoundFloatingIP
-            action,          # type: BoundAction
+        self,
+        floating_ip,  # type: BoundFloatingIP
+        action,  # type: BoundAction
     ):
         self.floating_ip = floating_ip
         self.action = action

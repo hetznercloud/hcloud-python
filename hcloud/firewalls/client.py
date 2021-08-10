@@ -3,32 +3,59 @@ from hcloud.actions.client import BoundAction
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from hcloud.core.domain import add_meta_to_result
 
-from hcloud.firewalls.domain import Firewall, CreateFirewallResponse, FirewallRule, FirewallResource, \
-    FirewallResourceLabelSelector
+from hcloud.firewalls.domain import (
+    Firewall,
+    CreateFirewallResponse,
+    FirewallRule,
+    FirewallResource,
+    FirewallResourceLabelSelector,
+)
 
 
 class BoundFirewall(BoundModelBase):
     model = Firewall
 
     def __init__(self, client, data, complete=True):
-        rules = data.get('rules', [])
+        rules = data.get("rules", [])
         if rules:
-            rules = [FirewallRule(direction=rule["direction"], source_ips=rule["source_ips"],
-                                  destination_ips=rule["destination_ips"], protocol=rule['protocol'], port=rule["port"], description=rule["description"])
-                     for rule in rules]
-            data['rules'] = rules
+            rules = [
+                FirewallRule(
+                    direction=rule["direction"],
+                    source_ips=rule["source_ips"],
+                    destination_ips=rule["destination_ips"],
+                    protocol=rule["protocol"],
+                    port=rule["port"],
+                    description=rule["description"],
+                )
+                for rule in rules
+            ]
+            data["rules"] = rules
 
-        applied_to = data.get('applied_to', [])
+        applied_to = data.get("applied_to", [])
         if applied_to:
             from hcloud.servers.client import BoundServer
+
             ats = []
             for a in applied_to:
                 if a["type"] == FirewallResource.TYPE_SERVER:
-                    ats.append(FirewallResource(type=a["type"], server=BoundServer(client._client.servers, a["server"],
-                                                                                   complete=False)))
+                    ats.append(
+                        FirewallResource(
+                            type=a["type"],
+                            server=BoundServer(
+                                client._client.servers, a["server"], complete=False
+                            ),
+                        )
+                    )
                 elif a["type"] == FirewallResource.TYPE_LABEL_SELECTOR:
-                    ats.append(FirewallResource(type=a["type"], label_selector=FirewallResourceLabelSelector(selector=a['label_selector']['selector'])))
-            data['applied_to'] = ats
+                    ats.append(
+                        FirewallResource(
+                            type=a["type"],
+                            label_selector=FirewallResourceLabelSelector(
+                                selector=a["label_selector"]["selector"]
+                            ),
+                        )
+                    )
+            data["applied_to"] = ats
 
         super(BoundFirewall, self).__init__(client, data, complete)
 
@@ -108,15 +135,16 @@ class BoundFirewall(BoundModelBase):
 
 
 class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = 'firewalls'
+    results_list_attribute_name = "firewalls"
 
-    def get_actions_list(self,
-                         firewall,  # type: Firewall
-                         status=None,  # type: Optional[List[str]]
-                         sort=None,  # type: Optional[List[str]]
-                         page=None,  # type: Optional[int]
-                         per_page=None  # type: Optional[int]
-                         ):
+    def get_actions_list(
+        self,
+        firewall,  # type: Firewall
+        status=None,  # type: Optional[List[str]]
+        sort=None,  # type: Optional[List[str]]
+        page=None,  # type: Optional[int]
+        per_page=None,  # type: Optional[int]
+    ):
         # type: (...) -> PageResults[List[BoundAction], Meta]
         """Returns all action objects for a Firewall.
 
@@ -141,16 +169,22 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         if per_page is not None:
             params["per_page"] = per_page
         response = self._client.request(
-            url="/firewalls/{firewall_id}/actions".format(firewall_id=firewall.id), method="GET",
-            params=params)
-        actions = [BoundAction(self._client.actions, action_data) for action_data in response['actions']]
-        return add_meta_to_result(actions, response, 'actions')
+            url="/firewalls/{firewall_id}/actions".format(firewall_id=firewall.id),
+            method="GET",
+            params=params,
+        )
+        actions = [
+            BoundAction(self._client.actions, action_data)
+            for action_data in response["actions"]
+        ]
+        return add_meta_to_result(actions, response, "actions")
 
-    def get_actions(self,
-                    firewall,  # type: Firewall
-                    status=None,  # type: Optional[List[str]]
-                    sort=None,  # type: Optional[List[str]]
-                    ):
+    def get_actions(
+        self,
+        firewall,  # type: Firewall
+        status=None,  # type: Optional[List[str]]
+        sort=None,  # type: Optional[List[str]]
+    ):
         # type: (...) -> List[BoundAction]
         """Returns all action objects for a Firewall.
 
@@ -162,7 +196,9 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
 
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super(FirewallsClient, self).get_actions(firewall, status=status, sort=sort)
+        return super(FirewallsClient, self).get_actions(
+            firewall, status=status, sort=sort
+        )
 
     def get_by_id(self, id):
         # type: (int) -> BoundFirewall
@@ -171,16 +207,19 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         :param id: int
         :return: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>`
         """
-        response = self._client.request(url="/firewalls/{firewall_id}".format(firewall_id=id), method="GET")
-        return BoundFirewall(self, response['firewall'])
+        response = self._client.request(
+            url="/firewalls/{firewall_id}".format(firewall_id=id), method="GET"
+        )
+        return BoundFirewall(self, response["firewall"])
 
-    def get_list(self,
-                 label_selector=None,  # type: Optional[str]
-                 page=None,  # type: Optional[int]
-                 per_page=None,  # type: Optional[int]
-                 name=None,  # type: Optional[str]
-                 sort=None,  # type: Optional[List[str]]
-                 ):
+    def get_list(
+        self,
+        label_selector=None,  # type: Optional[str]
+        page=None,  # type: Optional[int]
+        per_page=None,  # type: Optional[int]
+        name=None,  # type: Optional[str]
+        sort=None,  # type: Optional[List[str]]
+    ):
         # type: (...) -> PageResults[List[BoundFirewall]]
         """Get a list of floating ips from this account
 
@@ -199,17 +238,20 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         params = {}
 
         if label_selector is not None:
-            params['label_selector'] = label_selector
+            params["label_selector"] = label_selector
         if page is not None:
-            params['page'] = page
+            params["page"] = page
         if per_page is not None:
-            params['per_page'] = per_page
+            params["per_page"] = per_page
         if name is not None:
-            params['name'] = name
+            params["name"] = name
         if sort is not None:
-            params['sort'] = sort
+            params["sort"] = sort
         response = self._client.request(url="/firewalls", method="GET", params=params)
-        firewalls = [BoundFirewall(self, firewall_data) for firewall_data in response['firewalls']]
+        firewalls = [
+            BoundFirewall(self, firewall_data)
+            for firewall_data in response["firewalls"]
+        ]
 
         return self._add_meta_to_result(firewalls, response)
 
@@ -225,7 +267,9 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
                Choices: id name created (You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default))
         :return: List[:class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>`]
         """
-        return super(FirewallsClient, self).get_all(label_selector=label_selector, name=name, sort=sort)
+        return super(FirewallsClient, self).get_all(
+            label_selector=label_selector, name=name, sort=sort
+        )
 
     def get_by_name(self, name):
         # type: (str) -> BoundFirewall
@@ -237,12 +281,13 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super(FirewallsClient, self).get_by_name(name)
 
-    def create(self,
-               name,  # type: str
-               rules=None,  # type: Optional[List[FirewallRule]]
-               labels=None,  # type: Optional[str]
-               resources=None,  # type: Optional[List[FirewallResource]]
-               ):
+    def create(
+        self,
+        name,  # type: str
+        rules=None,  # type: Optional[List[FirewallRule]]
+        labels=None,  # type: Optional[str]
+        resources=None,  # type: Optional[List[FirewallResource]]
+    ):
         # type: (...) -> CreateFirewallResponse
         """Creates a new Firewall.
 
@@ -255,29 +300,28 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`CreateFirewallResponse <hcloud.firewalls.domain.CreateFirewallResponse>`
         """
 
-        data = {
-            'name': name
-        }
+        data = {"name": name}
         if labels is not None:
-            data['labels'] = labels
+            data["labels"] = labels
 
         if rules is not None:
             data.update({"rules": []})
             for rule in rules:
-                data['rules'].append(rule.to_payload())
+                data["rules"].append(rule.to_payload())
         if resources is not None:
             data.update({"apply_to": []})
             for resource in resources:
-                data['apply_to'].append(resource.to_payload())
+                data["apply_to"].append(resource.to_payload())
         response = self._client.request(url="/firewalls", json=data, method="POST")
 
         actions = []
-        if response.get('actions') is not None:
-            actions = [BoundAction(self._client.actions, _) for _ in response['actions']]
+        if response.get("actions") is not None:
+            actions = [
+                BoundAction(self._client.actions, _) for _ in response["actions"]
+            ]
 
         result = CreateFirewallResponse(
-            firewall=BoundFirewall(self, response['firewall']),
-            actions=actions
+            firewall=BoundFirewall(self, response["firewall"]), actions=actions
         )
         return result
 
@@ -294,13 +338,16 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data = {}
         if labels is not None:
-            data['labels'] = labels
+            data["labels"] = labels
         if name is not None:
-            data['name'] = name
+            data["name"] = name
 
-        response = self._client.request(url="/firewalls/{firewall_id}".format(firewall_id=firewall.id),
-                                        method="PUT", json=data)
-        return BoundFirewall(self, response['firewall'])
+        response = self._client.request(
+            url="/firewalls/{firewall_id}".format(firewall_id=firewall.id),
+            method="PUT",
+            json=data,
+        )
+        return BoundFirewall(self, response["firewall"])
 
     def delete(self, firewall):
         # type: (Firewall) -> bool
@@ -309,8 +356,10 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         :param firewall: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>` or  :class:`Firewall <hcloud.firewalls.domain.Firewall>`
         :return: boolean
         """
-        self._client.request(url="/firewalls/{firewall_id}".format(firewall_id=firewall.id),
-                             method="DELETE")
+        self._client.request(
+            url="/firewalls/{firewall_id}".format(firewall_id=firewall.id),
+            method="DELETE",
+        )
         # Return always true, because the API does not return an action for it. When an error occurs a HcloudAPIException will be raised
         return True
 
@@ -322,15 +371,17 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         :param rules: List[:class:`FirewallRule <hcloud.firewalls.domain.FirewallRule>`]
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        data = {
-            "rules": []
-        }
+        data = {"rules": []}
         for rule in rules:
-            data['rules'].append(rule.to_payload())
+            data["rules"].append(rule.to_payload())
         response = self._client.request(
-            url="/firewalls/{firewall_id}/actions/set_rules".format(firewall_id=firewall.id),
-            method="POST", json=data)
-        return [BoundAction(self._client.actions, _) for _ in response['actions']]
+            url="/firewalls/{firewall_id}/actions/set_rules".format(
+                firewall_id=firewall.id
+            ),
+            method="POST",
+            json=data,
+        )
+        return [BoundAction(self._client.actions, _) for _ in response["actions"]]
 
     def apply_to_resources(self, firewall, resources):
         # type: (Firewall, List[FirewallResource]) -> List[BoundAction]
@@ -340,15 +391,17 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         :param resources: List[:class:`FirewallResource <hcloud.firewalls.domain.FirewallResource>`]
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        data = {
-            "apply_to": []
-        }
+        data = {"apply_to": []}
         for resource in resources:
-            data['apply_to'].append(resource.to_payload())
+            data["apply_to"].append(resource.to_payload())
         response = self._client.request(
-            url="/firewalls/{firewall_id}/actions/apply_to_resources".format(firewall_id=firewall.id),
-            method="POST", json=data)
-        return [BoundAction(self._client.actions, _) for _ in response['actions']]
+            url="/firewalls/{firewall_id}/actions/apply_to_resources".format(
+                firewall_id=firewall.id
+            ),
+            method="POST",
+            json=data,
+        )
+        return [BoundAction(self._client.actions, _) for _ in response["actions"]]
 
     def remove_from_resources(self, firewall, resources):
         # type: (Firewall, List[FirewallResource]) -> List[BoundAction]
@@ -358,12 +411,14 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         :param resources: List[:class:`FirewallResource <hcloud.firewalls.domain.FirewallResource>`]
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        data = {
-            "remove_from": []
-        }
+        data = {"remove_from": []}
         for resource in resources:
-            data['remove_from'].append(resource.to_payload())
+            data["remove_from"].append(resource.to_payload())
         response = self._client.request(
-            url="/firewalls/{firewall_id}/actions/remove_from_resources".format(firewall_id=firewall.id),
-            method="POST", json=data)
-        return [BoundAction(self._client.actions, _) for _ in response['actions']]
+            url="/firewalls/{firewall_id}/actions/remove_from_resources".format(
+                firewall_id=firewall.id
+            ),
+            method="POST",
+            json=data,
+        )
+        return [BoundAction(self._client.actions, _) for _ in response["actions"]]

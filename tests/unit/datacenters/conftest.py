@@ -15,25 +15,13 @@ def datacenter_response():
                 "country": "DE",
                 "city": "Falkenstein",
                 "latitude": 50.47612,
-                "longitude": 12.370071
+                "longitude": 12.370071,
             },
             "server_types": {
-                "supported": [
-                    1,
-                    2,
-                    3
-                ],
-                "available": [
-                    1,
-                    2,
-                    3
-                ],
-                "available_for_migration": [
-                    1,
-                    2,
-                    3
-                ]
-            }
+                "supported": [1, 2, 3],
+                "available": [1, 2, 3],
+                "available_for_migration": [1, 2, 3],
+            },
         }
     }
 
@@ -53,25 +41,13 @@ def two_datacenters_response():
                     "country": "DE",
                     "city": "Falkenstein",
                     "latitude": 50.47612,
-                    "longitude": 12.370071
+                    "longitude": 12.370071,
                 },
                 "server_types": {
-                    "supported": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available_for_migration": [
-                        1,
-                        2,
-                        3
-                    ]
-                }
+                    "supported": [1, 2, 3],
+                    "available": [1, 2, 3],
+                    "available_for_migration": [1, 2, 3],
+                },
             },
             {
                 "id": 2,
@@ -84,28 +60,16 @@ def two_datacenters_response():
                     "country": "DE",
                     "city": "Nuremberg",
                     "latitude": 49.452102,
-                    "longitude": 11.076665
+                    "longitude": 11.076665,
                 },
                 "server_types": {
-                    "supported": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available_for_migration": [
-                        1,
-                        2,
-                        3
-                    ]
-                }
+                    "supported": [1, 2, 3],
+                    "available": [1, 2, 3],
+                    "available_for_migration": [1, 2, 3],
+                },
             },
         ],
-        "recommendation": 1
+        "recommendation": 1,
     }
 
 
@@ -124,26 +88,14 @@ def one_datacenters_response():
                     "country": "DE",
                     "city": "Falkenstein",
                     "latitude": 50.47612,
-                    "longitude": 12.370071
+                    "longitude": 12.370071,
                 },
                 "server_types": {
-                    "supported": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available_for_migration": [
-                        1,
-                        2,
-                        3
-                    ]
-                }
+                    "supported": [1, 2, 3],
+                    "available": [1, 2, 3],
+                    "available_for_migration": [1, 2, 3],
+                },
             }
         ],
-        "recommendation": 1
+        "recommendation": 1,
     }

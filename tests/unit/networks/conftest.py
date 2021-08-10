@@ -14,28 +14,19 @@ def network_response():
                     "type": "cloud",
                     "ip_range": "10.0.1.0/24",
                     "network_zone": "eu-central",
-                    "gateway": "10.0.0.1"
+                    "gateway": "10.0.0.1",
                 },
                 {
                     "type": "vswitch",
                     "ip_range": "10.0.3.0/24",
                     "network_zone": "eu-central",
-                    "gateway": "10.0.3.1"
-                }
+                    "gateway": "10.0.3.1",
+                },
             ],
-            "routes": [
-                {
-                    "destination": "10.100.1.0/24",
-                    "gateway": "10.0.1.1"
-                }
-            ],
-            "servers": [
-                42
-            ],
-            "protection": {
-                "delete": False
-            },
-            "labels": {}
+            "routes": [{"destination": "10.100.1.0/24", "gateway": "10.0.1.1"}],
+            "servers": [42],
+            "protection": {"delete": False},
+            "labels": {},
         }
     }
 
@@ -54,28 +45,19 @@ def two_networks_response():
                         "type": "cloud",
                         "ip_range": "10.0.1.0/24",
                         "network_zone": "eu-central",
-                        "gateway": "10.0.0.1"
+                        "gateway": "10.0.0.1",
                     },
                     {
                         "type": "vswitch",
                         "ip_range": "10.0.3.0/24",
                         "network_zone": "eu-central",
-                        "gateway": "10.0.3.1"
-                    }
+                        "gateway": "10.0.3.1",
+                    },
                 ],
-                "routes": [
-                    {
-                        "destination": "10.100.1.0/24",
-                        "gateway": "10.0.1.1"
-                    }
-                ],
-                "servers": [
-                    42
-                ],
-                "protection": {
-                    "delete": False
-                },
-                "labels": {}
+                "routes": [{"destination": "10.100.1.0/24", "gateway": "10.0.1.1"}],
+                "servers": [42],
+                "protection": {"delete": False},
+                "labels": {},
             },
             {
                 "id": 2,
@@ -87,23 +69,14 @@ def two_networks_response():
                         "type": "cloud",
                         "ip_range": "12.0.1.0/24",
                         "network_zone": "eu-central",
-                        "gateway": "12.0.0.1"
+                        "gateway": "12.0.0.1",
                     }
                 ],
-                "routes": [
-                    {
-                        "destination": "12.100.1.0/24",
-                        "gateway": "12.0.1.1"
-                    }
-                ],
-                "servers": [
-                    45
-                ],
-                "protection": {
-                    "delete": False
-                },
-                "labels": {}
-            }
+                "routes": [{"destination": "12.100.1.0/24", "gateway": "12.0.1.1"}],
+                "servers": [45],
+                "protection": {"delete": False},
+                "labels": {},
+            },
         ]
     }
 
@@ -122,28 +95,19 @@ def one_network_response():
                         "type": "cloud",
                         "ip_range": "10.0.1.0/24",
                         "network_zone": "eu-central",
-                        "gateway": "10.0.0.1"
+                        "gateway": "10.0.0.1",
                     },
                     {
                         "type": "vswitch",
                         "ip_range": "10.0.3.0/24",
                         "network_zone": "eu-central",
-                        "gateway": "10.0.3.1"
-                    }
+                        "gateway": "10.0.3.1",
+                    },
                 ],
-                "routes": [
-                    {
-                        "destination": "10.100.1.0/24",
-                        "gateway": "10.0.1.1"
-                    }
-                ],
-                "servers": [
-                    42
-                ],
-                "protection": {
-                    "delete": False
-                },
-                "labels": {}
+                "routes": [{"destination": "10.100.1.0/24", "gateway": "10.0.1.1"}],
+                "servers": [42],
+                "protection": {"delete": False},
+                "labels": {},
             }
         ]
     }
@@ -161,23 +125,14 @@ def network_create_response():
                     "type": "cloud",
                     "ip_range": "10.0.1.0/24",
                     "network_zone": "eu-central",
-                    "gateway": "10.0.0.1"
+                    "gateway": "10.0.0.1",
                 }
             ],
-            "routes": [
-                {
-                    "destination": "10.100.1.0/24",
-                    "gateway": "10.0.1.1"
-                }
-            ],
-            "servers": [
-                42
-            ],
-            "protection": {
-                "delete": False
-            },
+            "routes": [{"destination": "10.100.1.0/24", "gateway": "10.0.1.1"}],
+            "servers": [42],
+            "protection": {"delete": False},
             "labels": {},
-            "created": "2016-01-30T23:50:00+00:00"
+            "created": "2016-01-30T23:50:00+00:00",
         }
     }
 
@@ -194,23 +149,14 @@ def response_update_network():
                     "type": "cloud",
                     "ip_range": "10.0.1.0/24",
                     "network_zone": "eu-central",
-                    "gateway": "10.0.0.1"
+                    "gateway": "10.0.0.1",
                 }
             ],
-            "routes": [
-                {
-                    "destination": "10.100.1.0/24",
-                    "gateway": "10.0.1.1"
-                }
-            ],
-            "servers": [
-                42
-            ],
-            "protection": {
-                "delete": False
-            },
+            "routes": [{"destination": "10.100.1.0/24", "gateway": "10.0.1.1"}],
+            "servers": [42],
+            "protection": {"delete": False},
             "labels": {},
-            "created": "2016-01-30T23:50:00+00:00"
+            "created": "2016-01-30T23:50:00+00:00",
         }
     }
 
@@ -226,16 +172,8 @@ def response_get_actions():
                 "progress": 100,
                 "started": "2016-01-30T23:55:00+00:00",
                 "finished": "2016-01-30T23:56:00+00:00",
-                "resources": [
-                    {
-                        "id": 4711,
-                        "type": "network"
-                    }
-                ],
-                "error": {
-                    "code": "action_failed",
-                    "message": "Action failed"
-                }
+                "resources": [{"id": 4711, "type": "network"}],
+                "error": {"code": "action_failed", "message": "Action failed"},
             }
         ]
     }

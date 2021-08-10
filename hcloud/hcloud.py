@@ -25,6 +25,7 @@ from .firewalls.client import FirewallsClient
 
 class APIException(Exception):
     """There was an error while performing an API Request"""
+
     def __init__(self, code, message, details):
         self.code = code
         self.message = message
@@ -39,9 +40,16 @@ class Client(object):
 
     _version = VERSION
     _retry_wait_time = 0.5
-    __user_agent_prefix = 'hcloud-python'
+    __user_agent_prefix = "hcloud-python"
 
-    def __init__(self, token, api_endpoint="https://api.hetzner.cloud/v1", application_name=None, application_version=None, poll_interval=1):
+    def __init__(
+        self,
+        token,
+        api_endpoint="https://api.hetzner.cloud/v1",
+        application_name=None,
+        application_version=None,
+        poll_interval=1,
+    ):
         """Create an new Client instance
 
         :param token: str
@@ -148,23 +156,30 @@ class Client(object):
             The user agent of this hcloud-python instance
         """
         if self._application_name is not None and self._application_version is None:
-            return "{application_name} {prefix}/{version}".format(application_name=self._application_name,
-                                                                  prefix=self.__user_agent_prefix,
-                                                                  version=self._version)
-        elif self._application_name is not None and self._application_version is not None:
+            return "{application_name} {prefix}/{version}".format(
+                application_name=self._application_name,
+                prefix=self.__user_agent_prefix,
+                version=self._version,
+            )
+        elif (
+            self._application_name is not None and self._application_version is not None
+        ):
             return "{application_name}/{application_version} {prefix}/{version}".format(
                 application_name=self._application_name,
                 application_version=self._application_version,
                 prefix=self.__user_agent_prefix,
-                version=self._version)
+                version=self._version,
+            )
         else:
-            return "{prefix}/{version}".format(prefix=self.__user_agent_prefix, version=self._version)
+            return "{prefix}/{version}".format(
+                prefix=self.__user_agent_prefix, version=self._version
+            )
 
     def _get_headers(self):
 
         headers = {
             "User-Agent": self._get_user_agent(),
-            "Authorization": "Bearer {token}".format(token=self.token)
+            "Authorization": "Bearer {token}".format(token=self.token),
         }
         return headers
 
@@ -172,16 +187,14 @@ class Client(object):
         raise APIException(
             code=response.status_code,
             message=response.reason,
-            details={
-                'content': response.content
-            }
+            details={"content": response.content},
         )
 
     def _raise_exception_from_json_content(self, json_content):
         raise APIException(
-            code=json_content['error']['code'],
-            message=json_content['error']['message'],
-            details=json_content['error']['details']
+            code=json_content["error"]["code"],
+            message=json_content["error"]["message"],
+            details=json_content["error"]["details"],
         )
 
     def request(self, method, url, tries=1, **kwargs):
@@ -197,10 +210,7 @@ class Client(object):
         :rtype: requests.Response
         """
         response = self._requests_session.request(
-            method,
-            self._api_endpoint + url,
-            headers=self._get_headers(),
-            **kwargs
+            method, self._api_endpoint + url, headers=self._get_headers(), **kwargs
         )
 
         json_content = response.content
@@ -212,7 +222,7 @@ class Client(object):
 
         if not response.ok:
             if json_content:
-                if json_content['error']['code'] == "rate_limit_exceeded" and tries < 5:
+                if json_content["error"]["code"] == "rate_limit_exceeded" and tries < 5:
                     time.sleep(tries * self._retry_wait_time)
                     tries = tries + 1
                     return self.request(method, url, tries, **kwargs)

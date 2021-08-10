@@ -12,12 +12,7 @@ def floating_ip_response():
             "ip": "131.232.99.1",
             "type": "ipv4",
             "server": 42,
-            "dns_ptr": [
-                {
-                    "ip": "2001:db8::1",
-                    "dns_ptr": "server.example.com"
-                }
-            ],
+            "dns_ptr": [{"ip": "2001:db8::1", "dns_ptr": "server.example.com"}],
             "home_location": {
                 "id": 1,
                 "name": "fsn1",
@@ -25,13 +20,11 @@ def floating_ip_response():
                 "country": "DE",
                 "city": "Falkenstein",
                 "latitude": 50.47612,
-                "longitude": 12.370071
+                "longitude": 12.370071,
             },
             "blocked": False,
-            "protection": {
-                "delete": False
-            },
-            "labels": {}
+            "protection": {"delete": False},
+            "labels": {},
         }
     }
 
@@ -48,12 +41,7 @@ def one_floating_ips_response():
                 "ip": "131.232.99.1",
                 "type": "ipv4",
                 "server": 42,
-                "dns_ptr": [
-                    {
-                        "ip": "2001:db8::1",
-                        "dns_ptr": "server.example.com"
-                    }
-                ],
+                "dns_ptr": [{"ip": "2001:db8::1", "dns_ptr": "server.example.com"}],
                 "home_location": {
                     "id": 1,
                     "name": "fsn1",
@@ -61,13 +49,11 @@ def one_floating_ips_response():
                     "country": "DE",
                     "city": "Falkenstein",
                     "latitude": 50.47612,
-                    "longitude": 12.370071
+                    "longitude": 12.370071,
                 },
                 "blocked": False,
-                "protection": {
-                    "delete": False
-                },
-                "labels": {}
+                "protection": {"delete": False},
+                "labels": {},
             },
         ]
     }
@@ -85,12 +71,7 @@ def two_floating_ips_response():
                 "ip": "131.232.99.1",
                 "type": "ipv4",
                 "server": 42,
-                "dns_ptr": [
-                    {
-                        "ip": "2001:db8::1",
-                        "dns_ptr": "server.example.com"
-                    }
-                ],
+                "dns_ptr": [{"ip": "2001:db8::1", "dns_ptr": "server.example.com"}],
                 "home_location": {
                     "id": 1,
                     "name": "fsn1",
@@ -98,13 +79,11 @@ def two_floating_ips_response():
                     "country": "DE",
                     "city": "Falkenstein",
                     "latitude": 50.47612,
-                    "longitude": 12.370071
+                    "longitude": 12.370071,
                 },
                 "blocked": False,
-                "protection": {
-                    "delete": False
-                },
-                "labels": {}
+                "protection": {"delete": False},
+                "labels": {},
             },
             {
                 "id": 4712,
@@ -114,12 +93,7 @@ def two_floating_ips_response():
                 "ip": "131.232.99.2",
                 "type": "ipv4",
                 "server": 42,
-                "dns_ptr": [
-                    {
-                        "ip": "2001:db8::1",
-                        "dns_ptr": "server.example.com"
-                    }
-                ],
+                "dns_ptr": [{"ip": "2001:db8::1", "dns_ptr": "server.example.com"}],
                 "home_location": {
                     "id": 1,
                     "name": "fsn1",
@@ -127,14 +101,12 @@ def two_floating_ips_response():
                     "country": "DE",
                     "city": "Falkenstein",
                     "latitude": 50.47612,
-                    "longitude": 12.370071
+                    "longitude": 12.370071,
                 },
                 "blocked": False,
-                "protection": {
-                    "delete": False
-                },
-                "labels": {}
-            }
+                "protection": {"delete": False},
+                "labels": {},
+            },
         ]
     }
 
@@ -150,12 +122,7 @@ def floating_ip_create_response():
             "ip": "131.232.99.1",
             "type": "ipv4",
             "server": 42,
-            "dns_ptr": [
-                {
-                    "ip": "2001:db8::1",
-                    "dns_ptr": "server.example.com"
-                }
-            ],
+            "dns_ptr": [{"ip": "2001:db8::1", "dns_ptr": "server.example.com"}],
             "home_location": {
                 "id": 1,
                 "name": "fsn1",
@@ -163,13 +130,11 @@ def floating_ip_create_response():
                 "country": "DE",
                 "city": "Falkenstein",
                 "latitude": 50.47612,
-                "longitude": 12.370071
+                "longitude": 12.370071,
             },
             "blocked": False,
-            "protection": {
-                "delete": False
-            },
-            "labels": {}
+            "protection": {"delete": False},
+            "labels": {},
         },
         "action": {
             "id": 13,
@@ -178,17 +143,9 @@ def floating_ip_create_response():
             "progress": 0,
             "started": "2016-01-30T23:50+00:00",
             "finished": None,
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
-        }
+            "resources": [{"id": 42, "type": "server"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
+        },
     }
 
 
@@ -203,12 +160,7 @@ def response_update_floating_ip():
             "ip": "131.232.99.1",
             "type": "ipv4",
             "server": 42,
-            "dns_ptr": [
-                {
-                    "ip": "2001:db8::1",
-                    "dns_ptr": "server.example.com"
-                }
-            ],
+            "dns_ptr": [{"ip": "2001:db8::1", "dns_ptr": "server.example.com"}],
             "home_location": {
                 "id": 1,
                 "name": "fsn1",
@@ -216,13 +168,11 @@ def response_update_floating_ip():
                 "country": "DE",
                 "city": "Falkenstein",
                 "latitude": 50.47612,
-                "longitude": 12.370071
+                "longitude": 12.370071,
             },
             "blocked": False,
-            "protection": {
-                "delete": False
-            },
-            "labels": {}
+            "protection": {"delete": False},
+            "labels": {},
         }
     }
 
@@ -238,16 +188,8 @@ def response_get_actions():
                 "progress": 100,
                 "started": "2016-01-30T23:55:00+00:00",
                 "finished": "2016-01-30T23:56:00+00:00",
-                "resources": [
-                    {
-                        "id": 42,
-                        "type": "server"
-                    }
-                ],
-                "error": {
-                    "code": "action_failed",
-                    "message": "Action failed"
-                }
+                "resources": [{"id": 42, "type": "server"}],
+                "error": {"code": "action_failed", "message": "Action failed"},
             }
         ]
     }

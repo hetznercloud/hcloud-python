@@ -31,19 +31,19 @@ class Location(BaseDomain, DomainIdentityMixin):
         "city",
         "latitude",
         "longitude",
-        "network_zone"
+        "network_zone",
     )
 
     def __init__(
-            self,
-            id=None,
-            name=None,
-            description=None,
-            country=None,
-            city=None,
-            latitude=None,
-            longitude=None,
-            network_zone=None,
+        self,
+        id=None,
+        name=None,
+        description=None,
+        country=None,
+        city=None,
+        latitude=None,
+        longitude=None,
+        network_zone=None,
     ):
         self.id = id
         self.name = name

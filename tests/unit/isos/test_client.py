@@ -7,26 +7,23 @@ from hcloud.isos.client import IsosClient, BoundIso
 
 
 class TestBoundIso(object):
-
     @pytest.fixture()
     def bound_iso(self, hetzner_client):
         return BoundIso(client=hetzner_client.isos, data=dict(id=14))
 
     def test_bound_iso_init(self, iso_response):
-        bound_iso = BoundIso(
-            client=mock.MagicMock(),
-            data=iso_response['iso']
-        )
+        bound_iso = BoundIso(client=mock.MagicMock(), data=iso_response["iso"])
 
         assert bound_iso.id == 4711
         assert bound_iso.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
         assert bound_iso.description == "FreeBSD 11.0 x64"
         assert bound_iso.type == "public"
-        assert bound_iso.deprecated == datetime.datetime(2018, 2, 28, 0, 0, tzinfo=tzoffset(None, 0))
+        assert bound_iso.deprecated == datetime.datetime(
+            2018, 2, 28, 0, 0, tzinfo=tzoffset(None, 0)
+        )
 
 
 class TestIsosClient(object):
-
     @pytest.fixture()
     def isos_client(self):
         return IsosClient(client=mock.MagicMock())
@@ -43,16 +40,16 @@ class TestIsosClient(object):
         "params",
         [
             {},
-            {'name': ""},
-            {'name': "FreeBSD-11.0-RELEASE-amd64-dvd1",
-             'page': 1,
-             'per_page': 2}
-        ]
+            {"name": ""},
+            {"name": "FreeBSD-11.0-RELEASE-amd64-dvd1", "page": 1, "per_page": 2},
+        ],
     )
     def test_get_list(self, isos_client, two_isos_response, params):
         isos_client._client.request.return_value = two_isos_response
         result = isos_client.get_list(**params)
-        isos_client._client.request.assert_called_with(url="/isos", method="GET", params=params)
+        isos_client._client.request.assert_called_with(
+            url="/isos", method="GET", params=params
+        )
 
         isos = result.isos
         assert result.meta is None
@@ -71,19 +68,17 @@ class TestIsosClient(object):
         assert isos2.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
 
     @pytest.mark.parametrize(
-        "params",
-        [
-            {},
-            {'name': "FreeBSD-11.0-RELEASE-amd64-dvd1"}
-        ]
+        "params", [{}, {"name": "FreeBSD-11.0-RELEASE-amd64-dvd1"}]
     )
     def test_get_all(self, isos_client, two_isos_response, params):
         isos_client._client.request.return_value = two_isos_response
         isos = isos_client.get_all(**params)
 
-        params.update({'page': 1, 'per_page': 50})
+        params.update({"page": 1, "per_page": 50})
 
-        isos_client._client.request.assert_called_with(url="/isos", method="GET", params=params)
+        isos_client._client.request.assert_called_with(
+            url="/isos", method="GET", params=params
+        )
 
         assert len(isos) == 2
 
@@ -102,9 +97,11 @@ class TestIsosClient(object):
         isos_client._client.request.return_value = one_isos_response
         iso = isos_client.get_by_name("FreeBSD-11.0-RELEASE-amd64-dvd1")
 
-        params = {'name': "FreeBSD-11.0-RELEASE-amd64-dvd1"}
+        params = {"name": "FreeBSD-11.0-RELEASE-amd64-dvd1"}
 
-        isos_client._client.request.assert_called_with(url="/isos", method="GET", params=params)
+        isos_client._client.request.assert_called_with(
+            url="/isos", method="GET", params=params
+        )
 
         assert iso._client is isos_client
         assert iso.id == 4711

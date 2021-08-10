@@ -17,7 +17,7 @@ def response_load_balancer():
                 "city": "Falkenstein",
                 "latitude": 50.47612,
                 "longitude": 12.370071,
-                "network_zone": "eu-central"
+                "network_zone": "eu-central",
             },
             "load_balancer_type": {
                 "id": 1,
@@ -33,18 +33,16 @@ def response_load_balancer():
                         "location": "fsn-1",
                         "price_hourly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
+                            "gross": "1.1900000000000000",
                         },
                         "price_monthly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        }
+                            "gross": "1.1900000000000000",
+                        },
                     }
-                ]
+                ],
             },
-            "protection": {
-                "delete": False
-            },
+            "protection": {"delete": False},
             "labels": {},
             "created": "2016-01-30T23:50:00+00:00",
             "outgoing_traffic": 123456,
@@ -59,11 +57,9 @@ def response_load_balancer():
                     "http": {
                         "cookie_name": "HCLBSTICKY",
                         "cookie_lifetime": 300,
-                        "certificates": [
-                            897
-                        ],
+                        "certificates": [897],
                         "redirect_http": True,
-                        "sticky_sessions": True
+                        "sticky_sessions": True,
                     },
                     "health_check": {
                         "protocol": "http",
@@ -74,34 +70,23 @@ def response_load_balancer():
                         "http": {
                             "domain": "example.com",
                             "path": "/",
-                            "response": "{\"status\": \"ok\"}",
-                            "status_codes": [
-                                200
-                            ],
-                            "tls": False
-                        }
-                    }
+                            "response": '{"status": "ok"}',
+                            "status_codes": [200],
+                            "tls": False,
+                        },
+                    },
                 }
             ],
             "targets": [
                 {
                     "type": "server",
-                    "server": {
-                        "id": 80
-                    },
-                    "health_status": [
-                        {
-                            "listen_port": 443,
-                            "status": "healthy"
-                        }
-                    ],
+                    "server": {"id": 80},
+                    "health_status": [{"listen_port": 443, "status": "healthy"}],
                     "label_selector": None,
-                    "use_private_ip": False
+                    "use_private_ip": False,
                 }
             ],
-            "algorithm": {
-                "type": "round_robin"
-            }
+            "algorithm": {"type": "round_robin"},
         }
     }
 
@@ -126,19 +111,17 @@ def response_create_load_balancer():
                         "location": "fsn-1",
                         "price_hourly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
+                            "gross": "1.1900000000000000",
                         },
                         "price_monthly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        }
+                            "gross": "1.1900000000000000",
+                        },
                     }
-                ]
+                ],
             },
             "network_zone": "eu-central",
-            "algorithm": {
-                "type": "round_robin"
-            },
+            "algorithm": {"type": "round_robin"},
             "outgoing_traffic": 123456,
             "ingoing_traffic": 123456,
             "included_traffic": 654321,
@@ -151,11 +134,9 @@ def response_create_load_balancer():
                     "http": {
                         "cookie_name": "HCLBSTICKY",
                         "cookie_lifetime": 300,
-                        "certificates": [
-                            897
-                        ],
+                        "certificates": [897],
                         "redirect_http": True,
-                        "sticky_sessions": True
+                        "sticky_sessions": True,
                     },
                     "health_check": {
                         "protocol": "http",
@@ -166,25 +147,21 @@ def response_create_load_balancer():
                         "http": {
                             "domain": "example.com",
                             "path": "/",
-                            "response": "{\"status\": \"ok\"}",
-                            "status_codes": [
-                                200
-                            ],
-                            "tls": False
-                        }
-                    }
+                            "response": '{"status": "ok"}',
+                            "status_codes": [200],
+                            "tls": False,
+                        },
+                    },
                 }
             ],
             "targets": [
                 {
                     "type": "server",
-                    "server": {
-                        "id": 80
-                    },
+                    "server": {"id": 80},
                     "label_selector": None,
-                    "use_private_ip": False
+                    "use_private_ip": False,
                 }
-            ]
+            ],
         },
         "action": {
             "id": 1,
@@ -193,16 +170,8 @@ def response_create_load_balancer():
             "progress": 0,
             "started": "2016-01-30T23:50+00:00",
             "finished": None,
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 42, "type": "server"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         },
     }
 
@@ -223,7 +192,7 @@ def response_update_load_balancer():
                 "city": "Falkenstein",
                 "latitude": 50.47612,
                 "longitude": 12.370071,
-                "network_zone": "eu-central"
+                "network_zone": "eu-central",
             },
             "outgoing_traffic": 123456,
             "ingoing_traffic": 123456,
@@ -242,21 +211,17 @@ def response_update_load_balancer():
                         "location": "fsn-1",
                         "price_hourly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
+                            "gross": "1.1900000000000000",
                         },
                         "price_monthly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        }
+                            "gross": "1.1900000000000000",
+                        },
                     }
-                ]
+                ],
             },
-            "protection": {
-                "delete": False
-            },
-            "labels": {
-                "labelkey": "value"
-            },
+            "protection": {"delete": False},
+            "labels": {"labelkey": "value"},
             "created": "2016-01-30T23:50:00+00:00",
             "services": [
                 {
@@ -267,11 +232,9 @@ def response_update_load_balancer():
                     "http": {
                         "cookie_name": "HCLBSTICKY",
                         "cookie_lifetime": 300,
-                        "certificates": [
-                            897
-                        ],
+                        "certificates": [897],
                         "redirect_http": True,
-                        "sticky_sessions": True
+                        "sticky_sessions": True,
                     },
                     "health_check": {
                         "protocol": "http",
@@ -282,34 +245,23 @@ def response_update_load_balancer():
                         "http": {
                             "domain": "example.com",
                             "path": "/",
-                            "response": "{\"status\": \"ok\"}",
-                            "status_codes": [
-                                200
-                            ],
-                            "tls": False
-                        }
-                    }
+                            "response": '{"status": "ok"}',
+                            "status_codes": [200],
+                            "tls": False,
+                        },
+                    },
                 }
             ],
             "targets": [
                 {
                     "type": "server",
-                    "server": {
-                        "id": 80
-                    },
+                    "server": {"id": 80},
                     "use_private_ip": False,
-                    "health_status": [
-                        {
-                            "listen_port": 443,
-                            "status": "healthy"
-                        }
-                    ],
-                    "label_selector": None
+                    "health_status": [{"listen_port": 443, "status": "healthy"}],
+                    "label_selector": None,
                 }
             ],
-            "algorithm": {
-                "type": "round_robin"
-            }
+            "algorithm": {"type": "round_robin"},
         }
     }
 
@@ -331,7 +283,7 @@ def response_simple_load_balancers():
                     "city": "Falkenstein",
                     "latitude": 50.47612,
                     "longitude": 12.370071,
-                    "network_zone": "eu-central"
+                    "network_zone": "eu-central",
                 },
                 "outgoing_traffic": 123456,
                 "ingoing_traffic": 123456,
@@ -350,18 +302,16 @@ def response_simple_load_balancers():
                             "location": "fsn-1",
                             "price_hourly": {
                                 "net": "1.0000000000",
-                                "gross": "1.1900000000000000"
+                                "gross": "1.1900000000000000",
                             },
                             "price_monthly": {
                                 "net": "1.0000000000",
-                                "gross": "1.1900000000000000"
-                            }
+                                "gross": "1.1900000000000000",
+                            },
                         }
-                    ]
+                    ],
                 },
-                "protection": {
-                    "delete": False
-                },
+                "protection": {"delete": False},
                 "labels": {},
                 "created": "2016-01-30T23:50:00+00:00",
                 "services": [
@@ -374,10 +324,8 @@ def response_simple_load_balancers():
                             "sticky_sessions": True,
                             "cookie_name": "HCLBSTICKY",
                             "cookie_lifetime": 300,
-                            "certificates": [
-                                897
-                            ],
-                            "redirect_http": True
+                            "certificates": [897],
+                            "redirect_http": True,
                         },
                         "health_check": {
                             "protocol": "http",
@@ -388,34 +336,23 @@ def response_simple_load_balancers():
                             "http": {
                                 "domain": "example.com",
                                 "path": "/",
-                                "response": "{\"status\": \"ok\"}",
-                                "status_codes": [
-                                    200
-                                ],
-                                "tls": False
-                            }
-                        }
+                                "response": '{"status": "ok"}',
+                                "status_codes": [200],
+                                "tls": False,
+                            },
+                        },
                     }
                 ],
                 "targets": [
                     {
                         "type": "server",
-                        "server": {
-                            "id": 80
-                        },
+                        "server": {"id": 80},
                         "use_private_ip": False,
-                        "health_status": [
-                            {
-                                "listen_port": 443,
-                                "status": "healthy"
-                            }
-                        ],
-                        "label_selector": None
+                        "health_status": [{"listen_port": 443, "status": "healthy"}],
+                        "label_selector": None,
                     }
                 ],
-                "algorithm": {
-                    "type": "round_robin"
-                }
+                "algorithm": {"type": "round_robin"},
             },
             {
                 "id": 4712,
@@ -430,7 +367,7 @@ def response_simple_load_balancers():
                     "city": "Falkenstein",
                     "latitude": 50.47612,
                     "longitude": 12.370071,
-                    "network_zone": "eu-central"
+                    "network_zone": "eu-central",
                 },
                 "load_balancer_type": {
                     "id": 1,
@@ -446,18 +383,16 @@ def response_simple_load_balancers():
                             "location": "fsn-1",
                             "price_hourly": {
                                 "net": "1.0000000000",
-                                "gross": "1.1900000000000000"
+                                "gross": "1.1900000000000000",
                             },
                             "price_monthly": {
                                 "net": "1.0000000000",
-                                "gross": "1.1900000000000000"
-                            }
+                                "gross": "1.1900000000000000",
+                            },
                         }
-                    ]
+                    ],
                 },
-                "protection": {
-                    "delete": False
-                },
+                "protection": {"delete": False},
                 "labels": {},
                 "created": "2016-01-30T23:50:00+00:00",
                 "outgoing_traffic": 123456,
@@ -473,10 +408,8 @@ def response_simple_load_balancers():
                             "sticky_sessions": True,
                             "cookie_name": "HCLBSTICKY",
                             "cookie_lifetime": 300,
-                            "certificates": [
-                                897
-                            ],
-                            "redirect_http": True
+                            "certificates": [897],
+                            "redirect_http": True,
                         },
                         "health_check": {
                             "protocol": "http",
@@ -487,35 +420,24 @@ def response_simple_load_balancers():
                             "http": {
                                 "domain": "example.com",
                                 "path": "/",
-                                "response": "{\"status\": \"ok\"}",
-                                "status_codes": [
-                                    200
-                                ],
-                                "tls": False
-                            }
-                        }
+                                "response": '{"status": "ok"}',
+                                "status_codes": [200],
+                                "tls": False,
+                            },
+                        },
                     }
                 ],
                 "targets": [
                     {
                         "type": "server",
-                        "server": {
-                            "id": 80
-                        },
-                        "health_status": [
-                            {
-                                "listen_port": 443,
-                                "status": "healthy"
-                            }
-                        ],
+                        "server": {"id": 80},
+                        "health_status": [{"listen_port": 443, "status": "healthy"}],
                         "label_selector": None,
-                        "use_private_ip": False
+                        "use_private_ip": False,
                     }
                 ],
-                "algorithm": {
-                    "type": "round_robin"
-                }
-            }
+                "algorithm": {"type": "round_robin"},
+            },
         ]
     }
 
@@ -530,16 +452,8 @@ def response_add_service():
             "progress": 100,
             "started": "2016-01-30T23:55:00+00:00",
             "finished": "2016-01-30T23:56:00+00:00",
-            "resources": [
-                {
-                    "id": 4711,
-                    "type": "load_balancer"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 4711, "type": "load_balancer"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -554,16 +468,8 @@ def response_delete_service():
             "progress": 100,
             "started": "2016-01-30T23:55:00+00:00",
             "finished": "2016-01-30T23:56:00+00:00",
-            "resources": [
-                {
-                    "id": 4711,
-                    "type": "load_balancer"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 4711, "type": "load_balancer"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -578,16 +484,8 @@ def response_add_target():
             "progress": 100,
             "started": "2016-01-30T23:55:00+00:00",
             "finished": "2016-01-30T23:56:00+00:00",
-            "resources": [
-                {
-                    "id": 4711,
-                    "type": "load_balancer"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 4711, "type": "load_balancer"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -602,16 +500,8 @@ def response_remove_target():
             "progress": 100,
             "started": "2016-01-30T23:55:00+00:00",
             "finished": "2016-01-30T23:56:00+00:00",
-            "resources": [
-                {
-                    "id": 4711,
-                    "type": "load_balancer"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 4711, "type": "load_balancer"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -626,16 +516,8 @@ def response_update_service():
             "progress": 100,
             "started": "2016-01-30T23:55:00+00:00",
             "finished": "2016-01-30T23:56:00+00:00",
-            "resources": [
-                {
-                    "id": 4711,
-                    "type": "load_balancer"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 4711, "type": "load_balancer"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -650,16 +532,8 @@ def response_change_algorithm():
             "progress": 100,
             "started": "2016-01-30T23:55:00+00:00",
             "finished": "2016-01-30T23:56:00+00:00",
-            "resources": [
-                {
-                    "id": 4711,
-                    "type": "load_balancer"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 4711, "type": "load_balancer"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -674,16 +548,8 @@ def response_change_protection():
             "progress": 100,
             "started": "2016-01-30T23:55:00+00:00",
             "finished": "2016-01-30T23:56:00+00:00",
-            "resources": [
-                {
-                    "id": 4711,
-                    "type": "load_balancer"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 4711, "type": "load_balancer"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -698,16 +564,8 @@ def response_enable_public_interface():
             "progress": 100,
             "started": "2016-01-30T23:55:00+00:00",
             "finished": "2016-01-30T23:56:00+00:00",
-            "resources": [
-                {
-                    "id": 4711,
-                    "type": "load_balancer"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 4711, "type": "load_balancer"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -722,16 +580,8 @@ def response_disable_public_interface():
             "progress": 100,
             "started": "2016-01-30T23:55:00+00:00",
             "finished": "2016-01-30T23:56:00+00:00",
-            "resources": [
-                {
-                    "id": 4711,
-                    "type": "load_balancer"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 4711, "type": "load_balancer"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -746,16 +596,8 @@ def response_attach_load_balancer_to_network():
             "progress": 100,
             "started": "2016-01-30T23:55:00+00:00",
             "finished": "2016-01-30T23:56:00+00:00",
-            "resources": [
-                {
-                    "id": 4711,
-                    "type": "load_balancer"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 4711, "type": "load_balancer"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -770,16 +612,8 @@ def response_detach_from_network():
             "progress": 100,
             "started": "2016-01-30T23:55:00+00:00",
             "finished": "2016-01-30T23:56:00+00:00",
-            "resources": [
-                {
-                    "id": 4711,
-                    "type": "load_balancer"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 4711, "type": "load_balancer"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -795,16 +629,8 @@ def response_get_actions():
                 "progress": 100,
                 "started": "2016-01-30T23:55:00+00:00",
                 "finished": "2016-01-30T23:56:00+00:00",
-                "resources": [
-                    {
-                        "id": 14,
-                        "type": "load_balancer"
-                    }
-                ],
-                "error": {
-                    "code": "action_failed",
-                    "message": "Action failed"
-                }
+                "resources": [{"id": 14, "type": "load_balancer"}],
+                "error": {"code": "action_failed", "message": "Action failed"},
             }
         ]
     }

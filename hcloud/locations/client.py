@@ -9,7 +9,7 @@ class BoundLocation(BoundModelBase):
 
 
 class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = 'locations'
+    results_list_attribute_name = "locations"
 
     def get_by_id(self, id):
         # type: (int) -> locations.client.BoundLocation
@@ -18,8 +18,10 @@ class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
         :param id: int
         :return: :class:`BoundLocation <hcloud.locations.client.BoundLocation>`
         """
-        response = self._client.request(url="/locations/{location_id}".format(location_id=id), method="GET")
-        return BoundLocation(self, response['location'])
+        response = self._client.request(
+            url="/locations/{location_id}".format(location_id=id), method="GET"
+        )
+        return BoundLocation(self, response["location"])
 
     def get_list(self, name=None, page=None, per_page=None):
         # type: (Optional[str], Optional[int], Optional[int]) -> PageResult[List[BoundLocation], Meta]
@@ -42,7 +44,10 @@ class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
             params["per_page"] = per_page
 
         response = self._client.request(url="/locations", method="GET", params=params)
-        locations = [BoundLocation(self, location_data) for location_data in response['locations']]
+        locations = [
+            BoundLocation(self, location_data)
+            for location_data in response["locations"]
+        ]
         return self._add_meta_to_result(locations, response)
 
     def get_all(self, name=None):

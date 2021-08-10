@@ -13,34 +13,22 @@ def response_simple_server():
                 "ipv4": {
                     "ip": "1.2.3.4",
                     "blocked": False,
-                    "dns_ptr": "server01.example.com"
+                    "dns_ptr": "server01.example.com",
                 },
                 "ipv6": {
                     "ip": "2001:db8::/64",
                     "blocked": False,
-                    "dns_ptr": [
-                        {
-                            "ip": "2001:db8::1",
-                            "dns_ptr": "server.example.com"
-                        }
-                    ]
+                    "dns_ptr": [{"ip": "2001:db8::1", "dns_ptr": "server.example.com"}],
                 },
-                "floating_ips": [
-                    478
-                ],
-                "firewalls": [
-                    {
-                        "id": 38,
-                        "status": "applied"
-                    }
-                ]
+                "floating_ips": [478],
+                "firewalls": [{"id": 38, "status": "applied"}],
             },
             "private_net": [
                 {
                     "network": 4711,
                     "ip": "10.1.1.5",
                     "alias_ips": ["10.1.1.8"],
-                    "mac_address": "86:00:ff:2a:7d:e1"
+                    "mac_address": "86:00:ff:2a:7d:e1",
                 }
             ],
             "server_type": {
@@ -55,16 +43,16 @@ def response_simple_server():
                         "location": "fsn1",
                         "price_hourly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
+                            "gross": "1.1900000000000000",
                         },
                         "price_monthly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        }
+                            "gross": "1.1900000000000000",
+                        },
                     }
                 ],
                 "storage_type": "local",
-                "cpu_type": "shared"
+                "cpu_type": "shared",
             },
             "datacenter": {
                 "id": 1,
@@ -77,25 +65,13 @@ def response_simple_server():
                     "country": "DE",
                     "city": "Falkenstein",
                     "latitude": 50.47612,
-                    "longitude": 12.370071
+                    "longitude": 12.370071,
                 },
                 "server_types": {
-                    "supported": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available_for_migration": [
-                        1,
-                        2,
-                        3
-                    ]
-                }
+                    "supported": [1, 2, 3],
+                    "available": [1, 2, 3],
+                    "available_for_migration": [1, 2, 3],
+                },
             },
             "image": {
                 "id": 4711,
@@ -106,20 +82,14 @@ def response_simple_server():
                 "image_size": 2.3,
                 "disk_size": 10,
                 "created": "2016-01-30T23:50+00:00",
-                "created_from": {
-                    "id": 1,
-                    "name": "Server"
-                },
+                "created_from": {"id": 1, "name": "Server"},
                 "bound_to": None,
                 "os_flavor": "ubuntu",
                 "os_version": "16.04",
                 "rapid_deploy": False,
-                "protection": {
-                    "delete": False,
-                    "rebuild": False
-                },
+                "protection": {"delete": False, "rebuild": False},
                 "deprecated": "2018-02-28T00:00:00+00:00",
-                "labels": {}
+                "labels": {},
             },
             "iso": None,
             "rescue_enabled": False,
@@ -131,7 +101,7 @@ def response_simple_server():
             "primary_disk_size": 20,
             "protection": {},
             "labels": {},
-            "volumes": []
+            "volumes": [],
         }
     }
 
@@ -149,25 +119,15 @@ def response_create_simple_server():
                 "ipv4": {
                     "ip": "1.2.3.4",
                     "blocked": False,
-                    "dns_ptr": "server01.example.com"
+                    "dns_ptr": "server01.example.com",
                 },
                 "ipv6": {
                     "ip": "2001:db8::/64",
                     "blocked": False,
-                    "dns_ptr": [
-                        {
-                            "ip": "2001:db8::1",
-                            "dns_ptr": "server.example.com"
-                        }
-                    ]
+                    "dns_ptr": [{"ip": "2001:db8::1", "dns_ptr": "server.example.com"}],
                 },
                 "floating_ips": [],
-                "firewalls": [
-                    {
-                        "id": 38,
-                        "status": "applied"
-                    }
-                ]
+                "firewalls": [{"id": 38, "status": "applied"}],
             },
             "private_net": [],
             "server_type": {
@@ -182,16 +142,16 @@ def response_create_simple_server():
                         "location": "fsn1",
                         "price_hourly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
+                            "gross": "1.1900000000000000",
                         },
                         "price_monthly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        }
+                            "gross": "1.1900000000000000",
+                        },
                     }
                 ],
                 "storage_type": "local",
-                "cpu_type": "shared"
+                "cpu_type": "shared",
             },
             "datacenter": {
                 "id": 1,
@@ -204,25 +164,13 @@ def response_create_simple_server():
                     "country": "DE",
                     "city": "Falkenstein",
                     "latitude": 50.47612,
-                    "longitude": 12.370071
+                    "longitude": 12.370071,
                 },
                 "server_types": {
-                    "supported": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available_for_migration": [
-                        1,
-                        2,
-                        3
-                    ]
-                }
+                    "supported": [1, 2, 3],
+                    "available": [1, 2, 3],
+                    "available_for_migration": [1, 2, 3],
+                },
             },
             "image": {
                 "id": 4711,
@@ -233,20 +181,14 @@ def response_create_simple_server():
                 "image_size": 2.3,
                 "disk_size": 10,
                 "created": "2016-01-30T23:50+00:00",
-                "created_from": {
-                    "id": 1,
-                    "name": "Server"
-                },
+                "created_from": {"id": 1, "name": "Server"},
                 "bound_to": None,
                 "os_flavor": "ubuntu",
                 "os_version": "16.04",
                 "rapid_deploy": False,
-                "protection": {
-                    "delete": False,
-                    "rebuild": False
-                },
+                "protection": {"delete": False, "rebuild": False},
                 "deprecated": "2018-02-28T00:00:00+00:00",
-                "labels": {}
+                "labels": {},
             },
             "iso": {
                 "id": 4711,
@@ -259,7 +201,7 @@ def response_create_simple_server():
             "included_traffic": 654321,
             "protection": {},
             "labels": {},
-            "volumes": []
+            "volumes": [],
         },
         "action": {
             "id": 1,
@@ -268,16 +210,8 @@ def response_create_simple_server():
             "progress": 0,
             "started": "2016-01-30T23:50+00:00",
             "finished": None,
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 42, "type": "server"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         },
         "next_actions": [
             {
@@ -287,19 +221,11 @@ def response_create_simple_server():
                 "progress": 0,
                 "started": "2016-01-30T23:50+00:00",
                 "finished": None,
-                "resources": [
-                    {
-                        "id": 42,
-                        "type": "server"
-                    }
-                ],
-                "error": {
-                    "code": "action_failed",
-                    "message": "Action failed"
-                }
+                "resources": [{"id": 42, "type": "server"}],
+                "error": {"code": "action_failed", "message": "Action failed"},
             }
         ],
-        "root_password": "YItygq1v3GYjjMomLaKc"
+        "root_password": "YItygq1v3GYjjMomLaKc",
     }
 
 
@@ -315,22 +241,15 @@ def response_update_server():
                 "ipv4": {
                     "ip": "1.2.3.4",
                     "blocked": False,
-                    "dns_ptr": "server01.example.com"
+                    "dns_ptr": "server01.example.com",
                 },
                 "ipv6": {
                     "ip": "2001:db8::/64",
                     "blocked": False,
-                    "dns_ptr": [
-                        {
-                            "ip": "2001:db8::1",
-                            "dns_ptr": "server.example.com"
-                        }
-                    ]
+                    "dns_ptr": [{"ip": "2001:db8::1", "dns_ptr": "server.example.com"}],
                 },
-                "floating_ips": [
-                    478
-                ],
-                "firewalls": []
+                "floating_ips": [478],
+                "firewalls": [],
             },
             "private_net": [],
             "server_type": {
@@ -345,16 +264,16 @@ def response_update_server():
                         "location": "fsn1",
                         "price_hourly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
+                            "gross": "1.1900000000000000",
                         },
                         "price_monthly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        }
+                            "gross": "1.1900000000000000",
+                        },
                     }
                 ],
                 "storage_type": "local",
-                "cpu_type": "shared"
+                "cpu_type": "shared",
             },
             "datacenter": {
                 "id": 1,
@@ -367,25 +286,13 @@ def response_update_server():
                     "country": "DE",
                     "city": "Falkenstein",
                     "latitude": 50.47612,
-                    "longitude": 12.370071
+                    "longitude": 12.370071,
                 },
                 "server_types": {
-                    "supported": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available_for_migration": [
-                        1,
-                        2,
-                        3
-                    ]
-                }
+                    "supported": [1, 2, 3],
+                    "available": [1, 2, 3],
+                    "available_for_migration": [1, 2, 3],
+                },
             },
             "image": {
                 "id": 4711,
@@ -396,26 +303,21 @@ def response_update_server():
                 "image_size": 2.3,
                 "disk_size": 10,
                 "created": "2016-01-30T23:50+00:00",
-                "created_from": {
-                    "id": 1,
-                    "name": "Server"
-                },
+                "created_from": {"id": 1, "name": "Server"},
                 "bound_to": None,
                 "os_flavor": "ubuntu",
                 "os_version": "16.04",
                 "rapid_deploy": False,
-                "protection": {
-                    "delete": False
-                },
+                "protection": {"delete": False},
                 "deprecated": "2018-02-28T00:00:00+00:00",
-                "labels": {}
+                "labels": {},
             },
             "iso": {
                 "id": 4711,
                 "name": "FreeBSD-11.0-RELEASE-amd64-dvd1",
                 "description": "FreeBSD 11.0 x64",
                 "type": "public",
-                "deprecated": "2018-02-28T00:00:00+00:00"
+                "deprecated": "2018-02-28T00:00:00+00:00",
             },
             "rescue_enabled": False,
             "locked": False,
@@ -423,12 +325,9 @@ def response_update_server():
             "outgoing_traffic": 123456,
             "ingoing_traffic": 123456,
             "included_traffic": 654321,
-            "protection": {
-                "delete": False,
-                "rebuild": False
-            },
+            "protection": {"delete": False, "rebuild": False},
             "labels": {},
-            "volumes": []
+            "volumes": [],
         }
     }
 
@@ -436,252 +335,209 @@ def response_update_server():
 @pytest.fixture()
 def response_simple_servers():
     return {
-        "servers": [{
-            "id": 1,
-            "name": "my-server",
-            "status": "running",
-            "created": "2016-01-30T23:50+00:00",
-            "public_net": {
-                "ipv4": {
-                    "ip": "1.2.3.4",
-                    "blocked": False,
-                    "dns_ptr": "server01.example.com"
-                },
-                "ipv6": {
-                    "ip": "2001:db8::/64",
-                    "blocked": False,
-                    "dns_ptr": [
-                        {
-                            "ip": "2001:db8::1",
-                            "dns_ptr": "server.example.com"
-                        }
-                    ]
-                },
-                "floating_ips": [
-                    478
-                ],
-                "firewalls": []
-            },
-            "private_net": [
-                {
-                    "network": 4711,
-                    "ip": "10.1.1.5",
-                    "alias_ips": ["10.1.1.8"],
-                    "mac_address": "86:00:ff:2a:7d:e1"
-                }
-            ],
-            "server_type": {
+        "servers": [
+            {
                 "id": 1,
-                "name": "cx11",
-                "description": "CX11",
-                "cores": 1,
-                "memory": 1,
-                "disk": 25,
-                "prices": [
+                "name": "my-server",
+                "status": "running",
+                "created": "2016-01-30T23:50+00:00",
+                "public_net": {
+                    "ipv4": {
+                        "ip": "1.2.3.4",
+                        "blocked": False,
+                        "dns_ptr": "server01.example.com",
+                    },
+                    "ipv6": {
+                        "ip": "2001:db8::/64",
+                        "blocked": False,
+                        "dns_ptr": [
+                            {"ip": "2001:db8::1", "dns_ptr": "server.example.com"}
+                        ],
+                    },
+                    "floating_ips": [478],
+                    "firewalls": [],
+                },
+                "private_net": [
                     {
-                        "location": "fsn1",
-                        "price_hourly": {
-                            "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        },
-                        "price_monthly": {
-                            "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        }
+                        "network": 4711,
+                        "ip": "10.1.1.5",
+                        "alias_ips": ["10.1.1.8"],
+                        "mac_address": "86:00:ff:2a:7d:e1",
                     }
                 ],
-                "storage_type": "local",
-                "cpu_type": "shared"
-            },
-            "datacenter": {
-                "id": 1,
-                "name": "fsn1-dc8",
-                "description": "Falkenstein 1 DC 8",
-                "location": {
+                "server_type": {
                     "id": 1,
-                    "name": "fsn1",
-                    "description": "Falkenstein DC Park 1",
-                    "country": "DE",
-                    "city": "Falkenstein",
-                    "latitude": 50.47612,
-                    "longitude": 12.370071
-                },
-                "server_types": {
-                    "supported": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available_for_migration": [
-                        1,
-                        2,
-                        3
-                    ]
-                }
-            },
-            "image": {
-                "id": 4711,
-                "type": "snapshot",
-                "status": "available",
-                "name": "ubuntu-20.04",
-                "description": "Ubuntu 20.04 Standard 64 bit",
-                "image_size": 2.3,
-                "disk_size": 10,
-                "created": "2016-01-30T23:50+00:00",
-                "created_from": {
-                    "id": 1,
-                    "name": "Server"
-                },
-                "bound_to": None,
-                "os_flavor": "ubuntu",
-                "os_version": "16.04",
-                "rapid_deploy": False,
-                "protection": {
-                    "delete": False,
-                    "rebuild": False
-                },
-                "deprecated": "2018-02-28T00:00:00+00:00",
-                "labels": {}
-            },
-            "iso": None,
-            "rescue_enabled": False,
-            "locked": False,
-            "backup_window": "22-02",
-            "outgoing_traffic": 123456,
-            "ingoing_traffic": 123456,
-            "included_traffic": 654321,
-            "protection": {},
-            "labels": {},
-            "volumes": []
-        }, {
-            "id": 2,
-            "name": "my-server2",
-            "status": "running",
-            "created": "2016-03-30T23:50+00:00",
-            "public_net": {
-                "ipv4": {
-                    "ip": "1.2.3.4",
-                    "blocked": False,
-                    "dns_ptr": "server01.example.com"
-                },
-                "ipv6": {
-                    "ip": "2001:db8::/64",
-                    "blocked": False,
-                    "dns_ptr": [
+                    "name": "cx11",
+                    "description": "CX11",
+                    "cores": 1,
+                    "memory": 1,
+                    "disk": 25,
+                    "prices": [
                         {
-                            "ip": "2001:db8::1",
-                            "dns_ptr": "server.example.com"
+                            "location": "fsn1",
+                            "price_hourly": {
+                                "net": "1.0000000000",
+                                "gross": "1.1900000000000000",
+                            },
+                            "price_monthly": {
+                                "net": "1.0000000000",
+                                "gross": "1.1900000000000000",
+                            },
                         }
-                    ]
+                    ],
+                    "storage_type": "local",
+                    "cpu_type": "shared",
                 },
-                "floating_ips": [
-                    478
-                ],
-                "firewalls": []
+                "datacenter": {
+                    "id": 1,
+                    "name": "fsn1-dc8",
+                    "description": "Falkenstein 1 DC 8",
+                    "location": {
+                        "id": 1,
+                        "name": "fsn1",
+                        "description": "Falkenstein DC Park 1",
+                        "country": "DE",
+                        "city": "Falkenstein",
+                        "latitude": 50.47612,
+                        "longitude": 12.370071,
+                    },
+                    "server_types": {
+                        "supported": [1, 2, 3],
+                        "available": [1, 2, 3],
+                        "available_for_migration": [1, 2, 3],
+                    },
+                },
+                "image": {
+                    "id": 4711,
+                    "type": "snapshot",
+                    "status": "available",
+                    "name": "ubuntu-20.04",
+                    "description": "Ubuntu 20.04 Standard 64 bit",
+                    "image_size": 2.3,
+                    "disk_size": 10,
+                    "created": "2016-01-30T23:50+00:00",
+                    "created_from": {"id": 1, "name": "Server"},
+                    "bound_to": None,
+                    "os_flavor": "ubuntu",
+                    "os_version": "16.04",
+                    "rapid_deploy": False,
+                    "protection": {"delete": False, "rebuild": False},
+                    "deprecated": "2018-02-28T00:00:00+00:00",
+                    "labels": {},
+                },
+                "iso": None,
+                "rescue_enabled": False,
+                "locked": False,
+                "backup_window": "22-02",
+                "outgoing_traffic": 123456,
+                "ingoing_traffic": 123456,
+                "included_traffic": 654321,
+                "protection": {},
+                "labels": {},
+                "volumes": [],
             },
-            "private_net": [
-                {
-                    "network": 4711,
-                    "ip": "10.1.1.7",
-                    "alias_ips": ["10.1.1.99"],
-                    "mac_address": "86:00:ff:2a:7d:e1"
-                }
-            ],
-            "server_type": {
-                "id": 1,
-                "name": "cx11",
-                "description": "CX11",
-                "cores": 1,
-                "memory": 1,
-                "disk": 25,
-                "prices": [
+            {
+                "id": 2,
+                "name": "my-server2",
+                "status": "running",
+                "created": "2016-03-30T23:50+00:00",
+                "public_net": {
+                    "ipv4": {
+                        "ip": "1.2.3.4",
+                        "blocked": False,
+                        "dns_ptr": "server01.example.com",
+                    },
+                    "ipv6": {
+                        "ip": "2001:db8::/64",
+                        "blocked": False,
+                        "dns_ptr": [
+                            {"ip": "2001:db8::1", "dns_ptr": "server.example.com"}
+                        ],
+                    },
+                    "floating_ips": [478],
+                    "firewalls": [],
+                },
+                "private_net": [
                     {
-                        "location": "fsn1",
-                        "price_hourly": {
-                            "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        },
-                        "price_monthly": {
-                            "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        }
+                        "network": 4711,
+                        "ip": "10.1.1.7",
+                        "alias_ips": ["10.1.1.99"],
+                        "mac_address": "86:00:ff:2a:7d:e1",
                     }
                 ],
-                "storage_type": "local",
-                "cpu_type": "shared"
-            },
-            "datacenter": {
-                "id": 1,
-                "name": "fsn1-dc8",
-                "description": "Falkenstein 1 DC 8",
-                "location": {
+                "server_type": {
                     "id": 1,
-                    "name": "fsn1",
-                    "description": "Falkenstein DC Park 1",
-                    "country": "DE",
-                    "city": "Falkenstein",
-                    "latitude": 50.47612,
-                    "longitude": 12.370071
+                    "name": "cx11",
+                    "description": "CX11",
+                    "cores": 1,
+                    "memory": 1,
+                    "disk": 25,
+                    "prices": [
+                        {
+                            "location": "fsn1",
+                            "price_hourly": {
+                                "net": "1.0000000000",
+                                "gross": "1.1900000000000000",
+                            },
+                            "price_monthly": {
+                                "net": "1.0000000000",
+                                "gross": "1.1900000000000000",
+                            },
+                        }
+                    ],
+                    "storage_type": "local",
+                    "cpu_type": "shared",
                 },
-                "server_types": {
-                    "supported": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available_for_migration": [
-                        1,
-                        2,
-                        3
-                    ]
-                }
-            },
-            "image": {
-                "id": 4711,
-                "type": "snapshot",
-                "status": "available",
-                "name": "ubuntu-20.04",
-                "description": "Ubuntu 20.04 Standard 64 bit",
-                "image_size": 2.3,
-                "disk_size": 10,
-                "created": "2016-01-30T23:50+00:00",
-                "created_from": {
+                "datacenter": {
                     "id": 1,
-                    "name": "Server"
+                    "name": "fsn1-dc8",
+                    "description": "Falkenstein 1 DC 8",
+                    "location": {
+                        "id": 1,
+                        "name": "fsn1",
+                        "description": "Falkenstein DC Park 1",
+                        "country": "DE",
+                        "city": "Falkenstein",
+                        "latitude": 50.47612,
+                        "longitude": 12.370071,
+                    },
+                    "server_types": {
+                        "supported": [1, 2, 3],
+                        "available": [1, 2, 3],
+                        "available_for_migration": [1, 2, 3],
+                    },
                 },
-                "bound_to": None,
-                "os_flavor": "ubuntu",
-                "os_version": "16.04",
-                "rapid_deploy": False,
-                "protection": {
-                    "delete": False,
-                    "rebuild": False
+                "image": {
+                    "id": 4711,
+                    "type": "snapshot",
+                    "status": "available",
+                    "name": "ubuntu-20.04",
+                    "description": "Ubuntu 20.04 Standard 64 bit",
+                    "image_size": 2.3,
+                    "disk_size": 10,
+                    "created": "2016-01-30T23:50+00:00",
+                    "created_from": {"id": 1, "name": "Server"},
+                    "bound_to": None,
+                    "os_flavor": "ubuntu",
+                    "os_version": "16.04",
+                    "rapid_deploy": False,
+                    "protection": {"delete": False, "rebuild": False},
+                    "deprecated": "2018-02-28T00:00:00+00:00",
+                    "labels": {},
                 },
-                "deprecated": "2018-02-28T00:00:00+00:00",
-                "labels": {}
+                "iso": None,
+                "rescue_enabled": False,
+                "locked": False,
+                "backup_window": "22-02",
+                "outgoing_traffic": 123456,
+                "ingoing_traffic": 123456,
+                "included_traffic": 654321,
+                "primary_disk_size": 20,
+                "protection": {},
+                "labels": {},
+                "volumes": [],
             },
-            "iso": None,
-            "rescue_enabled": False,
-            "locked": False,
-            "backup_window": "22-02",
-            "outgoing_traffic": 123456,
-            "ingoing_traffic": 123456,
-            "included_traffic": 654321,
-            "primary_disk_size": 20,
-            "protection": {},
-            "labels": {},
-            "volumes": []
-        }]
+        ]
     }
 
 
@@ -698,34 +554,22 @@ def response_full_server():
                 "ipv4": {
                     "ip": "1.2.3.4",
                     "blocked": False,
-                    "dns_ptr": "server01.example.com"
+                    "dns_ptr": "server01.example.com",
                 },
                 "ipv6": {
                     "ip": "2001:db8::/64",
                     "blocked": False,
-                    "dns_ptr": [
-                        {
-                            "ip": "2001:db8::1",
-                            "dns_ptr": "server.example.com"
-                        }
-                    ]
+                    "dns_ptr": [{"ip": "2001:db8::1", "dns_ptr": "server.example.com"}],
                 },
-                "floating_ips": [
-                    478
-                ],
-                "firewalls": [
-                    {
-                        "id": 38,
-                        "status": "applied"
-                    }
-                ]
+                "floating_ips": [478],
+                "firewalls": [{"id": 38, "status": "applied"}],
             },
             "private_net": [
                 {
                     "network": 4711,
                     "ip": "10.1.1.5",
                     "alias_ips": ["10.1.1.8"],
-                    "mac_address": "86:00:ff:2a:7d:e1"
+                    "mac_address": "86:00:ff:2a:7d:e1",
                 }
             ],
             "server_type": {
@@ -737,7 +581,7 @@ def response_full_server():
                 "disk": 25,
                 "prices": [],
                 "storage_type": "local",
-                "cpu_type": "shared"
+                "cpu_type": "shared",
             },
             "datacenter": {
                 "id": 1,
@@ -750,25 +594,13 @@ def response_full_server():
                     "country": "DE",
                     "city": "Falkenstein",
                     "latitude": 50.47612,
-                    "longitude": 12.370071
+                    "longitude": 12.370071,
                 },
                 "server_types": {
-                    "supported": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available": [
-                        1,
-                        2,
-                        3
-                    ],
-                    "available_for_migration": [
-                        1,
-                        2,
-                        3
-                    ]
-                }
+                    "supported": [1, 2, 3],
+                    "available": [1, 2, 3],
+                    "available_for_migration": [1, 2, 3],
+                },
             },
             "image": {
                 "id": 4711,
@@ -779,26 +611,21 @@ def response_full_server():
                 "image_size": 2.3,
                 "disk_size": 10,
                 "created": "2016-01-30T23:50+00:00",
-                "created_from": {
-                    "id": 1,
-                    "name": "Server"
-                },
+                "created_from": {"id": 1, "name": "Server"},
                 "bound_to": None,
                 "os_flavor": "ubuntu",
                 "os_version": "16.04",
                 "rapid_deploy": False,
-                "protection": {
-                    "delete": False
-                },
+                "protection": {"delete": False},
                 "deprecated": "2018-02-28T00:00:00+00:00",
-                "labels": {}
+                "labels": {},
             },
             "iso": {
                 "id": 4711,
                 "name": "FreeBSD-11.0-RELEASE-amd64-dvd1",
                 "description": "FreeBSD 11.0 x64",
                 "type": "public",
-                "deprecated": "2018-02-28T00:00:00+00:00"
+                "deprecated": "2018-02-28T00:00:00+00:00",
             },
             "rescue_enabled": False,
             "locked": False,
@@ -808,7 +635,7 @@ def response_full_server():
             "included_traffic": 654321,
             "protection": {},
             "labels": {},
-            "volumes": [1, 2]
+            "volumes": [1, 2],
         }
     }
 
@@ -823,18 +650,10 @@ def response_server_reset_password():
             "progress": 0,
             "started": "2016-01-30T23:50+00:00",
             "finished": None,
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 42, "type": "server"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         },
-        "root_password": "YItygq1v3GYjjMomLaKc"
+        "root_password": "YItygq1v3GYjjMomLaKc",
     }
 
 
@@ -848,18 +667,10 @@ def response_server_enable_rescue():
             "progress": 0,
             "started": "2016-01-30T23:50+00:00",
             "finished": None,
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 42, "type": "server"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         },
-        "root_password": "YItygq1v3GYjjMomLaKc"
+        "root_password": "YItygq1v3GYjjMomLaKc",
     }
 
 
@@ -875,19 +686,14 @@ def response_server_create_image():
             "image_size": 2.3,
             "disk_size": 10,
             "created": "2016-01-30T23:50+00:00",
-            "created_from": {
-                "id": 1,
-                "name": "Server"
-            },
+            "created_from": {"id": 1, "name": "Server"},
             "bound_to": None,
             "os_flavor": "ubuntu",
             "os_version": "16.04",
             "rapid_deploy": False,
-            "protection": {
-                "delete": False
-            },
+            "protection": {"delete": False},
             "deprecated": "2018-02-28T00:00:00+00:00",
-            "labels": {}
+            "labels": {},
         },
         "action": {
             "id": 1,
@@ -896,17 +702,9 @@ def response_server_create_image():
             "progress": 0,
             "started": "2016-01-30T23:50+00:00",
             "finished": None,
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
-        }
+            "resources": [{"id": 42, "type": "server"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
+        },
     }
 
 
@@ -922,17 +720,9 @@ def response_server_request_console():
             "progress": 0,
             "started": "2016-01-30T23:55:00+00:00",
             "finished": "2016-01-30T23:56:00+00:00",
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
-        }
+            "resources": [{"id": 42, "type": "server"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
+        },
     }
 
 
@@ -947,16 +737,8 @@ def response_get_actions():
                 "progress": 100,
                 "started": "2016-01-30T23:55:00+00:00",
                 "finished": "2016-01-30T23:56:00+00:00",
-                "resources": [
-                    {
-                        "id": 42,
-                        "type": "server"
-                    }
-                ],
-                "error": {
-                    "code": "action_failed",
-                    "message": "Action failed"
-                }
+                "resources": [{"id": 42, "type": "server"}],
+                "error": {"code": "action_failed", "message": "Action failed"},
             }
         ]
     }
@@ -973,19 +755,10 @@ def response_attach_to_network():
             "started": "2016-01-30T23:50:00+00:00",
             "finished": None,
             "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                },
-                {
-                    "id": 4711,
-                    "type": "network"
-                }
+                {"id": 42, "type": "server"},
+                {"id": 4711, "type": "network"},
             ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -1001,19 +774,10 @@ def response_detach_from_network():
             "started": "2016-01-30T23:50:00+00:00",
             "finished": None,
             "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                },
-                {
-                    "id": 4711,
-                    "type": "network"
-                }
+                {"id": 42, "type": "server"},
+                {"id": 4711, "type": "network"},
             ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -1029,19 +793,10 @@ def response_change_alias_ips():
             "started": "2016-01-30T23:50:00+00:00",
             "finished": None,
             "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                },
-                {
-                    "id": 4711,
-                    "type": "network"
-                }
+                {"id": 42, "type": "server"},
+                {"id": 4711, "type": "network"},
             ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -1056,16 +811,8 @@ def response_apply_firewall():
             "progress": 0,
             "started": "2016-01-30T23:50:00+00:00",
             "finished": None,
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 42, "type": "server"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -1080,15 +827,7 @@ def response_remove_firewall():
             "progress": 0,
             "started": "2016-01-30T23:50:00+00:00",
             "finished": None,
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 42, "type": "server"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }

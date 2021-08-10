@@ -8,15 +8,11 @@ client = Client(token="project-token")
 # Create 2 servers
 # Create 2 servers
 response1 = client.servers.create(
-    "Server1",
-    server_type=ServerType(name="cx11"),
-    image=Image(id=4711)
+    "Server1", server_type=ServerType(name="cx11"), image=Image(id=4711)
 )
 
 response2 = client.servers.create(
-    "Server2",
-    server_type=ServerType(name="cx11"),
-    image=Image(id=4711)
+    "Server2", server_type=ServerType(name="cx11"), image=Image(id=4711)
 )
 # Get all servers
 server1 = response1.server
@@ -28,16 +24,8 @@ assert servers[0].id == server1.id
 assert servers[1].id == server2.id
 # Create 2 volumes
 
-response1 = client.volumes.create(
-    size=15,
-    name="Volume1",
-    location=server1.location
-)
-response2 = client.volumes.create(
-    size=10,
-    name="Volume2",
-    location=server2.location
-)
+response1 = client.volumes.create(size=15, name="Volume1", location=server1.location)
+response2 = client.volumes.create(size=10, name="Volume2", location=server2.location)
 
 volume1 = response1.volume
 volume2 = response2.volume

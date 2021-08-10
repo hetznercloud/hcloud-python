@@ -10,16 +10,12 @@ from hcloud.servers.client import BoundServer
 
 
 class TestBoundImage(object):
-
     @pytest.fixture()
     def bound_image(self, hetzner_client):
         return BoundImage(client=hetzner_client.images, data=dict(id=14))
 
     def test_bound_image_init(self, image_response):
-        bound_image = BoundImage(
-            client=mock.MagicMock(),
-            data=image_response['image']
-        )
+        bound_image = BoundImage(client=mock.MagicMock(), data=image_response["image"])
 
         assert bound_image.id == 4711
         assert bound_image.type == "snapshot"
@@ -28,11 +24,15 @@ class TestBoundImage(object):
         assert bound_image.description == "Ubuntu 20.04 Standard 64 bit"
         assert bound_image.image_size == 2.3
         assert bound_image.disk_size == 10
-        assert bound_image.created == datetime.datetime(2016, 1, 30, 23, 50, tzinfo=tzoffset(None, 0))
+        assert bound_image.created == datetime.datetime(
+            2016, 1, 30, 23, 50, tzinfo=tzoffset(None, 0)
+        )
         assert bound_image.os_flavor == "ubuntu"
         assert bound_image.os_version == "16.04"
         assert bound_image.rapid_deploy is False
-        assert bound_image.deprecated == datetime.datetime(2018, 2, 28, 0, 0, tzinfo=tzoffset(None, 0))
+        assert bound_image.deprecated == datetime.datetime(
+            2018, 2, 28, 0, 0, tzinfo=tzoffset(None, 0)
+        )
 
         assert isinstance(bound_image.created_from, BoundServer)
         assert bound_image.created_from.id == 1
@@ -44,18 +44,16 @@ class TestBoundImage(object):
         assert bound_image.bound_to.complete is False
 
     @pytest.mark.parametrize(
-        "params",
-        [
-            {},
-            {"sort": ["status"],
-             "page": 1,
-             "per_page": 2}
-        ]
+        "params", [{}, {"sort": ["status"], "page": 1, "per_page": 2}]
     )
-    def test_get_actions_list(self, hetzner_client, bound_image, response_get_actions, params):
+    def test_get_actions_list(
+        self, hetzner_client, bound_image, response_get_actions, params
+    ):
         hetzner_client.request.return_value = response_get_actions
         result = bound_image.get_actions_list(**params)
-        hetzner_client.request.assert_called_with(url="/images/14/actions", method="GET", params=params)
+        hetzner_client.request.assert_called_with(
+            url="/images/14/actions", method="GET", params=params
+        )
 
         actions = result.actions
         assert result.meta is None
@@ -65,20 +63,18 @@ class TestBoundImage(object):
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"
 
-    @pytest.mark.parametrize(
-        "params",
-        [
-            {},
-            {"sort": ["status"]}
-        ]
-    )
-    def test_get_actions(self, hetzner_client, bound_image, response_get_actions, params):
+    @pytest.mark.parametrize("params", [{}, {"sort": ["status"]}])
+    def test_get_actions(
+        self, hetzner_client, bound_image, response_get_actions, params
+    ):
         hetzner_client.request.return_value = response_get_actions
         actions = bound_image.get_actions(**params)
 
-        params.update({'page': 1, "per_page": 50})
+        params.update({"page": 1, "per_page": 50})
 
-        hetzner_client.request.assert_called_with(url="/images/14/actions", method="GET", params=params)
+        hetzner_client.request.assert_called_with(
+            url="/images/14/actions", method="GET", params=params
+        )
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
@@ -87,8 +83,18 @@ class TestBoundImage(object):
 
     def test_update(self, hetzner_client, bound_image, response_update_image):
         hetzner_client.request.return_value = response_update_image
-        image = bound_image.update(description="My new Image description", type="snapshot", labels={})
-        hetzner_client.request.assert_called_with(url="/images/14", method="PUT", json={"description": "My new Image description", "type": "snapshot", "labels": {}})
+        image = bound_image.update(
+            description="My new Image description", type="snapshot", labels={}
+        )
+        hetzner_client.request.assert_called_with(
+            url="/images/14",
+            method="PUT",
+            json={
+                "description": "My new Image description",
+                "type": "snapshot",
+                "labels": {},
+            },
+        )
 
         assert image.id == 4711
         assert image.description == "My new Image description"
@@ -103,14 +109,17 @@ class TestBoundImage(object):
     def test_change_protection(self, hetzner_client, bound_image, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_image.change_protection(True)
-        hetzner_client.request.assert_called_with(url="/images/14/actions/change_protection", method="POST", json={"delete": True})
+        hetzner_client.request.assert_called_with(
+            url="/images/14/actions/change_protection",
+            method="POST",
+            json={"delete": True},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
 
 class TestImagesClient(object):
-
     @pytest.fixture()
     def images_client(self):
         return ImagesClient(client=mock.MagicMock())
@@ -127,23 +136,25 @@ class TestImagesClient(object):
         "params",
         [
             {
-                'name': "ubuntu-20.04",
+                "name": "ubuntu-20.04",
                 "type": "system",
                 "sort": "id",
                 "bound_to": "1",
                 "label_selector": "k==v",
                 "page": 1,
-                "per_page": 10
+                "per_page": 10,
             },
-            {'name': ""},
-            {'include_deprecated': True},
-            {}
-        ]
+            {"name": ""},
+            {"include_deprecated": True},
+            {},
+        ],
     )
     def test_get_list(self, images_client, two_images_response, params):
         images_client._client.request.return_value = two_images_response
         result = images_client.get_list(**params)
-        images_client._client.request.assert_called_with(url="/images", method="GET", params=params)
+        images_client._client.request.assert_called_with(
+            url="/images", method="GET", params=params
+        )
 
         images = result.images
         assert result.meta is None
@@ -165,15 +176,15 @@ class TestImagesClient(object):
         "params",
         [
             {
-                'name': "ubuntu-20.04",
+                "name": "ubuntu-20.04",
                 "type": "system",
                 "sort": "id",
                 "bound_to": "1",
                 "label_selector": "k==v",
             },
-            {'include_deprecated': True},
-            {}
-        ]
+            {"include_deprecated": True},
+            {},
+        ],
     )
     def test_get_all(self, images_client, two_images_response, params):
         images_client._client.request.return_value = two_images_response
@@ -181,7 +192,9 @@ class TestImagesClient(object):
 
         params.update({"page": 1, "per_page": 50})
 
-        images_client._client.request.assert_called_with(url="/images", method="GET", params=params)
+        images_client._client.request.assert_called_with(
+            url="/images", method="GET", params=params
+        )
 
         assert len(images) == 2
 
@@ -202,17 +215,23 @@ class TestImagesClient(object):
 
         params = {"name": "ubuntu-20.04"}
 
-        images_client._client.request.assert_called_with(url="/images", method="GET", params=params)
+        images_client._client.request.assert_called_with(
+            url="/images", method="GET", params=params
+        )
 
         assert image._client is images_client
         assert image.id == 4711
         assert image.name == "ubuntu-20.04"
 
-    @pytest.mark.parametrize("image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))]
+    )
     def test_get_actions_list(self, images_client, image, response_get_actions):
         images_client._client.request.return_value = response_get_actions
         result = images_client.get_actions_list(image)
-        images_client._client.request.assert_called_with(url="/images/1/actions", method="GET", params={})
+        images_client._client.request.assert_called_with(
+            url="/images/1/actions", method="GET", params={}
+        )
 
         actions = result.actions
         assert result.meta is None
@@ -224,28 +243,50 @@ class TestImagesClient(object):
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"
 
-    @pytest.mark.parametrize("image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))]
+    )
     def test_update(self, images_client, image, response_update_image):
         images_client._client.request.return_value = response_update_image
-        image = images_client.update(image, description="My new Image description", type="snapshot", labels={})
-        images_client._client.request.assert_called_with(url="/images/1", method="PUT", json={"description": "My new Image description", "type": "snapshot", "labels": {}})
+        image = images_client.update(
+            image, description="My new Image description", type="snapshot", labels={}
+        )
+        images_client._client.request.assert_called_with(
+            url="/images/1",
+            method="PUT",
+            json={
+                "description": "My new Image description",
+                "type": "snapshot",
+                "labels": {},
+            },
+        )
 
         assert image.id == 4711
         assert image.description == "My new Image description"
 
-    @pytest.mark.parametrize("image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))]
+    )
     def test_change_protection(self, images_client, image, generic_action):
         images_client._client.request.return_value = generic_action
         action = images_client.change_protection(image, True)
-        images_client._client.request.assert_called_with(url="/images/1/actions/change_protection", method="POST", json={"delete": True})
+        images_client._client.request.assert_called_with(
+            url="/images/1/actions/change_protection",
+            method="POST",
+            json={"delete": True},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))]
+    )
     def test_delete(self, images_client, image, generic_action):
         images_client._client.request.return_value = generic_action
         delete_success = images_client.delete(image)
-        images_client._client.request.assert_called_with(url="/images/1", method="DELETE")
+        images_client._client.request.assert_called_with(
+            url="/images/1", method="DELETE"
+        )
 
         assert delete_success is True

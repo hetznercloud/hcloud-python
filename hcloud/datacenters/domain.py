@@ -11,6 +11,7 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
     :param location: :class:`BoundLocation <hcloud.locations.client.BoundLocation>`
     :param server_types: :class:`DatacenterServerTypes <hcloud.datacenters.domain.DatacenterServerTypes>`
     """
+
     __slots__ = (
         "id",
         "name",
@@ -20,12 +21,7 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
     )
 
     def __init__(
-        self,
-        id=None,
-        name=None,
-        description=None,
-        location=None,
-        server_types=None
+        self, id=None, name=None, description=None, location=None, server_types=None
     ):
         self.id = id
         self.name = name
@@ -44,11 +40,8 @@ class DatacenterServerTypes:
     :param available_for_migration: List[:class:`BoundServerTypes <hcloud.server_types.client.BoundServerTypes>`]
            All available for migration (change type) server types for this datacenter
     """
-    __slots__ = (
-        "available",
-        "supported",
-        "available_for_migration"
-    )
+
+    __slots__ = ("available", "supported", "available_for_migration")
 
     def __init__(self, available, supported, available_for_migration):
         self.available = available

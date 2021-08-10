@@ -13,19 +13,14 @@ def image_response():
             "image_size": 2.3,
             "disk_size": 10,
             "created": "2016-01-30T23:50+00:00",
-            "created_from": {
-                "id": 1,
-                "name": "Server"
-            },
+            "created_from": {"id": 1, "name": "Server"},
             "bound_to": 1,
             "os_flavor": "ubuntu",
             "os_version": "16.04",
             "rapid_deploy": False,
-            "protection": {
-                "delete": False
-            },
+            "protection": {"delete": False},
             "deprecated": "2018-02-28T00:00:00+00:00",
-            "labels": {}
+            "labels": {},
         }
     }
 
@@ -43,19 +38,14 @@ def two_images_response():
                 "image_size": 2.3,
                 "disk_size": 10,
                 "created": "2016-01-30T23:50+00:00",
-                "created_from": {
-                    "id": 1,
-                    "name": "Server"
-                },
+                "created_from": {"id": 1, "name": "Server"},
                 "bound_to": None,
                 "os_flavor": "ubuntu",
                 "os_version": "16.04",
                 "rapid_deploy": False,
-                "protection": {
-                    "delete": False
-                },
+                "protection": {"delete": False},
                 "deprecated": "2018-02-28T00:00:00+00:00",
-                "labels": {}
+                "labels": {},
             },
             {
                 "id": 4712,
@@ -66,20 +56,15 @@ def two_images_response():
                 "image_size": 2.3,
                 "disk_size": 10,
                 "created": "2016-01-30T23:50+00:00",
-                "created_from": {
-                    "id": 1,
-                    "name": "Server"
-                },
+                "created_from": {"id": 1, "name": "Server"},
                 "bound_to": None,
                 "os_flavor": "ubuntu",
                 "os_version": "16.04",
                 "rapid_deploy": False,
-                "protection": {
-                    "delete": False
-                },
+                "protection": {"delete": False},
                 "deprecated": "2018-02-28T00:00:00+00:00",
-                "labels": {}
-            }
+                "labels": {},
+            },
         ]
     }
 
@@ -97,19 +82,14 @@ def one_images_response():
                 "image_size": 2.3,
                 "disk_size": 10,
                 "created": "2016-01-30T23:50+00:00",
-                "created_from": {
-                    "id": 1,
-                    "name": "Server"
-                },
+                "created_from": {"id": 1, "name": "Server"},
                 "bound_to": None,
                 "os_flavor": "ubuntu",
                 "os_version": "16.04",
                 "rapid_deploy": False,
-                "protection": {
-                    "delete": False
-                },
+                "protection": {"delete": False},
                 "deprecated": "2018-02-28T00:00:00+00:00",
-                "labels": {}
+                "labels": {},
             },
         ]
     }
@@ -127,19 +107,14 @@ def response_update_image():
             "image_size": 2.3,
             "disk_size": 10,
             "created": "2016-01-30T23:50+00:00",
-            "created_from": {
-                "id": 1,
-                "name": "Server"
-            },
+            "created_from": {"id": 1, "name": "Server"},
             "bound_to": None,
             "os_flavor": "ubuntu",
             "os_version": "16.04",
             "rapid_deploy": False,
-            "protection": {
-                "delete": False
-            },
+            "protection": {"delete": False},
             "deprecated": "2018-02-28T00:00:00+00:00",
-            "labels": {}
+            "labels": {},
         }
     }
 
@@ -155,16 +130,8 @@ def response_get_actions():
                 "progress": 100,
                 "started": "2016-01-30T23:55:00+00:00",
                 "finished": "2016-01-30T23:56:00+00:00",
-                "resources": [
-                    {
-                        "id": 42,
-                        "type": "image"
-                    }
-                ],
-                "error": {
-                    "code": "action_failed",
-                    "message": "Action failed"
-                }
+                "resources": [{"id": 42, "type": "image"}],
+                "error": {"code": "action_failed", "message": "Action failed"},
             }
         ]
     }

@@ -58,22 +58,22 @@ class LoadBalancer(BaseDomain):
     )
 
     def __init__(
-            self,
-            id,
-            name=None,
-            public_net=None,
-            private_net=None,
-            location=None,
-            algorithm=None,
-            services=None,
-            load_balancer_type=None,
-            protection=None,
-            labels=None,
-            targets=None,
-            created=None,
-            outgoing_traffic=None,
-            ingoing_traffic=None,
-            included_traffic=None,
+        self,
+        id,
+        name=None,
+        public_net=None,
+        private_net=None,
+        location=None,
+        algorithm=None,
+        services=None,
+        load_balancer_type=None,
+        protection=None,
+        labels=None,
+        targets=None,
+        created=None,
+        outgoing_traffic=None,
+        ingoing_traffic=None,
+        included_traffic=None,
     ):
         self.id = id
         self.name = name
@@ -109,8 +109,15 @@ class LoadBalancerService(BaseDomain):
             Configuration for http/https protocols, required when protocol is http/https
     """
 
-    def __init__(self, protocol=None, listen_port=None, destination_port=None, proxyprotocol=None, health_check=None,
-                 http=None):
+    def __init__(
+        self,
+        protocol=None,
+        listen_port=None,
+        destination_port=None,
+        proxyprotocol=None,
+        health_check=None,
+        http=None,
+    ):
         self.protocol = protocol
         self.listen_port = listen_port
         self.destination_port = destination_port
@@ -122,19 +129,26 @@ class LoadBalancerService(BaseDomain):
 class LoadBalancerServiceHttp(BaseDomain):
     """LoadBalancerServiceHttp Domain
 
-        :param cookie_name: str
-            Name of the cookie used for Session Stickness
-        :param cookie_lifetime: str
-            Lifetime of the cookie used for Session Stickness
-        :param certificates: list
-                IDs of the Certificates to use for TLS/SSL termination by the Load Balancer; empty for TLS/SSL passthrough or if protocol is "http"
-        :param redirect_http: bool
-               Redirect traffic from http port 80 to port 443
-        :param sticky_sessions: bool
-               Use sticky sessions. Only available if protocol is "http" or "https".
-        """
+    :param cookie_name: str
+        Name of the cookie used for Session Stickness
+    :param cookie_lifetime: str
+        Lifetime of the cookie used for Session Stickness
+    :param certificates: list
+            IDs of the Certificates to use for TLS/SSL termination by the Load Balancer; empty for TLS/SSL passthrough or if protocol is "http"
+    :param redirect_http: bool
+           Redirect traffic from http port 80 to port 443
+    :param sticky_sessions: bool
+           Use sticky sessions. Only available if protocol is "http" or "https".
+    """
 
-    def __init__(self, cookie_name=None, cookie_lifetime=None, certificates=None, redirect_http=None, sticky_sessions=None):
+    def __init__(
+        self,
+        cookie_name=None,
+        cookie_lifetime=None,
+        certificates=None,
+        redirect_http=None,
+        sticky_sessions=None,
+    ):
         self.cookie_name = cookie_name
         self.cookie_lifetime = cookie_lifetime
         self.certificates = certificates
@@ -145,21 +159,29 @@ class LoadBalancerServiceHttp(BaseDomain):
 class LoadBalancerHealthCheck(BaseDomain):
     """LoadBalancerHealthCheck Domain
 
-            :param protocol: str
-                Protocol of the service Choices: tcp, http, https
-            :param port: int
-                Port the healthcheck will be performed on
-            :param interval: int
-                   Interval we trigger health check in
-            :param timeout: int
-                    Timeout in sec after a try is assumed as timeout
-            :param retries: int
-                    Retries we perform until we assume a target as unhealthy
-            :param http: LoadBalancerHealtCheckHttp
-                    HTTP Config
-            """
+    :param protocol: str
+        Protocol of the service Choices: tcp, http, https
+    :param port: int
+        Port the healthcheck will be performed on
+    :param interval: int
+           Interval we trigger health check in
+    :param timeout: int
+            Timeout in sec after a try is assumed as timeout
+    :param retries: int
+            Retries we perform until we assume a target as unhealthy
+    :param http: LoadBalancerHealtCheckHttp
+            HTTP Config
+    """
 
-    def __init__(self, protocol=None, port=None, interval=None, timeout=None, retries=None, http=None):
+    def __init__(
+        self,
+        protocol=None,
+        port=None,
+        interval=None,
+        timeout=None,
+        retries=None,
+        http=None,
+    ):
         self.protocol = protocol
         self.port = port
         self.interval = interval
@@ -171,19 +193,21 @@ class LoadBalancerHealthCheck(BaseDomain):
 class LoadBalancerHealtCheckHttp(BaseDomain):
     """LoadBalancerHealtCheckHttp Domain
 
-                :param domain: str
-                        Domain name to send in HTTP request. Can be null: In that case we will not send a domain name
-                :param path: str
-                        HTTP Path send in Request
-                :param response: str
-                        Optional HTTP response to receive in order to pass the health check
-                :param status_codes: list
-                        List of HTTP status codes to receive in order to pass the health check
-                :param tls: bool
-                        Type of health check
-                """
+    :param domain: str
+            Domain name to send in HTTP request. Can be null: In that case we will not send a domain name
+    :param path: str
+            HTTP Path send in Request
+    :param response: str
+            Optional HTTP response to receive in order to pass the health check
+    :param status_codes: list
+            List of HTTP status codes to receive in order to pass the health check
+    :param tls: bool
+            Type of health check
+    """
 
-    def __init__(self, domain=None, path=None, response=None, status_codes=None, tls=None):
+    def __init__(
+        self, domain=None, path=None, response=None, status_codes=None, tls=None
+    ):
         self.domain = domain
         self.path = path
         self.response = response
@@ -194,19 +218,21 @@ class LoadBalancerHealtCheckHttp(BaseDomain):
 class LoadBalancerTarget(BaseDomain):
     """LoadBalancerTarget Domain
 
-                :param type: str
-                        Type of the resource, can be server or label_selector
-                :param server: Server
-                        Target server
-                :param label_selector: LoadBalancerTargetLabelSelector
-                        Target label selector
-                :param ip: LoadBalancerTargetIP
-                        Target IP
-                :param use_private_ip: bool
-                        use the private IP instead of primary public IP
+    :param type: str
+            Type of the resource, can be server or label_selector
+    :param server: Server
+            Target server
+    :param label_selector: LoadBalancerTargetLabelSelector
+            Target label selector
+    :param ip: LoadBalancerTargetIP
+            Target IP
+    :param use_private_ip: bool
+            use the private IP instead of primary public IP
     """
 
-    def __init__(self, type=None, server=None, label_selector=None, ip=None, use_private_ip=None):
+    def __init__(
+        self, type=None, server=None, label_selector=None, ip=None, use_private_ip=None
+    ):
         self.type = type
         self.server = server
         self.label_selector = label_selector
@@ -252,17 +278,15 @@ class PublicNetwork(BaseDomain):
     :param ipv6: :class:`IPv6Network <hcloud.load_balancers.domain.IPv6Network>`
     :param enabled:  boolean
     """
-    __slots__ = (
-        "ipv4",
-        "ipv6",
-        "enabled"
-    )
 
-    def __init__(self,
-                 ipv4,     # type: IPv4Address
-                 ipv6,     # type: IPv6Network
-                 enabled,  # type: bool
-                 ):
+    __slots__ = ("ipv4", "ipv6", "enabled")
+
+    def __init__(
+        self,
+        ipv4,  # type: IPv4Address
+        ipv6,  # type: IPv6Network
+        enabled,  # type: bool
+    ):
         self.ipv4 = ipv4
         self.ipv6 = ipv6
         self.enabled = enabled
@@ -274,13 +298,13 @@ class IPv4Address(BaseDomain):
     :param ip: str
            The IPv4 Address
     """
-    __slots__ = (
-        "ip",
-    )
 
-    def __init__(self,
-                 ip,  # type: str
-                 ):
+    __slots__ = ("ip",)
+
+    def __init__(
+        self,
+        ip,  # type: str
+    ):
         self.ip = ip
 
 
@@ -290,13 +314,13 @@ class IPv6Network(BaseDomain):
     :param ip: str
            The IPv6 Network as CIDR Notation
     """
-    __slots__ = (
-        "ip",
-    )
 
-    def __init__(self,
-                 ip,  # type: str
-                 ):
+    __slots__ = ("ip",)
+
+    def __init__(
+        self,
+        ip,  # type: str
+    ):
         self.ip = ip
 
 
@@ -308,15 +332,17 @@ class PrivateNet(BaseDomain):
     :param ip: str
            The main IP Address of the LoadBalancer in the Network
     """
+
     __slots__ = (
         "network",
         "ip",
     )
 
-    def __init__(self,
-                 network,  # type: BoundNetwork
-                 ip,  # type: str
-                 ):
+    def __init__(
+        self,
+        network,  # type: BoundNetwork
+        ip,  # type: str
+    ):
         self.network = network
         self.ip = ip
 
@@ -329,15 +355,16 @@ class CreateLoadBalancerResponse(BaseDomain):
     :param action: :class:`BoundAction <hcloud.actions.client.BoundAction>`
            Shows the progress of the Load Balancer creation
     """
+
     __slots__ = (
         "load_balancer",
         "action",
     )
 
     def __init__(
-            self,
-            load_balancer,  # type: BoundLoadBalancer
-            action,  # type: BoundAction
+        self,
+        load_balancer,  # type: BoundLoadBalancer
+        action,  # type: BoundAction
     ):
         self.load_balancer = load_balancer
         self.action = action

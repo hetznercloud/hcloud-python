@@ -19,13 +19,7 @@ class Iso(BaseDomain, DomainIdentityMixin):
            ISO 8601 timestamp of deprecation, None if ISO is still available. After the deprecation time it will no longer be possible to attach the ISO to servers.
     """
 
-    __slots__ = (
-        "id",
-        "name",
-        "type",
-        "description",
-        "deprecated"
-    )
+    __slots__ = ("id", "name", "type", "description", "deprecated")
 
     def __init__(
         self,

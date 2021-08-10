@@ -13,18 +13,22 @@ class BoundNetwork(BoundModelBase):
         subnets = data.get("subnets", [])
         if subnets is not None:
             subnets = [NetworkSubnet.from_dict(subnet) for subnet in subnets]
-            data['subnets'] = subnets
+            data["subnets"] = subnets
 
         routes = data.get("routes", [])
         if routes is not None:
             routes = [NetworkRoute.from_dict(route) for route in routes]
-            data['routes'] = routes
+            data["routes"] = routes
 
         from hcloud.servers.client import BoundServer
+
         servers = data.get("servers", [])
         if servers is not None:
-            servers = [BoundServer(client._client.servers, {"id": server}, complete=False) for server in servers]
-            data['servers'] = servers
+            servers = [
+                BoundServer(client._client.servers, {"id": server}, complete=False)
+                for server in servers
+            ]
+            data["servers"] = servers
 
         super(BoundNetwork, self).__init__(client, data, complete)
 
@@ -32,12 +36,12 @@ class BoundNetwork(BoundModelBase):
         # type: (Optional[str], Optional[Dict[str, str]]) -> BoundNetwork
         """Updates a network. You can update a network’s name and a networks’s labels.
 
-         :param name: str (optional)
-                New name to set
-         :param labels: Dict[str, str] (optional)
-                User-defined labels (key-value pairs)
-         :return: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>`
-         """
+        :param name: str (optional)
+               New name to set
+        :param labels: Dict[str, str] (optional)
+               User-defined labels (key-value pairs)
+        :return: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>`
+        """
         return self._client.update(self, name, labels)
 
     def delete(self):
@@ -153,11 +157,11 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundNetwork(self, response["network"])
 
     def get_list(
-            self,
-            name=None,  # type: Optional[str]
-            label_selector=None,  # type: Optional[str]
-            page=None,  # type: Optional[int]
-            per_page=None,  # type: Optional[int]
+        self,
+        name=None,  # type: Optional[str]
+        label_selector=None,  # type: Optional[str]
+        page=None,  # type: Optional[int]
+        per_page=None,  # type: Optional[int]
     ):
         # type: (...) -> PageResults[List[BoundNetwork], Meta]
         """Get a list of networks from this account
@@ -214,12 +218,12 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         return super(NetworksClient, self).get_by_name(name)
 
     def create(
-            self,
-            name,  # type: str
-            ip_range,  # type: str
-            subnets=None,  # type: Optional[List[NetworkSubnet]]
-            routes=None,  # type:  Optional[List[NetworkRoute]]
-            labels=None,  # type:  Optional[Dict[str, str]]
+        self,
+        name,  # type: str
+        ip_range,  # type: str
+        subnets=None,  # type: Optional[List[NetworkSubnet]]
+        routes=None,  # type:  Optional[List[NetworkRoute]]
+        labels=None,  # type:  Optional[Dict[str, str]]
     ):
         """Creates a network with range ip_range.
 
@@ -237,10 +241,19 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data = {"name": name, "ip_range": ip_range}
         if subnets is not None:
-            data["subnets"] = [{'type': subnet.type, 'ip_range': subnet.ip_range, 'network_zone': subnet.network_zone}
-                               for subnet in subnets]
+            data["subnets"] = [
+                {
+                    "type": subnet.type,
+                    "ip_range": subnet.ip_range,
+                    "network_zone": subnet.network_zone,
+                }
+                for subnet in subnets
+            ]
         if routes is not None:
-            data["routes"] = [{'destination': route.destination, 'gateway': route.gateway} for route in routes]
+            data["routes"] = [
+                {"destination": route.destination, "gateway": route.gateway}
+                for route in routes
+            ]
         if labels is not None:
             data["labels"] = labels
 
@@ -284,7 +297,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         return True
 
     def get_actions_list(
-            self, network, status=None, sort=None, page=None, per_page=None
+        self, network, status=None, sort=None, page=None, per_page=None
     ):
         # type: (Network, Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction], Meta]
         """Returns all action objects for a network.
@@ -355,9 +368,13 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
             data["vswitch_id"] = subnet.vswitch_id
 
         response = self._client.request(
-            url="/networks/{network_id}/actions/add_subnet".format(network_id=network.id),
-            method="POST", json=data)
-        return BoundAction(self._client.actions, response['action'])
+            url="/networks/{network_id}/actions/add_subnet".format(
+                network_id=network.id
+            ),
+            method="POST",
+            json=data,
+        )
+        return BoundAction(self._client.actions, response["action"])
 
     def delete_subnet(self, network, subnet):
         # type: (Union[Network, BoundNetwork], NetworkSubnet) -> List[BoundAction]
@@ -373,9 +390,13 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         }
 
         response = self._client.request(
-            url="/networks/{network_id}/actions/delete_subnet".format(network_id=network.id),
-            method="POST", json=data)
-        return BoundAction(self._client.actions, response['action'])
+            url="/networks/{network_id}/actions/delete_subnet".format(
+                network_id=network.id
+            ),
+            method="POST",
+            json=data,
+        )
+        return BoundAction(self._client.actions, response["action"])
 
     def add_route(self, network, route):
         # type: (Union[Network, BoundNetwork], NetworkRoute) -> List[BoundAction]
@@ -392,9 +413,13 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         }
 
         response = self._client.request(
-            url="/networks/{network_id}/actions/add_route".format(network_id=network.id),
-            method="POST", json=data)
-        return BoundAction(self._client.actions, response['action'])
+            url="/networks/{network_id}/actions/add_route".format(
+                network_id=network.id
+            ),
+            method="POST",
+            json=data,
+        )
+        return BoundAction(self._client.actions, response["action"])
 
     def delete_route(self, network, route):
         # type: (Union[Network, BoundNetwork], NetworkRoute) -> List[BoundAction]
@@ -411,9 +436,13 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         }
 
         response = self._client.request(
-            url="/networks/{network_id}/actions/delete_route".format(network_id=network.id),
-            method="POST", json=data)
-        return BoundAction(self._client.actions, response['action'])
+            url="/networks/{network_id}/actions/delete_route".format(
+                network_id=network.id
+            ),
+            method="POST",
+            json=data,
+        )
+        return BoundAction(self._client.actions, response["action"])
 
     def change_ip_range(self, network, ip_range):
         # type: (Union[Network, BoundNetwork], str) -> List[BoundAction]
@@ -429,9 +458,13 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         }
 
         response = self._client.request(
-            url="/networks/{network_id}/actions/change_ip_range".format(network_id=network.id),
-            method="POST", json=data)
-        return BoundAction(self._client.actions, response['action'])
+            url="/networks/{network_id}/actions/change_ip_range".format(
+                network_id=network.id
+            ),
+            method="POST",
+            json=data,
+        )
+        return BoundAction(self._client.actions, response["action"])
 
     def change_protection(self, network, delete=None):
         # type: (Union[Network, BoundNetwork], Optional[bool]) -> BoundAction
@@ -447,6 +480,10 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
             data.update({"delete": delete})
 
         response = self._client.request(
-            url="/networks/{network_id}/actions/change_protection".format(network_id=network.id),
-            method="POST", json=data)
-        return BoundAction(self._client.actions, response['action'])
+            url="/networks/{network_id}/actions/change_protection".format(
+                network_id=network.id
+            ),
+            method="POST",
+            json=data,
+        )
+        return BoundAction(self._client.actions, response["action"])

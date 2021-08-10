@@ -26,6 +26,7 @@ class ServerType(BaseDomain, DomainIdentityMixin):
     :param deprecated: bool
            True if server type is deprecated
     """
+
     __slots__ = (
         "id",
         "name",
@@ -36,7 +37,7 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         "prices",
         "storage_type",
         "cpu_type",
-        "deprecated"
+        "deprecated",
     )
 
     def __init__(
@@ -50,7 +51,7 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         prices=None,
         storage_type=None,
         cpu_type=None,
-        deprecated=None
+        deprecated=None,
     ):
         self.id = id
         self.name = name

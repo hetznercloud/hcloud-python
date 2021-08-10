@@ -9,22 +9,20 @@ from hcloud.servers.client import BoundServer
 
 
 class TestBoundNetwork(object):
-
     @pytest.fixture()
     def bound_network(self, hetzner_client):
         return BoundNetwork(client=hetzner_client.networks, data=dict(id=14))
 
     def test_bound_network_init(self, network_response):
         bound_network = BoundNetwork(
-            client=mock.MagicMock(),
-            data=network_response['network']
+            client=mock.MagicMock(), data=network_response["network"]
         )
 
         assert bound_network.id == 1
         assert bound_network.created == isoparse("2016-01-30T23:50:11+00:00")
         assert bound_network.name == "mynet"
         assert bound_network.ip_range == "10.0.0.0/16"
-        assert bound_network.protection['delete'] is False
+        assert bound_network.protection["delete"] is False
 
         assert len(bound_network.servers) == 1
         assert isinstance(bound_network.servers[0], BoundServer)
@@ -46,8 +44,11 @@ class TestBoundNetwork(object):
     def test_get_actions(self, hetzner_client, bound_network, response_get_actions):
         hetzner_client.request.return_value = response_get_actions
         actions = bound_network.get_actions(sort="id")
-        hetzner_client.request.assert_called_with(url="/networks/14/actions", method="GET",
-                                                  params={"page": 1, "per_page": 50, "sort": "id"})
+        hetzner_client.request.assert_called_with(
+            url="/networks/14/actions",
+            method="GET",
+            params={"page": 1, "per_page": 50, "sort": "id"},
+        )
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
@@ -57,7 +58,9 @@ class TestBoundNetwork(object):
     def test_update(self, hetzner_client, bound_network, response_update_network):
         hetzner_client.request.return_value = response_update_network
         network = bound_network.update(name="new-name")
-        hetzner_client.request.assert_called_with(url="/networks/14", method="PUT", json={"name": "new-name"})
+        hetzner_client.request.assert_called_with(
+            url="/networks/14", method="PUT", json={"name": "new-name"}
+        )
 
         assert network.id == 4711
         assert network.name == "new-name"
@@ -72,19 +75,32 @@ class TestBoundNetwork(object):
     def test_change_protection(self, hetzner_client, bound_network, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_network.change_protection(True)
-        hetzner_client.request.assert_called_with(url="/networks/14/actions/change_protection", method="POST",
-                                                  json={"delete": True})
+        hetzner_client.request.assert_called_with(
+            url="/networks/14/actions/change_protection",
+            method="POST",
+            json={"delete": True},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
     def test_add_subnet(self, hetzner_client, bound_network, generic_action):
         hetzner_client.request.return_value = generic_action
-        subnet = NetworkSubnet(type=NetworkSubnet.TYPE_CLOUD, ip_range="10.0.1.0/24", network_zone="eu-central")
+        subnet = NetworkSubnet(
+            type=NetworkSubnet.TYPE_CLOUD,
+            ip_range="10.0.1.0/24",
+            network_zone="eu-central",
+        )
         action = bound_network.add_subnet(subnet)
-        hetzner_client.request.assert_called_with(url="/networks/14/actions/add_subnet", method="POST",
-                                                  json={"type": NetworkSubnet.TYPE_CLOUD, "ip_range": "10.0.1.0/24",
-                                                        "network_zone": "eu-central"})
+        hetzner_client.request.assert_called_with(
+            url="/networks/14/actions/add_subnet",
+            method="POST",
+            json={
+                "type": NetworkSubnet.TYPE_CLOUD,
+                "ip_range": "10.0.1.0/24",
+                "network_zone": "eu-central",
+            },
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -93,8 +109,11 @@ class TestBoundNetwork(object):
         hetzner_client.request.return_value = generic_action
         subnet = NetworkSubnet(ip_range="10.0.1.0/24")
         action = bound_network.delete_subnet(subnet)
-        hetzner_client.request.assert_called_with(url="/networks/14/actions/delete_subnet", method="POST",
-                                                  json={"ip_range": "10.0.1.0/24"})
+        hetzner_client.request.assert_called_with(
+            url="/networks/14/actions/delete_subnet",
+            method="POST",
+            json={"ip_range": "10.0.1.0/24"},
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -103,8 +122,11 @@ class TestBoundNetwork(object):
         hetzner_client.request.return_value = generic_action
         route = NetworkRoute(destination="10.100.1.0/24", gateway="10.0.1.1")
         action = bound_network.add_route(route)
-        hetzner_client.request.assert_called_with(url="/networks/14/actions/add_route", method="POST",
-                                                  json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"})
+        hetzner_client.request.assert_called_with(
+            url="/networks/14/actions/add_route",
+            method="POST",
+            json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"},
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -113,8 +135,11 @@ class TestBoundNetwork(object):
         hetzner_client.request.return_value = generic_action
         route = NetworkRoute(destination="10.100.1.0/24", gateway="10.0.1.1")
         action = bound_network.delete_route(route)
-        hetzner_client.request.assert_called_with(url="/networks/14/actions/delete_route", method="POST",
-                                                  json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"})
+        hetzner_client.request.assert_called_with(
+            url="/networks/14/actions/delete_route",
+            method="POST",
+            json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"},
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -122,26 +147,37 @@ class TestBoundNetwork(object):
     def test_change_ip(self, hetzner_client, bound_network, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_network.change_ip_range("10.0.0.0/12")
-        hetzner_client.request.assert_called_with(url="/networks/14/actions/change_ip_range", method="POST",
-                                                  json={"ip_range": "10.0.0.0/12"})
+        hetzner_client.request.assert_called_with(
+            url="/networks/14/actions/change_ip_range",
+            method="POST",
+            json={"ip_range": "10.0.0.0/12"},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
 
 class TestNetworksClient(object):
-
     @pytest.fixture()
     def networks_client(self):
         return NetworksClient(client=mock.MagicMock())
 
     @pytest.fixture()
     def network_subnet(self):
-        return NetworkSubnet(type=NetworkSubnet.TYPE_CLOUD, ip_range="10.0.1.0/24", network_zone="eu-central")
+        return NetworkSubnet(
+            type=NetworkSubnet.TYPE_CLOUD,
+            ip_range="10.0.1.0/24",
+            network_zone="eu-central",
+        )
 
     @pytest.fixture()
     def network_vswitch_subnet(self):
-        return NetworkSubnet(type=NetworkSubnet.TYPE_VSWITCH, ip_range="10.0.1.0/24", network_zone="eu-central", vswitch_id=123)
+        return NetworkSubnet(
+            type=NetworkSubnet.TYPE_VSWITCH,
+            ip_range="10.0.1.0/24",
+            network_zone="eu-central",
+            vswitch_id=123,
+        )
 
     @pytest.fixture()
     def network_route(self):
@@ -150,23 +186,23 @@ class TestNetworksClient(object):
     def test_get_by_id(self, networks_client, network_response):
         networks_client._client.request.return_value = network_response
         bound_network = networks_client.get_by_id(1)
-        networks_client._client.request.assert_called_with(url="/networks/1", method="GET")
+        networks_client._client.request.assert_called_with(
+            url="/networks/1", method="GET"
+        )
         assert bound_network._client is networks_client
         assert bound_network.id == 1
         assert bound_network.name == "mynet"
 
     @pytest.mark.parametrize(
         "params",
-        [
-            {'label_selector': "label1", 'page': 1, 'per_page': 10},
-            {'name': ""},
-            {}
-        ]
+        [{"label_selector": "label1", "page": 1, "per_page": 10}, {"name": ""}, {}],
     )
     def test_get_list(self, networks_client, two_networks_response, params):
         networks_client._client.request.return_value = two_networks_response
         result = networks_client.get_list(**params)
-        networks_client._client.request.assert_called_with(url="/networks", method="GET", params=params)
+        networks_client._client.request.assert_called_with(
+            url="/networks", method="GET", params=params
+        )
 
         bound_networks = result.networks
         assert result.meta is None
@@ -184,14 +220,16 @@ class TestNetworksClient(object):
         assert bound_network2.id == 2
         assert bound_network2.name == "myanothernet"
 
-    @pytest.mark.parametrize("params", [{'label_selector': "label1"}])
+    @pytest.mark.parametrize("params", [{"label_selector": "label1"}])
     def test_get_all(self, networks_client, two_networks_response, params):
         networks_client._client.request.return_value = two_networks_response
         bound_networks = networks_client.get_all(**params)
 
-        params.update({'page': 1, 'per_page': 50})
+        params.update({"page": 1, "per_page": 50})
 
-        networks_client._client.request.assert_called_with(url="/networks", method="GET", params=params)
+        networks_client._client.request.assert_called_with(
+            url="/networks", method="GET", params=params
+        )
 
         assert len(bound_networks) == 2
 
@@ -210,9 +248,11 @@ class TestNetworksClient(object):
         networks_client._client.request.return_value = one_network_response
         bound_network = networks_client.get_by_name("mynet")
 
-        params = {'name': "mynet"}
+        params = {"name": "mynet"}
 
-        networks_client._client.request.assert_called_with(url="/networks", method="GET", params=params)
+        networks_client._client.request.assert_called_with(
+            url="/networks", method="GET", params=params
+        )
 
         assert bound_network._client is networks_client
         assert bound_network.id == 1
@@ -220,101 +260,102 @@ class TestNetworksClient(object):
 
     def test_create(self, networks_client, network_create_response):
         networks_client._client.request.return_value = network_create_response
-        networks_client.create(
-            name="mynet",
-            ip_range="10.0.0.0/8"
-        )
+        networks_client.create(name="mynet", ip_range="10.0.0.0/8")
         networks_client._client.request.assert_called_with(
             url="/networks",
             method="POST",
             json={
-                'name': "mynet",
-                'ip_range': "10.0.0.0/8",
-            }
+                "name": "mynet",
+                "ip_range": "10.0.0.0/8",
+            },
         )
 
-    def test_create_with_subnet(self, networks_client, network_subnet, network_create_response):
+    def test_create_with_subnet(
+        self, networks_client, network_subnet, network_create_response
+    ):
         networks_client._client.request.return_value = network_create_response
         networks_client.create(
-            name="mynet",
-            ip_range="10.0.0.0/8",
-            subnets=[network_subnet]
+            name="mynet", ip_range="10.0.0.0/8", subnets=[network_subnet]
         )
         networks_client._client.request.assert_called_with(
             url="/networks",
             method="POST",
             json={
-                'name': "mynet",
-                'ip_range': "10.0.0.0/8",
-                'subnets': [
+                "name": "mynet",
+                "ip_range": "10.0.0.0/8",
+                "subnets": [
                     {
-                        'type': NetworkSubnet.TYPE_CLOUD,
-                        'ip_range': "10.0.1.0/24",
-                        'network_zone': "eu-central"
+                        "type": NetworkSubnet.TYPE_CLOUD,
+                        "ip_range": "10.0.1.0/24",
+                        "network_zone": "eu-central",
                     }
-                ]
-            }
+                ],
+            },
         )
 
-    def test_create_with_route(self, networks_client, network_route, network_create_response):
+    def test_create_with_route(
+        self, networks_client, network_route, network_create_response
+    ):
         networks_client._client.request.return_value = network_create_response
         networks_client.create(
-            name="mynet",
-            ip_range="10.0.0.0/8",
-            routes=[network_route]
+            name="mynet", ip_range="10.0.0.0/8", routes=[network_route]
         )
         networks_client._client.request.assert_called_with(
             url="/networks",
             method="POST",
             json={
-                'name': "mynet",
-                'ip_range': "10.0.0.0/8",
-                'routes': [
+                "name": "mynet",
+                "ip_range": "10.0.0.0/8",
+                "routes": [
                     {
-                        'destination': "10.100.1.0/24",
-                        'gateway': "10.0.1.1",
+                        "destination": "10.100.1.0/24",
+                        "gateway": "10.0.1.1",
                     }
-                ]
-            }
+                ],
+            },
         )
 
-    def test_create_with_route_and_subnet(self, networks_client, network_subnet, network_route,
-                                          network_create_response):
+    def test_create_with_route_and_subnet(
+        self, networks_client, network_subnet, network_route, network_create_response
+    ):
         networks_client._client.request.return_value = network_create_response
         networks_client.create(
             name="mynet",
             ip_range="10.0.0.0/8",
             subnets=[network_subnet],
-            routes=[network_route]
+            routes=[network_route],
         )
         networks_client._client.request.assert_called_with(
             url="/networks",
             method="POST",
             json={
-                'name': "mynet",
-                'ip_range': "10.0.0.0/8",
-                'subnets': [
+                "name": "mynet",
+                "ip_range": "10.0.0.0/8",
+                "subnets": [
                     {
-                        'type': NetworkSubnet.TYPE_CLOUD,
-                        'ip_range': "10.0.1.0/24",
-                        'network_zone': "eu-central"
+                        "type": NetworkSubnet.TYPE_CLOUD,
+                        "ip_range": "10.0.1.0/24",
+                        "network_zone": "eu-central",
                     }
                 ],
-                'routes': [
+                "routes": [
                     {
-                        'destination': "10.100.1.0/24",
-                        'gateway': "10.0.1.1",
+                        "destination": "10.100.1.0/24",
+                        "gateway": "10.0.1.1",
                     }
-                ]
-            }
+                ],
+            },
         )
 
-    @pytest.mark.parametrize("network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
+    )
     def test_get_actions_list(self, networks_client, network, response_get_actions):
         networks_client._client.request.return_value = response_get_actions
         result = networks_client.get_actions_list(network, sort="id")
-        networks_client._client.request.assert_called_with(url="/networks/1/actions", method="GET",
-                                                           params={"sort": "id"})
+        networks_client._client.request.assert_called_with(
+            url="/networks/1/actions", method="GET", params={"sort": "id"}
+        )
 
         actions = result.actions
         assert len(actions) == 1
@@ -324,96 +365,152 @@ class TestNetworksClient(object):
         assert actions[0].id == 13
         assert actions[0].command == "add_subnet"
 
-    @pytest.mark.parametrize("network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
+    )
     def test_update(self, networks_client, network, response_update_network):
         networks_client._client.request.return_value = response_update_network
         network = networks_client.update(network, name="new-name")
-        networks_client._client.request.assert_called_with(url="/networks/1", method="PUT", json={"name": "new-name"})
+        networks_client._client.request.assert_called_with(
+            url="/networks/1", method="PUT", json={"name": "new-name"}
+        )
 
         assert network.id == 4711
         assert network.name == "new-name"
 
-    @pytest.mark.parametrize("network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
+    )
     def test_change_protection(self, networks_client, network, generic_action):
         networks_client._client.request.return_value = generic_action
         action = networks_client.change_protection(network, True)
-        networks_client._client.request.assert_called_with(url="/networks/1/actions/change_protection", method="POST",
-                                                           json={"delete": True})
+        networks_client._client.request.assert_called_with(
+            url="/networks/1/actions/change_protection",
+            method="POST",
+            json={"delete": True},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
+    )
     def test_delete(self, networks_client, network, generic_action):
         networks_client._client.request.return_value = generic_action
         delete_success = networks_client.delete(network)
-        networks_client._client.request.assert_called_with(url="/networks/1", method="DELETE")
+        networks_client._client.request.assert_called_with(
+            url="/networks/1", method="DELETE"
+        )
 
         assert delete_success is True
 
-    @pytest.mark.parametrize("network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
+    )
     def test_add_subnet(self, networks_client, network, generic_action, network_subnet):
         networks_client._client.request.return_value = generic_action
 
         action = networks_client.add_subnet(network, network_subnet)
-        networks_client._client.request.assert_called_with(url="/networks/1/actions/add_subnet", method="POST",
-                                                           json={"type": NetworkSubnet.TYPE_CLOUD, "ip_range": "10.0.1.0/24",
-                                                                 "network_zone": "eu-central"})
+        networks_client._client.request.assert_called_with(
+            url="/networks/1/actions/add_subnet",
+            method="POST",
+            json={
+                "type": NetworkSubnet.TYPE_CLOUD,
+                "ip_range": "10.0.1.0/24",
+                "network_zone": "eu-central",
+            },
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))])
-    def test_add_subnet_vswitch(self, networks_client, network, generic_action, network_vswitch_subnet):
+    @pytest.mark.parametrize(
+        "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
+    )
+    def test_add_subnet_vswitch(
+        self, networks_client, network, generic_action, network_vswitch_subnet
+    ):
         networks_client._client.request.return_value = generic_action
 
         action = networks_client.add_subnet(network, network_vswitch_subnet)
-        networks_client._client.request.assert_called_with(url="/networks/1/actions/add_subnet", method="POST",
-                                                           json={"type": NetworkSubnet.TYPE_VSWITCH, "ip_range": "10.0.1.0/24",
-                                                                 "network_zone": "eu-central", "vswitch_id": 123})
+        networks_client._client.request.assert_called_with(
+            url="/networks/1/actions/add_subnet",
+            method="POST",
+            json={
+                "type": NetworkSubnet.TYPE_VSWITCH,
+                "ip_range": "10.0.1.0/24",
+                "network_zone": "eu-central",
+                "vswitch_id": 123,
+            },
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))])
-    def test_delete_subnet(self, networks_client, network, generic_action, network_subnet):
+    @pytest.mark.parametrize(
+        "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
+    )
+    def test_delete_subnet(
+        self, networks_client, network, generic_action, network_subnet
+    ):
         networks_client._client.request.return_value = generic_action
 
         action = networks_client.delete_subnet(network, network_subnet)
-        networks_client._client.request.assert_called_with(url="/networks/1/actions/delete_subnet", method="POST",
-                                                           json={"ip_range": "10.0.1.0/24"})
+        networks_client._client.request.assert_called_with(
+            url="/networks/1/actions/delete_subnet",
+            method="POST",
+            json={"ip_range": "10.0.1.0/24"},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
+    )
     def test_add_route(self, networks_client, network, generic_action, network_route):
         networks_client._client.request.return_value = generic_action
 
         action = networks_client.add_route(network, network_route)
-        networks_client._client.request.assert_called_with(url="/networks/1/actions/add_route", method="POST",
-                                                           json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"})
+        networks_client._client.request.assert_called_with(
+            url="/networks/1/actions/add_route",
+            method="POST",
+            json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))])
-    def test_delete_route(self, networks_client, network, generic_action, network_route):
+    @pytest.mark.parametrize(
+        "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
+    )
+    def test_delete_route(
+        self, networks_client, network, generic_action, network_route
+    ):
         networks_client._client.request.return_value = generic_action
 
         action = networks_client.delete_route(network, network_route)
-        networks_client._client.request.assert_called_with(url="/networks/1/actions/delete_route", method="POST",
-                                                           json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"})
+        networks_client._client.request.assert_called_with(
+            url="/networks/1/actions/delete_route",
+            method="POST",
+            json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
+    )
     def test_change_ip_range(self, networks_client, network, generic_action):
         networks_client._client.request.return_value = generic_action
         action = networks_client.change_ip_range(network, "10.0.0.0/12")
-        networks_client._client.request.assert_called_with(url="/networks/1/actions/change_ip_range", method="POST",
-                                                           json={"ip_range": "10.0.0.0/12"})
+        networks_client._client.request.assert_called_with(
+            url="/networks/1/actions/change_ip_range",
+            method="POST",
+            json={"ip_range": "10.0.0.0/12"},
+        )
 
         assert action.id == 1
         assert action.progress == 0

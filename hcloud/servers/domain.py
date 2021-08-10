@@ -44,6 +44,7 @@ class Server(BaseDomain):
     :param private_net: List[:class:`PrivateNet <hcloud.servers.domain.PrivateNet`]
             Private networks information.
     """
+
     STATUS_RUNNING = "running"
     """Server Status running"""
     STATUS_INIT = "initializing"
@@ -82,31 +83,31 @@ class Server(BaseDomain):
         "volumes",
         "private_net",
         "created",
-        "primary_disk_size"
+        "primary_disk_size",
     )
 
     def __init__(
-            self,
-            id,
-            name=None,
-            status=None,
-            created=None,
-            public_net=None,
-            server_type=None,
-            datacenter=None,
-            image=None,
-            iso=None,
-            rescue_enabled=None,
-            locked=None,
-            backup_window=None,
-            outgoing_traffic=None,
-            ingoing_traffic=None,
-            included_traffic=None,
-            protection=None,
-            labels=None,
-            volumes=None,
-            private_net=None,
-            primary_disk_size=None,
+        self,
+        id,
+        name=None,
+        status=None,
+        created=None,
+        public_net=None,
+        server_type=None,
+        datacenter=None,
+        image=None,
+        iso=None,
+        rescue_enabled=None,
+        locked=None,
+        backup_window=None,
+        outgoing_traffic=None,
+        ingoing_traffic=None,
+        included_traffic=None,
+        protection=None,
+        labels=None,
+        volumes=None,
+        private_net=None,
+        primary_disk_size=None,
     ):
         self.id = id
         self.name = name
@@ -142,19 +143,15 @@ class CreateServerResponse(BaseDomain):
     :param root_password: str, None
            The root password of the server if no SSH-Key was given on server creation
     """
-    __slots__ = (
-        "server",
-        "action",
-        "next_actions",
-        "root_password"
-    )
+
+    __slots__ = ("server", "action", "next_actions", "root_password")
 
     def __init__(
-            self,
-            server,  # type: BoundServer
-            action,  # type: BoundAction
-            next_actions,  # type: List[Action]
-            root_password  # type: str
+        self,
+        server,  # type: BoundServer
+        action,  # type: BoundAction
+        next_actions,  # type: List[Action]
+        root_password,  # type: str
     ):
         self.server = server
         self.action = action
@@ -170,15 +167,13 @@ class ResetPasswordResponse(BaseDomain):
     :param root_password: str
            The root password of the server
     """
-    __slots__ = (
-        "action",
-        "root_password"
-    )
+
+    __slots__ = ("action", "root_password")
 
     def __init__(
-            self,
-            action,  # type: BoundAction
-            root_password  # type: str
+        self,
+        action,  # type: BoundAction
+        root_password,  # type: str
     ):
         self.action = action
         self.root_password = root_password
@@ -192,15 +187,13 @@ class EnableRescueResponse(BaseDomain):
     :param root_password: str
            The root password of the server in the rescue mode
     """
-    __slots__ = (
-        "action",
-        "root_password"
-    )
+
+    __slots__ = ("action", "root_password")
 
     def __init__(
-            self,
-            action,  # type: BoundAction
-            root_password  # type: str
+        self,
+        action,  # type: BoundAction
+        root_password,  # type: str
     ):
         self.action = action
         self.root_password = root_password
@@ -216,17 +209,14 @@ class RequestConsoleResponse(BaseDomain):
     :param password: str
            VNC password to use for this connection. This password only works in combination with a wss_url with valid token.
     """
-    __slots__ = (
-        "action",
-        "wss_url",
-        "password"
-    )
+
+    __slots__ = ("action", "wss_url", "password")
 
     def __init__(
-            self,
-            action,  # type: BoundAction
-            wss_url,  # type: str
-            password,  # type: str
+        self,
+        action,  # type: BoundAction
+        wss_url,  # type: str
+        password,  # type: str
     ):
         self.action = action
         self.wss_url = wss_url
@@ -241,19 +231,16 @@ class PublicNetwork(BaseDomain):
     :param floating_ips: List[:class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`]
     :param firewalls: List[:class:`PublicNetworkFirewall <hcloud.servers.client.PublicNetworkFirewall>`]
     """
-    __slots__ = (
-        "ipv4",
-        "ipv6",
-        "floating_ips",
-        "firewalls"
-    )
 
-    def __init__(self,
-                 ipv4,  # type: IPv4Address
-                 ipv6,  # type: IPv6Network
-                 floating_ips,  # type: List[BoundFloatingIP]
-                 firewalls=None,  # type: List[PublicNetworkFirewall]
-                 ):
+    __slots__ = ("ipv4", "ipv6", "floating_ips", "firewalls")
+
+    def __init__(
+        self,
+        ipv4,  # type: IPv4Address
+        ipv6,  # type: IPv6Network
+        floating_ips,  # type: List[BoundFloatingIP]
+        firewalls=None,  # type: List[PublicNetworkFirewall]
+    ):
         self.ipv4 = ipv4
         self.ipv6 = ipv6
         self.floating_ips = floating_ips
@@ -266,20 +253,19 @@ class PublicNetworkFirewall(BaseDomain):
     :param firewall: :class:`BoundFirewall <hcloud.firewalls.domain.BoundFirewall>`
     :param status: str
     """
-    __slots__ = (
-        "firewall",
-        "status"
-    )
+
+    __slots__ = ("firewall", "status")
 
     STATUS_APPLIED = "applied"
     """Public Network Firewall Status applied"""
     STATUS_PENDING = "pending"
     """Public Network Firewall Status pending"""
 
-    def __init__(self,
-                 firewall,  # type: BoundFirewall
-                 status,  # type: str
-                 ):
+    def __init__(
+        self,
+        firewall,  # type: BoundFirewall
+        status,  # type: str
+    ):
         self.firewall = firewall
         self.status = status
 
@@ -294,17 +280,15 @@ class IPv4Address(BaseDomain):
     :param dns_ptr: str
            DNS PTR for the ip
     """
-    __slots__ = (
-        "ip",
-        "blocked",
-        "dns_ptr"
-    )
 
-    def __init__(self,
-                 ip,  # type: str
-                 blocked,  # type: bool
-                 dns_ptr,  # type: str
-                 ):
+    __slots__ = ("ip", "blocked", "dns_ptr")
+
+    def __init__(
+        self,
+        ip,  # type: str
+        blocked,  # type: bool
+        dns_ptr,  # type: str
+    ):
         self.ip = ip
         self.blocked = blocked
         self.dns_ptr = dns_ptr
@@ -324,19 +308,15 @@ class IPv6Network(BaseDomain):
     :param network_mask: str
            The network mask
     """
-    __slots__ = (
-        "ip",
-        "blocked",
-        "dns_ptr",
-        "network",
-        "network_mask"
-    )
 
-    def __init__(self,
-                 ip,  # type: str
-                 blocked,  # type: bool
-                 dns_ptr,  # type: list
-                 ):
+    __slots__ = ("ip", "blocked", "dns_ptr", "network", "network_mask")
+
+    def __init__(
+        self,
+        ip,  # type: str
+        blocked,  # type: bool
+        dns_ptr,  # type: list
+    ):
         self.ip = ip
         self.blocked = blocked
         self.dns_ptr = dns_ptr
@@ -357,19 +337,16 @@ class PrivateNet(BaseDomain):
     :param mac_address: str
            The mac address of the interface on the server
     """
-    __slots__ = (
-        "network",
-        "ip",
-        "alias_ips",
-        "mac_address"
-    )
 
-    def __init__(self,
-                 network,  # type: BoundNetwork
-                 ip,  # type: str
-                 alias_ips,  # type: List[str]
-                 mac_address,  # type: str
-                 ):
+    __slots__ = ("network", "ip", "alias_ips", "mac_address")
+
+    def __init__(
+        self,
+        network,  # type: BoundNetwork
+        ip,  # type: str
+        alias_ips,  # type: List[str]
+        mac_address,  # type: str
+    ):
         self.network = network
         self.ip = ip
         self.alias_ips = alias_ips

@@ -22,7 +22,6 @@ def two_locations_response():
     return {
         "locations": [
             {
-
                 "id": 1,
                 "name": "fsn1",
                 "description": "Falkenstein DC Park 1",
@@ -31,7 +30,6 @@ def two_locations_response():
                 "latitude": 50.47612,
                 "longitude": 12.370071,
                 "network_zone": "eu-central",
-
             },
             {
                 "id": 2,
@@ -42,7 +40,7 @@ def two_locations_response():
                 "latitude": 49.452102,
                 "longitude": 11.076665,
                 "network_zone": "eu-central",
-            }
+            },
         ]
     }
 
@@ -52,7 +50,6 @@ def one_locations_response():
     return {
         "locations": [
             {
-
                 "id": 1,
                 "name": "fsn1",
                 "description": "Falkenstein DC Park 1",

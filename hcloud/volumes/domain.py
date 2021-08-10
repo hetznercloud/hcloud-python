@@ -30,6 +30,7 @@ class Volume(BaseDomain, DomainIdentityMixin):
     :param format: str, None
            Filesystem of the volume if formatted on creation, None if not formatted on creation.
     """
+
     STATUS_CREATING = "creating"
     """Volume Status creating"""
     STATUS_AVAILABLE = "available"
@@ -46,23 +47,22 @@ class Volume(BaseDomain, DomainIdentityMixin):
         "protection",
         "labels",
         "status",
-        "created"
+        "created",
     )
 
     def __init__(
-            self,
-            id,
-            name=None,
-            server=None,
-            created=None,
-            location=None,
-            size=None,
-            linux_device=None,
-            format=None,
-            protection=None,
-            labels=None,
-            status=None
-
+        self,
+        id,
+        name=None,
+        server=None,
+        created=None,
+        location=None,
+        size=None,
+        linux_device=None,
+        format=None,
+        protection=None,
+        labels=None,
+        status=None,
     ):
         self.id = id
         self.name = name
@@ -87,17 +87,14 @@ class CreateVolumeResponse(BaseDomain):
     :param next_actions: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
            List of actions that are performed after the creation, like attaching to a server
     """
-    __slots__ = (
-        "volume",
-        "action",
-        "next_actions"
-    )
+
+    __slots__ = ("volume", "action", "next_actions")
 
     def __init__(
-            self,
-            volume,  # type: BoundVolume
-            action,  # type: BoundAction
-            next_actions,  # type: List[BoundAction]
+        self,
+        volume,  # type: BoundVolume
+        action,  # type: BoundAction
+        next_actions,  # type: List[BoundAction]
     ):
         self.volume = volume
         self.action = action

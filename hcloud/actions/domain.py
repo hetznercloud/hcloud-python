@@ -16,6 +16,7 @@ class Action(BaseDomain):
     :param resources: Resources the action relates to
     :param error: Error message for the action if error occurred, otherwise None.
     """
+
     STATUS_RUNNING = "running"
     """Action Status running"""
     STATUS_SUCCESS = "success"
@@ -31,19 +32,19 @@ class Action(BaseDomain):
         "resources",
         "error",
         "started",
-        "finished"
+        "finished",
     )
 
     def __init__(
-            self,
-            id,
-            command=None,
-            status=None,
-            progress=None,
-            started=None,
-            finished=None,
-            resources=None,
-            error=None
+        self,
+        id,
+        command=None,
+        status=None,
+        progress=None,
+        started=None,
+        finished=None,
+        resources=None,
+        error=None,
     ):
         self.id = id
         self.command = command

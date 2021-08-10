@@ -34,7 +34,15 @@ class Pagination(BaseDomain):
         "total_entries",
     )
 
-    def __init__(self, page, per_page, previous_page=None, next_page=None, last_page=None, total_entries=None):
+    def __init__(
+        self,
+        page,
+        per_page,
+        previous_page=None,
+        next_page=None,
+        last_page=None,
+        total_entries=None,
+    ):
         self.page = page
         self.per_page = per_page
         self.previous_page = previous_page
@@ -45,9 +53,7 @@ class Pagination(BaseDomain):
 
 class Meta(BaseDomain):
 
-    __slots__ = (
-        "pagination",
-    )
+    __slots__ = ("pagination",)
 
     def __init__(
         self,
@@ -60,7 +66,7 @@ class Meta(BaseDomain):
         meta = None
         if json_content and "meta" in json_content:
             meta = cls()
-            pagination_json = json_content['meta'].get("pagination")
+            pagination_json = json_content["meta"].get("pagination")
             if pagination_json:
                 pagination = Pagination(**pagination_json)
                 meta.pagination = pagination
@@ -69,9 +75,6 @@ class Meta(BaseDomain):
 
 def add_meta_to_result(result, json_content, attr_name):
     # type: (List[BoundModelBase], json, string) -> PageResult
-    class_name = 'PageResults{0}'.format(attr_name.capitalize())
-    PageResults = namedtuple(class_name, [attr_name, 'meta'])
-    return PageResults(**{
-        attr_name: result,
-        'meta': Meta.parse_meta(json_content)
-    })
+    class_name = "PageResults{0}".format(attr_name.capitalize())
+    PageResults = namedtuple(class_name, [attr_name, "meta"])
+    return PageResults(**{attr_name: result, "meta": Meta.parse_meta(json_content)})

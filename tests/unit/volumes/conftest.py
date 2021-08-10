@@ -16,16 +16,14 @@ def volume_response():
                 "country": "DE",
                 "city": "Falkenstein",
                 "latitude": 50.47612,
-                "longitude": 12.370071
+                "longitude": 12.370071,
             },
             "size": 42,
             "linux_device": "/dev/disk/by-id/scsi-0HC_Volume_4711",
-            "protection": {
-                "delete": False
-            },
+            "protection": {"delete": False},
             "format": "xfs",
             "labels": {},
-            "status": "available"
+            "status": "available",
         }
     }
 
@@ -46,16 +44,14 @@ def two_volumes_response():
                     "country": "DE",
                     "city": "Falkenstein",
                     "latitude": 50.47612,
-                    "longitude": 12.370071
+                    "longitude": 12.370071,
                 },
                 "size": 42,
                 "linux_device": "/dev/disk/by-id/scsi-0HC_Volume_4711",
-                "protection": {
-                    "delete": False
-                },
+                "protection": {"delete": False},
                 "format": "xfs",
                 "labels": {},
-                "status": "available"
+                "status": "available",
             },
             {
                 "id": 2,
@@ -69,17 +65,15 @@ def two_volumes_response():
                     "country": "DE",
                     "city": "Falkenstein",
                     "latitude": 50.47612,
-                    "longitude": 12.370071
+                    "longitude": 12.370071,
                 },
                 "size": 42,
                 "linux_device": "/dev/disk/by-id/scsi-0HC_Volume_4711",
-                "protection": {
-                    "delete": False
-                },
+                "protection": {"delete": False},
                 "format": "xfs",
                 "labels": {},
-                "status": "available"
-            }
+                "status": "available",
+            },
         ]
     }
 
@@ -100,16 +94,14 @@ def one_volumes_response():
                     "country": "DE",
                     "city": "Falkenstein",
                     "latitude": 50.47612,
-                    "longitude": 12.370071
+                    "longitude": 12.370071,
                 },
                 "size": 42,
                 "linux_device": "/dev/disk/by-id/scsi-0HC_Volume_4711",
-                "protection": {
-                    "delete": False
-                },
+                "protection": {"delete": False},
                 "format": "xfs",
                 "labels": {},
-                "status": "available"
+                "status": "available",
             }
         ]
     }
@@ -130,16 +122,14 @@ def volume_create_response():
                 "country": "DE",
                 "city": "Falkenstein",
                 "latitude": 50.47612,
-                "longitude": 12.370071
+                "longitude": 12.370071,
             },
             "size": 42,
             "linux_device": "/dev/disk/by-id/scsi-0HC_Volume_4711",
-            "protection": {
-                "delete": False
-            },
+            "protection": {"delete": False},
             "format": "xfs",
             "labels": {},
-            "status": "available"
+            "status": "available",
         },
         "action": {
             "id": 13,
@@ -148,16 +138,8 @@ def volume_create_response():
             "progress": 0,
             "started": "2016-01-30T23:50+00:00",
             "finished": None,
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 42, "type": "server"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         },
         "next_actions": [
             {
@@ -167,18 +149,10 @@ def volume_create_response():
                 "progress": 0,
                 "started": "2016-01-30T23:50+00:00",
                 "finished": None,
-                "resources": [
-                    {
-                        "id": 42,
-                        "type": "server"
-                    }
-                ],
-                "error": {
-                    "code": "action_failed",
-                    "message": "Action failed"
-                }
+                "resources": [{"id": 42, "type": "server"}],
+                "error": {"code": "action_failed", "message": "Action failed"},
             }
-        ]
+        ],
     }
 
 
@@ -197,16 +171,14 @@ def response_update_volume():
                 "country": "DE",
                 "city": "Falkenstein",
                 "latitude": 50.47612,
-                "longitude": 12.370071
+                "longitude": 12.370071,
             },
             "format": "xfs",
             "size": 42,
             "linux_device": "/dev/disk/by-id/scsi-0HC_Volume_4711",
-            "protection": {
-                "delete": False
-            },
+            "protection": {"delete": False},
             "labels": {},
-            "status": "available"
+            "status": "available",
         }
     }
 
@@ -222,16 +194,8 @@ def response_get_actions():
                 "progress": 100,
                 "started": "2016-01-30T23:55:00+00:00",
                 "finished": "2016-01-30T23:56:00+00:00",
-                "resources": [
-                    {
-                        "id": 42,
-                        "type": "server"
-                    }
-                ],
-                "error": {
-                    "code": "action_failed",
-                    "message": "Action failed"
-                }
+                "resources": [{"id": 42, "type": "server"}],
+                "error": {"code": "action_failed", "message": "Action failed"},
             }
         ]
     }

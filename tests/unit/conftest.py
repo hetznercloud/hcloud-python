@@ -3,9 +3,9 @@ import pytest
 from hcloud import Client
 
 
-@pytest.fixture(autouse=True, scope='function')
+@pytest.fixture(autouse=True, scope="function")
 def mocked_requests():
-    patcher = mock.patch('hcloud.hcloud.requests')
+    patcher = mock.patch("hcloud.hcloud.requests")
     mocked_requests = patcher.start()
     yield mocked_requests
     patcher.stop()
@@ -21,16 +21,8 @@ def generic_action():
             "progress": 0,
             "started": "2016-01-30T23:50+00:00",
             "finished": None,
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 42, "type": "server"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
