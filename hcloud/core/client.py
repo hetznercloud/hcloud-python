@@ -16,35 +16,46 @@ class ClientEntityBase(object):
     def _is_list_attribute_implemented(self):
         if self.results_list_attribute_name is None:
             raise NotImplementedError(
-                "in order to get results list, 'results_list_attribute_name' attribute of {} has to be specified". format(self.__class__.__name__)
+                "in order to get results list, 'results_list_attribute_name' attribute of {} has to be specified".format(
+                    self.__class__.__name__
+                )
             )
 
-    def _add_meta_to_result(self,
-                            results,  # type: List[BoundModelBase]
-                            response  # type: json
-                            ):
+    def _add_meta_to_result(
+        self,
+        results,  # type: List[BoundModelBase]
+        response,  # type: json
+    ):
         # type: (...) -> PageResult
         self._is_list_attribute_implemented()
         return add_meta_to_result(results, response, self.results_list_attribute_name)
 
-    def _get_all(self,
-                 list_function,                # type: function
-                 results_list_attribute_name,  # type: str
-                 *args,
-                 **kwargs
-                 ):
+    def _get_all(
+        self,
+        list_function,  # type: function
+        results_list_attribute_name,  # type: str
+        *args,
+        **kwargs
+    ):
         # type (...) -> List[BoundModelBase]
         page = 1
 
         results = []
 
         while page:
-            page_result = list_function(page=page, per_page=self.max_per_page, *args, **kwargs)
+            page_result = list_function(
+                page=page, per_page=self.max_per_page, *args, **kwargs
+            )
             result = getattr(page_result, results_list_attribute_name)
             if result:
                 results.extend(result)
             meta = page_result.meta
-            if meta and meta.pagination and meta.pagination.next_page and meta.pagination.next_page:
+            if (
+                meta
+                and meta.pagination
+                and meta.pagination.next_page
+                and meta.pagination.next_page
+            ):
                 page = meta.pagination.next_page
             else:
                 page = None
@@ -54,14 +65,16 @@ class ClientEntityBase(object):
     def get_all(self, *args, **kwargs):
         # type: (...) -> List[BoundModelBase]
         self._is_list_attribute_implemented()
-        return self._get_all(self.get_list, self.results_list_attribute_name, *args, **kwargs)
+        return self._get_all(
+            self.get_list, self.results_list_attribute_name, *args, **kwargs
+        )
 
     def get_actions(self, *args, **kwargs):
         # type: (...) -> List[BoundModelBase]
-        if not hasattr(self, 'get_actions_list'):
-            raise ValueError('this endpoint does not support get_actions method')
+        if not hasattr(self, "get_actions_list"):
+            raise ValueError("this endpoint does not support get_actions method")
 
-        return self._get_all(self.get_actions_list, 'actions', *args, **kwargs)
+        return self._get_all(self.get_actions_list, "actions", *args, **kwargs)
 
 
 class GetEntityByNameMixin(object):
@@ -80,6 +93,7 @@ class GetEntityByNameMixin(object):
 
 class BoundModelBase(object):
     """Bound Model Base"""
+
     model = None
 
     def __init__(self, client, data={}, complete=True):
@@ -107,8 +121,7 @@ class BoundModelBase(object):
         return value
 
     def reload(self):
-        """Reloads the model and tries to get all data from the APIx
-        """
+        """Reloads the model and tries to get all data from the APIx"""
         bound_model = self._client.get_by_id(self.data_model.id)
         self.data_model = bound_model.data_model
         self.complete = True

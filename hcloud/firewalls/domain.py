@@ -20,23 +20,11 @@ class Firewall(BaseDomain):
     :param created: datetime
            Point in time when the image was created
     """
-    __slots__ = (
-        "id",
-        "name",
-        "labels",
-        "rules",
-        "applied_to",
-        "created"
-    )
+
+    __slots__ = ("id", "name", "labels", "rules", "applied_to", "created")
 
     def __init__(
-            self,
-            id=None,
-            name=None,
-            labels=None,
-            rules=None,
-            applied_to=None,
-            created=None
+        self, id=None, name=None, labels=None, rules=None, applied_to=None, created=None
     ):
         self.id = id
         self.name = name
@@ -63,13 +51,14 @@ class FirewallRule:
     :param description: str
            Short description of the firewall rule
     """
+
     __slots__ = (
         "direction",
         "port",
         "protocol",
         "source_ips",
         "destination_ips",
-        "description"
+        "description",
     )
 
     DIRECTION_IN = "in"
@@ -89,13 +78,13 @@ class FirewallRule:
     """Firewall Rule Protocol GRE"""
 
     def __init__(
-            self,
-            direction,  # type: str
-            protocol,  # type: str
-            source_ips,  # type: List[str]
-            port=None,  # type: Optional[str]
-            destination_ips=None,  # type: Optional[List[str]]
-            description=None,  # type: Optional[str]
+        self,
+        direction,  # type: str
+        protocol,  # type: str
+        source_ips,  # type: List[str]
+        port=None,  # type: Optional[str]
+        destination_ips=None,  # type: Optional[List[str]]
+        description=None,  # type: Optional[str]
     ):
         self.direction = direction
         self.port = port
@@ -129,11 +118,8 @@ class FirewallResource:
     :param label_selector: Optional[FirewallResourceLabelSelector]
            Label Selector for Servers the Firewall should be applied to
     """
-    __slots__ = (
-        "type",
-        "server",
-        "label_selector"
-    )
+
+    __slots__ = ("type", "server", "label_selector")
 
     TYPE_SERVER = "server"
     """Firewall Used By Type Server"""
@@ -141,11 +127,10 @@ class FirewallResource:
     """Firewall Used By Type label_selector"""
 
     def __init__(
-            self,
-            type,  # type: str
-            server=None,  # type: Optional[Server]
-            label_selector=None,  # type: Optional[FirewallResourceLabelSelector]
-
+        self,
+        type,  # type: str
+        server=None,  # type: Optional[Server]
+        label_selector=None,  # type: Optional[FirewallResourceLabelSelector]
     ):
         self.type = type
         self.server = server
@@ -159,7 +144,9 @@ class FirewallResource:
             payload.update({"server": {"id": self.server.id}})
 
         if self.label_selector is not None:
-            payload.update({"label_selector": {"selector": self.label_selector.selector}})
+            payload.update(
+                {"label_selector": {"selector": self.label_selector.selector}}
+            )
         return payload
 
 
@@ -181,15 +168,13 @@ class CreateFirewallResponse(BaseDomain):
     :param actions: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
            The Action which shows the progress of the Firewall Creation
     """
-    __slots__ = (
-        "firewall",
-        "actions"
-    )
+
+    __slots__ = ("firewall", "actions")
 
     def __init__(
-            self,
-            firewall,  # type: BoundFirewall
-            actions,  # type: BoundAction
+        self,
+        firewall,  # type: BoundFirewall
+        actions,  # type: BoundAction
     ):
         self.firewall = firewall
         self.actions = actions

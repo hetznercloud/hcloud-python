@@ -20,14 +20,8 @@ class SSHKey(BaseDomain, DomainIdentityMixin):
     :param created: datetime
            Point in time when the SSH Key was created
     """
-    __slots__ = (
-        "id",
-        "name",
-        "fingerprint",
-        "public_key",
-        "labels",
-        "created"
-    )
+
+    __slots__ = ("id", "name", "fingerprint", "public_key", "labels", "created")
 
     def __init__(
         self,
@@ -36,7 +30,7 @@ class SSHKey(BaseDomain, DomainIdentityMixin):
         fingerprint=None,
         public_key=None,
         labels=None,
-        created=None
+        created=None,
     ):
         self.id = id
         self.name = name

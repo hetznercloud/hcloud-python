@@ -4,6 +4,7 @@ stages:
 .tests_template: &tests_template
   before_script:
   - pip install tox
+  - apk add build-base
   stage: test
   script:
     tox
@@ -36,9 +37,8 @@ python310:
   script: tox -e py310
 
 test-style:
-  before_script:
-  - pip install tox
+  <<: *tests_template
   image: python:3.7-alpine
-  script: tox -e flake8
-  tags:
-  - hc-bladerunner
+  script:
+    - tox -e flake8
+    - tox -e black

@@ -7,7 +7,14 @@ from hcloud.floating_ips.client import BoundFloatingIP
 from hcloud.isos.client import BoundIso
 from hcloud.servers.client import ServersClient, BoundServer
 
-from hcloud.servers.domain import Server, PublicNetwork, IPv4Address, IPv6Network, PublicNetworkFirewall, PrivateNet
+from hcloud.servers.domain import (
+    Server,
+    PublicNetwork,
+    IPv4Address,
+    IPv6Network,
+    PublicNetworkFirewall,
+    PrivateNet,
+)
 from hcloud.volumes.client import BoundVolume
 from hcloud.volumes.domain import Volume
 from hcloud.images.domain import Image
@@ -24,15 +31,13 @@ from hcloud.networks.client import BoundNetwork
 
 
 class TestBoundServer(object):
-
     @pytest.fixture()
     def bound_server(self, hetzner_client):
         return BoundServer(client=hetzner_client.servers, data=dict(id=14))
 
     def test_bound_server_init(self, response_full_server):
         bound_server = BoundServer(
-            client=mock.MagicMock(),
-            data=response_full_server['server']
+            client=mock.MagicMock(), data=response_full_server["server"]
         )
 
         assert bound_server.id == 42
@@ -62,12 +67,17 @@ class TestBoundServer(object):
         assert bound_server.public_net.floating_ips[0].complete is False
 
         assert isinstance(bound_server.datacenter, BoundDatacenter)
-        assert bound_server.datacenter._client == bound_server._client._client.datacenters
+        assert (
+            bound_server.datacenter._client == bound_server._client._client.datacenters
+        )
         assert bound_server.datacenter.id == 1
         assert bound_server.datacenter.complete is True
 
         assert isinstance(bound_server.server_type, BoundServerType)
-        assert bound_server.server_type._client == bound_server._client._client.server_types
+        assert (
+            bound_server.server_type._client
+            == bound_server._client._client.server_types
+        )
         assert bound_server.server_type.id == 1
         assert bound_server.server_type.complete is True
 
@@ -96,7 +106,10 @@ class TestBoundServer(object):
 
         assert len(bound_server.private_net) == 1
         assert isinstance(bound_server.private_net[0], PrivateNet)
-        assert bound_server.private_net[0].network._client == bound_server._client._client.networks
+        assert (
+            bound_server.private_net[0].network._client
+            == bound_server._client._client.networks
+        )
         assert bound_server.private_net[0].ip == "10.1.1.5"
         assert bound_server.private_net[0].mac_address == "86:00:ff:2a:7d:e1"
         assert len(bound_server.private_net[0].alias_ips) == 1
@@ -105,18 +118,23 @@ class TestBoundServer(object):
     @pytest.mark.parametrize(
         "params",
         [
-            {"status": [Server.STATUS_RUNNING],
-             "sort": "status",
-             "page": 1,
-             "per_page": 10},
-            {}
-
-        ]
+            {
+                "status": [Server.STATUS_RUNNING],
+                "sort": "status",
+                "page": 1,
+                "per_page": 10,
+            },
+            {},
+        ],
     )
-    def test_get_actions_list(self, hetzner_client, bound_server, response_get_actions, params):
+    def test_get_actions_list(
+        self, hetzner_client, bound_server, response_get_actions, params
+    ):
         hetzner_client.request.return_value = response_get_actions
         result = bound_server.get_actions_list(**params)
-        hetzner_client.request.assert_called_with(url="/servers/14/actions", method="GET", params=params)
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions", method="GET", params=params
+        )
 
         actions = result.actions
         assert result.meta is None
@@ -127,21 +145,19 @@ class TestBoundServer(object):
         assert actions[0].command == "start_server"
 
     @pytest.mark.parametrize(
-        "params",
-        [
-            {"status": [Server.STATUS_RUNNING],
-             "sort": "status"},
-            {}
-
-        ]
+        "params", [{"status": [Server.STATUS_RUNNING], "sort": "status"}, {}]
     )
-    def test_get_actions(self, hetzner_client, bound_server, response_get_actions, params):
+    def test_get_actions(
+        self, hetzner_client, bound_server, response_get_actions, params
+    ):
         hetzner_client.request.return_value = response_get_actions
         actions = bound_server.get_actions(**params)
 
-        params.update({'page': 1, 'per_page': 50})
+        params.update({"page": 1, "per_page": 50})
 
-        hetzner_client.request.assert_called_with(url="/servers/14/actions", method="GET", params=params)
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions", method="GET", params=params
+        )
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
@@ -151,8 +167,9 @@ class TestBoundServer(object):
     def test_update(self, hetzner_client, bound_server, response_update_server):
         hetzner_client.request.return_value = response_update_server
         server = bound_server.update(name="new-name", labels={})
-        hetzner_client.request.assert_called_with(url="/servers/14", method="PUT",
-                                                  json={"name": "new-name", "labels": {}})
+        hetzner_client.request.assert_called_with(
+            url="/servers/14", method="PUT", json={"name": "new-name", "labels": {}}
+        )
 
         assert server.id == 14
         assert server.name == "new-name"
@@ -168,7 +185,9 @@ class TestBoundServer(object):
     def test_power_off(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.power_off()
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/poweroff", method="POST")
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/poweroff", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -176,7 +195,9 @@ class TestBoundServer(object):
     def test_power_on(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.power_on()
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/poweron", method="POST")
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/poweron", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -184,7 +205,9 @@ class TestBoundServer(object):
     def test_reboot(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.reboot()
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/reboot", method="POST")
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/reboot", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -192,7 +215,9 @@ class TestBoundServer(object):
     def test_reset(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.reset()
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/reset", method="POST")
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/reset", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -200,15 +225,21 @@ class TestBoundServer(object):
     def test_shutdown(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.shutdown()
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/shutdown", method="POST")
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/shutdown", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    def test_reset_password(self, hetzner_client, bound_server, response_server_reset_password):
+    def test_reset_password(
+        self, hetzner_client, bound_server, response_server_reset_password
+    ):
         hetzner_client.request.return_value = response_server_reset_password
         response = bound_server.reset_password()
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/reset_password", method="POST")
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/reset_password", method="POST"
+        )
 
         assert response.action.id == 1
         assert response.action.progress == 0
@@ -217,17 +248,25 @@ class TestBoundServer(object):
     def test_change_type(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.change_type(ServerType(name="cx11"), upgrade_disk=True)
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/change_type", method="POST",
-                                                  json={"server_type": "cx11", "upgrade_disk": True})
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/change_type",
+            method="POST",
+            json={"server_type": "cx11", "upgrade_disk": True},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    def test_enable_rescue(self, hetzner_client, bound_server, response_server_enable_rescue):
+    def test_enable_rescue(
+        self, hetzner_client, bound_server, response_server_enable_rescue
+    ):
         hetzner_client.request.return_value = response_server_enable_rescue
         response = bound_server.enable_rescue(type="linux64")
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/enable_rescue", method="POST",
-                                                  json={"type": "linux64"})
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/enable_rescue",
+            method="POST",
+            json={"type": "linux64"},
+        )
 
         assert response.action.id == 1
         assert response.action.progress == 0
@@ -236,16 +275,23 @@ class TestBoundServer(object):
     def test_disable_rescue(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.disable_rescue()
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/disable_rescue", method="POST")
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/disable_rescue", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    def test_create_image(self, hetzner_client, bound_server, response_server_create_image):
+    def test_create_image(
+        self, hetzner_client, bound_server, response_server_create_image
+    ):
         hetzner_client.request.return_value = response_server_create_image
         response = bound_server.create_image(description="my image", type="snapshot")
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/create_image", method="POST",
-                                                  json={"description": "my image", "type": "snapshot"})
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/create_image",
+            method="POST",
+            json={"description": "my image", "type": "snapshot"},
+        )
 
         assert response.action.id == 1
         assert response.action.progress == 0
@@ -254,8 +300,11 @@ class TestBoundServer(object):
     def test_rebuild(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.rebuild(Image(name="ubuntu-20.04"))
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/rebuild", method="POST",
-                                                  json={"image": "ubuntu-20.04"})
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/rebuild",
+            method="POST",
+            json={"image": "ubuntu-20.04"},
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -263,7 +312,9 @@ class TestBoundServer(object):
     def test_enable_backup(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.enable_backup()
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/enable_backup", method="POST")
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/enable_backup", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -271,7 +322,9 @@ class TestBoundServer(object):
     def test_disable_backup(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.disable_backup()
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/disable_backup", method="POST")
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/disable_backup", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -279,8 +332,11 @@ class TestBoundServer(object):
     def test_attach_iso(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.attach_iso(Iso(name="FreeBSD-11.0-RELEASE-amd64-dvd1"))
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/attach_iso", method="POST",
-                                                  json={"iso": "FreeBSD-11.0-RELEASE-amd64-dvd1"})
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/attach_iso",
+            method="POST",
+            json={"iso": "FreeBSD-11.0-RELEASE-amd64-dvd1"},
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -288,7 +344,9 @@ class TestBoundServer(object):
     def test_detach_iso(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.detach_iso()
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/detach_iso", method="POST")
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/detach_iso", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -296,8 +354,11 @@ class TestBoundServer(object):
     def test_change_dns_ptr(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.change_dns_ptr("1.2.3.4", "example.com")
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/change_dns_ptr", method="POST",
-                                                  json={"ip": "1.2.3.4", "dns_ptr": "example.com"})
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/change_dns_ptr",
+            method="POST",
+            json={"ip": "1.2.3.4", "dns_ptr": "example.com"},
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -305,51 +366,87 @@ class TestBoundServer(object):
     def test_change_protection(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.change_protection(True, True)
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/change_protection", method="POST",
-                                                  json={"delete": True, "rebuild": True})
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/change_protection",
+            method="POST",
+            json={"delete": True, "rebuild": True},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    def test_request_console(self, hetzner_client, bound_server, response_server_request_console):
+    def test_request_console(
+        self, hetzner_client, bound_server, response_server_request_console
+    ):
         hetzner_client.request.return_value = response_server_request_console
         response = bound_server.request_console()
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/request_console", method="POST")
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/request_console", method="POST"
+        )
 
         assert response.action.id == 1
         assert response.action.progress == 0
-        assert response.wss_url == "wss://console.hetzner.cloud/?server_id=1&token=3db32d15-af2f-459c-8bf8-dee1fd05f49c"
+        assert (
+            response.wss_url
+            == "wss://console.hetzner.cloud/?server_id=1&token=3db32d15-af2f-459c-8bf8-dee1fd05f49c"
+        )
         assert response.password == "9MQaTg2VAGI0FIpc10k3UpRXcHj2wQ6x"
 
-    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
-    def test_attach_to_network(self, hetzner_client, bound_server, network, response_attach_to_network):
+    @pytest.mark.parametrize(
+        "network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))]
+    )
+    def test_attach_to_network(
+        self, hetzner_client, bound_server, network, response_attach_to_network
+    ):
         hetzner_client.request.return_value = response_attach_to_network
-        action = bound_server.attach_to_network(network, "10.0.1.1", ["10.0.1.2", "10.0.1.3"])
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/attach_to_network", method="POST",
-                                                  json={"network": 4711, "ip": "10.0.1.1",
-                                                        "alias_ips": ["10.0.1.2", "10.0.1.3"]})
+        action = bound_server.attach_to_network(
+            network, "10.0.1.1", ["10.0.1.2", "10.0.1.3"]
+        )
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/attach_to_network",
+            method="POST",
+            json={
+                "network": 4711,
+                "ip": "10.0.1.1",
+                "alias_ips": ["10.0.1.2", "10.0.1.3"],
+            },
+        )
 
         assert action.id == 1
         assert action.progress == 0
         assert action.command == "attach_to_network"
 
-    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
-    def test_detach_from_network(self, hetzner_client, bound_server, network, response_detach_from_network):
+    @pytest.mark.parametrize(
+        "network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))]
+    )
+    def test_detach_from_network(
+        self, hetzner_client, bound_server, network, response_detach_from_network
+    ):
         hetzner_client.request.return_value = response_detach_from_network
         action = bound_server.detach_from_network(network)
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/detach_from_network", method="POST",
-                                                  json={"network": 4711})
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/detach_from_network",
+            method="POST",
+            json={"network": 4711},
+        )
 
         assert action.id == 1
         assert action.progress == 0
         assert action.command == "detach_from_network"
 
-    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
-    def test_change_alias_ips(self, hetzner_client, bound_server, network, response_change_alias_ips):
+    @pytest.mark.parametrize(
+        "network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))]
+    )
+    def test_change_alias_ips(
+        self, hetzner_client, bound_server, network, response_change_alias_ips
+    ):
         hetzner_client.request.return_value = response_change_alias_ips
         action = bound_server.change_alias_ips(network, ["10.0.1.2", "10.0.1.3"])
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/change_alias_ips", method="POST",
-                                                  json={"network": 4711, "alias_ips": ["10.0.1.2", "10.0.1.3"]})
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/change_alias_ips",
+            method="POST",
+            json={"network": 4711, "alias_ips": ["10.0.1.2", "10.0.1.3"]},
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -357,7 +454,6 @@ class TestBoundServer(object):
 
 
 class TestServersClient(object):
-
     @pytest.fixture()
     def servers_client(self):
         return ServersClient(client=mock.MagicMock())
@@ -365,7 +461,9 @@ class TestServersClient(object):
     def test_get_by_id(self, servers_client, response_simple_server):
         servers_client._client.request.return_value = response_simple_server
         bound_server = servers_client.get_by_id(1)
-        servers_client._client.request.assert_called_with(url="/servers/1", method="GET")
+        servers_client._client.request.assert_called_with(
+            url="/servers/1", method="GET"
+        )
         assert bound_server._client is servers_client
         assert bound_server.id == 1
         assert bound_server.name == "my-server"
@@ -373,15 +471,17 @@ class TestServersClient(object):
     @pytest.mark.parametrize(
         "params",
         [
-            {'name': "server1", 'label_selector': "label1", 'page': 1, 'per_page': 10},
-            {'name': ""},
-            {}
-        ]
+            {"name": "server1", "label_selector": "label1", "page": 1, "per_page": 10},
+            {"name": ""},
+            {},
+        ],
     )
     def test_get_list(self, servers_client, response_simple_servers, params):
         servers_client._client.request.return_value = response_simple_servers
         result = servers_client.get_list(**params)
-        servers_client._client.request.assert_called_with(url="/servers", method="GET", params=params)
+        servers_client._client.request.assert_called_with(
+            url="/servers", method="GET", params=params
+        )
 
         bound_servers = result.servers
         assert result.meta is None
@@ -400,19 +500,17 @@ class TestServersClient(object):
         assert bound_server2.name == "my-server2"
 
     @pytest.mark.parametrize(
-        "params",
-        [
-            {'name': "server1", 'label_selector': "label1"},
-            {}
-        ]
+        "params", [{"name": "server1", "label_selector": "label1"}, {}]
     )
     def test_get_all(self, servers_client, response_simple_servers, params):
         servers_client._client.request.return_value = response_simple_servers
         bound_servers = servers_client.get_all(**params)
 
-        params.update({'page': 1, 'per_page': 50})
+        params.update({"page": 1, "per_page": 50})
 
-        servers_client._client.request.assert_called_with(url="/servers", method="GET", params=params)
+        servers_client._client.request.assert_called_with(
+            url="/servers", method="GET", params=params
+        )
 
         assert len(bound_servers) == 2
 
@@ -431,32 +529,36 @@ class TestServersClient(object):
         servers_client._client.request.return_value = response_simple_servers
         bound_server = servers_client.get_by_name("my-server")
 
-        params = {'name': "my-server"}
+        params = {"name": "my-server"}
 
-        servers_client._client.request.assert_called_with(url="/servers", method="GET", params=params)
+        servers_client._client.request.assert_called_with(
+            url="/servers", method="GET", params=params
+        )
 
         assert bound_server._client is servers_client
         assert bound_server.id == 1
         assert bound_server.name == "my-server"
 
-    def test_create_with_datacenter(self, servers_client, response_create_simple_server):
+    def test_create_with_datacenter(
+        self, servers_client, response_create_simple_server
+    ):
         servers_client._client.request.return_value = response_create_simple_server
         response = servers_client.create(
             "my-server",
             server_type=ServerType(name="cx11"),
             image=Image(id=4711),
-            datacenter=Datacenter(id=1)
+            datacenter=Datacenter(id=1),
         )
         servers_client._client.request.assert_called_with(
             url="/servers",
             method="POST",
             json={
-                'name': "my-server",
-                'server_type': "cx11",
-                'image': 4711,
-                'datacenter': 1,
-                "start_after_create": True
-            }
+                "name": "my-server",
+                "server_type": "cx11",
+                "image": 4711,
+                "datacenter": 1,
+                "start_after_create": True,
+            },
         )
 
         bound_server = response.server
@@ -471,18 +573,18 @@ class TestServersClient(object):
             "my-server",
             server_type=ServerType(name="cx11"),
             image=Image(name="ubuntu-20.04"),
-            location=Location(name="fsn1")
+            location=Location(name="fsn1"),
         )
         servers_client._client.request.assert_called_with(
             url="/servers",
             method="POST",
             json={
-                'name': "my-server",
-                'server_type': "cx11",
-                'image': "ubuntu-20.04",
-                'location': "fsn1",
-                "start_after_create": True
-            }
+                "name": "my-server",
+                "server_type": "cx11",
+                "image": "ubuntu-20.04",
+                "location": "fsn1",
+                "start_after_create": True,
+            },
         )
 
         bound_server = response.server
@@ -505,18 +607,18 @@ class TestServersClient(object):
             server_type=ServerType(name="cx11"),
             image=Image(id=4711),
             volumes=volumes,
-            start_after_create=False
+            start_after_create=False,
         )
         servers_client._client.request.assert_called_with(
             url="/servers",
             method="POST",
             json={
-                'name': "my-server",
-                'server_type': "cx11",
-                'image': 4711,
-                'volumes': [1, 2],
-                "start_after_create": False
-            }
+                "name": "my-server",
+                "server_type": "cx11",
+                "image": 4711,
+                "volumes": [1, 2],
+                "start_after_create": False,
+            },
         )
 
         bound_server = response.server
@@ -545,18 +647,18 @@ class TestServersClient(object):
             server_type=ServerType(name="cx11"),
             image=Image(id=4711),
             networks=networks,
-            start_after_create=False
+            start_after_create=False,
         )
         servers_client._client.request.assert_called_with(
             url="/servers",
             method="POST",
             json={
-                'name': "my-server",
-                'server_type': "cx11",
-                'image': 4711,
-                'networks': [1, 2],
-                "start_after_create": False
-            }
+                "name": "my-server",
+                "server_type": "cx11",
+                "image": 4711,
+                "networks": [1, 2],
+                "start_after_create": False,
+            },
         )
 
         bound_server = response.server
@@ -585,18 +687,18 @@ class TestServersClient(object):
             server_type=ServerType(name="cx11"),
             image=Image(id=4711),
             firewalls=firewalls,
-            start_after_create=False
+            start_after_create=False,
         )
         servers_client._client.request.assert_called_with(
             url="/servers",
             method="POST",
             json={
-                'name': "my-server",
-                'server_type': "cx11",
-                'image': 4711,
-                'firewalls': [{"firewall": 1}, {"firewall": 2}],
-                "start_after_create": False
-            }
+                "name": "my-server",
+                "server_type": "cx11",
+                "image": 4711,
+                "firewalls": [{"firewall": 1}, {"firewall": 2}],
+                "start_after_create": False,
+            },
         )
 
         bound_server = response.server
@@ -617,11 +719,15 @@ class TestServersClient(object):
 
         assert next_actions[0].id == 13
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_get_actions_list(self, servers_client, server, response_get_actions):
         servers_client._client.request.return_value = response_get_actions
         result = servers_client.get_actions_list(server)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions", method="GET", params={})
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions", method="GET", params={}
+        )
 
         actions = result.actions
         assert result.meta is None
@@ -633,249 +739,396 @@ class TestServersClient(object):
         assert actions[0].id == 13
         assert actions[0].command == "start_server"
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_update(self, servers_client, server, response_update_server):
         servers_client._client.request.return_value = response_update_server
         server = servers_client.update(server, name="new-name", labels={})
-        servers_client._client.request.assert_called_with(url="/servers/1", method="PUT",
-                                                          json={"name": "new-name", "labels": {}})
+        servers_client._client.request.assert_called_with(
+            url="/servers/1", method="PUT", json={"name": "new-name", "labels": {}}
+        )
 
         assert server.id == 14
         assert server.name == "new-name"
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_delete(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.delete(server)
-        servers_client._client.request.assert_called_with(url="/servers/1", method="DELETE")
+        servers_client._client.request.assert_called_with(
+            url="/servers/1", method="DELETE"
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_power_off(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.power_off(server)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/poweroff", method="POST")
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/poweroff", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_power_on(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.power_on(server)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/poweron", method="POST")
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/poweron", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_reboot(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.reboot(server)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/reboot", method="POST")
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/reboot", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_reset(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.reset(server)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/reset", method="POST")
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/reset", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_shutdown(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.shutdown(server)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/shutdown", method="POST")
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/shutdown", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
-    def test_reset_password(self, servers_client, server, response_server_reset_password):
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
+    def test_reset_password(
+        self, servers_client, server, response_server_reset_password
+    ):
         servers_client._client.request.return_value = response_server_reset_password
         response = servers_client.reset_password(server)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/reset_password", method="POST")
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/reset_password", method="POST"
+        )
 
         assert response.action.id == 1
         assert response.action.progress == 0
         assert response.root_password == "YItygq1v3GYjjMomLaKc"
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
-    def test_change_type_with_server_type_name(self, servers_client, server, generic_action):
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
+    def test_change_type_with_server_type_name(
+        self, servers_client, server, generic_action
+    ):
         servers_client._client.request.return_value = generic_action
-        action = servers_client.change_type(server, ServerType(name="cx11"), upgrade_disk=True)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_type", method="POST",
-                                                          json={"server_type": "cx11", "upgrade_disk": True})
+        action = servers_client.change_type(
+            server, ServerType(name="cx11"), upgrade_disk=True
+        )
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/change_type",
+            method="POST",
+            json={"server_type": "cx11", "upgrade_disk": True},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
-    def test_change_type_with_server_type_id(self, servers_client, server, generic_action):
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
+    def test_change_type_with_server_type_id(
+        self, servers_client, server, generic_action
+    ):
         servers_client._client.request.return_value = generic_action
         action = servers_client.change_type(server, ServerType(id=1), upgrade_disk=True)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_type", method="POST",
-                                                          json={"server_type": 1, "upgrade_disk": True})
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/change_type",
+            method="POST",
+            json={"server_type": 1, "upgrade_disk": True},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_change_type_with_blank_server_type(self, servers_client, server):
         with pytest.raises(ValueError) as e:
             servers_client.change_type(server, ServerType(), upgrade_disk=True)
         assert str(e.value) == "id or name must be set"
         servers_client._client.request.assert_not_called()
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_enable_rescue(self, servers_client, server, response_server_enable_rescue):
         servers_client._client.request.return_value = response_server_enable_rescue
         response = servers_client.enable_rescue(server, "linux64", [2323])
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/enable_rescue", method="POST",
-                                                          json={"type": "linux64", "ssh_keys": [2323]})
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/enable_rescue",
+            method="POST",
+            json={"type": "linux64", "ssh_keys": [2323]},
+        )
 
         assert response.action.id == 1
         assert response.action.progress == 0
         assert response.root_password == "YItygq1v3GYjjMomLaKc"
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_disable_rescue(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.disable_rescue(server)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/disable_rescue", method="POST")
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/disable_rescue", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_create_image(self, servers_client, server, response_server_create_image):
         servers_client._client.request.return_value = response_server_create_image
-        response = servers_client.create_image(server, description="my image", type="snapshot", labels={"key": "value"})
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/create_image", method="POST",
-                                                          json={"description": "my image", "type": "snapshot",
-                                                                "labels": {"key": "value"}})
+        response = servers_client.create_image(
+            server, description="my image", type="snapshot", labels={"key": "value"}
+        )
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/create_image",
+            method="POST",
+            json={
+                "description": "my image",
+                "type": "snapshot",
+                "labels": {"key": "value"},
+            },
+        )
 
         assert response.action.id == 1
         assert response.action.progress == 0
         assert response.image.description == "my image"
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_rebuild(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.rebuild(server, Image(name="ubuntu-20.04"))
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/rebuild", method="POST",
-                                                          json={"image": "ubuntu-20.04"})
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/rebuild",
+            method="POST",
+            json={"image": "ubuntu-20.04"},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_enable_backup(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.enable_backup(server)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/enable_backup", method="POST")
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/enable_backup", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_disable_backup(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.disable_backup(server)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/disable_backup", method="POST")
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/disable_backup", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_attach_iso(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
-        action = servers_client.attach_iso(server, Iso(name="FreeBSD-11.0-RELEASE-amd64-dvd1"))
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/attach_iso", method="POST",
-                                                          json={"iso": "FreeBSD-11.0-RELEASE-amd64-dvd1"})
+        action = servers_client.attach_iso(
+            server, Iso(name="FreeBSD-11.0-RELEASE-amd64-dvd1")
+        )
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/attach_iso",
+            method="POST",
+            json={"iso": "FreeBSD-11.0-RELEASE-amd64-dvd1"},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_detach_iso(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.detach_iso(server)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/detach_iso", method="POST")
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/detach_iso", method="POST"
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_change_dns_ptr(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.change_dns_ptr(server, "1.2.3.4", "example.com")
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_dns_ptr", method="POST",
-                                                          json={"ip": "1.2.3.4", "dns_ptr": "example.com"})
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/change_dns_ptr",
+            method="POST",
+            json={"ip": "1.2.3.4", "dns_ptr": "example.com"},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_change_protection(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
         action = servers_client.change_protection(server, True, True)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_protection", method="POST",
-                                                          json={"delete": True, "rebuild": True})
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/change_protection",
+            method="POST",
+            json={"delete": True, "rebuild": True},
+        )
 
         assert action.id == 1
         assert action.progress == 0
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
-    def test_request_console(self, servers_client, server, response_server_request_console):
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
+    def test_request_console(
+        self, servers_client, server, response_server_request_console
+    ):
         servers_client._client.request.return_value = response_server_request_console
         response = servers_client.request_console(server)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/request_console", method="POST")
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/request_console", method="POST"
+        )
 
         assert response.action.id == 1
         assert response.action.progress == 0
-        assert response.wss_url == "wss://console.hetzner.cloud/?server_id=1&token=3db32d15-af2f-459c-8bf8-dee1fd05f49c"
+        assert (
+            response.wss_url
+            == "wss://console.hetzner.cloud/?server_id=1&token=3db32d15-af2f-459c-8bf8-dee1fd05f49c"
+        )
         assert response.password == "9MQaTg2VAGI0FIpc10k3UpRXcHj2wQ6x"
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
-    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
-    def test_attach_to_network(self, servers_client, server, network, response_attach_to_network):
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
+    @pytest.mark.parametrize(
+        "network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))]
+    )
+    def test_attach_to_network(
+        self, servers_client, server, network, response_attach_to_network
+    ):
         servers_client._client.request.return_value = response_attach_to_network
-        action = servers_client.attach_to_network(server, network, "10.0.1.1", ["10.0.1.2", "10.0.1.3"])
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/attach_to_network", method="POST",
-                                                          json={"network": 4711, "ip": "10.0.1.1",
-                                                                "alias_ips": ["10.0.1.2", "10.0.1.3"]})
+        action = servers_client.attach_to_network(
+            server, network, "10.0.1.1", ["10.0.1.2", "10.0.1.3"]
+        )
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/attach_to_network",
+            method="POST",
+            json={
+                "network": 4711,
+                "ip": "10.0.1.1",
+                "alias_ips": ["10.0.1.2", "10.0.1.3"],
+            },
+        )
 
         assert action.id == 1
         assert action.progress == 0
         assert action.command == "attach_to_network"
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
-    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
-    def test_detach_from_network(self, servers_client, server, network, response_detach_from_network):
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
+    @pytest.mark.parametrize(
+        "network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))]
+    )
+    def test_detach_from_network(
+        self, servers_client, server, network, response_detach_from_network
+    ):
         servers_client._client.request.return_value = response_detach_from_network
         action = servers_client.detach_from_network(server, network)
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/detach_from_network", method="POST",
-                                                          json={"network": 4711})
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/detach_from_network",
+            method="POST",
+            json={"network": 4711},
+        )
 
         assert action.id == 1
         assert action.progress == 0
         assert action.command == "detach_from_network"
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
-    @pytest.mark.parametrize("network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))])
-    def test_change_alias_ips(self, servers_client, server, network, response_change_alias_ips):
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
+    @pytest.mark.parametrize(
+        "network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))]
+    )
+    def test_change_alias_ips(
+        self, servers_client, server, network, response_change_alias_ips
+    ):
         servers_client._client.request.return_value = response_change_alias_ips
-        action = servers_client.change_alias_ips(server, network, ["10.0.1.2", "10.0.1.3"])
-        servers_client._client.request.assert_called_with(url="/servers/1/actions/change_alias_ips", method="POST",
-                                                          json={"network": 4711, "alias_ips": ["10.0.1.2", "10.0.1.3"]})
+        action = servers_client.change_alias_ips(
+            server, network, ["10.0.1.2", "10.0.1.3"]
+        )
+        servers_client._client.request.assert_called_with(
+            url="/servers/1/actions/change_alias_ips",
+            method="POST",
+            json={"network": 4711, "alias_ips": ["10.0.1.2", "10.0.1.3"]},
+        )
 
         assert action.id == 1
         assert action.progress == 0

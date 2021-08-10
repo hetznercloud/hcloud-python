@@ -5,7 +5,6 @@ from hcloud.locations.client import LocationsClient
 
 
 class TestLocationsClient(object):
-
     @pytest.fixture()
     def locations_client(self):
         return LocationsClient(client=mock.MagicMock())
@@ -13,17 +12,23 @@ class TestLocationsClient(object):
     def test_get_by_id(self, locations_client, location_response):
         locations_client._client.request.return_value = location_response
         location = locations_client.get_by_id(1)
-        locations_client._client.request.assert_called_with(url="/locations/1", method="GET")
+        locations_client._client.request.assert_called_with(
+            url="/locations/1", method="GET"
+        )
         assert location._client is locations_client
         assert location.id == 1
         assert location.name == "fsn1"
         assert location.network_zone == "eu-central"
 
-    @pytest.mark.parametrize("params", [{'name': "fsn1", "page": 1, "per_page": 10}, {'name': ""}, {}])
+    @pytest.mark.parametrize(
+        "params", [{"name": "fsn1", "page": 1, "per_page": 10}, {"name": ""}, {}]
+    )
     def test_get_list(self, locations_client, two_locations_response, params):
         locations_client._client.request.return_value = two_locations_response
         result = locations_client.get_list(**params)
-        locations_client._client.request.assert_called_with(url="/locations", method="GET", params=params)
+        locations_client._client.request.assert_called_with(
+            url="/locations", method="GET", params=params
+        )
 
         locations = result.locations
         assert result.meta is None
@@ -43,14 +48,16 @@ class TestLocationsClient(object):
         assert location2.name == "nbg1"
         assert location2.network_zone == "eu-central"
 
-    @pytest.mark.parametrize("params", [{'name': "fsn1"}, {}])
+    @pytest.mark.parametrize("params", [{"name": "fsn1"}, {}])
     def test_get_all(self, locations_client, two_locations_response, params):
         locations_client._client.request.return_value = two_locations_response
         locations = locations_client.get_all(**params)
 
-        params.update({'page': 1, 'per_page': 50})
+        params.update({"page": 1, "per_page": 50})
 
-        locations_client._client.request.assert_called_with(url="/locations", method="GET", params=params)
+        locations_client._client.request.assert_called_with(
+            url="/locations", method="GET", params=params
+        )
 
         assert len(locations) == 2
 
@@ -71,9 +78,11 @@ class TestLocationsClient(object):
         locations_client._client.request.return_value = one_locations_response
         location = locations_client.get_by_name("fsn1")
 
-        params = {'name': "fsn1"}
+        params = {"name": "fsn1"}
 
-        locations_client._client.request.assert_called_with(url="/locations", method="GET", params=params)
+        locations_client._client.request.assert_called_with(
+            url="/locations", method="GET", params=params
+        )
 
         assert location._client is locations_client
         assert location.id == 1

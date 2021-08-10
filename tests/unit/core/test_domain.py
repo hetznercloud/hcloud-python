@@ -1,20 +1,23 @@
 import pytest
 from dateutil.parser import isoparse
 
-from hcloud.core.domain import BaseDomain, DomainIdentityMixin, Meta, Pagination, add_meta_to_result
+from hcloud.core.domain import (
+    BaseDomain,
+    DomainIdentityMixin,
+    Meta,
+    Pagination,
+    add_meta_to_result,
+)
 
 
 class TestMeta(object):
-
     @pytest.mark.parametrize("json_content", [None, "", {}])
     def test_parse_meta_empty_json(self, json_content):
         result = Meta.parse_meta(json_content)
         assert result is None
 
     def test_parse_meta_json_no_paginaton(self):
-        json_content = {
-            "meta": {}
-        }
+        json_content = {"meta": {}}
         result = Meta.parse_meta(json_content)
         assert isinstance(result, Meta)
         assert result.pagination is None
@@ -28,7 +31,7 @@ class TestMeta(object):
                     "previous_page": 1,
                     "next_page": 3,
                     "last_page": 10,
-                    "total_entries": 100
+                    "total_entries": 100,
                 }
             }
         }
@@ -50,7 +53,7 @@ class TestMeta(object):
                     "previous_page": 1,
                     "next_page": 3,
                     "last_page": 10,
-                    "total_entries": 100
+                    "total_entries": 100,
                 }
             }
         }
@@ -72,14 +75,14 @@ class SomeDomain(BaseDomain, DomainIdentityMixin):
 
 
 class TestDomainIdentityMixin(object):
-
     @pytest.mark.parametrize(
         "domain,expected_result",
         [
             (SomeDomain(id=1, name="name"), 1),
             (SomeDomain(id=1), 1),
             (SomeDomain(name="name"), "name"),
-        ])
+        ],
+    )
     def test_id_or_name_ok(self, domain, expected_result):
         assert domain.id_or_name == expected_result
 
@@ -102,23 +105,31 @@ class ActionDomain(BaseDomain, DomainIdentityMixin):
 
 
 class TestBaseDomain(object):
-
     @pytest.mark.parametrize(
         "data_dict,expected_result",
         [
-            ({"id": 1},
-             {"id": 1, "name": "name1", "started": None}
-             ),
-            ({"id": 2, "name": "name2"},
-             {"id": 2, "name": "name2", "started": None}
-             ),
-            ({"id": 3, "foo": "boo", "description": "new"},
-             {"id": 3, "name": "name1", "started": None}
-             ),
-            ({"id": 4, "foo": "boo", "description": "new", "name": "name-name3", "started": "2016-01-30T23:50+00:00"},
-             {"id": 4, "name": "name-name3", "started": isoparse("2016-01-30T23:50+00:00")}
-             ),
-        ])
+            ({"id": 1}, {"id": 1, "name": "name1", "started": None}),
+            ({"id": 2, "name": "name2"}, {"id": 2, "name": "name2", "started": None}),
+            (
+                {"id": 3, "foo": "boo", "description": "new"},
+                {"id": 3, "name": "name1", "started": None},
+            ),
+            (
+                {
+                    "id": 4,
+                    "foo": "boo",
+                    "description": "new",
+                    "name": "name-name3",
+                    "started": "2016-01-30T23:50+00:00",
+                },
+                {
+                    "id": 4,
+                    "name": "name-name3",
+                    "started": isoparse("2016-01-30T23:50+00:00"),
+                },
+            ),
+        ],
+    )
     def test_from_dict_ok(self, data_dict, expected_result):
         model = ActionDomain.from_dict(data_dict)
         for k, v in expected_result.items():

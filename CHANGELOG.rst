@@ -2,6 +2,11 @@
 History
 =======
 
+v1.14.1 (2021-08-10)
+---------------------
+* Bugfix: Fix crash on extra fields in public_net response
+* Improvement: Format code with black
+
 v1.14.0 (2021-08-03)
 ---------------------
 * Feature: Add support for Firewall rule descriptions

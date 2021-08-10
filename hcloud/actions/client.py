@@ -29,7 +29,7 @@ class BoundAction(BoundModelBase):
 
 
 class ActionsClient(ClientEntityBase):
-    results_list_attribute_name = 'actions'
+    results_list_attribute_name = "actions"
 
     def get_by_id(self, id):
         # type: (int) -> BoundAction
@@ -39,15 +39,18 @@ class ActionsClient(ClientEntityBase):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
 
-        response = self._client.request(url="/actions/{action_id}".format(action_id=id), method="GET")
-        return BoundAction(self, response['action'])
+        response = self._client.request(
+            url="/actions/{action_id}".format(action_id=id), method="GET"
+        )
+        return BoundAction(self, response["action"])
 
-    def get_list(self,
-                 status=None,  # type: Optional[List[str]]
-                 sort=None,  # type: Optional[List[str]]
-                 page=None,  # type: Optional[int]
-                 per_page=None,  # type: Optional[int]
-                 ):
+    def get_list(
+        self,
+        status=None,  # type: Optional[List[str]]
+        sort=None,  # type: Optional[List[str]]
+        page=None,  # type: Optional[int]
+        per_page=None,  # type: Optional[int]
+    ):
         # type: (...) -> PageResults[List[BoundAction]]
         """Get a list of actions from this account
 
@@ -72,7 +75,9 @@ class ActionsClient(ClientEntityBase):
             params["per_page"] = per_page
 
         response = self._client.request(url="/actions", method="GET", params=params)
-        actions = [BoundAction(self, action_data) for action_data in response['actions']]
+        actions = [
+            BoundAction(self, action_data) for action_data in response["actions"]
+        ]
         return self._add_meta_to_result(actions, response)
 
     def get_all(self, status=None, sort=None):

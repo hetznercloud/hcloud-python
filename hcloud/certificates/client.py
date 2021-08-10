@@ -2,7 +2,12 @@
 from hcloud.actions.client import BoundAction
 from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByNameMixin
 
-from hcloud.certificates.domain import Certificate, CreateManagedCertificateResponse, ManagedCertificateStatus, ManagedCertificateError
+from hcloud.certificates.domain import (
+    Certificate,
+    CreateManagedCertificateResponse,
+    ManagedCertificateStatus,
+    ManagedCertificateError,
+)
 from hcloud.core.domain import add_meta_to_result
 
 
@@ -10,16 +15,17 @@ class BoundCertificate(BoundModelBase):
     model = Certificate
 
     def __init__(self, client, data, complete=True):
-        status = data.get('status')
+        status = data.get("status")
         if status is not None:
-            error_data = status.get('error')
+            error_data = status.get("error")
             error = None
             if error_data:
-                error = ManagedCertificateError(code=error_data['code'], message=error_data['message'])
-            data['status'] = ManagedCertificateStatus(
-                issuance=status['issuance'],
-                renewal=status['renewal'],
-                error=error)
+                error = ManagedCertificateError(
+                    code=error_data["code"], message=error_data["message"]
+                )
+            data["status"] = ManagedCertificateStatus(
+                issuance=status["issuance"], renewal=status["renewal"], error=error
+            )
         super(BoundCertificate, self).__init__(client, data, complete)
 
     def get_actions_list(self, status=None, sort=None, page=None, per_page=None):
@@ -65,20 +71,20 @@ class BoundCertificate(BoundModelBase):
     def delete(self):
         # type: () -> bool
         """Deletes a certificate.
-           :return: boolean
+        :return: boolean
         """
         return self._client.delete(self)
 
     def retry_issuance(self):
         # type: () -> BoundAction
         """Retry a failed Certificate issuance or renewal.
-           :return: BoundAction
+        :return: BoundAction
         """
         return self._client.retry_issuance(self)
 
 
 class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = 'certificates'
+    results_list_attribute_name = "certificates"
 
     def get_by_id(self, id):
         # type: (int) -> BoundCertificate
@@ -87,15 +93,18 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         :param id: int
         :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`
         """
-        response = self._client.request(url="/certificates/{certificate_id}".format(certificate_id=id), method="GET")
-        return BoundCertificate(self, response['certificate'])
+        response = self._client.request(
+            url="/certificates/{certificate_id}".format(certificate_id=id), method="GET"
+        )
+        return BoundCertificate(self, response["certificate"])
 
-    def get_list(self,
-                 name=None,  # type: Optional[str]
-                 label_selector=None,  # type: Optional[str]
-                 page=None,  # type: Optional[int]
-                 per_page=None  # type: Optional[int]
-                 ):
+    def get_list(
+        self,
+        name=None,  # type: Optional[str]
+        label_selector=None,  # type: Optional[str]
+        page=None,  # type: Optional[int]
+        per_page=None,  # type: Optional[int]
+    ):
         # type: (...) -> PageResults[List[BoundCertificate], Meta]
         """Get a list of certificates
 
@@ -117,14 +126,19 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
             params["label_selector"] = label_selector
 
         if page is not None:
-            params['page'] = page
+            params["page"] = page
 
         if per_page is not None:
-            params['per_page'] = per_page
+            params["per_page"] = per_page
 
-        response = self._client.request(url="/certificates", method="GET", params=params)
+        response = self._client.request(
+            url="/certificates", method="GET", params=params
+        )
 
-        certificates = [BoundCertificate(self, certificate_data) for certificate_data in response['certificates']]
+        certificates = [
+            BoundCertificate(self, certificate_data)
+            for certificate_data in response["certificates"]
+        ]
 
         return self._add_meta_to_result(certificates, response)
 
@@ -138,7 +152,9 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter certificates by labels. The response will only contain certificates matching the label selector.
         :return: List[:class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`]
         """
-        return super(CertificatesClient, self).get_all(name=name, label_selector=label_selector)
+        return super(CertificatesClient, self).get_all(
+            name=name, label_selector=label_selector
+        )
 
     def get_by_name(self, name):
         # type: (str) -> BoundCertificate
@@ -165,15 +181,15 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`
         """
         data = {
-            'name': name,
-            'certificate': certificate,
-            'private_key': private_key,
-            'type': Certificate.TYPE_UPLOADED
+            "name": name,
+            "certificate": certificate,
+            "private_key": private_key,
+            "type": Certificate.TYPE_UPLOADED,
         }
         if labels is not None:
-            data['labels'] = labels
+            data["labels"] = labels
         response = self._client.request(url="/certificates", method="POST", json=data)
-        return BoundCertificate(self, response['certificate'])
+        return BoundCertificate(self, response["certificate"])
 
     def create_managed(self, name, domain_names, labels=None):
         # type: (str, List[str], Optional[Dict[str, str]]) -> CreateManagedCertificateResponse
@@ -188,15 +204,17 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`
         """
         data = {
-            'name': name,
-            'type': Certificate.TYPE_MANAGED,
-            'domain_names': domain_names
+            "name": name,
+            "type": Certificate.TYPE_MANAGED,
+            "domain_names": domain_names,
         }
         if labels is not None:
-            data['labels'] = labels
+            data["labels"] = labels
         response = self._client.request(url="/certificates", method="POST", json=data)
-        return CreateManagedCertificateResponse(certificate=BoundCertificate(self, response['certificate']),
-                                                action=BoundAction(self._client.actions, response['action']))
+        return CreateManagedCertificateResponse(
+            certificate=BoundCertificate(self, response["certificate"]),
+            action=BoundAction(self._client.actions, response["action"]),
+        )
 
     def update(self, certificate, name=None, labels=None):
         # type: (Certificate,  Optional[str],  Optional[Dict[str, str]]) -> BoundCertificate
@@ -211,18 +229,22 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data = {}
         if name is not None:
-            data['name'] = name
+            data["name"] = name
         if labels is not None:
-            data['labels'] = labels
-        response = self._client.request(url="/certificates/{certificate_id}".format(certificate_id=certificate.id),
-                                        method="PUT",
-                                        json=data)
-        return BoundCertificate(self, response['certificate'])
+            data["labels"] = labels
+        response = self._client.request(
+            url="/certificates/{certificate_id}".format(certificate_id=certificate.id),
+            method="PUT",
+            json=data,
+        )
+        return BoundCertificate(self, response["certificate"])
 
     def delete(self, certificate):
         # type: (Certificate) -> bool
-        self._client.request(url="/certificates/{certificate_id}".format(certificate_id=certificate.id),
-                             method="DELETE")
+        self._client.request(
+            url="/certificates/{certificate_id}".format(certificate_id=certificate.id),
+            method="DELETE",
+        )
         """Deletes a certificate.
 
         :param certificate: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>` or  :class:`Certificate <hcloud.certificates.domain.Certificate>`
@@ -232,7 +254,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         return True
 
     def get_actions_list(
-            self, certificate, status=None, sort=None, page=None, per_page=None
+        self, certificate, status=None, sort=None, page=None, per_page=None
     ):
         # type: (Certificate, Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction], Meta]
         """Returns all action objects for a Certificate.
@@ -259,7 +281,9 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
             params["per_page"] = per_page
 
         response = self._client.request(
-            url="/certificates/{certificate_id}/actions".format(certificate_id=certificate.id),
+            url="/certificates/{certificate_id}/actions".format(
+                certificate_id=certificate.id
+            ),
             method="GET",
             params=params,
         )
@@ -291,6 +315,10 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         :param certificate: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>` or :class:`Certificate <hcloud.certificates.domain.Certificate>`
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        response = self._client.request(url="/certificates/{certificate_id}/actions/retry".format(certificate_id=certificate.id),
-                                        method="POST")
-        return BoundAction(self._client.actions, response['action'])
+        response = self._client.request(
+            url="/certificates/{certificate_id}/actions/retry".format(
+                certificate_id=certificate.id
+            ),
+            method="POST",
+        )
+        return BoundAction(self._client.actions, response["action"])

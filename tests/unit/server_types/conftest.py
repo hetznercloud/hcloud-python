@@ -16,16 +16,16 @@ def server_type_response():
                     "location": "fsn1",
                     "price_hourly": {
                         "net": "1.0000000000",
-                        "gross": "1.1900000000000000"
+                        "gross": "1.1900000000000000",
                     },
                     "price_monthly": {
                         "net": "1.0000000000",
-                        "gross": "1.1900000000000000"
-                    }
+                        "gross": "1.1900000000000000",
+                    },
                 }
             ],
             "storage_type": "local",
-            "cpu_type": "shared"
+            "cpu_type": "shared",
         }
     }
 
@@ -46,16 +46,16 @@ def two_server_types_response():
                         "location": "fsn1",
                         "price_hourly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
+                            "gross": "1.1900000000000000",
                         },
                         "price_monthly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        }
+                            "gross": "1.1900000000000000",
+                        },
                     }
                 ],
                 "storage_type": "local",
-                "cpu_type": "shared"
+                "cpu_type": "shared",
             },
             {
                 "id": 2,
@@ -69,28 +69,28 @@ def two_server_types_response():
                         "location": "fsn1",
                         "price_hourly": {
                             "net": "0.0080000000",
-                            "gross": "0.0095200000000000"
+                            "gross": "0.0095200000000000",
                         },
                         "price_monthly": {
                             "net": "4.9000000000",
-                            "gross": "5.8310000000000000"
-                        }
+                            "gross": "5.8310000000000000",
+                        },
                     },
                     {
                         "location": "nbg1",
                         "price_hourly": {
                             "net": "0.0080000000",
-                            "gross": "0.0095200000000000"
+                            "gross": "0.0095200000000000",
                         },
                         "price_monthly": {
                             "net": "4.9000000000",
-                            "gross": "5.8310000000000000"
-                        }
-                    }
+                            "gross": "5.8310000000000000",
+                        },
+                    },
                 ],
                 "storage_type": "local",
-                "cpu_type": "shared"
-            }
+                "cpu_type": "shared",
+            },
         ]
     }
 
@@ -111,16 +111,16 @@ def one_server_types_response():
                         "location": "fsn1",
                         "price_hourly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
+                            "gross": "1.1900000000000000",
                         },
                         "price_monthly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        }
+                            "gross": "1.1900000000000000",
+                        },
                     }
                 ],
                 "storage_type": "local",
-                "cpu_type": "shared"
+                "cpu_type": "shared",
             }
         ]
     }

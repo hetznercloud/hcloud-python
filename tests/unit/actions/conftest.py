@@ -12,16 +12,8 @@ def generic_action_list():
                 "progress": 100,
                 "started": "2016-01-30T23:55:00+00:00",
                 "finished": "2016-01-30T23:56:00+00:00",
-                "resources": [
-                    {
-                        "id": 42,
-                        "type": "server"
-                    }
-                ],
-                "error": {
-                    "code": "action_failed",
-                    "message": "Action failed"
-                }
+                "resources": [{"id": 42, "type": "server"}],
+                "error": {"code": "action_failed", "message": "Action failed"},
             },
             {
                 "id": 2,
@@ -30,17 +22,9 @@ def generic_action_list():
                 "progress": 100,
                 "started": "2016-01-30T23:55:00+00:00",
                 "finished": "2016-01-30T23:56:00+00:00",
-                "resources": [
-                    {
-                        "id": 42,
-                        "type": "server"
-                    }
-                ],
-                "error": {
-                    "code": "action_failed",
-                    "message": "Action failed"
-                }
-            }
+                "resources": [{"id": 42, "type": "server"}],
+                "error": {"code": "action_failed", "message": "Action failed"},
+            },
         ]
     }
 
@@ -55,16 +39,8 @@ def running_action():
             "progress": 100,
             "started": "2016-01-30T23:55:00+00:00",
             "finished": "2016-01-30T23:56:00+00:00",
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 42, "type": "server"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -79,16 +55,8 @@ def successfully_action():
             "progress": 100,
             "started": "2016-01-30T23:55:00+00:00",
             "finished": "2016-01-30T23:56:00+00:00",
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 42, "type": "server"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
 
@@ -103,15 +71,7 @@ def failed_action():
             "progress": 100,
             "started": "2016-01-30T23:55:00+00:00",
             "finished": "2016-01-30T23:56:00+00:00",
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            }
+            "resources": [{"id": 42, "type": "server"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
         }
     }

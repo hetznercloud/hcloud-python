@@ -34,20 +34,20 @@ class Network(BaseDomain):
         "servers",
         "protection",
         "labels",
-        "created"
+        "created",
     )
 
     def __init__(
-            self,
-            id,
-            name=None,
-            created=None,
-            ip_range=None,
-            subnets=None,
-            routes=None,
-            servers=None,
-            protection=None,
-            labels=None,
+        self,
+        id,
+        name=None,
+        created=None,
+        ip_range=None,
+        subnets=None,
+        routes=None,
+        servers=None,
+        protection=None,
+        labels=None,
     ):
         self.id = id
         self.name = name
@@ -74,6 +74,7 @@ class NetworkSubnet(BaseDomain):
     :param vswitch_id: int
               ID of the vSwitch.
     """
+
     TYPE_SERVER = "server"
     """Subnet Type server, deprecated, use TYPE_CLOUD instead"""
     TYPE_CLOUD = "cloud"
@@ -82,7 +83,9 @@ class NetworkSubnet(BaseDomain):
     """Subnet Type vSwitch"""
     __slots__ = ("type", "ip_range", "network_zone", "gateway", "vswitch_id")
 
-    def __init__(self, ip_range, type=None, network_zone=None, gateway=None, vswitch_id=None):
+    def __init__(
+        self, ip_range, type=None, network_zone=None, gateway=None, vswitch_id=None
+    ):
         self.type = type
         self.ip_range = ip_range
         self.network_zone = network_zone
@@ -118,9 +121,9 @@ class CreateNetworkResponse(BaseDomain):
     __slots__ = ("network", "action")
 
     def __init__(
-            self,
-            network,  # type: BoundNetwork
-            action  # type: BoundAction
+        self,
+        network,  # type: BoundNetwork
+        action,  # type: BoundAction
     ):
         self.network = network
         self.action = action

@@ -14,17 +14,17 @@ def load_balancer_type_response():
             "max_assigned_certificates": 1,
             "deprecated": None,
             "prices": [
-                    {
-                        "location": "fsn1",
-                        "price_hourly": {
-                            "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        },
-                        "price_monthly": {
-                            "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        }
-                    }
+                {
+                    "location": "fsn1",
+                    "price_hourly": {
+                        "net": "1.0000000000",
+                        "gross": "1.1900000000000000",
+                    },
+                    "price_monthly": {
+                        "net": "1.0000000000",
+                        "gross": "1.1900000000000000",
+                    },
+                }
             ],
         }
     }
@@ -48,12 +48,12 @@ def two_load_balancer_types_response():
                         "location": "fsn1",
                         "price_hourly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
+                            "gross": "1.1900000000000000",
                         },
                         "price_monthly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        }
+                            "gross": "1.1900000000000000",
+                        },
                     }
                 ],
             },
@@ -71,15 +71,15 @@ def two_load_balancer_types_response():
                         "location": "fsn1",
                         "price_hourly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
+                            "gross": "1.1900000000000000",
                         },
                         "price_monthly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        }
+                            "gross": "1.1900000000000000",
+                        },
                     }
                 ],
-            }
+            },
         ]
     }
 
@@ -102,12 +102,12 @@ def one_load_balancer_types_response():
                         "location": "fsn1",
                         "price_hourly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
+                            "gross": "1.1900000000000000",
                         },
                         "price_monthly": {
                             "net": "1.0000000000",
-                            "gross": "1.1900000000000000"
-                        }
+                            "gross": "1.1900000000000000",
+                        },
                     }
                 ],
             }

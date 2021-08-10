@@ -32,19 +32,19 @@ class LoadBalancerType(BaseDomain, DomainIdentityMixin):
         "max_services",
         "max_targets",
         "max_assigned_certificates",
-        "prices"
+        "prices",
     )
 
     def __init__(
-            self,
-            id=None,
-            name=None,
-            description=None,
-            max_connections=None,
-            max_services=None,
-            max_targets=None,
-            max_assigned_certificates=None,
-            prices=None
+        self,
+        id=None,
+        name=None,
+        description=None,
+        max_connections=None,
+        max_services=None,
+        max_targets=None,
+        max_assigned_certificates=None,
+        prices=None,
     ):
         self.id = id
         self.name = name
