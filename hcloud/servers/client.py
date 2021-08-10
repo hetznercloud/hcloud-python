@@ -45,8 +45,8 @@ class BoundServer(BoundModelBase):
 
         public_net = data.get("public_net")
         if public_net:
-            ipv4_address = IPv4Address(**public_net['ipv4'])
-            ipv6_network = IPv6Network(**public_net['ipv6'])
+            ipv4_address = IPv4Address.from_dict(public_net['ipv4'])
+            ipv6_network = IPv6Network.from_dict(public_net['ipv6'])
             floating_ips = [BoundFloatingIP(client._client.floating_ips, {"id": floating_ip}, complete=False) for
                             floating_ip in public_net['floating_ips']]
             firewalls = [

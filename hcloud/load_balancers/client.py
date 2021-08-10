@@ -26,8 +26,8 @@ class BoundLoadBalancer(BoundModelBase):
 
         public_net = data.get("public_net")
         if public_net:
-            ipv4_address = IPv4Address(**public_net['ipv4'])
-            ipv6_network = IPv6Network(**public_net['ipv6'])
+            ipv4_address = IPv4Address.from_dict(public_net['ipv4'])
+            ipv6_network = IPv6Network.from_dict(public_net['ipv6'])
             data['public_net'] = PublicNetwork(ipv4=ipv4_address, ipv6=ipv6_network, enabled=public_net['enabled'])
 
         private_nets = data.get("private_net")
