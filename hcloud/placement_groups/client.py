@@ -111,18 +111,19 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def create(self,
                name,  # type: str
+               type,  # type: str
                labels=None,  # type: Optional[Dict[str, str]]
-               type=PlacementGroup.TYPE_SPREAD  # type: Optional[str]
                ):
         # type: (...) -> CreatePlacementGroupResponse
         """Creates a new Placement Group.
 
         :param name: str
                Placement Group Name
+        :param type: str
+               Type of the Placement Group
         :param labels: Dict[str, str] (optional)
                User-defined labels (key-value pairs)
-        :param type: str
-           Type of the Placement Group
+
         :return: :class:`CreatePlacementGroupResponse <hcloud.placement_groups.domain.CreatePlacementGroupResponse>`
         """
         data = {

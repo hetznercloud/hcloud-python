@@ -124,9 +124,9 @@ class TestPlacementGroupsClient(object):
     def test_create(self, placement_groups_client, response_create_placement_group):
         placement_groups_client._client.request.return_value = response_create_placement_group
         response = placement_groups_client.create(
-            response_create_placement_group['placement_group']['name'],
-            response_create_placement_group['placement_group']['labels'],
-            response_create_placement_group['placement_group']['type']
+            name=response_create_placement_group['placement_group']['name'],
+            type=response_create_placement_group['placement_group']['type'],
+            labels=response_create_placement_group['placement_group']['labels'],
         )
 
         json = {
