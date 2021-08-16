@@ -104,8 +104,10 @@ class BoundServer(BoundModelBase):
 
         placement_group = data.get("placement_group")
         if placement_group:
-            placement_group = BoundPlacementGroup(client._client.placement_groups, placement_group)
-            data['placement_group'] = placement_group
+            placement_group = BoundPlacementGroup(
+                client._client.placement_groups, placement_group
+            )
+            data["placement_group"] = placement_group
 
         super(BoundServer, self).__init__(client, data, complete)
 
@@ -462,22 +464,23 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super(ServersClient, self).get_by_name(name)
 
-    def create(self,
-               name,  # type: str
-               server_type,  # type: ServerType
-               image,  # type: Image
-               ssh_keys=None,  # type: Optional[List[SSHKey]]
-               volumes=None,  # type: Optional[List[Volume]]
-               firewalls=None,  # type: Optional[List[Firewall]]
-               networks=None,  # type: Optional[List[Network]]
-               user_data=None,  # type: Optional[str]
-               labels=None,  # type: Optional[Dict[str, str]]
-               location=None,  # type: Optional[Location]
-               datacenter=None,  # type: Optional[Datacenter]
-               start_after_create=True,  # type: Optional[bool]
-               automount=None,  # type: Optional[bool]
-               placement_group=None  # type: Optional[PlacementGroup]
-               ):
+    def create(
+        self,
+        name,  # type: str
+        server_type,  # type: ServerType
+        image,  # type: Image
+        ssh_keys=None,  # type: Optional[List[SSHKey]]
+        volumes=None,  # type: Optional[List[Volume]]
+        firewalls=None,  # type: Optional[List[Firewall]]
+        networks=None,  # type: Optional[List[Network]]
+        user_data=None,  # type: Optional[str]
+        labels=None,  # type: Optional[Dict[str, str]]
+        location=None,  # type: Optional[Location]
+        datacenter=None,  # type: Optional[Datacenter]
+        start_after_create=True,  # type: Optional[bool]
+        automount=None,  # type: Optional[bool]
+        placement_group=None,  # type: Optional[PlacementGroup]
+    ):
         # type: (...) -> CreateServerResponse
         """Creates a new server. Returns preliminary information about the server as well as an action that covers progress of creation.
 
@@ -533,7 +536,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         if automount is not None:
             data["automount"] = automount
         if placement_group is not None:
-            data['placement_group'] = placement_group.id
+            data["placement_group"] = placement_group.id
 
         response = self._client.request(url="/servers", method="POST", json=data)
 
@@ -1014,9 +1017,13 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data = {"network": network.id, "alias_ips": alias_ips}
         response = self._client.request(
-            url="/servers/{server_id}/actions/change_alias_ips".format(server_id=server.id), method="POST",
-            json=data)
-        return BoundAction(self._client.actions, response['action'])
+            url="/servers/{server_id}/actions/change_alias_ips".format(
+                server_id=server.id
+            ),
+            method="POST",
+            json=data,
+        )
+        return BoundAction(self._client.actions, response["action"])
 
     def add_to_placement_group(self, server, placement_group):
         # type: (Union[Server,BoundServer], Union[PlacementGroup,BoundPlacementGroup]) -> BoundAction
@@ -1030,9 +1037,13 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
             "placement_group": str(placement_group.id),
         }
         response = self._client.request(
-            url="/servers/{server_id}/actions/add_to_placement_group".format(server_id=server.id), method="POST",
-            json=data)
-        return BoundAction(self._client.actions, response['action'])
+            url="/servers/{server_id}/actions/add_to_placement_group".format(
+                server_id=server.id
+            ),
+            method="POST",
+            json=data,
+        )
+        return BoundAction(self._client.actions, response["action"])
 
     def remove_from_placement_group(self, server):
         # type: (Union[Server,BoundServer]) -> BoundAction
@@ -1042,5 +1053,9 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/servers/{server_id}/actions/remove_from_placement_group".format(server_id=server.id), method="POST")
-        return BoundAction(self._client.actions, response['action'])
+            url="/servers/{server_id}/actions/remove_from_placement_group".format(
+                server_id=server.id
+            ),
+            method="POST",
+        )
+        return BoundAction(self._client.actions, response["action"])

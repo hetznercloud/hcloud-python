@@ -21,14 +21,7 @@ class PlacementGroup(BaseDomain):
            Point in time when the image was created
     """
 
-    __slots__ = (
-        "id",
-        "name",
-        "labels",
-        "servers",
-        "type",
-        "created"
-    )
+    __slots__ = ("id", "name", "labels", "servers", "type", "created")
 
     """Placement Group type spread
        spreads all servers in the group on different vhosts
@@ -36,13 +29,7 @@ class PlacementGroup(BaseDomain):
     TYPE_SPREAD = "spread"
 
     def __init__(
-        self,
-        id=None,
-        name=None,
-        labels=None,
-        servers=None,
-        type=None,
-        created=None
+        self, id=None, name=None, labels=None, servers=None, type=None, created=None
     ):
         self.id = id
         self.name = name
@@ -60,15 +47,13 @@ class CreatePlacementGroupResponse(BaseDomain):
     :param action: :class:`BoundAction <hcloud.actions.client.BoundAction>`
            The Action which shows the progress of the Placement Group Creation
     """
-    __slots__ = (
-        "placement_group",
-        "action"
-    )
+
+    __slots__ = ("placement_group", "action")
 
     def __init__(
-            self,
-            placement_group,  # type: BoundPlacementGroup
-            action,  # type: BoundAction
+        self,
+        placement_group,  # type: BoundPlacementGroup
+        action,  # type: BoundAction
     ):
         self.placement_group = placement_group
         self.action = action

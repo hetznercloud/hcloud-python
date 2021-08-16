@@ -630,15 +630,10 @@ def response_full_server():
             "placement_group": {
                 "created": "2019-01-08T12:10:00+00:00",
                 "id": 897,
-                "labels": {
-                    "key": "value"
-                },
+                "labels": {"key": "value"},
                 "name": "my Placement Group",
-                "servers": [
-                    4711,
-                    4712
-                ],
-                "type": "spread"
+                "servers": [4711, 4712],
+                "type": "spread",
             },
             "rescue_enabled": False,
             "locked": False,
@@ -851,21 +846,13 @@ def response_add_to_placement_group():
     return {
         "action": {
             "command": "add_to_placement_group",
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            },
+            "error": {"code": "action_failed", "message": "Action failed"},
             "finished": None,
             "id": 13,
             "progress": 0,
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
+            "resources": [{"id": 42, "type": "server"}],
             "started": "2016-01-30T23:50:00+00:00",
-            "status": "running"
+            "status": "running",
         }
     }
 
@@ -875,20 +862,12 @@ def response_remove_from_placement_group():
     return {
         "action": {
             "command": "remove_from_placement_group",
-            "error": {
-                "code": "action_failed",
-                "message": "Action failed"
-            },
+            "error": {"code": "action_failed", "message": "Action failed"},
             "finished": "2016-01-30T23:56:00+00:00",
             "id": 13,
             "progress": 100,
-            "resources": [
-                {
-                    "id": 42,
-                    "type": "server"
-                }
-            ],
+            "resources": [{"id": 42, "type": "server"}],
             "started": "2016-01-30T23:55:00+00:00",
-            "status": "success"
+            "status": "success",
         }
     }

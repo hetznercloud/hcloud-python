@@ -118,7 +118,10 @@ class TestBoundServer(object):
         assert bound_server.private_net[0].alias_ips[0] == "10.1.1.8"
 
         assert isinstance(bound_server.placement_group, BoundPlacementGroup)
-        assert bound_server.placement_group._client == bound_server._client._client.placement_groups
+        assert (
+            bound_server.placement_group._client
+            == bound_server._client._client.placement_groups
+        )
         assert bound_server.placement_group.id == 897
         assert bound_server.placement_group.name == "my Placement Group"
         assert bound_server.placement_group.complete is True
@@ -460,21 +463,37 @@ class TestBoundServer(object):
         assert action.progress == 0
         assert action.command == "change_alias_ips"
 
-    @pytest.mark.parametrize("placement_group", [PlacementGroup(id=897), BoundPlacementGroup(mock.MagicMock, dict(id=897))])
-    def test_add_to_placement_group(self, hetzner_client, bound_server, placement_group, response_add_to_placement_group):
+    @pytest.mark.parametrize(
+        "placement_group",
+        [PlacementGroup(id=897), BoundPlacementGroup(mock.MagicMock, dict(id=897))],
+    )
+    def test_add_to_placement_group(
+        self,
+        hetzner_client,
+        bound_server,
+        placement_group,
+        response_add_to_placement_group,
+    ):
         hetzner_client.request.return_value = response_add_to_placement_group
         action = bound_server.add_to_placement_group(placement_group)
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/add_to_placement_group", method="POST",
-                                                  json={"placement_group": "897"})
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/add_to_placement_group",
+            method="POST",
+            json={"placement_group": "897"},
+        )
 
         assert action.id == 13
         assert action.progress == 0
         assert action.command == "add_to_placement_group"
 
-    def test_remove_from_placement_group(self, hetzner_client, bound_server, response_remove_from_placement_group):
+    def test_remove_from_placement_group(
+        self, hetzner_client, bound_server, response_remove_from_placement_group
+    ):
         hetzner_client.request.return_value = response_remove_from_placement_group
         action = bound_server.remove_from_placement_group()
-        hetzner_client.request.assert_called_with(url="/servers/14/actions/remove_from_placement_group", method="POST")
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/remove_from_placement_group", method="POST"
+        )
 
         assert action.id == 13
         assert action.progress == 100
@@ -747,7 +766,9 @@ class TestServersClient(object):
 
         assert next_actions[0].id == 13
 
-    def test_create_with_placement_group(self, servers_client, response_create_simple_server):
+    def test_create_with_placement_group(
+        self, servers_client, response_create_simple_server
+    ):
         servers_client._client.request.return_value = response_create_simple_server
         placement_group = PlacementGroup(id=1)
         response = servers_client.create(
@@ -755,19 +776,19 @@ class TestServersClient(object):
             server_type=ServerType(name="cx11"),
             image=Image(id=4711),
             start_after_create=False,
-            placement_group=placement_group
+            placement_group=placement_group,
         )
 
         servers_client._client.request.assert_called_with(
             url="/servers",
             method="POST",
             json={
-                'name': "my-server",
-                'server_type': "cx11",
-                'image': 4711,
-                'placement_group': 1,
-                "start_after_create": False
-            }
+                "name": "my-server",
+                "server_type": "cx11",
+                "image": 4711,
+                "placement_group": 1,
+                "start_after_create": False,
+            },
         )
 
         bound_server = response.server
@@ -788,7 +809,9 @@ class TestServersClient(object):
 
         assert next_actions[0].id == 13
 
-    @pytest.mark.parametrize("server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))])
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
     def test_get_actions_list(self, servers_client, server, response_get_actions):
         servers_client._client.request.return_value = response_get_actions
         result = servers_client.get_actions_list(server)
