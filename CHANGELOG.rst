@@ -2,6 +2,10 @@
 History
 =======
 
+v1.15.0 (2021-08-16)
+---------------------
+* Feature: Add support for Placement Groups
+
 v1.14.1 (2021-08-10)
 ---------------------
 * Bugfix: Fix crash on extra fields in public_net response
