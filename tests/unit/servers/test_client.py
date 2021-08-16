@@ -28,6 +28,8 @@ from hcloud.server_types.client import BoundServerType
 from hcloud.server_types.domain import ServerType
 from hcloud.networks.domain import Network
 from hcloud.networks.client import BoundNetwork
+from hcloud.placement_groups.domain import PlacementGroup
+from hcloud.placement_groups.client import BoundPlacementGroup
 
 
 class TestBoundServer(object):
@@ -114,6 +116,15 @@ class TestBoundServer(object):
         assert bound_server.private_net[0].mac_address == "86:00:ff:2a:7d:e1"
         assert len(bound_server.private_net[0].alias_ips) == 1
         assert bound_server.private_net[0].alias_ips[0] == "10.1.1.8"
+
+        assert isinstance(bound_server.placement_group, BoundPlacementGroup)
+        assert (
+            bound_server.placement_group._client
+            == bound_server._client._client.placement_groups
+        )
+        assert bound_server.placement_group.id == 897
+        assert bound_server.placement_group.name == "my Placement Group"
+        assert bound_server.placement_group.complete is True
 
     @pytest.mark.parametrize(
         "params",
@@ -452,6 +463,42 @@ class TestBoundServer(object):
         assert action.progress == 0
         assert action.command == "change_alias_ips"
 
+    @pytest.mark.parametrize(
+        "placement_group",
+        [PlacementGroup(id=897), BoundPlacementGroup(mock.MagicMock, dict(id=897))],
+    )
+    def test_add_to_placement_group(
+        self,
+        hetzner_client,
+        bound_server,
+        placement_group,
+        response_add_to_placement_group,
+    ):
+        hetzner_client.request.return_value = response_add_to_placement_group
+        action = bound_server.add_to_placement_group(placement_group)
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/add_to_placement_group",
+            method="POST",
+            json={"placement_group": "897"},
+        )
+
+        assert action.id == 13
+        assert action.progress == 0
+        assert action.command == "add_to_placement_group"
+
+    def test_remove_from_placement_group(
+        self, hetzner_client, bound_server, response_remove_from_placement_group
+    ):
+        hetzner_client.request.return_value = response_remove_from_placement_group
+        action = bound_server.remove_from_placement_group()
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/actions/remove_from_placement_group", method="POST"
+        )
+
+        assert action.id == 13
+        assert action.progress == 100
+        assert action.command == "remove_from_placement_group"
+
 
 class TestServersClient(object):
     @pytest.fixture()
@@ -697,6 +744,49 @@ class TestServersClient(object):
                 "server_type": "cx11",
                 "image": 4711,
                 "firewalls": [{"firewall": 1}, {"firewall": 2}],
+                "start_after_create": False,
+            },
+        )
+
+        bound_server = response.server
+        bound_action = response.action
+        next_actions = response.next_actions
+        root_password = response.root_password
+
+        assert root_password == "YItygq1v3GYjjMomLaKc"
+
+        assert bound_server._client is servers_client
+        assert bound_server.id == 1
+        assert bound_server.name == "my-server"
+
+        assert isinstance(bound_action, BoundAction)
+        assert bound_action._client == servers_client._client.actions
+        assert bound_action.id == 1
+        assert bound_action.command == "create_server"
+
+        assert next_actions[0].id == 13
+
+    def test_create_with_placement_group(
+        self, servers_client, response_create_simple_server
+    ):
+        servers_client._client.request.return_value = response_create_simple_server
+        placement_group = PlacementGroup(id=1)
+        response = servers_client.create(
+            "my-server",
+            server_type=ServerType(name="cx11"),
+            image=Image(id=4711),
+            start_after_create=False,
+            placement_group=placement_group,
+        )
+
+        servers_client._client.request.assert_called_with(
+            url="/servers",
+            method="POST",
+            json={
+                "name": "my-server",
+                "server_type": "cx11",
+                "image": 4711,
+                "placement_group": 1,
                 "start_after_create": False,
             },
         )

@@ -18,6 +18,7 @@ from hcloud.locations.client import LocationsClient
 from hcloud.datacenters.client import DatacentersClient
 from hcloud.load_balancers.client import LoadBalancersClient
 from hcloud.load_balancer_types.client import LoadBalancerTypesClient
+from hcloud.placement_groups.client import PlacementGroupsClient
 
 from .__version__ import VERSION
 from .firewalls.client import FirewallsClient
@@ -147,6 +148,12 @@ class Client(object):
         """FirewallsClient Instance
 
         :type: :class:`FirewallsClient <hcloud.firewalls.client.FirewallsClient>`
+        """
+
+        self.placement_groups = PlacementGroupsClient(self)
+        """PlacementGroupsClient Instance
+
+        :type: :class:`PlacementGroupsClient <hcloud.placement_groups.client.PlacementGroupsClient>`
         """
 
     def _get_user_agent(self):

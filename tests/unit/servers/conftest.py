@@ -627,6 +627,14 @@ def response_full_server():
                 "type": "public",
                 "deprecated": "2018-02-28T00:00:00+00:00",
             },
+            "placement_group": {
+                "created": "2019-01-08T12:10:00+00:00",
+                "id": 897,
+                "labels": {"key": "value"},
+                "name": "my Placement Group",
+                "servers": [4711, 4712],
+                "type": "spread",
+            },
             "rescue_enabled": False,
             "locked": False,
             "backup_window": "22-02",
@@ -829,5 +837,37 @@ def response_remove_firewall():
             "finished": None,
             "resources": [{"id": 42, "type": "server"}],
             "error": {"code": "action_failed", "message": "Action failed"},
+        }
+    }
+
+
+@pytest.fixture()
+def response_add_to_placement_group():
+    return {
+        "action": {
+            "command": "add_to_placement_group",
+            "error": {"code": "action_failed", "message": "Action failed"},
+            "finished": None,
+            "id": 13,
+            "progress": 0,
+            "resources": [{"id": 42, "type": "server"}],
+            "started": "2016-01-30T23:50:00+00:00",
+            "status": "running",
+        }
+    }
+
+
+@pytest.fixture()
+def response_remove_from_placement_group():
+    return {
+        "action": {
+            "command": "remove_from_placement_group",
+            "error": {"code": "action_failed", "message": "Action failed"},
+            "finished": "2016-01-30T23:56:00+00:00",
+            "id": 13,
+            "progress": 100,
+            "resources": [{"id": 42, "type": "server"}],
+            "started": "2016-01-30T23:55:00+00:00",
+            "status": "success",
         }
     }
