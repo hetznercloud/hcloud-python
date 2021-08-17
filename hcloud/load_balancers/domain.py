@@ -299,13 +299,18 @@ class IPv4Address(BaseDomain):
            The IPv4 Address
     """
 
-    __slots__ = ("ip",)
+    __slots__ = (
+        "ip",
+        "dns_ptr",
+    )
 
     def __init__(
         self,
         ip,  # type: str
+        dns_ptr,  # type: str
     ):
         self.ip = ip
+        self.dns_ptr = dns_ptr
 
 
 class IPv6Network(BaseDomain):
@@ -315,13 +320,18 @@ class IPv6Network(BaseDomain):
            The IPv6 Network as CIDR Notation
     """
 
-    __slots__ = ("ip",)
+    __slots__ = (
+        "ip",
+        "dns_ptr",
+    )
 
     def __init__(
         self,
         ip,  # type: str
+        dns_ptr,  # type: str
     ):
         self.ip = ip
+        self.dns_ptr = dns_ptr
 
 
 class PrivateNet(BaseDomain):

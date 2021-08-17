@@ -539,6 +539,22 @@ def response_change_algorithm():
 
 
 @pytest.fixture()
+def response_change_reverse_dns_entry():
+    return {
+        "action": {
+            "id": 13,
+            "command": "change_dns_ptr",
+            "status": "success",
+            "progress": 100,
+            "started": "2016-01-30T23:55:00+00:00",
+            "finished": "2016-01-30T23:56:00+00:00",
+            "resources": [{"id": 42, "type": "load_balancer"}],
+            "error": {"code": "action_failed", "message": "Action failed"},
+        }
+    }
+
+
+@pytest.fixture()
 def response_change_protection():
     return {
         "action": {
