@@ -2,6 +2,10 @@
 History
 =======
 
+v1.16.0 (2021-08-17)
+---------------------
+* Feature: Add support for Load Balancer DNS PTRs
+
 v1.15.0 (2021-08-16)
 ---------------------
 * Feature: Add support for Placement Groups
