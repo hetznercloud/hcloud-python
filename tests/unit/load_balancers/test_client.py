@@ -246,6 +246,23 @@ class TestBoundLoadBalancer(object):
         assert action.progress == 100
         assert action.command == "change_algorithm"
 
+    def test_change_dns_ptr(
+        self, hetzner_client, response_change_reverse_dns_entry, bound_load_balancer
+    ):
+        hetzner_client.request.return_value = response_change_reverse_dns_entry
+        action = bound_load_balancer.change_dns_ptr(
+            ip="1.2.3.4", dns_ptr="lb1.example.com"
+        )
+        hetzner_client.request.assert_called_with(
+            json={"dns_ptr": "lb1.example.com", "ip": "1.2.3.4"},
+            url="/load_balancers/14/actions/change_dns_ptr",
+            method="POST",
+        )
+
+        assert action.id == 13
+        assert action.progress == 100
+        assert action.command == "change_dns_ptr"
+
     def test_change_protection(
         self, hetzner_client, response_change_protection, bound_load_balancer
     ):

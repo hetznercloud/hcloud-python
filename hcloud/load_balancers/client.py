@@ -243,6 +243,18 @@ class BoundLoadBalancer(BoundModelBase):
         """
         return self._client.change_algorithm(self, algorithm)
 
+    def change_dns_ptr(self, ip, dns_ptr):
+        # type: (str, str) -> BoundAction
+        """Changes the hostname that will appear when getting the hostname belonging to the public IPs (IPv4 and IPv6) of this Load Balancer.
+
+        :param ip: str
+               The IP address for which to set the reverse DNS entry
+        :param dns_ptr: str
+               Hostname to set as a reverse DNS PTR entry, will reset to original default value if `None`
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+        return self._client.change_dns_ptr(self, ip, dns_ptr)
+
     def change_protection(self, delete):
         # type: (LoadBalancerService) -> List[BoundAction]
         """Changes the protection configuration of a Load Balancer.
@@ -756,6 +768,26 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             ),
             method="POST",
             json=data,
+        )
+        return BoundAction(self._client.actions, response["action"])
+
+    def change_dns_ptr(self, load_balancer, ip, dns_ptr):
+        # type: (Union[LoadBalancer, BoundLoadBalancer], str, str) -> BoundAction
+        """Changes the hostname that will appear when getting the hostname belonging to the public IPs (IPv4 and IPv6) of this Load Balancer.
+
+        :param ip: str
+               The IP address for which to set the reverse DNS entry
+        :param dns_ptr: str
+               Hostname to set as a reverse DNS PTR entry, will reset to original default value if `None`
+        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        """
+
+        response = self._client.request(
+            url="/load_balancers/{load_balancer_id}/actions/change_dns_ptr".format(
+                load_balancer_id=load_balancer.id
+            ),
+            method="POST",
+            json={"ip": ip, "dns_ptr": dns_ptr},
         )
         return BoundAction(self._client.actions, response["action"])
 
