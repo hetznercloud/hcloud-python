@@ -299,10 +299,7 @@ class IPv4Address(BaseDomain):
            The IPv4 Address
     """
 
-    __slots__ = (
-        "ip",
-        "dns_ptr",
-    )
+    __slots__ = ("ip", "dns_ptr")
 
     def __init__(
         self,
@@ -320,10 +317,7 @@ class IPv6Network(BaseDomain):
            The IPv6 Network as CIDR Notation
     """
 
-    __slots__ = (
-        "ip",
-        "dns_ptr",
-    )
+    __slots__ = ("ip", "dns_ptr")
 
     def __init__(
         self,
@@ -343,10 +337,7 @@ class PrivateNet(BaseDomain):
            The main IP Address of the LoadBalancer in the Network
     """
 
-    __slots__ = (
-        "network",
-        "ip",
-    )
+    __slots__ = ("network", "ip")
 
     def __init__(
         self,
@@ -366,10 +357,7 @@ class CreateLoadBalancerResponse(BaseDomain):
            Shows the progress of the Load Balancer creation
     """
 
-    __slots__ = (
-        "load_balancer",
-        "action",
-    )
+    __slots__ = ("load_balancer", "action")
 
     def __init__(
         self,

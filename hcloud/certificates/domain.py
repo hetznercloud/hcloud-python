@@ -107,10 +107,7 @@ class CreateManagedCertificateResponse(BaseDomain):
            Shows the progress of the certificate creation
     """
 
-    __slots__ = (
-        "certificate",
-        "action",
-    )
+    __slots__ = ("certificate", "action")
 
     def __init__(
         self,

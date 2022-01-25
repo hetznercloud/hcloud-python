@@ -54,7 +54,7 @@ def one_floating_ips_response():
                 "blocked": False,
                 "protection": {"delete": False},
                 "labels": {},
-            },
+            }
         ]
     }
 

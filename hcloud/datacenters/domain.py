@@ -12,13 +12,7 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
     :param server_types: :class:`DatacenterServerTypes <hcloud.datacenters.domain.DatacenterServerTypes>`
     """
 
-    __slots__ = (
-        "id",
-        "name",
-        "description",
-        "location",
-        "server_types",
-    )
+    __slots__ = ("id", "name", "description", "location", "server_types")
 
     def __init__(
         self, id=None, name=None, description=None, location=None, server_types=None

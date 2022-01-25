@@ -232,22 +232,35 @@ class PublicNetwork(BaseDomain):
     :param ipv4: :class:`IPv4Address <hcloud.servers.domain.IPv4Address>`
     :param ipv6: :class:`IPv6Network <hcloud.servers.domain.IPv6Network>`
     :param floating_ips: List[:class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`]
+    :param primary_ipv4: :class:`BoundPrimaryIP <hcloud.primary_ips.domain.BoundPrimaryIP>`
+    :param primary_ipv6: :class:`BoundPrimaryIP <hcloud.primary_ips.domain.BoundPrimaryIP>`
     :param firewalls: List[:class:`PublicNetworkFirewall <hcloud.servers.client.PublicNetworkFirewall>`]
     """
 
-    __slots__ = ("ipv4", "ipv6", "floating_ips", "firewalls")
+    __slots__ = (
+        "ipv4",
+        "ipv6",
+        "floating_ips",
+        "firewalls",
+        "primary_ipv4",
+        "primary_ipv6",
+    )
 
     def __init__(
         self,
         ipv4,  # type: IPv4Address
         ipv6,  # type: IPv6Network
         floating_ips,  # type: List[BoundFloatingIP]
+        primary_ipv4,  # type: BoundPrimaryIP
+        primary_ipv6,  # type: BoundPrimaryIP
         firewalls=None,  # type: List[PublicNetworkFirewall]
     ):
         self.ipv4 = ipv4
         self.ipv6 = ipv6
         self.floating_ips = floating_ips
         self.firewalls = firewalls
+        self.primary_ipv4 = primary_ipv4
+        self.primary_ipv6 = primary_ipv6
 
 
 class PublicNetworkFirewall(BaseDomain):
@@ -354,3 +367,27 @@ class PrivateNet(BaseDomain):
         self.ip = ip
         self.alias_ips = alias_ips
         self.mac_address = mac_address
+
+
+class ServerCreatePublicNetwork(BaseDomain):
+    """Server Create Public Network Domain
+
+    :param ipv4: Optional[:class:`PrimaryIP <hcloud.primary_ips.domain.PrimaryIP>`]
+    :param ipv6: Optional[:class:`PrimaryIP <hcloud.primary_ips.domain.PrimaryIP>`]
+    :param enable_ipv4: bool
+    :param enable_ipv6: bool
+    """
+
+    __slots__ = ("ipv4", "ipv6", "enable_ipv4", "enable_ipv6")
+
+    def __init__(
+        self,
+        ipv4=None,  # type: hcloud.primary_ips.domain.PrimaryIP
+        ipv6=None,  # type: hcloud.primary_ips.domain.PrimaryIP
+        enable_ipv4=True,  # type: bool
+        enable_ipv6=True,  # type: bool
+    ):
+        self.ipv4 = ipv4
+        self.ipv6 = ipv6
+        self.enable_ipv4 = enable_ipv4
+        self.enable_ipv6 = enable_ipv6

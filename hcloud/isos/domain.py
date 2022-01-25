@@ -22,12 +22,7 @@ class Iso(BaseDomain, DomainIdentityMixin):
     __slots__ = ("id", "name", "type", "description", "deprecated")
 
     def __init__(
-        self,
-        id=None,
-        name=None,
-        type=None,
-        description=None,
-        deprecated=None,
+        self, id=None, name=None, type=None, description=None, deprecated=None
     ):
         self.id = id
         self.name = name

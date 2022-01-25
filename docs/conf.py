@@ -47,9 +47,9 @@ templates_path = ["_templates"]
 master_doc = "index"
 
 # General information about the project.
-project = u"Hetzner Cloud Python"
-copyright = u"2019, Hetzner Cloud GmbH"
-author = u"Hetzner Cloud GmbH"
+project = "Hetzner Cloud Python"
+copyright = "2019, Hetzner Cloud GmbH"
+author = "Hetzner Cloud GmbH"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -93,9 +93,7 @@ html_logo = "_static/logo-hetzner-online.svg"
 # theme further.  For a list of options available for each theme, see the
 # documentation.
 #
-html_theme_options = {
-    "logo_only": True,
-}
+html_theme_options = {"logo_only": True}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -131,17 +129,17 @@ latex_documents = [
     (
         master_doc,
         "hcloud.tex",
-        u"Hetzner Cloud Python Documentation",
-        u"Hetzner Cloud GmbH",
+        "Hetzner Cloud Python Documentation",
+        "Hetzner Cloud GmbH",
         "manual",
-    ),
+    )
 ]
 
 # -- Options for manual page output ------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, u"Hetzner Cloud Python Documentation", [author], 1)]
+man_pages = [(master_doc, "Hetzner Cloud Python Documentation", [author], 1)]
 
 # -- Options for Texinfo output ----------------------------------------
 
@@ -151,11 +149,11 @@ man_pages = [(master_doc, u"Hetzner Cloud Python Documentation", [author], 1)]
 texinfo_documents = [
     (
         master_doc,
-        u"Hetzner Cloud Python Documentation",
+        "Hetzner Cloud Python Documentation",
         author,
         "HCloud-python is a library for the Hetzner Cloud API.",
         "Miscellaneous",
-    ),
+    )
 ]
 
 source_suffix = [".rst"]
