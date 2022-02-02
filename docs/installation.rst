@@ -23,6 +23,18 @@ you through the process.
 .. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
 
 
+Via conda
+---------
+
+Hetzner Cloud Python is also available as a ``conda``-package via `conda-forge`_:
+
+.. code-block:: console
+
+    $ conda install -c conda-forge hcloud
+
+.. _conda-forge: https://conda-forge.org/
+
+
 From sources
 ------------
 
