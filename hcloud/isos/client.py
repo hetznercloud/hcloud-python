@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 
 from hcloud.isos.domain import Iso

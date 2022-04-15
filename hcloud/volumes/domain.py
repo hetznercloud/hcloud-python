@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from dateutil.parser import isoparse
 
 from hcloud.core.domain import BaseDomain, DomainIdentityMixin

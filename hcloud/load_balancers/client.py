@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from hcloud.certificates.client import BoundCertificate
 from hcloud.servers.client import BoundServer
 
