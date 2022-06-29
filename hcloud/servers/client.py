@@ -6,6 +6,7 @@ from hcloud.core.domain import add_meta_to_result
 from hcloud.firewalls.client import BoundFirewall
 from hcloud.floating_ips.client import BoundFloatingIP
 from hcloud.isos.client import BoundIso
+from hcloud.primary_ips.client import BoundPrimaryIP
 from hcloud.servers.domain import (
     Server,
     CreateServerResponse,
@@ -61,8 +62,34 @@ class BoundServer(BoundModelBase):
 
         public_net = data.get("public_net")
         if public_net:
-            ipv4_address = IPv4Address.from_dict(public_net["ipv4"])
-            ipv6_network = IPv6Network.from_dict(public_net["ipv6"])
+            ipv4_address = (
+                IPv4Address.from_dict(public_net["ipv4"])
+                if public_net["ipv4"] is not None
+                else None
+            )
+            ipv4_primary_ip = (
+                BoundPrimaryIP(
+                    client._client.primary_ips,
+                    {"id": public_net["ipv4"]["id"]},
+                    complete=False,
+                )
+                if public_net["ipv4"] is not None
+                else None
+            )
+            ipv6_network = (
+                IPv6Network.from_dict(public_net["ipv6"])
+                if public_net["ipv6"] is not None
+                else None
+            )
+            ipv6_primary_ip = (
+                BoundPrimaryIP(
+                    client._client.primary_ips,
+                    {"id": public_net["ipv6"]["id"]},
+                    complete=False,
+                )
+                if public_net["ipv6"] is not None
+                else None
+            )
             floating_ips = [
                 BoundFloatingIP(
                     client._client.floating_ips, {"id": floating_ip}, complete=False
@@ -81,6 +108,8 @@ class BoundServer(BoundModelBase):
             data["public_net"] = PublicNetwork(
                 ipv4=ipv4_address,
                 ipv6=ipv6_network,
+                primary_ipv4=ipv4_primary_ip,
+                primary_ipv6=ipv6_primary_ip,
                 floating_ips=floating_ips,
                 firewalls=firewalls,
             )
@@ -480,6 +509,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         start_after_create=True,  # type: Optional[bool]
         automount=None,  # type: Optional[bool]
         placement_group=None,  # type: Optional[PlacementGroup]
+        public_net=None,  # type: Optional[ServerCreatePublicNetwork]
     ):
         # type: (...) -> CreateServerResponse
         """Creates a new server. Returns preliminary information about the server as well as an action that covers progress of creation.
@@ -508,6 +538,8 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                Auto mount volumes after attach.
         :param placement_group: :class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>` or :class:`Location <hcloud.placement_groups.domain.PlacementGroup>`
                Placement Group where server should be added during creation
+        :param public_net: :class:`ServerCreatePublicNetwork <hcloud.servers.domain.ServerCreatePublicNetwork>`
+               Options to configure the public network of a server on creation
         :return: :class:`CreateServerResponse <hcloud.servers.domain.CreateServerResponse>`
         """
         data = {
@@ -537,6 +569,17 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
             data["automount"] = automount
         if placement_group is not None:
             data["placement_group"] = placement_group.id
+
+        if public_net is not None:
+            pn = {
+                "enable_ipv4": public_net.enable_ipv4,
+                "enable_ipv6": public_net.enable_ipv6,
+            }
+            if public_net.ipv4 is not None:
+                pn.update({"ipv4": public_net.ipv4.id})
+            if public_net.ipv6 is not None:
+                pn.update({"ipv6": public_net.ipv6.id})
+            data["public_net"] = pn
 
         response = self._client.request(url="/servers", method="POST", json=data)
 
@@ -969,9 +1012,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                 New alias IPs to set for this server.
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {
-            "network": network.id,
-        }
+        data = {"network": network.id}
         if ip is not None:
             data.update({"ip": ip})
         if alias_ips is not None:
@@ -993,9 +1034,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {
-            "network": network.id,
-        }
+        data = {"network": network.id}
         response = self._client.request(
             url="/servers/{server_id}/actions/detach_from_network".format(
                 server_id=server.id
@@ -1033,9 +1072,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :param placement_group: :class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>` or :class:`Network <hcloud.placement_groups.domain.PlacementGroup>`
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {
-            "placement_group": str(placement_group.id),
-        }
+        data = {"placement_group": str(placement_group.id)}
         response = self._client.request(
             url="/servers/{server_id}/actions/add_to_placement_group".format(
                 server_id=server.id

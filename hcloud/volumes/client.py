@@ -220,10 +220,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         if not (bool(location) ^ bool(server)):
             raise ValueError("only one of server or location must be provided")
 
-        data = {
-            "name": name,
-            "size": size,
-        }
+        data = {"name": name, "size": size}
         if labels is not None:
             data["labels"] = labels
         if location is not None:

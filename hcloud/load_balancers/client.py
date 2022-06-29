@@ -684,9 +684,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                        The LoadBalancerService you want to delete from the Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {
-            "listen_port": service.listen_port,
-        }
+        data = {"listen_port": service.listen_port}
 
         response = self._client.request(
             url="/load_balancers/{load_balancer_id}/actions/delete_service".format(
@@ -732,9 +730,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                        The LoadBalancerTarget you want to remove from the Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {
-            "type": target.type,
-        }
+        data = {"type": target.type}
         if target.type == "server":
             data["server"] = {"id": target.server.id}
         elif target.type == "label_selector":
@@ -848,9 +844,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {
-            "network": network.id,
-        }
+        data = {"network": network.id}
         response = self._client.request(
             url="/load_balancers/{load_balancer_id}/actions/detach_from_network".format(
                 load_balancer_id=load_balancer.id
@@ -903,9 +897,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                Load Balancer type the Load Balancer should migrate to
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {
-            "load_balancer_type": load_balancer_type.id_or_name,
-        }
+        data = {"load_balancer_type": load_balancer_type.id_or_name}
         response = self._client.request(
             url="/load_balancers/{load_balancer_id}/actions/change_type".format(
                 load_balancer_id=load_balancer.id

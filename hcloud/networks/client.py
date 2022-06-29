@@ -358,10 +358,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
                        The NetworkSubnet you want to add to the Network
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {
-            "type": subnet.type,
-            "network_zone": subnet.network_zone,
-        }
+        data = {"type": subnet.type, "network_zone": subnet.network_zone}
         if subnet.ip_range is not None:
             data["ip_range"] = subnet.ip_range
         if subnet.vswitch_id is not None:
@@ -385,9 +382,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
                        The NetworkSubnet you want to remove from the Network
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {
-            "ip_range": subnet.ip_range,
-        }
+        data = {"ip_range": subnet.ip_range}
 
         response = self._client.request(
             url="/networks/{network_id}/actions/delete_subnet".format(
@@ -407,10 +402,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
                     The NetworkRoute you want to add to the Network
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {
-            "destination": route.destination,
-            "gateway": route.gateway,
-        }
+        data = {"destination": route.destination, "gateway": route.gateway}
 
         response = self._client.request(
             url="/networks/{network_id}/actions/add_route".format(
@@ -430,10 +422,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
                     The NetworkRoute you want to remove from the Network
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {
-            "destination": route.destination,
-            "gateway": route.gateway,
-        }
+        data = {"destination": route.destination, "gateway": route.gateway}
 
         response = self._client.request(
             url="/networks/{network_id}/actions/delete_route".format(
@@ -453,9 +442,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
                     The new prefix for the whole network.
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {
-            "ip_range": ip_range,
-        }
+        data = {"ip_range": ip_range}
 
         response = self._client.request(
             url="/networks/{network_id}/actions/change_ip_range".format(

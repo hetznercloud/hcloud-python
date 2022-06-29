@@ -55,10 +55,7 @@ class Meta(BaseDomain):
 
     __slots__ = ("pagination",)
 
-    def __init__(
-        self,
-        pagination=None,
-    ):
+    def __init__(self, pagination=None):
         self.pagination = pagination
 
     @classmethod

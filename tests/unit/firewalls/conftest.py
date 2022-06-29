@@ -190,7 +190,7 @@ def one_firewalls_response():
                     }
                 ],
                 "applied_to": [{"server": {"id": 42}, "type": "server"}],
-            },
+            }
         ]
     }
 

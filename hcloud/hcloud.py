@@ -7,6 +7,7 @@ import requests
 from hcloud.actions.client import ActionsClient
 from hcloud.certificates.client import CertificatesClient
 from hcloud.floating_ips.client import FloatingIPsClient
+from hcloud.primary_ips.client import PrimaryIPsClient
 from hcloud.networks.client import NetworksClient
 from hcloud.isos.client import IsosClient
 from hcloud.servers.client import ServersClient
@@ -120,6 +121,11 @@ class Client(object):
         """FloatingIPsClient Instance
 
         :type: :class:`FloatingIPsClient <hcloud.floating_ips.client.FloatingIPsClient>`
+        """
+        self.primary_ips = PrimaryIPsClient(self)
+        """PrimaryIPsClient Instance
+
+        :type: :class:`PrimaryIPsClient <hcloud.primary_ips.client.PrimaryIPsClient>`
         """
         self.networks = NetworksClient(self)
         """NetworksClient Instance

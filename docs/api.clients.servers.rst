@@ -23,6 +23,9 @@ ServersClient
 .. autoclass:: hcloud.servers.domain.CreateServerResponse
     :members:
 
+.. autoclass:: hcloud.servers.domain.ServerCreatePublicNetwork
+    :members:
+
 .. autoclass:: hcloud.servers.domain.ResetPasswordResponse
     :members:
 

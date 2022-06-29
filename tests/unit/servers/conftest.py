@@ -12,12 +12,14 @@ def response_simple_server():
             "public_net": {
                 "ipv4": {
                     "ip": "1.2.3.4",
+                    "id": 1,
                     "blocked": False,
                     "dns_ptr": "server01.example.com",
                 },
                 "ipv6": {
                     "ip": "2001:db8::/64",
                     "blocked": False,
+                    "id": 2,
                     "dns_ptr": [{"ip": "2001:db8::1", "dns_ptr": "server.example.com"}],
                 },
                 "floating_ips": [478],
@@ -119,11 +121,13 @@ def response_create_simple_server():
                 "ipv4": {
                     "ip": "1.2.3.4",
                     "blocked": False,
+                    "id": 1,
                     "dns_ptr": "server01.example.com",
                 },
                 "ipv6": {
                     "ip": "2001:db8::/64",
                     "blocked": False,
+                    "id": 2,
                     "dns_ptr": [{"ip": "2001:db8::1", "dns_ptr": "server.example.com"}],
                 },
                 "floating_ips": [],
@@ -190,9 +194,7 @@ def response_create_simple_server():
                 "deprecated": "2018-02-28T00:00:00+00:00",
                 "labels": {},
             },
-            "iso": {
-                "id": 4711,
-            },
+            "iso": {"id": 4711},
             "rescue_enabled": False,
             "locked": False,
             "backup_window": "22-02",
@@ -241,11 +243,13 @@ def response_update_server():
                 "ipv4": {
                     "ip": "1.2.3.4",
                     "blocked": False,
+                    "id": 1,
                     "dns_ptr": "server01.example.com",
                 },
                 "ipv6": {
                     "ip": "2001:db8::/64",
                     "blocked": False,
+                    "id": 2,
                     "dns_ptr": [{"ip": "2001:db8::1", "dns_ptr": "server.example.com"}],
                 },
                 "floating_ips": [478],
@@ -345,11 +349,13 @@ def response_simple_servers():
                     "ipv4": {
                         "ip": "1.2.3.4",
                         "blocked": False,
+                        "id": 2,
                         "dns_ptr": "server01.example.com",
                     },
                     "ipv6": {
                         "ip": "2001:db8::/64",
                         "blocked": False,
+                        "id": 1,
                         "dns_ptr": [
                             {"ip": "2001:db8::1", "dns_ptr": "server.example.com"}
                         ],
@@ -445,11 +451,13 @@ def response_simple_servers():
                     "ipv4": {
                         "ip": "1.2.3.4",
                         "blocked": False,
+                        "id": 3,
                         "dns_ptr": "server01.example.com",
                     },
                     "ipv6": {
                         "ip": "2001:db8::/64",
                         "blocked": False,
+                        "id": 4,
                         "dns_ptr": [
                             {"ip": "2001:db8::1", "dns_ptr": "server.example.com"}
                         ],
@@ -554,11 +562,13 @@ def response_full_server():
                 "ipv4": {
                     "ip": "1.2.3.4",
                     "blocked": False,
+                    "id": 1,
                     "dns_ptr": "server01.example.com",
                 },
                 "ipv6": {
                     "ip": "2001:db8::/64",
                     "blocked": False,
+                    "id": 2,
                     "dns_ptr": [{"ip": "2001:db8::1", "dns_ptr": "server.example.com"}],
                 },
                 "floating_ips": [478],

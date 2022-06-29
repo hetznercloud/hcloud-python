@@ -38,6 +38,7 @@ class ClientEntityBase(object):
         **kwargs
     ):
         # type (...) -> List[BoundModelBase]
+
         page = 1
 
         results = []

@@ -90,7 +90,7 @@ def one_images_response():
                 "protection": {"delete": False},
                 "deprecated": "2018-02-28T00:00:00+00:00",
                 "labels": {},
-            },
+            }
         ]
     }
 

@@ -137,9 +137,7 @@ class FirewallResource:
         self.label_selector = label_selector
 
     def to_payload(self):
-        payload = {
-            "type": self.type,
-        }
+        payload = {"type": self.type}
         if self.server is not None:
             payload.update({"server": {"id": self.server.id}})
 

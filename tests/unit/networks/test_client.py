@@ -264,10 +264,7 @@ class TestNetworksClient(object):
         networks_client._client.request.assert_called_with(
             url="/networks",
             method="POST",
-            json={
-                "name": "mynet",
-                "ip_range": "10.0.0.0/8",
-            },
+            json={"name": "mynet", "ip_range": "10.0.0.0/8"},
         )
 
     def test_create_with_subnet(
@@ -306,12 +303,7 @@ class TestNetworksClient(object):
             json={
                 "name": "mynet",
                 "ip_range": "10.0.0.0/8",
-                "routes": [
-                    {
-                        "destination": "10.100.1.0/24",
-                        "gateway": "10.0.1.1",
-                    }
-                ],
+                "routes": [{"destination": "10.100.1.0/24", "gateway": "10.0.1.1"}],
             },
         )
 
@@ -338,12 +330,7 @@ class TestNetworksClient(object):
                         "network_zone": "eu-central",
                     }
                 ],
-                "routes": [
-                    {
-                        "destination": "10.100.1.0/24",
-                        "gateway": "10.0.1.1",
-                    }
-                ],
+                "routes": [{"destination": "10.100.1.0/24", "gateway": "10.0.1.1"}],
             },
         )
 

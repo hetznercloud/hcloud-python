@@ -206,9 +206,7 @@ class TestFloatingIPsClient(object):
     def test_create_with_location(self, floating_ips_client, floating_ip_response):
         floating_ips_client._client.request.return_value = floating_ip_response
         response = floating_ips_client.create(
-            "ipv6",
-            "Web Frontend",
-            home_location=Location(name="location"),
+            "ipv6", "Web Frontend", home_location=Location(name="location")
         )
         floating_ips_client._client.request.assert_called_with(
             url="/floating_ips",
