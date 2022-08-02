@@ -1,5 +1,5 @@
 import pytest
-import mock
+from unittest import mock
 
 from hcloud.firewalls.client import FirewallsClient, BoundFirewall
 from hcloud.actions.client import BoundAction

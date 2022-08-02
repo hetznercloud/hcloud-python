@@ -1,5 +1,5 @@
 import pytest
-import mock
+from unittest import mock
 
 from hcloud.placement_groups.client import BoundPlacementGroup, PlacementGroupsClient
 

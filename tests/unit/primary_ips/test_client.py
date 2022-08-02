@@ -1,5 +1,5 @@
 import pytest
-import mock
+from unittest import mock
 
 from hcloud.primary_ips.client import PrimaryIPsClient, BoundPrimaryIP
 from hcloud.primary_ips.domain import PrimaryIP

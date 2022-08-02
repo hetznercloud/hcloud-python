@@ -1,5 +1,5 @@
 import pytest
-import mock
+from unittest import mock
 import datetime
 from dateutil.tz import tzoffset
 

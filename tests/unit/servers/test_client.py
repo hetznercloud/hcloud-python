@@ -1,4 +1,4 @@
-import mock
+from unittest import mock
 import pytest
 
 from hcloud.firewalls.client import BoundFirewall
