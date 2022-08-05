@@ -23,10 +23,10 @@ you through the process.
 .. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
 
 
-Via conda
+Via conda (Third-Party)
 ---------
 
-Hetzner Cloud Python is also available as a ``conda``-package via `conda-forge`_:
+Hetzner Cloud Python is also available as a ``conda``-package via `conda-forge`. This package is not maintained by Hetzner Cloud and might be outdated._:
 
 .. code-block:: console
 
