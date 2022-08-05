@@ -1,5 +1,5 @@
 import pytest
-import mock
+from unittest import mock
 
 from hcloud.actions.client import BoundAction
 from hcloud.servers.client import BoundServer

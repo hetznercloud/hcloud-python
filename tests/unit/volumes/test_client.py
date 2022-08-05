@@ -1,6 +1,6 @@
 import pytest
 from dateutil.parser import isoparse
-import mock
+from unittest import mock
 
 from hcloud.actions.client import BoundAction
 from hcloud.servers.client import BoundServer

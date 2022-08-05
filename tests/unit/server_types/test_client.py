@@ -1,5 +1,5 @@
 import pytest
-import mock
+from unittest import mock
 
 
 from hcloud.server_types.client import ServerTypesClient

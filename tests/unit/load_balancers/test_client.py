@@ -1,4 +1,4 @@
-import mock
+from unittest import mock
 import pytest
 
 from hcloud.load_balancer_types.domain import LoadBalancerType
