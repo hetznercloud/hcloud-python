@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from hcloud.core.domain import add_meta_to_result
 
 

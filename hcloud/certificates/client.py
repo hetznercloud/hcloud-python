@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from hcloud.actions.client import BoundAction
 from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByNameMixin
 
