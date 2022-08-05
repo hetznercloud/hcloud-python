@@ -10,7 +10,7 @@ with open("README.rst") as readme_file:
 with open("CHANGELOG.rst") as changelog_file:
     changelog = changelog_file.read()
 
-requirements = ["future>=0.17.1,<1", "python-dateutil>=2.7.5,<3", "requests>=2.20,<3"]
+requirements = ["future>=0.17.1", "python-dateutil>=2.7.5", "requests>=2.20"]
 
 extras_require = {"docs": ["Sphinx==1.8.1", "sphinx-rtd-theme==0.4.2"]}
 
@@ -33,7 +33,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
     ],
-    python_requires="!=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <3.11",
+    python_requires=">3.5",
     description="Official Hetzner Cloud python library",
     install_requires=requirements,
     extras_require=extras_require,
