@@ -404,7 +404,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         public_interface=None,  # type: Optional[bool]
         network=None,  # type: Optional[Union[Network,BoundNetwork]]
     ):
-        # type: (...) -> CreateLoadBalancerResponse:
+        # type: (...) -> CreateLoadBalancerResponse
         """Creates a Load Balancer .
 
         :param name: str
