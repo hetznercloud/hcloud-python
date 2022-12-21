@@ -208,6 +208,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
         }
         if assignee_id:
             data["assignee_id"] = assignee_id
+            data.pop("datacenter")
         if labels is not None:
             data["labels"] = labels
 
