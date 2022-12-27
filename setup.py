@@ -10,7 +10,7 @@ with open("README.rst") as readme_file:
 with open("CHANGELOG.rst") as changelog_file:
     changelog = changelog_file.read()
 
-requirements = ["future>=0.17.1", "python-dateutil>=2.7.5", "requests>=2.20"]
+requirements = ["python-dateutil>=2.7.5", "requests>=2.20"]
 
 extras_require = {"docs": ["Sphinx==1.8.1", "sphinx-rtd-theme==0.4.2"]}
 
