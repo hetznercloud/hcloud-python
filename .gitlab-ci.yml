@@ -33,7 +33,7 @@ python310:
 
 python311:
   <<: *tests_template
-  image: python:3.1-rc-alpine
+  image: python:3.11-alpine
   script: tox -e py311
 
 test-style:
