@@ -40,7 +40,7 @@ class Server(BaseDomain):
             User-defined labels (key-value pairs)
     :param volumes: List[:class:`BoundVolume <hcloud.volumes.client.BoundVolume>`]
             Volumes assigned to this server.
-    :param private_net: List[:class:`PrivateNet <hcloud.servers.domain.PrivateNet`]
+    :param private_net: List[:class:`PrivateNet <hcloud.servers.domain.PrivateNet>`]
             Private networks information.
     """
 
