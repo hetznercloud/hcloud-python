@@ -169,6 +169,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         label_selector=None,  # type: Optional[str]
         bound_to=None,  # type: Optional[List[str]]
         type=None,  # type: Optional[List[str]]
+        architecture=None,  # type: Optional[List[str]]
         sort=None,  # type: Optional[List[str]]
         page=None,  # type: Optional[int]
         per_page=None,  # type: Optional[int]
@@ -186,6 +187,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Server Id linked to the image. Only available for images of type backup
         :param type: List[str] (optional)
                Choices: system snapshot backup
+        :param architecture: List[str] (optional)
+               Choices: x86 arm
         :param status: List[str] (optional)
                Can be used to filter images by their status. The response will only contain images matching the status.
         :param sort: List[str] (optional)
@@ -207,6 +210,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
             params["bound_to"] = bound_to
         if type is not None:
             params["type"] = type
+        if architecture is not None:
+            params["architecture"] = architecture
         if sort is not None:
             params["sort"] = sort
         if page is not None:
@@ -228,6 +233,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         label_selector=None,  # type: Optional[str]
         bound_to=None,  # type: Optional[List[str]]
         type=None,  # type: Optional[List[str]]
+        architecture=None,  # type: Optional[List[str]]
         sort=None,  # type: Optional[List[str]]
         status=None,  # type: Optional[List[str]]
         include_deprecated=None,  # type: Optional[bool]
@@ -243,6 +249,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Server Id linked to the image. Only available for images of type backup
         :param type: List[str] (optional)
                Choices: system snapshot backup
+        :param architecture: List[str] (optional)
+               Choices: x86 arm
         :param status: List[str] (optional)
                Can be used to filter images by their status. The response will only contain images matching the status.
         :param sort: List[str] (optional)
@@ -256,6 +264,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
             label_selector=label_selector,
             bound_to=bound_to,
             type=type,
+            architecture=architecture,
             sort=sort,
             status=status,
             include_deprecated=include_deprecated,
