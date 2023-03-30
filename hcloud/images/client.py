@@ -274,11 +274,28 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         # type: (str) -> BoundImage
         """Get image by name
 
+        Deprecated: Use get_by_name_and_architecture instead.
+
         :param name: str
                Used to get image by name.
         :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
         """
         return super(ImagesClient, self).get_by_name(name)
+
+    def get_by_name_and_architecture(self, name, architecture):
+        # type: (str, str) -> BoundImage
+        """Get image by name
+
+        :param name: str
+               Used to identify the image.
+        :param architecture: str
+               Used to identify the image.
+        :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
+        """
+        response = self.get_list(name=name, architecture=[architecture])
+        entities = getattr(response, self.results_list_attribute_name)
+        entity = entities[0] if entities else None
+        return entity
 
     def update(self, image, description=None, type=None, labels=None):
         # type:(Image,  Optional[str], Optional[str],  Optional[Dict[str, str]]) -> BoundImage
@@ -320,7 +337,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         return True
 
     def change_protection(self, image, delete=None):
-        # type: (Image, Optional[bool], Optional[bool]) -> BoundAction
+        # type: (Image, Optional[bool]) -> BoundAction
         """Changes the protection configuration of the image. Can only be used on snapshots.
 
         :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
