@@ -2,7 +2,28 @@ import pytest
 from unittest import mock
 
 
-from hcloud.server_types.client import ServerTypesClient
+from hcloud.server_types.client import ServerTypesClient, BoundServerType
+
+
+class TestBoundIso(object):
+    @pytest.fixture()
+    def bound_server_type(self, hetzner_client):
+        return BoundServerType(client=hetzner_client.server_types, data=dict(id=14))
+
+    def test_bound_server_type_init(self, server_type_response):
+        bound_server_type = BoundServerType(
+            client=mock.MagicMock(), data=server_type_response["server_type"]
+        )
+
+        assert bound_server_type.id == 1
+        assert bound_server_type.name == "cx11"
+        assert bound_server_type.description == "CX11"
+        assert bound_server_type.cores == 1
+        assert bound_server_type.memory == 1
+        assert bound_server_type.disk == 25
+        assert bound_server_type.storage_type == "local"
+        assert bound_server_type.cpu_type == "shared"
+        assert bound_server_type.architecture == "x86"
 
 
 class TestServerTypesClient(object):

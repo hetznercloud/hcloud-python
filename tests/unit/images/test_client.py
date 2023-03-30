@@ -29,6 +29,7 @@ class TestBoundImage(object):
         )
         assert bound_image.os_flavor == "ubuntu"
         assert bound_image.os_version == "16.04"
+        assert bound_image.architecture == "x86"
         assert bound_image.rapid_deploy is False
         assert bound_image.deprecated == datetime.datetime(
             2018, 2, 28, 0, 0, tzinfo=tzoffset(None, 0)

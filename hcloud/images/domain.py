@@ -30,6 +30,8 @@ class Image(BaseDomain, DomainIdentityMixin):
            Flavor of operating system contained in the image Choices: `ubuntu`, `centos`, `debian`, `fedora`, `unknown`
     :param os_version: str, None
            Operating system version
+    :param architecture: str
+           CPU Architecture that the image is compatible with. Choices: `x86`, `arm`
     :param rapid_deploy: bool
            Indicates that rapid deploy of the image is available
     :param protection: dict
@@ -50,6 +52,7 @@ class Image(BaseDomain, DomainIdentityMixin):
         "bound_to",
         "os_flavor",
         "os_version",
+        "architecture",
         "rapid_deploy",
         "created_from",
         "status",
@@ -72,6 +75,7 @@ class Image(BaseDomain, DomainIdentityMixin):
         bound_to=None,
         os_flavor=None,
         os_version=None,
+        architecture=None,
         rapid_deploy=None,
         created_from=None,
         protection=None,
@@ -89,6 +93,7 @@ class Image(BaseDomain, DomainIdentityMixin):
         self.bound_to = bound_to
         self.os_flavor = os_flavor
         self.os_version = os_version
+        self.architecture = architecture
         self.rapid_deploy = rapid_deploy
         self.created_from = created_from
         self.protection = protection

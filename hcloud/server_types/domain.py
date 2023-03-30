@@ -22,6 +22,8 @@ class ServerType(BaseDomain, DomainIdentityMixin):
            Type of server boot drive. Local has higher speed. Network has better availability. Choices: `local`, `network`
     :param cpu_type: string
            Type of cpu. Choices: `shared`, `dedicated`
+    :param architecture: string
+            Architecture of cpu. Choices: `x86`, `arm`
     :param deprecated: bool
            True if server type is deprecated
     """
@@ -36,6 +38,7 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         "prices",
         "storage_type",
         "cpu_type",
+        "architecture",
         "deprecated",
     )
 
@@ -50,6 +53,7 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         prices=None,
         storage_type=None,
         cpu_type=None,
+        architecture=None,
         deprecated=None,
     ):
         self.id = id
@@ -61,4 +65,5 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         self.prices = prices
         self.storage_type = storage_type
         self.cpu_type = cpu_type
+        self.architecture = architecture
         self.deprecated = deprecated

@@ -9,6 +9,7 @@ def iso_response():
             "name": "FreeBSD-11.0-RELEASE-amd64-dvd1",
             "description": "FreeBSD 11.0 x64",
             "type": "public",
+            "architecture": "x86",
             "deprecated": "2018-02-28T00:00:00+00:00",
         }
     }
@@ -23,6 +24,7 @@ def two_isos_response():
                 "name": "FreeBSD-11.0-RELEASE-amd64-dvd1",
                 "description": "FreeBSD 11.0 x64",
                 "type": "public",
+                "architecture": "x86",
                 "deprecated": "2018-02-28T00:00:00+00:00",
             },
             {
@@ -30,6 +32,7 @@ def two_isos_response():
                 "name": "FreeBSD-11.0-RELEASE-amd64-dvd1",
                 "description": "FreeBSD 11.0 x64",
                 "type": "public",
+                "architecture": "x86",
                 "deprecated": "2018-02-28T00:00:00+00:00",
             },
         ]
@@ -45,6 +48,7 @@ def one_isos_response():
                 "name": "FreeBSD-11.0-RELEASE-amd64-dvd1",
                 "description": "FreeBSD 11.0 x64",
                 "type": "public",
+                "architecture": "x86",
                 "deprecated": "2018-02-28T00:00:00+00:00",
             }
         ]

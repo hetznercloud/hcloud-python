@@ -18,6 +18,7 @@ class TestBoundIso(object):
         assert bound_iso.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
         assert bound_iso.description == "FreeBSD 11.0 x64"
         assert bound_iso.type == "public"
+        assert bound_iso.architecture == "x86"
         assert bound_iso.deprecated == datetime.datetime(
             2018, 2, 28, 0, 0, tzinfo=tzoffset(None, 0)
         )
