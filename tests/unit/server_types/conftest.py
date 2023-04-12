@@ -26,6 +26,7 @@ def server_type_response():
             ],
             "storage_type": "local",
             "cpu_type": "shared",
+            "architecture": "x86",
         }
     }
 
@@ -56,6 +57,7 @@ def two_server_types_response():
                 ],
                 "storage_type": "local",
                 "cpu_type": "shared",
+                "architecture": "x86",
             },
             {
                 "id": 2,
@@ -90,6 +92,7 @@ def two_server_types_response():
                 ],
                 "storage_type": "local",
                 "cpu_type": "shared",
+                "architecture": "x86",
             },
         ]
     }
@@ -121,6 +124,7 @@ def one_server_types_response():
                 ],
                 "storage_type": "local",
                 "cpu_type": "shared",
+                "architecture": "x86",
             }
         ]
     }

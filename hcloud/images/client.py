@@ -169,6 +169,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         label_selector=None,  # type: Optional[str]
         bound_to=None,  # type: Optional[List[str]]
         type=None,  # type: Optional[List[str]]
+        architecture=None,  # type: Optional[List[str]]
         sort=None,  # type: Optional[List[str]]
         page=None,  # type: Optional[int]
         per_page=None,  # type: Optional[int]
@@ -186,6 +187,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Server Id linked to the image. Only available for images of type backup
         :param type: List[str] (optional)
                Choices: system snapshot backup
+        :param architecture: List[str] (optional)
+               Choices: x86 arm
         :param status: List[str] (optional)
                Can be used to filter images by their status. The response will only contain images matching the status.
         :param sort: List[str] (optional)
@@ -207,6 +210,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
             params["bound_to"] = bound_to
         if type is not None:
             params["type"] = type
+        if architecture is not None:
+            params["architecture"] = architecture
         if sort is not None:
             params["sort"] = sort
         if page is not None:
@@ -228,6 +233,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         label_selector=None,  # type: Optional[str]
         bound_to=None,  # type: Optional[List[str]]
         type=None,  # type: Optional[List[str]]
+        architecture=None,  # type: Optional[List[str]]
         sort=None,  # type: Optional[List[str]]
         status=None,  # type: Optional[List[str]]
         include_deprecated=None,  # type: Optional[bool]
@@ -243,6 +249,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Server Id linked to the image. Only available for images of type backup
         :param type: List[str] (optional)
                Choices: system snapshot backup
+        :param architecture: List[str] (optional)
+               Choices: x86 arm
         :param status: List[str] (optional)
                Can be used to filter images by their status. The response will only contain images matching the status.
         :param sort: List[str] (optional)
@@ -256,6 +264,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
             label_selector=label_selector,
             bound_to=bound_to,
             type=type,
+            architecture=architecture,
             sort=sort,
             status=status,
             include_deprecated=include_deprecated,
@@ -265,11 +274,28 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         # type: (str) -> BoundImage
         """Get image by name
 
+        Deprecated: Use get_by_name_and_architecture instead.
+
         :param name: str
                Used to get image by name.
         :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
         """
         return super(ImagesClient, self).get_by_name(name)
+
+    def get_by_name_and_architecture(self, name, architecture):
+        # type: (str, str) -> BoundImage
+        """Get image by name
+
+        :param name: str
+               Used to identify the image.
+        :param architecture: str
+               Used to identify the image.
+        :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
+        """
+        response = self.get_list(name=name, architecture=[architecture])
+        entities = getattr(response, self.results_list_attribute_name)
+        entity = entities[0] if entities else None
+        return entity
 
     def update(self, image, description=None, type=None, labels=None):
         # type:(Image,  Optional[str], Optional[str],  Optional[Dict[str, str]]) -> BoundImage
@@ -311,7 +337,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         return True
 
     def change_protection(self, image, delete=None):
-        # type: (Image, Optional[bool], Optional[bool]) -> BoundAction
+        # type: (Image, Optional[bool]) -> BoundAction
         """Changes the protection configuration of the image. Can only be used on snapshots.
 
         :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`

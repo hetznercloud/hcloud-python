@@ -29,6 +29,7 @@ class TestBoundImage(object):
         )
         assert bound_image.os_flavor == "ubuntu"
         assert bound_image.os_version == "16.04"
+        assert bound_image.architecture == "x86"
         assert bound_image.rapid_deploy is False
         assert bound_image.deprecated == datetime.datetime(
             2018, 2, 28, 0, 0, tzinfo=tzoffset(None, 0)
@@ -222,6 +223,21 @@ class TestImagesClient(object):
         assert image._client is images_client
         assert image.id == 4711
         assert image.name == "ubuntu-20.04"
+
+    def test_get_by_name_and_architecture(self, images_client, one_images_response):
+        images_client._client.request.return_value = one_images_response
+        image = images_client.get_by_name_and_architecture("ubuntu-20.04", "x86")
+
+        params = {"name": "ubuntu-20.04", "architecture": ["x86"]}
+
+        images_client._client.request.assert_called_with(
+            url="/images", method="GET", params=params
+        )
+
+        assert image._client is images_client
+        assert image.id == 4711
+        assert image.name == "ubuntu-20.04"
+        assert image.architecture == "x86"
 
     @pytest.mark.parametrize(
         "image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))]
