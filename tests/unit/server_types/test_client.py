@@ -24,6 +24,7 @@ class TestBoundIso(object):
         assert bound_server_type.storage_type == "local"
         assert bound_server_type.cpu_type == "shared"
         assert bound_server_type.architecture == "x86"
+        assert bound_server_type.included_traffic == 21990232555520
 
 
 class TestServerTypesClient(object):
