@@ -27,6 +27,7 @@ def server_type_response():
             "storage_type": "local",
             "cpu_type": "shared",
             "architecture": "x86",
+            "included_traffic": 21990232555520,
         }
     }
 
@@ -58,6 +59,7 @@ def two_server_types_response():
                 "storage_type": "local",
                 "cpu_type": "shared",
                 "architecture": "x86",
+                "included_traffic": 21990232555520,
             },
             {
                 "id": 2,
@@ -93,6 +95,7 @@ def two_server_types_response():
                 "storage_type": "local",
                 "cpu_type": "shared",
                 "architecture": "x86",
+                "included_traffic": 21990232555520,
             },
         ]
     }
@@ -125,6 +128,7 @@ def one_server_types_response():
                 "storage_type": "local",
                 "cpu_type": "shared",
                 "architecture": "x86",
+                "included_traffic": 21990232555520,
             }
         ]
     }

@@ -23,9 +23,11 @@ class ServerType(BaseDomain, DomainIdentityMixin):
     :param cpu_type: string
            Type of cpu. Choices: `shared`, `dedicated`
     :param architecture: string
-            Architecture of cpu. Choices: `x86`, `arm`
+           Architecture of cpu. Choices: `x86`, `arm`
     :param deprecated: bool
            True if server type is deprecated
+    :param included_traffic: int
+           Free traffic per month in bytes
     """
 
     __slots__ = (
@@ -40,6 +42,7 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         "cpu_type",
         "architecture",
         "deprecated",
+        "included_traffic",
     )
 
     def __init__(
@@ -55,6 +58,7 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         cpu_type=None,
         architecture=None,
         deprecated=None,
+        included_traffic=None,
     ):
         self.id = id
         self.name = name
@@ -67,3 +71,4 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         self.cpu_type = cpu_type
         self.architecture = architecture
         self.deprecated = deprecated
+        self.included_traffic = included_traffic
