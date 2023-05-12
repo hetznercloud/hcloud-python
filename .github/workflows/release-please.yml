@@ -1,0 +1,21 @@
+on:
+  push:
+    branches:
+      - main
+name: release-please
+
+jobs:
+  release-please:
+    # The secret HCLOUD_BOT_TOKEN is only available on the main repo, not in forks.
+    if: github.repository == 'hetznercloud/hcloud-python'
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        with:
+          token: ${{ secrets.HCLOUD_BOT_TOKEN }}
+          release-type: python
+          package-name: hcloud
+
+          extra-files: |
+            hcloud/__version__.py
