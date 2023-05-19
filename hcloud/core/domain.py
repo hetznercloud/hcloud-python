@@ -6,6 +6,8 @@ class BaseDomain(object):
 
     @classmethod
     def from_dict(cls, data):
+        if data is None:
+            return None
         supported_data = {k: v for k, v in data.items() if k in cls.__slots__}
         return cls(**supported_data)
 
