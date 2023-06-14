@@ -75,7 +75,7 @@ class BoundFirewall(BoundModelBase):
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
     def get_actions(self, status=None, sort=None):
-        # type: (Optional[List[str]]) -> List[BoundAction]
+        # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
         """Returns all action objects for a Firewall.
 
         :param status: List[str] (optional)

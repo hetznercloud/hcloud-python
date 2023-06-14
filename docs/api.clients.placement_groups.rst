@@ -1,5 +1,5 @@
 PlacementGroupsClient
-==================
+=====================
 
 
 .. autoclass:: hcloud.placement_groups.client.PlacementGroupsClient

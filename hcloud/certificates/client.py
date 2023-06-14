@@ -142,7 +142,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         return self._add_meta_to_result(certificates, response)
 
     def get_all(self, name=None, label_selector=None):
-        # type: (Optional[str]) -> List[BoundCertificate]
+        # type: (Optional[str], Optional[str]) -> List[BoundCertificate]
         """Get all certificates
 
         :param name: str (optional)
@@ -166,7 +166,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         return super(CertificatesClient, self).get_by_name(name)
 
     def create(self, name, certificate, private_key, labels=None):
-        # type: (str, str, Optional[Dict[str, str]]) -> BoundCertificate
+        # type: (str, str, str, Optional[Dict[str, str]]) -> BoundCertificate
         """Creates a new Certificate with the given name, certificate and private_key. This methods allows only creating
            custom uploaded certificates. If you want to create a managed certificate use :func:`~hcloud.certificates.client.CertificatesClient.create_managed`
 

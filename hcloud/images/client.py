@@ -55,7 +55,7 @@ class BoundImage(BoundModelBase):
         return self._client.get_actions(self, status=status, sort=sort)
 
     def update(self, description=None, type=None, labels=None):
-        # type: (Optional[str], Optional[Dict[str, str]]) -> BoundImage
+        # type: (Optional[str], Optional[str], Optional[Dict[str, str]]) -> BoundImage
         """Updates the Image. You may change the description, convert a Backup image to a Snapshot Image or change the image labels.
 
         :param description: str (optional)

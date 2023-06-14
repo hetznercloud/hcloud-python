@@ -43,7 +43,7 @@ class BoundFloatingIP(BoundModelBase):
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
     def get_actions(self, status=None, sort=None):
-        # type: (Optional[List[str]]) -> List[BoundAction]
+        # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
         """Returns all action objects for a Floating IP.
 
         :param status: List[str] (optional)
@@ -91,7 +91,7 @@ class BoundFloatingIP(BoundModelBase):
         # type: (Server) -> BoundAction
         """Assigns a Floating IP to a server.
 
-        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or  :class:`Server <hcloud.servers.domain.Server>`
+        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
                Server the Floating IP shall be assigned to
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """

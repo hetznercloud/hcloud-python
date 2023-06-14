@@ -10,7 +10,7 @@ class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
     results_list_attribute_name = "server_types"
 
     def get_by_id(self, id):
-        # type: (int) -> server_types.client.BoundServerType
+        # type: (int) -> BoundServerType
         """Returns a specific Server Type.
 
         :param id: int

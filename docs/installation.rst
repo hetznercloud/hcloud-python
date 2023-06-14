@@ -24,7 +24,7 @@ you through the process.
 
 
 Via conda (Third-Party)
----------
+-----------------------
 
 Hetzner Cloud Python is also available as a ``conda``-package via `conda-forge`. This package is not maintained by Hetzner Cloud and might be outdated._:
 
