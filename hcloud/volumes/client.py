@@ -24,7 +24,7 @@ class BoundVolume(BoundModelBase):
         super(BoundVolume, self).__init__(client, data, complete)
 
     def get_actions_list(self, status=None, sort=None, page=None, per_page=None):
-        # type: (Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction, Meta]]
+        # type: (Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction, Meta]]
         """Returns all action objects for a volume.
 
         :param status: List[str] (optional)
@@ -40,7 +40,7 @@ class BoundVolume(BoundModelBase):
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
     def get_actions(self, status=None, sort=None):
-        # type: (Optional[List[str]]) -> List[BoundAction]
+        # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
         """Returns all action objects for a volume.
 
         :param status: List[str] (optional)
@@ -72,7 +72,7 @@ class BoundVolume(BoundModelBase):
         return self._client.delete(self)
 
     def attach(self, server, automount=None):
-        # type: (Union[Server, BoundServer]) -> BoundAction
+        # type: (Union[Server, BoundServer], Optional[bool]) -> BoundAction
         """Attaches a volume to a server. Works only if the server is in the same location as the volume.
 
         :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
@@ -247,7 +247,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
     def get_actions_list(
         self, volume, status=None, sort=None, page=None, per_page=None
     ):
-        # type: (Volume, Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction], Meta]
+        # type: (Volume, Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction], Meta]
         """Returns all action objects for a volume.
 
         :param volume: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`
@@ -283,7 +283,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         return add_meta_to_result(actions, response, "actions")
 
     def get_actions(self, volume, status=None, sort=None):
-        # type: (Union[Volume, BoundVolume], Optional[List[str]]) -> List[BoundAction]
+        # type: (Union[Volume, BoundVolume], Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
         """Returns all action objects for a volume.
 
         :param volume: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`
