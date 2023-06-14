@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from unittest import mock
 
 import pytest
@@ -5,7 +6,7 @@ import pytest
 from hcloud.server_types.client import BoundServerType, ServerTypesClient
 
 
-class TestBoundIso:
+class TestBoundServerType:
     @pytest.fixture()
     def bound_server_type(self, hetzner_client):
         return BoundServerType(client=hetzner_client.server_types, data=dict(id=14))
@@ -24,6 +25,14 @@ class TestBoundIso:
         assert bound_server_type.storage_type == "local"
         assert bound_server_type.cpu_type == "shared"
         assert bound_server_type.architecture == "x86"
+        assert bound_server_type.deprecated is True
+        assert bound_server_type.deprecation is not None
+        assert bound_server_type.deprecation.announced == datetime(
+            2023, 6, 1, tzinfo=timezone.utc
+        )
+        assert bound_server_type.deprecation.unavailable_after == datetime(
+            2023, 9, 1, tzinfo=timezone.utc
+        )
         assert bound_server_type.included_traffic == 21990232555520
 
 
