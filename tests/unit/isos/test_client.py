@@ -1,9 +1,10 @@
-import pytest
-from unittest import mock
 import datetime
+from unittest import mock
+
+import pytest
 from dateutil.tz import tzoffset
 
-from hcloud.isos.client import IsosClient, BoundIso
+from hcloud.isos.client import BoundIso, IsosClient
 
 
 class TestBoundIso(object):

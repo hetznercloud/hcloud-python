@@ -1,13 +1,14 @@
-import pytest
 from unittest import mock
 
+import pytest
+
 from hcloud.actions.client import BoundAction
-from hcloud.servers.client import BoundServer
-from hcloud.servers.domain import Server
-from hcloud.floating_ips.client import FloatingIPsClient, BoundFloatingIP
+from hcloud.floating_ips.client import BoundFloatingIP, FloatingIPsClient
 from hcloud.floating_ips.domain import FloatingIP
 from hcloud.locations.client import BoundLocation
 from hcloud.locations.domain import Location
+from hcloud.servers.client import BoundServer
+from hcloud.servers.domain import Server
 
 
 class TestBoundFloatingIP(object):

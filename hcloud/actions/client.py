@@ -1,7 +1,7 @@
 import time
 
-from hcloud.core.client import ClientEntityBase, BoundModelBase
 from hcloud.actions.domain import Action, ActionFailedException, ActionTimeoutException
+from hcloud.core.client import BoundModelBase, ClientEntityBase
 
 
 class BoundAction(BoundModelBase):

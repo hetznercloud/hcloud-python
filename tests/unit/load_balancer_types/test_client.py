@@ -1,6 +1,6 @@
-import pytest
 from unittest import mock
 
+import pytest
 
 from hcloud.load_balancer_types.client import LoadBalancerTypesClient
 

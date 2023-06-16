@@ -1,8 +1,8 @@
-import pytest
 from unittest import mock
 
+import pytest
 
-from hcloud.server_types.client import ServerTypesClient, BoundServerType
+from hcloud.server_types.client import BoundServerType, ServerTypesClient
 
 
 class TestBoundIso(object):

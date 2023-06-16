@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from hcloud.actions.client import BoundAction
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-
-from hcloud.primary_ips.domain import PrimaryIP, CreatePrimaryIPResponse
+from hcloud.primary_ips.domain import CreatePrimaryIPResponse, PrimaryIP
 
 
 class BoundPrimaryIP(BoundModelBase):

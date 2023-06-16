@@ -1,13 +1,14 @@
-import pytest
 from unittest import mock
 
-from hcloud.firewalls.client import FirewallsClient, BoundFirewall
+import pytest
+
 from hcloud.actions.client import BoundAction
+from hcloud.firewalls.client import BoundFirewall, FirewallsClient
 from hcloud.firewalls.domain import (
     Firewall,
-    FirewallRule,
     FirewallResource,
     FirewallResourceLabelSelector,
+    FirewallRule,
 )
 from hcloud.servers.domain import Server
 

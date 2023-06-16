@@ -1,7 +1,8 @@
-import pytest  # noqa: F401
 from unittest import mock  # noqa: F401
 
-from hcloud.datacenters.client import DatacentersClient, BoundDatacenter
+import pytest  # noqa: F401
+
+from hcloud.datacenters.client import BoundDatacenter, DatacentersClient
 from hcloud.datacenters.domain import DatacenterServerTypes
 from hcloud.locations.client import BoundLocation
 

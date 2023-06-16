@@ -1,9 +1,10 @@
 import json
 from unittest.mock import MagicMock
 
-import requests
 import pytest
-from hcloud import Client, APIException
+import requests
+
+from hcloud import APIException, Client
 
 
 class TestHetznerClient(object):

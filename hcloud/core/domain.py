@@ -51,7 +51,6 @@ class Pagination(BaseDomain):
 
 
 class Meta(BaseDomain):
-
     __slots__ = ("pagination",)
 
     def __init__(self, pagination=None):

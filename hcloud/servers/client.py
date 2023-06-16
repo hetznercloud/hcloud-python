@@ -1,38 +1,36 @@
-from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByNameMixin
-
 from hcloud.actions.client import BoundAction
+from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from hcloud.core.domain import add_meta_to_result
+from hcloud.datacenters.client import BoundDatacenter
 from hcloud.firewalls.client import BoundFirewall
 from hcloud.floating_ips.client import BoundFloatingIP
-from hcloud.isos.client import BoundIso
-from hcloud.primary_ips.client import BoundPrimaryIP
-from hcloud.servers.domain import (
-    Server,
-    CreateServerResponse,
-    ResetPasswordResponse,
-    EnableRescueResponse,
-    RequestConsoleResponse,
-    PublicNetwork,
-    IPv4Address,
-    IPv6Network,
-    PrivateNet,
-    PublicNetworkFirewall,
-)
-from hcloud.volumes.client import BoundVolume
-from hcloud.images.domain import CreateImageResponse
 from hcloud.images.client import BoundImage
-from hcloud.server_types.client import BoundServerType
-from hcloud.datacenters.client import BoundDatacenter
+from hcloud.images.domain import CreateImageResponse
+from hcloud.isos.client import BoundIso
 from hcloud.networks.client import BoundNetwork  # noqa
 from hcloud.networks.domain import Network  # noqa
 from hcloud.placement_groups.client import BoundPlacementGroup
+from hcloud.primary_ips.client import BoundPrimaryIP
+from hcloud.server_types.client import BoundServerType
+from hcloud.servers.domain import (
+    CreateServerResponse,
+    EnableRescueResponse,
+    IPv4Address,
+    IPv6Network,
+    PrivateNet,
+    PublicNetwork,
+    PublicNetworkFirewall,
+    RequestConsoleResponse,
+    ResetPasswordResponse,
+    Server,
+)
+from hcloud.volumes.client import BoundVolume
 
 
 class BoundServer(BoundModelBase):
     model = Server
 
     def __init__(self, client, data, complete=True):
-
         datacenter = data.get("datacenter")
         if datacenter is not None:
             data["datacenter"] = BoundDatacenter(client._client.datacenters, datacenter)

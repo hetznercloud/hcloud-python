@@ -1,7 +1,8 @@
-import pytest
 from unittest import mock
 
-from hcloud.ssh_keys.client import SSHKeysClient, BoundSSHKey
+import pytest
+
+from hcloud.ssh_keys.client import BoundSSHKey, SSHKeysClient
 from hcloud.ssh_keys.domain import SSHKey
 
 

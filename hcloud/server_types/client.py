@@ -1,4 +1,4 @@
-from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByNameMixin
+from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from hcloud.server_types.domain import ServerType
 
 

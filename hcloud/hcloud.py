@@ -1,22 +1,23 @@
 import time
+
 import requests
 
 from hcloud.actions.client import ActionsClient
 from hcloud.certificates.client import CertificatesClient
+from hcloud.datacenters.client import DatacentersClient
 from hcloud.floating_ips.client import FloatingIPsClient
-from hcloud.primary_ips.client import PrimaryIPsClient
-from hcloud.networks.client import NetworksClient
+from hcloud.images.client import ImagesClient
 from hcloud.isos.client import IsosClient
-from hcloud.servers.client import ServersClient
+from hcloud.load_balancer_types.client import LoadBalancerTypesClient
+from hcloud.load_balancers.client import LoadBalancersClient
+from hcloud.locations.client import LocationsClient
+from hcloud.networks.client import NetworksClient
+from hcloud.placement_groups.client import PlacementGroupsClient
+from hcloud.primary_ips.client import PrimaryIPsClient
 from hcloud.server_types.client import ServerTypesClient
+from hcloud.servers.client import ServersClient
 from hcloud.ssh_keys.client import SSHKeysClient
 from hcloud.volumes.client import VolumesClient
-from hcloud.images.client import ImagesClient
-from hcloud.locations.client import LocationsClient
-from hcloud.datacenters.client import DatacentersClient
-from hcloud.load_balancers.client import LoadBalancersClient
-from hcloud.load_balancer_types.client import LoadBalancerTypesClient
-from hcloud.placement_groups.client import PlacementGroupsClient
 
 from .__version__ import VERSION
 from .firewalls.client import FirewallsClient
@@ -186,7 +187,6 @@ class Client(object):
             )
 
     def _get_headers(self):
-
         headers = {
             "User-Agent": self._get_user_agent(),
             "Authorization": "Bearer {token}".format(token=self.token),

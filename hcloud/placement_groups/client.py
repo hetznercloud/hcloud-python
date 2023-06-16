@@ -1,7 +1,6 @@
 from hcloud.actions.client import BoundAction
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-
-from hcloud.placement_groups.domain import PlacementGroup, CreatePlacementGroupResponse
+from hcloud.placement_groups.domain import CreatePlacementGroupResponse, PlacementGroup
 
 
 class BoundPlacementGroup(BoundModelBase):

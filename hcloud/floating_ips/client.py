@@ -1,8 +1,7 @@
 from hcloud.actions.client import BoundAction
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from hcloud.core.domain import add_meta_to_result
-
-from hcloud.floating_ips.domain import FloatingIP, CreateFloatingIPResponse
+from hcloud.floating_ips.domain import CreateFloatingIPResponse, FloatingIP
 from hcloud.locations.client import BoundLocation
 
 
