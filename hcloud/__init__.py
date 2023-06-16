@@ -1,1 +1,1 @@
-from .hcloud import Client, APIException  # noqa
+from .hcloud import APIException, Client  # noqa

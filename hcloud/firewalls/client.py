@@ -1,13 +1,12 @@
 from hcloud.actions.client import BoundAction
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from hcloud.core.domain import add_meta_to_result
-
 from hcloud.firewalls.domain import (
-    Firewall,
     CreateFirewallResponse,
-    FirewallRule,
+    Firewall,
     FirewallResource,
     FirewallResourceLabelSelector,
+    FirewallRule,
 )
 
 
@@ -56,7 +55,7 @@ class BoundFirewall(BoundModelBase):
                     )
             data["applied_to"] = ats
 
-        super(BoundFirewall, self).__init__(client, data, complete)
+        super().__init__(client, data, complete)
 
     def get_actions_list(self, status=None, sort=None, page=None, per_page=None):
         # type: (Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResult[BoundAction, Meta]
@@ -168,7 +167,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         if per_page is not None:
             params["per_page"] = per_page
         response = self._client.request(
-            url="/firewalls/{firewall_id}/actions".format(firewall_id=firewall.id),
+            url=f"/firewalls/{firewall.id}/actions",
             method="GET",
             params=params,
         )
@@ -195,9 +194,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
 
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super(FirewallsClient, self).get_actions(
-            firewall, status=status, sort=sort
-        )
+        return super().get_actions(firewall, status=status, sort=sort)
 
     def get_by_id(self, id):
         # type: (int) -> BoundFirewall
@@ -206,9 +203,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         :param id: int
         :return: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>`
         """
-        response = self._client.request(
-            url="/firewalls/{firewall_id}".format(firewall_id=id), method="GET"
-        )
+        response = self._client.request(url=f"/firewalls/{id}", method="GET")
         return BoundFirewall(self, response["firewall"])
 
     def get_list(
@@ -266,9 +261,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
                Choices: id name created (You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default))
         :return: List[:class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>`]
         """
-        return super(FirewallsClient, self).get_all(
-            label_selector=label_selector, name=name, sort=sort
-        )
+        return super().get_all(label_selector=label_selector, name=name, sort=sort)
 
     def get_by_name(self, name):
         # type: (str) -> BoundFirewall
@@ -278,7 +271,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get Firewall by name.
         :return: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>`
         """
-        return super(FirewallsClient, self).get_by_name(name)
+        return super().get_by_name(name)
 
     def create(
         self,
@@ -342,7 +335,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
             data["name"] = name
 
         response = self._client.request(
-            url="/firewalls/{firewall_id}".format(firewall_id=firewall.id),
+            url=f"/firewalls/{firewall.id}",
             method="PUT",
             json=data,
         )
@@ -356,7 +349,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: boolean
         """
         self._client.request(
-            url="/firewalls/{firewall_id}".format(firewall_id=firewall.id),
+            url=f"/firewalls/{firewall.id}",
             method="DELETE",
         )
         # Return always true, because the API does not return an action for it. When an error occurs a HcloudAPIException will be raised

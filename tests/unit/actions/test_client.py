@@ -1,11 +1,12 @@
 from unittest import mock
+
 import pytest
 
 from hcloud.actions.client import ActionsClient, BoundAction
 from hcloud.actions.domain import Action, ActionFailedException, ActionTimeoutException
 
 
-class TestBoundAction(object):
+class TestBoundAction:
     @pytest.fixture()
     def bound_running_action(self, mocked_requests):
         return BoundAction(
@@ -47,7 +48,7 @@ class TestBoundAction(object):
         assert mocked_requests.request.call_count == 1
 
 
-class TestActionsClient(object):
+class TestActionsClient:
     @pytest.fixture()
     def actions_client(self):
         return ActionsClient(client=mock.MagicMock())

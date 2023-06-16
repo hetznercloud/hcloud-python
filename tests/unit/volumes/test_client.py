@@ -1,17 +1,18 @@
-import pytest
-from dateutil.parser import isoparse
 from unittest import mock
 
+import pytest
+from dateutil.parser import isoparse
+
 from hcloud.actions.client import BoundAction
-from hcloud.servers.client import BoundServer
-from hcloud.servers.domain import Server
-from hcloud.volumes.client import VolumesClient, BoundVolume
-from hcloud.volumes.domain import Volume
 from hcloud.locations.client import BoundLocation
 from hcloud.locations.domain import Location
+from hcloud.servers.client import BoundServer
+from hcloud.servers.domain import Server
+from hcloud.volumes.client import BoundVolume, VolumesClient
+from hcloud.volumes.domain import Volume
 
 
-class TestBoundVolume(object):
+class TestBoundVolume:
     @pytest.fixture()
     def bound_volume(self, hetzner_client):
         return BoundVolume(client=hetzner_client.volumes, data=dict(id=14))
@@ -131,7 +132,7 @@ class TestBoundVolume(object):
         assert action.progress == 0
 
 
-class TestVolumesClient(object):
+class TestVolumesClient:
     @pytest.fixture()
     def volumes_client(self):
         return VolumesClient(client=mock.MagicMock())

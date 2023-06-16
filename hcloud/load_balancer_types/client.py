@@ -1,4 +1,4 @@
-from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByNameMixin
+from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from hcloud.load_balancer_types.domain import LoadBalancerType
 
 
@@ -61,7 +61,7 @@ class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter Load Balancer type by their name.
         :return: List[:class:`BoundLoadBalancerType <hcloud.load_balancer_types.client.BoundLoadBalancerType>`]
         """
-        return super(LoadBalancerTypesClient, self).get_all(name=name)
+        return super().get_all(name=name)
 
     def get_by_name(self, name):
         # type: (str) -> BoundLoadBalancerType
@@ -71,4 +71,4 @@ class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get Load Balancer type by name.
         :return: :class:`BoundLoadBalancerType <hcloud.load_balancer_types.client.BoundLoadBalancerType>`
         """
-        return super(LoadBalancerTypesClient, self).get_by_name(name)
+        return super().get_by_name(name)

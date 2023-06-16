@@ -1,4 +1,4 @@
 .wy-side-nav-search > div.version {
-    /* Version in Nav is off-white by default, but we restyle the header to have an off-white bg */
-    color: #404040;
+  /* Version in Nav is off-white by default, but we restyle the header to have an off-white bg */
+  color: #404040;
 }

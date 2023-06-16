@@ -1,11 +1,11 @@
-import pytest
 from unittest import mock
 
+import pytest
 
 from hcloud.load_balancer_types.client import LoadBalancerTypesClient
 
 
-class TestLoadBalancerTypesClient(object):
+class TestLoadBalancerTypesClient:
     @pytest.fixture()
     def load_balancer_types_client(self):
         return LoadBalancerTypesClient(client=mock.MagicMock())

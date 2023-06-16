@@ -1,38 +1,38 @@
 from unittest import mock
+
 import pytest
 
+from hcloud.actions.client import BoundAction
+from hcloud.datacenters.client import BoundDatacenter
+from hcloud.datacenters.domain import Datacenter
 from hcloud.firewalls.client import BoundFirewall
 from hcloud.firewalls.domain import Firewall
 from hcloud.floating_ips.client import BoundFloatingIP
+from hcloud.images.client import BoundImage
+from hcloud.images.domain import Image
 from hcloud.isos.client import BoundIso
-from hcloud.servers.client import ServersClient, BoundServer
-
+from hcloud.isos.domain import Iso
+from hcloud.locations.domain import Location
+from hcloud.networks.client import BoundNetwork
+from hcloud.networks.domain import Network
+from hcloud.placement_groups.client import BoundPlacementGroup
+from hcloud.placement_groups.domain import PlacementGroup
+from hcloud.server_types.client import BoundServerType
+from hcloud.server_types.domain import ServerType
+from hcloud.servers.client import BoundServer, ServersClient
 from hcloud.servers.domain import (
-    Server,
-    PublicNetwork,
     IPv4Address,
     IPv6Network,
-    PublicNetworkFirewall,
     PrivateNet,
+    PublicNetwork,
+    PublicNetworkFirewall,
+    Server,
 )
 from hcloud.volumes.client import BoundVolume
 from hcloud.volumes.domain import Volume
-from hcloud.images.domain import Image
-from hcloud.images.client import BoundImage
-from hcloud.isos.domain import Iso
-from hcloud.datacenters.client import BoundDatacenter
-from hcloud.datacenters.domain import Datacenter
-from hcloud.locations.domain import Location
-from hcloud.actions.client import BoundAction
-from hcloud.server_types.client import BoundServerType
-from hcloud.server_types.domain import ServerType
-from hcloud.networks.domain import Network
-from hcloud.networks.client import BoundNetwork
-from hcloud.placement_groups.domain import PlacementGroup
-from hcloud.placement_groups.client import BoundPlacementGroup
 
 
-class TestBoundServer(object):
+class TestBoundServer:
     @pytest.fixture()
     def bound_server(self, hetzner_client):
         return BoundServer(client=hetzner_client.servers, data=dict(id=14))
@@ -500,7 +500,7 @@ class TestBoundServer(object):
         assert action.command == "remove_from_placement_group"
 
 
-class TestServersClient(object):
+class TestServersClient:
     @pytest.fixture()
     def servers_client(self):
         return ServersClient(client=mock.MagicMock())

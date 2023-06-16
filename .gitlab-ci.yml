@@ -1,15 +1,14 @@
 stages:
-- test
+  - test
 
 .tests_template: &tests_template
   before_script:
-  - pip install tox
-  - apk add build-base
+    - pip install tox
+    - apk add build-base git
   stage: test
-  script:
-    tox
+  script: tox
   tags:
-  - hc-bladerunner
+    - hc-bladerunner
 
 python37:
   <<: *tests_template
@@ -40,5 +39,4 @@ test-style:
   <<: *tests_template
   image: python:3.9-alpine
   script:
-    - tox -e flake8
-    - tox -e black
+    - tox -e pre-commit

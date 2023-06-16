@@ -1,14 +1,15 @@
+from unittest import mock
+
 import pytest
 from dateutil.parser import isoparse
-from unittest import mock
 
 from hcloud.actions.client import BoundAction
 from hcloud.networks.client import BoundNetwork, NetworksClient
-from hcloud.networks.domain import NetworkSubnet, NetworkRoute, Network
+from hcloud.networks.domain import Network, NetworkRoute, NetworkSubnet
 from hcloud.servers.client import BoundServer
 
 
-class TestBoundNetwork(object):
+class TestBoundNetwork:
     @pytest.fixture()
     def bound_network(self, hetzner_client):
         return BoundNetwork(client=hetzner_client.networks, data=dict(id=14))
@@ -157,7 +158,7 @@ class TestBoundNetwork(object):
         assert action.progress == 0
 
 
-class TestNetworksClient(object):
+class TestNetworksClient:
     @pytest.fixture()
     def networks_client(self):
         return NetworksClient(client=mock.MagicMock())

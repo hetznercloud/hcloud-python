@@ -1,38 +1,36 @@
-from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByNameMixin
-
 from hcloud.actions.client import BoundAction
+from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from hcloud.core.domain import add_meta_to_result
+from hcloud.datacenters.client import BoundDatacenter
 from hcloud.firewalls.client import BoundFirewall
 from hcloud.floating_ips.client import BoundFloatingIP
-from hcloud.isos.client import BoundIso
-from hcloud.primary_ips.client import BoundPrimaryIP
-from hcloud.servers.domain import (
-    Server,
-    CreateServerResponse,
-    ResetPasswordResponse,
-    EnableRescueResponse,
-    RequestConsoleResponse,
-    PublicNetwork,
-    IPv4Address,
-    IPv6Network,
-    PrivateNet,
-    PublicNetworkFirewall,
-)
-from hcloud.volumes.client import BoundVolume
-from hcloud.images.domain import CreateImageResponse
 from hcloud.images.client import BoundImage
-from hcloud.server_types.client import BoundServerType
-from hcloud.datacenters.client import BoundDatacenter
+from hcloud.images.domain import CreateImageResponse
+from hcloud.isos.client import BoundIso
 from hcloud.networks.client import BoundNetwork  # noqa
 from hcloud.networks.domain import Network  # noqa
 from hcloud.placement_groups.client import BoundPlacementGroup
+from hcloud.primary_ips.client import BoundPrimaryIP
+from hcloud.server_types.client import BoundServerType
+from hcloud.servers.domain import (
+    CreateServerResponse,
+    EnableRescueResponse,
+    IPv4Address,
+    IPv6Network,
+    PrivateNet,
+    PublicNetwork,
+    PublicNetworkFirewall,
+    RequestConsoleResponse,
+    ResetPasswordResponse,
+    Server,
+)
+from hcloud.volumes.client import BoundVolume
 
 
 class BoundServer(BoundModelBase):
     model = Server
 
     def __init__(self, client, data, complete=True):
-
         datacenter = data.get("datacenter")
         if datacenter is not None:
             data["datacenter"] = BoundDatacenter(client._client.datacenters, datacenter)
@@ -137,7 +135,7 @@ class BoundServer(BoundModelBase):
             )
             data["placement_group"] = placement_group
 
-        super(BoundServer, self).__init__(client, data, complete)
+        super().__init__(client, data, complete)
 
     def get_actions_list(self, status=None, sort=None, page=None, per_page=None):
         # type: (Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction, Meta]]
@@ -419,9 +417,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :param id: int
         :return: :class:`BoundServer <hcloud.servers.client.BoundServer>`
         """
-        response = self._client.request(
-            url="/servers/{server_id}".format(server_id=id), method="GET"
-        )
+        response = self._client.request(url=f"/servers/{id}", method="GET")
         return BoundServer(self, response["server"])
 
     def get_list(
@@ -478,9 +474,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter servers by their status. The response will only contain servers matching the status.
         :return: List[:class:`BoundServer <hcloud.servers.client.BoundServer>`]
         """
-        return super(ServersClient, self).get_all(
-            name=name, label_selector=label_selector, status=status
-        )
+        return super().get_all(name=name, label_selector=label_selector, status=status)
 
     def get_by_name(self, name):
         # type: (str) -> BoundServer
@@ -490,7 +484,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get server by name.
         :return: :class:`BoundServer <hcloud.servers.client.BoundServer>`
         """
-        return super(ServersClient, self).get_by_name(name)
+        return super().get_by_name(name)
 
     def create(
         self,
@@ -621,7 +615,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
             params["per_page"] = per_page
 
         response = self._client.request(
-            url="/servers/{server_id}/actions".format(server_id=server.id),
+            url=f"/servers/{server.id}/actions",
             method="GET",
             params=params,
         )
@@ -642,7 +636,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super(ServersClient, self).get_actions(server, status=status, sort=sort)
+        return super().get_actions(server, status=status, sort=sort)
 
     def update(self, server, name=None, labels=None):
         # type:(Server,  Optional[str],  Optional[Dict[str, str]]) -> BoundServer
@@ -661,7 +655,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         if labels is not None:
             data.update({"labels": labels})
         response = self._client.request(
-            url="/servers/{server_id}".format(server_id=server.id),
+            url=f"/servers/{server.id}",
             method="PUT",
             json=data,
         )
@@ -674,9 +668,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        response = self._client.request(
-            url="/servers/{server_id}".format(server_id=server.id), method="DELETE"
-        )
+        response = self._client.request(url=f"/servers/{server.id}", method="DELETE")
         return BoundAction(self._client.actions, response["action"])
 
     def power_off(self, server):
@@ -687,7 +679,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/servers/{server_id}/actions/poweroff".format(server_id=server.id),
+            url=f"/servers/{server.id}/actions/poweroff",
             method="POST",
         )
         return BoundAction(self._client.actions, response["action"])
@@ -700,7 +692,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/servers/{server_id}/actions/poweron".format(server_id=server.id),
+            url=f"/servers/{server.id}/actions/poweron",
             method="POST",
         )
         return BoundAction(self._client.actions, response["action"])
@@ -713,7 +705,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/servers/{server_id}/actions/reboot".format(server_id=server.id),
+            url=f"/servers/{server.id}/actions/reboot",
             method="POST",
         )
         return BoundAction(self._client.actions, response["action"])
@@ -726,7 +718,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/servers/{server_id}/actions/reset".format(server_id=server.id),
+            url=f"/servers/{server.id}/actions/reset",
             method="POST",
         )
         return BoundAction(self._client.actions, response["action"])
@@ -739,7 +731,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/servers/{server_id}/actions/shutdown".format(server_id=server.id),
+            url=f"/servers/{server.id}/actions/shutdown",
             method="POST",
         )
         return BoundAction(self._client.actions, response["action"])
@@ -775,7 +767,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data = {"server_type": server_type.id_or_name, "upgrade_disk": upgrade_disk}
         response = self._client.request(
-            url="/servers/{server_id}/actions/change_type".format(server_id=server.id),
+            url=f"/servers/{server.id}/actions/change_type",
             method="POST",
             json=data,
         )
@@ -849,7 +841,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
             data.update({"labels": labels})
 
         response = self._client.request(
-            url="/servers/{server_id}/actions/create_image".format(server_id=server.id),
+            url=f"/servers/{server.id}/actions/create_image",
             method="POST",
             json=data,
         )
@@ -868,7 +860,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data = {"image": image.id_or_name}
         response = self._client.request(
-            url="/servers/{server_id}/actions/rebuild".format(server_id=server.id),
+            url=f"/servers/{server.id}/actions/rebuild",
             method="POST",
             json=data,
         )
@@ -914,7 +906,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data = {"iso": iso.id_or_name}
         response = self._client.request(
-            url="/servers/{server_id}/actions/attach_iso".format(server_id=server.id),
+            url=f"/servers/{server.id}/actions/attach_iso",
             method="POST",
             json=data,
         )
@@ -928,7 +920,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/servers/{server_id}/actions/detach_iso".format(server_id=server.id),
+            url=f"/servers/{server.id}/actions/detach_iso",
             method="POST",
         )
         return BoundAction(self._client.actions, response["action"])

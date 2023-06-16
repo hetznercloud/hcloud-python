@@ -10,4 +10,3 @@ ActionsClient
 
 .. autoclass:: hcloud.actions.domain.Action
     :members:
-

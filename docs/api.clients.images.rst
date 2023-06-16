@@ -13,4 +13,3 @@ ImagesClient
 
 .. autoclass:: hcloud.images.domain.CreateImageResponse
     :members:
-

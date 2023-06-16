@@ -10,7 +10,7 @@ from hcloud.core.domain import (
 )
 
 
-class TestMeta(object):
+class TestMeta:
     @pytest.mark.parametrize("json_content", [None, "", {}])
     def test_parse_meta_empty_json(self, json_content):
         result = Meta.parse_meta(json_content)
@@ -74,7 +74,7 @@ class SomeDomain(BaseDomain, DomainIdentityMixin):
         self.name = name
 
 
-class TestDomainIdentityMixin(object):
+class TestDomainIdentityMixin:
     @pytest.mark.parametrize(
         "domain,expected_result",
         [
@@ -104,7 +104,7 @@ class ActionDomain(BaseDomain, DomainIdentityMixin):
         self.started = isoparse(started) if started else None
 
 
-class TestBaseDomain(object):
+class TestBaseDomain:
     @pytest.mark.parametrize(
         "data_dict,expected_result",
         [

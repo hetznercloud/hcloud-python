@@ -1,7 +1,6 @@
 from hcloud.actions.client import BoundAction
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-
-from hcloud.placement_groups.domain import PlacementGroup, CreatePlacementGroupResponse
+from hcloud.placement_groups.domain import CreatePlacementGroupResponse, PlacementGroup
 
 
 class BoundPlacementGroup(BoundModelBase):
@@ -39,7 +38,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>`
         """
         response = self._client.request(
-            url="/placement_groups/{placement_group_id}".format(placement_group_id=id),
+            url=f"/placement_groups/{id}",
             method="GET",
         )
         return BoundPlacementGroup(self, response["placement_group"])
@@ -105,9 +104,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
                Choices: id name created (You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default))
         :return: List[:class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>`]
         """
-        return super(PlacementGroupsClient, self).get_all(
-            label_selector=label_selector, name=name, sort=sort
-        )
+        return super().get_all(label_selector=label_selector, name=name, sort=sort)
 
     def get_by_name(self, name):
         # type: (str) -> BoundPlacementGroup
@@ -117,7 +114,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get Placement Group by name
         :return: class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>`
         """
-        return super(PlacementGroupsClient, self).get_by_name(name)
+        return super().get_by_name(name)
 
     def create(
         self,

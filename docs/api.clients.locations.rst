@@ -10,4 +10,3 @@ LocationsClient
 
 .. autoclass:: hcloud.locations.domain.Location
     :members:
-

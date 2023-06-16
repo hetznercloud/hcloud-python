@@ -1,10 +1,11 @@
 import datetime
+
 from dateutil.tz import tzoffset
 
 from hcloud.isos.domain import Iso
 
 
-class TestIso(object):
+class TestIso:
     def test_deprecated_is_datetime(self):
         iso = Iso(id=1, deprecated="2016-01-30T23:50+00:00")
         assert iso.deprecated == datetime.datetime(

@@ -1,10 +1,11 @@
-import pytest  # noqa: F401
 from unittest import mock  # noqa: F401
+
+import pytest  # noqa: F401
 
 from hcloud.locations.client import LocationsClient
 
 
-class TestLocationsClient(object):
+class TestLocationsClient:
     @pytest.fixture()
     def locations_client(self):
         return LocationsClient(client=mock.MagicMock())

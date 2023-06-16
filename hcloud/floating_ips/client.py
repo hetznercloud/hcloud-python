@@ -1,8 +1,7 @@
 from hcloud.actions.client import BoundAction
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from hcloud.core.domain import add_meta_to_result
-
-from hcloud.floating_ips.domain import FloatingIP, CreateFloatingIPResponse
+from hcloud.floating_ips.domain import CreateFloatingIPResponse, FloatingIP
 from hcloud.locations.client import BoundLocation
 
 
@@ -24,7 +23,7 @@ class BoundFloatingIP(BoundModelBase):
                 client._client.locations, home_location
             )
 
-        super(BoundFloatingIP, self).__init__(client, data, complete)
+        super().__init__(client, data, complete)
 
     def get_actions_list(self, status=None, sort=None, page=None, per_page=None):
         # type: (Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResult[BoundAction, Meta]
@@ -182,9 +181,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
 
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super(FloatingIPsClient, self).get_actions(
-            floating_ip, status=status, sort=sort
-        )
+        return super().get_actions(floating_ip, status=status, sort=sort)
 
     def get_by_id(self, id):
         # type: (int) -> BoundFloatingIP
@@ -193,9 +190,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         :param id: int
         :return: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`
         """
-        response = self._client.request(
-            url="/floating_ips/{floating_ip_id}".format(floating_ip_id=id), method="GET"
-        )
+        response = self._client.request(url=f"/floating_ips/{id}", method="GET")
         return BoundFloatingIP(self, response["floating_ip"])
 
     def get_list(
@@ -249,9 +244,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter networks by their name.
         :return: List[:class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`]
         """
-        return super(FloatingIPsClient, self).get_all(
-            label_selector=label_selector, name=name
-        )
+        return super().get_all(label_selector=label_selector, name=name)
 
     def get_by_name(self, name):
         # type: (str) -> BoundFloatingIP
@@ -261,7 +254,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get Floating IP by name.
         :return: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`
         """
-        return super(FloatingIPsClient, self).get_by_name(name)
+        return super().get_by_name(name)
 
     def create(
         self,
@@ -333,7 +326,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
             data["name"] = name
 
         response = self._client.request(
-            url="/floating_ips/{floating_ip_id}".format(floating_ip_id=floating_ip.id),
+            url=f"/floating_ips/{floating_ip.id}",
             method="PUT",
             json=data,
         )
@@ -347,7 +340,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: boolean
         """
         self._client.request(
-            url="/floating_ips/{floating_ip_id}".format(floating_ip_id=floating_ip.id),
+            url=f"/floating_ips/{floating_ip.id}",
             method="DELETE",
         )
         # Return always true, because the API does not return an action for it. When an error occurs a HcloudAPIException will be raised

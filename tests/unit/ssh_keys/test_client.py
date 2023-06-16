@@ -1,11 +1,12 @@
-import pytest
 from unittest import mock
 
-from hcloud.ssh_keys.client import SSHKeysClient, BoundSSHKey
+import pytest
+
+from hcloud.ssh_keys.client import BoundSSHKey, SSHKeysClient
 from hcloud.ssh_keys.domain import SSHKey
 
 
-class TestBoundSSHKey(object):
+class TestBoundSSHKey:
     @pytest.fixture()
     def bound_ssh_key(self, hetzner_client):
         return BoundSSHKey(client=hetzner_client.ssh_keys, data=dict(id=14))
@@ -41,7 +42,7 @@ class TestBoundSSHKey(object):
         assert delete_success is True
 
 
-class TestSSHKeysClient(object):
+class TestSSHKeysClient:
     @pytest.fixture()
     def ssh_keys_client(self):
         return SSHKeysClient(client=mock.MagicMock())

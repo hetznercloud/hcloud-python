@@ -4,10 +4,10 @@ from typing import Dict
 
 class LabelValidator:
     KEY_REGEX = re.compile(
-        "^([a-z0-9A-Z]((?:[\-_.]|[a-z0-9A-Z]){0,253}[a-z0-9A-Z])?/)?[a-z0-9A-Z]((?:[\-_.]|[a-z0-9A-Z]|){0,61}[a-z0-9A-Z])?$"
+        r"^([a-z0-9A-Z]((?:[\-_.]|[a-z0-9A-Z]){0,253}[a-z0-9A-Z])?/)?[a-z0-9A-Z]((?:[\-_.]|[a-z0-9A-Z]|){0,61}[a-z0-9A-Z])?$"
     )
     VALUE_REGEX = re.compile(
-        "^(([a-z0-9A-Z](?:[\-_.]|[a-z0-9A-Z]){0,61})?[a-z0-9A-Z]$|$)"
+        r"^(([a-z0-9A-Z](?:[\-_.]|[a-z0-9A-Z]){0,61})?[a-z0-9A-Z]$|$)"
     )
 
     @staticmethod

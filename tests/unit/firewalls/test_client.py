@@ -1,18 +1,19 @@
-import pytest
 from unittest import mock
 
-from hcloud.firewalls.client import FirewallsClient, BoundFirewall
+import pytest
+
 from hcloud.actions.client import BoundAction
+from hcloud.firewalls.client import BoundFirewall, FirewallsClient
 from hcloud.firewalls.domain import (
     Firewall,
-    FirewallRule,
     FirewallResource,
     FirewallResourceLabelSelector,
+    FirewallRule,
 )
 from hcloud.servers.domain import Server
 
 
-class TestBoundFirewall(object):
+class TestBoundFirewall:
     @pytest.fixture()
     def bound_firewall(self, hetzner_client):
         return BoundFirewall(client=hetzner_client.firewalls, data=dict(id=1))
@@ -188,7 +189,7 @@ class TestBoundFirewall(object):
         assert actions[0].progress == 100
 
 
-class TestFirewallsClient(object):
+class TestFirewallsClient:
     @pytest.fixture()
     def firewalls_client(self):
         return FirewallsClient(client=mock.MagicMock())

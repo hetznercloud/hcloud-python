@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 
-class BaseDomain(object):
+class BaseDomain:
     __slots__ = ()
 
     @classmethod
@@ -10,7 +10,7 @@ class BaseDomain(object):
         return cls(**supported_data)
 
 
-class DomainIdentityMixin(object):
+class DomainIdentityMixin:
     __slots__ = ()
 
     @property
@@ -51,7 +51,6 @@ class Pagination(BaseDomain):
 
 
 class Meta(BaseDomain):
-
     __slots__ = ("pagination",)
 
     def __init__(self, pagination=None):
@@ -71,6 +70,6 @@ class Meta(BaseDomain):
 
 def add_meta_to_result(result, json_content, attr_name):
     # type: (List[BoundModelBase], json, string) -> PageResult
-    class_name = "PageResults{0}".format(attr_name.capitalize())
+    class_name = f"PageResults{attr_name.capitalize()}"
     PageResults = namedtuple(class_name, [attr_name, "meta"])
     return PageResults(**{attr_name: result, "meta": Meta.parse_meta(json_content)})

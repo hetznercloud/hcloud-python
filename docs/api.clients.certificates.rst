@@ -10,4 +10,3 @@ CertificateClient
 
 .. autoclass:: hcloud.certificates.domain.Certificate
     :members:
-

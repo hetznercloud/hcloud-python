@@ -1,7 +1,6 @@
-from hcloud.core.client import ClientEntityBase, BoundModelBase, GetEntityByNameMixin
-from hcloud.core.domain import add_meta_to_result
-
 from hcloud.actions.client import BoundAction
+from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from hcloud.core.domain import add_meta_to_result
 from hcloud.networks.domain import Network, NetworkRoute, NetworkSubnet
 
 
@@ -29,7 +28,7 @@ class BoundNetwork(BoundModelBase):
             ]
             data["servers"] = servers
 
-        super(BoundNetwork, self).__init__(client, data, complete)
+        super().__init__(client, data, complete)
 
     def update(self, name=None, labels=None):
         # type: (Optional[str], Optional[Dict[str, str]]) -> BoundNetwork
@@ -150,9 +149,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         :param id: int
         :return: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>
         """
-        response = self._client.request(
-            url="/networks/{network_id}".format(network_id=id), method="GET"
-        )
+        response = self._client.request(url=f"/networks/{id}", method="GET")
         return BoundNetwork(self, response["network"])
 
     def get_list(
@@ -202,9 +199,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter networks by labels. The response will only contain networks matching the label selector.
         :return: List[:class:`BoundNetwork <hcloud.networks.client.BoundNetwork>`]
         """
-        return super(NetworksClient, self).get_all(
-            name=name, label_selector=label_selector
-        )
+        return super().get_all(name=name, label_selector=label_selector)
 
     def get_by_name(self, name):
         # type: (str) -> BoundNetwork
@@ -214,7 +209,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get network by name.
         :return: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>`
         """
-        return super(NetworksClient, self).get_by_name(name)
+        return super().get_by_name(name)
 
     def create(
         self,
@@ -277,7 +272,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         if labels is not None:
             data.update({"labels": labels})
         response = self._client.request(
-            url="/networks/{network_id}".format(network_id=network.id),
+            url=f"/networks/{network.id}",
             method="PUT",
             json=data,
         )
@@ -290,9 +285,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
         :return: boolean
         """
-        self._client.request(
-            url="/networks/{network_id}".format(network_id=network.id), method="DELETE"
-        )
+        self._client.request(url=f"/networks/{network.id}", method="DELETE")
         return True
 
     def get_actions_list(
@@ -323,7 +316,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
             params["per_page"] = per_page
 
         response = self._client.request(
-            url="/networks/{network_id}/actions".format(network_id=network.id),
+            url=f"/networks/{network.id}/actions",
             method="GET",
             params=params,
         )
@@ -344,9 +337,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super(NetworksClient, self).get_actions(
-            network, status=status, sort=sort
-        )
+        return super().get_actions(network, status=status, sort=sort)
 
     def add_subnet(self, network, subnet):
         # type: (Union[Network, BoundNetwork], NetworkSubnet) -> List[BoundAction]

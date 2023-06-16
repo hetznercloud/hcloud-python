@@ -1,5 +1,4 @@
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-
 from hcloud.isos.domain import Iso
 
 
@@ -17,9 +16,7 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
         :param id: int
         :return: :class:`BoundIso <hcloud.isos.client.BoundIso>`
         """
-        response = self._client.request(
-            url="/isos/{iso_id}".format(iso_id=id), method="GET"
-        )
+        response = self._client.request(url=f"/isos/{id}", method="GET")
         return BoundIso(self, response["iso"])
 
     def get_list(
@@ -80,7 +77,7 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
                architecture and also want custom ISOs.
         :return: List[:class:`BoundIso <hcloud.isos.client.BoundIso>`]
         """
-        return super(IsosClient, self).get_all(
+        return super().get_all(
             name=name,
             architecture=architecture,
             include_wildcard_architecture=include_wildcard_architecture,
@@ -94,4 +91,4 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get iso by name.
         :return: :class:`BoundIso <hcloud.isos.client.BoundIso>`
         """
-        return super(IsosClient, self).get_by_name(name)
+        return super().get_by_name(name)

@@ -1,10 +1,11 @@
 import datetime
+
 from dateutil.tz import tzoffset
 
 from hcloud.ssh_keys.domain import SSHKey
 
 
-class TestSSHKey(object):
+class TestSSHKey:
     def test_created_is_datetime(self):
         sshKey = SSHKey(id=1, created="2016-01-30T23:50+00:00")
         assert sshKey.created == datetime.datetime(
