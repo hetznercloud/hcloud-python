@@ -27,6 +27,12 @@ repos:
       - id: prettier
         files: \.(md|ya?ml|js|css)$
 
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.6.0
+    hooks:
+      - id: pyupgrade
+        args: [--py37-plus]
+
   - repo: https://github.com/pycqa/isort
     rev: 5.12.0
     hooks:
