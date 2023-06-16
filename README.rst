@@ -48,7 +48,7 @@ Run tests
 ---------
 * `tox .`
 * You can specify environment e.g `tox -e py36`
-* You can test the code style with `tox -e flake8`
+* You can test the code style with `tox -e pre-commit`
 
 Create Documentation
 --------------------
