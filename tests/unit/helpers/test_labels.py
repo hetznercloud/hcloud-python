@@ -22,6 +22,12 @@ from hcloud.helpers.labels import LabelValidator
             },
             False,
         ),
+        (
+            {
+                "valid_key": "63-characters-are-allowed-in-a-label__this-is-one-character-more",
+            },
+            False,
+        ),
         # invalid keys
         ({"incorrect.de/": "correct.de"}, False),
         ({"incor rect.de/": "correct.de"}, False),
@@ -71,6 +77,13 @@ def test_validate(labels, expected):
         (
             {
                 "valid_key": "incorrect-111111111111111111111111111111111111111111111111111111111111.com"
+            },
+            False,
+            "value",
+        ),
+        (
+            {
+                "valid_key": "63-characters-are-allowed-in-a-label__this-is-one-character-more",
             },
             False,
             "value",
