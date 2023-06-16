@@ -40,5 +40,4 @@ test-style:
   image: python:3.9-alpine
   script:
     - tox -e flake8
-    - tox -e black
     - tox -e pre-commit

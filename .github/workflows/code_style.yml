@@ -20,7 +20,5 @@ jobs:
           sudo apt install build-essential
       - name: flake8 with tox
         run: tox -e flake8
-      - name: black with tox
-        run: tox -e black
       - name: pre-commit with tox
         run: tox -e pre-commit

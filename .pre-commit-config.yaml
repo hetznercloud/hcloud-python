@@ -26,3 +26,14 @@ repos:
     hooks:
       - id: prettier
         files: \.(md|ya?ml|js|css)$
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        args: [--profile=black]
+
+  - repo: https://github.com/psf/black
+    rev: 23.3.0
+    hooks:
+      - id: black
