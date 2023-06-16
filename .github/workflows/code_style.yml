@@ -18,7 +18,5 @@ jobs:
           pip install -r requirements/test.txt
           pip install tox tox-gh-actions
           sudo apt install build-essential
-      - name: flake8 with tox
-        run: tox -e flake8
       - name: pre-commit with tox
         run: tox -e pre-commit

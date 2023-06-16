@@ -39,5 +39,4 @@ test-style:
   <<: *tests_template
   image: python:3.9-alpine
   script:
-    - tox -e flake8
     - tox -e pre-commit

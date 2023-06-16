@@ -50,8 +50,8 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
 
-lint: ## check style with flake8
-	flake8 hcloud tests
+lint: ## check code with pre-commit
+	tox -e pre-commit
 
 test: ## run tests quickly with the default Python
 	py.test

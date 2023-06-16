@@ -1,5 +1,4 @@
 -r base.txt
 
-flake8==3.6.0
 pytest
 tox==3.23.1
