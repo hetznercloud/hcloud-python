@@ -39,7 +39,7 @@ Development
 
 Setup Dev Environment
 ---------------------
-1) `mkvirtualenv hcloud-python`
+1) `python3 -m venv venv && source venv/bin/activate`
 
 2) `pip install -e .` or `pip install -e .[docs]` to be able to build docs
 
