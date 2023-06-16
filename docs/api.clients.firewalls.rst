@@ -19,4 +19,3 @@ FirewallsClient
 
 .. autoclass:: hcloud.firewalls.domain.CreateFirewallResponse
     :members:
-

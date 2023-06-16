@@ -53,7 +53,7 @@ Run tests
 Create Documentation
 --------------------
 
-Run `make docs`. This will also open a documentation in a tab in your default browser. 
+Run `make docs`. This will also open a documentation in a tab in your default browser.
 
 
 Style Guide

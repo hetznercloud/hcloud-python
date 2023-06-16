@@ -13,4 +13,3 @@ DatacentersClient
 
 .. autoclass:: hcloud.datacenters.domain.DatacenterServerTypes
     :members:
-

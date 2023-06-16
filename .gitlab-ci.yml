@@ -1,15 +1,14 @@
 stages:
-- test
+  - test
 
 .tests_template: &tests_template
   before_script:
-  - pip install tox
-  - apk add build-base
+    - pip install tox
+    - apk add build-base
   stage: test
-  script:
-    tox
+  script: tox
   tags:
-  - hc-bladerunner
+    - hc-bladerunner
 
 python37:
   <<: *tests_template

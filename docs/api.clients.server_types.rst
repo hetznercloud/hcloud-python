@@ -9,4 +9,3 @@ ServerTypesClient
 
 .. autoclass:: hcloud.server_types.domain.ServerType
     :members:
-

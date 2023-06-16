@@ -10,4 +10,3 @@ PrimaryIPsClient
 
 .. autoclass:: hcloud.primary_ips.domain.PrimaryIP
     :members:
-
