@@ -5,7 +5,7 @@ import pytest
 from hcloud.server_types.client import BoundServerType, ServerTypesClient
 
 
-class TestBoundIso(object):
+class TestBoundIso:
     @pytest.fixture()
     def bound_server_type(self, hetzner_client):
         return BoundServerType(client=hetzner_client.server_types, data=dict(id=14))
@@ -27,7 +27,7 @@ class TestBoundIso(object):
         assert bound_server_type.included_traffic == 21990232555520
 
 
-class TestServerTypesClient(object):
+class TestServerTypesClient:
     @pytest.fixture()
     def server_types_client(self):
         return ServerTypesClient(client=mock.MagicMock())

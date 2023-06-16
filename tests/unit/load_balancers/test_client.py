@@ -19,7 +19,7 @@ from hcloud.networks.domain import Network
 from hcloud.servers.domain import Server
 
 
-class TestBoundLoadBalancer(object):
+class TestBoundLoadBalancer:
     @pytest.fixture()
     def bound_load_balancer(self, hetzner_client):
         return BoundLoadBalancer(client=hetzner_client.load_balancers, data=dict(id=14))
@@ -349,7 +349,7 @@ class TestBoundLoadBalancer(object):
         assert action.progress == 0
 
 
-class TestLoadBalancerslient(object):
+class TestLoadBalancerslient:
     @pytest.fixture()
     def load_balancers_client(self):
         return LoadBalancersClient(client=mock.MagicMock())

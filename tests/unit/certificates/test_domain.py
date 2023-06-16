@@ -5,7 +5,7 @@ from dateutil.tz import tzoffset
 from hcloud.certificates.domain import Certificate
 
 
-class TestCertificate(object):
+class TestCertificate:
     def test_created_is_datetime(self):
         certificate = Certificate(
             id=1,

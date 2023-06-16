@@ -16,9 +16,7 @@ class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
         :param id: int
         :return: :class:`BoundLocation <hcloud.locations.client.BoundLocation>`
         """
-        response = self._client.request(
-            url="/locations/{location_id}".format(location_id=id), method="GET"
-        )
+        response = self._client.request(url=f"/locations/{id}", method="GET")
         return BoundLocation(self, response["location"])
 
     def get_list(self, name=None, page=None, per_page=None):
@@ -56,7 +54,7 @@ class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter locations by their name.
         :return: List[:class:`BoundLocation <hcloud.locations.client.BoundLocation>`]
         """
-        return super(LocationsClient, self).get_all(name=name)
+        return super().get_all(name=name)
 
     def get_by_name(self, name):
         # type: (str) -> BoundLocation
@@ -66,4 +64,4 @@ class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get location by name.
         :return: :class:`BoundLocation <hcloud.locations.client.BoundLocation>`
         """
-        return super(LocationsClient, self).get_by_name(name)
+        return super().get_by_name(name)

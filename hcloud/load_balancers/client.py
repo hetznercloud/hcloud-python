@@ -129,7 +129,7 @@ class BoundLoadBalancer(BoundModelBase):
         if location is not None:
             data["location"] = BoundLocation(client._client.locations, location)
 
-        super(BoundLoadBalancer, self).__init__(client, data, complete)
+        super().__init__(client, data, complete)
 
     def update(self, name=None, labels=None):
         # type: (Optional[str], Optional[Dict[str, str]]) -> BoundLoadBalancer
@@ -319,7 +319,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>`
         """
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}".format(load_balancer_id=id),
+            url=f"/load_balancers/{id}",
             method="GET",
         )
         return BoundLoadBalancer(self, response["load_balancer"])
@@ -374,9 +374,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter Load Balancers by labels. The response will only contain Load Balancers matching the label selector.
         :return: List[:class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>`]
         """
-        return super(LoadBalancersClient, self).get_all(
-            name=name, label_selector=label_selector
-        )
+        return super().get_all(name=name, label_selector=label_selector)
 
     def get_by_name(self, name):
         # type: (str) -> BoundLoadBalancer
@@ -386,7 +384,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get Load Balancer by name.
         :return: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>`
         """
-        return super(LoadBalancersClient, self).get_by_name(name)
+        return super().get_by_name(name)
 
     def create(
         self,
@@ -563,9 +561,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super(LoadBalancersClient, self).get_actions(
-            load_balancer, status=status, sort=sort
-        )
+        return super().get_actions(load_balancer, status=status, sort=sort)
 
     def add_service(self, load_balancer, service):
         # type: (Union[LoadBalancer, BoundLoadBalancer], LoadBalancerService) -> List[BoundAction]

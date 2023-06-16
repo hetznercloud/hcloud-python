@@ -13,7 +13,7 @@ def check_variables(placement_group, expected):
     assert placement_group.type == expected["type"]
 
 
-class TestBoundPlacementGroup(object):
+class TestBoundPlacementGroup:
     @pytest.fixture()
     def bound_placement_group(self, hetzner_client):
         return BoundPlacementGroup(
@@ -59,7 +59,7 @@ class TestBoundPlacementGroup(object):
         assert delete_success is True
 
 
-class TestPlacementGroupsClient(object):
+class TestPlacementGroupsClient:
     @pytest.fixture()
     def placement_groups_client(self):
         return PlacementGroupsClient(client=mock.MagicMock())

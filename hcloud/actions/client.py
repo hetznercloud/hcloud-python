@@ -38,9 +38,7 @@ class ActionsClient(ClientEntityBase):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
 
-        response = self._client.request(
-            url="/actions/{action_id}".format(action_id=id), method="GET"
-        )
+        response = self._client.request(url=f"/actions/{id}", method="GET")
         return BoundAction(self, response["action"])
 
     def get_list(
@@ -89,4 +87,4 @@ class ActionsClient(ClientEntityBase):
                Specify how the results are sorted. Choices: `id` `command` `status` `progress`  `started` `finished` . You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default)
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super(ActionsClient, self).get_all(status=status, sort=sort)
+        return super().get_all(status=status, sort=sort)

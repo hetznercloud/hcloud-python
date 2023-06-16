@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from hcloud.actions.client import BoundAction
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from hcloud.primary_ips.domain import CreatePrimaryIPResponse, PrimaryIP
@@ -14,7 +13,7 @@ class BoundPrimaryIP(BoundModelBase):
         if datacenter:
             data["datacenter"] = BoundDatacenter(client._client.datacenters, datacenter)
 
-        super(BoundPrimaryIP, self).__init__(client, data, complete)
+        super().__init__(client, data, complete)
 
     def update(self, auto_delete=None, labels=None, name=None):
         # type: (Optional[bool], Optional[Dict[str, str]], Optional[str]) -> BoundPrimaryIP
@@ -93,9 +92,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
         :param id: int
         :return: :class:`BoundPrimaryIP <hcloud.primary_ips.client.BoundPrimaryIP>`
         """
-        response = self._client.request(
-            url="/primary_ips/{primary_ip_id}".format(primary_ip_id=id), method="GET"
-        )
+        response = self._client.request(url=f"/primary_ips/{id}", method="GET")
         return BoundPrimaryIP(self, response["primary_ip"])
 
     def get_list(
@@ -152,9 +149,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter networks by their name.
         :return: List[:class:`BoundPrimaryIP <hcloud.primary_ips.client.BoundPrimaryIP>`]
         """
-        return super(PrimaryIPsClient, self).get_all(
-            label_selector=label_selector, name=name
-        )
+        return super().get_all(label_selector=label_selector, name=name)
 
     def get_by_name(self, name):
         # type: (str) -> BoundPrimaryIP
@@ -164,7 +159,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get Primary IP by name.
         :return: :class:`BoundPrimaryIP <hcloud.primary_ips.client.BoundPrimaryIP>`
         """
-        return super(PrimaryIPsClient, self).get_by_name(name)
+        return super().get_by_name(name)
 
     def create(
         self,
@@ -236,7 +231,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
             data["name"] = name
 
         response = self._client.request(
-            url="/primary_ips/{primary_ip_id}".format(primary_ip_id=primary_ip.id),
+            url=f"/primary_ips/{primary_ip.id}",
             method="PUT",
             json=data,
         )
@@ -250,7 +245,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: boolean
         """
         self._client.request(
-            url="/primary_ips/{primary_ip_id}".format(primary_ip_id=primary_ip.id),
+            url=f"/primary_ips/{primary_ip.id}",
             method="DELETE",
         )
         # Return always true, because the API does not return an action for it. When an error occurs a HcloudAPIException will be raised

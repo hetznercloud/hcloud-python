@@ -7,7 +7,7 @@ from dateutil.tz import tzoffset
 from hcloud.isos.client import BoundIso, IsosClient
 
 
-class TestBoundIso(object):
+class TestBoundIso:
     @pytest.fixture()
     def bound_iso(self, hetzner_client):
         return BoundIso(client=hetzner_client.isos, data=dict(id=14))
@@ -25,7 +25,7 @@ class TestBoundIso(object):
         )
 
 
-class TestIsosClient(object):
+class TestIsosClient:
     @pytest.fixture()
     def isos_client(self):
         return IsosClient(client=mock.MagicMock())

@@ -35,7 +35,7 @@ class APIException(Exception):
         return self.message
 
 
-class Client(object):
+class Client:
     """Base Client for accessing the Hetzner Cloud API"""
 
     _version = VERSION
@@ -189,7 +189,7 @@ class Client(object):
     def _get_headers(self):
         headers = {
             "User-Agent": self._get_user_agent(),
-            "Authorization": "Bearer {token}".format(token=self.token),
+            "Authorization": f"Bearer {self.token}",
         }
         return headers
 

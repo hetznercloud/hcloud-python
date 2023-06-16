@@ -7,7 +7,7 @@ import requests
 from hcloud import APIException, Client
 
 
-class TestHetznerClient(object):
+class TestHetznerClient:
     @pytest.fixture()
     def client(self):
         Client._version = "0.0.0"
@@ -118,7 +118,7 @@ class TestHetznerClient(object):
         assert error.details["content"] == "Internal Server Error"
 
     def test_request_broken_json_200(self, client, response):
-        content = "{'key': 'value'".encode("utf-8")
+        content = b"{'key': 'value'"
         response.reason = "OK"
         response._content = content
         client._requests_session.request.return_value = response

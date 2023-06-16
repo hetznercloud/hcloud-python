@@ -38,7 +38,7 @@ class BoundDatacenter(BoundModelBase):
                 available_for_migration=available_for_migration,
             )
 
-        super(BoundDatacenter, self).__init__(client, data)
+        super().__init__(client, data)
 
 
 class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
@@ -51,9 +51,7 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
         :param id: int
         :return: :class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`
         """
-        response = self._client.request(
-            url="/datacenters/{datacenter_id}".format(datacenter_id=id), method="GET"
-        )
+        response = self._client.request(url=f"/datacenters/{id}", method="GET")
         return BoundDatacenter(self, response["datacenter"])
 
     def get_list(
@@ -100,7 +98,7 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter datacenters by their name.
         :return: List[:class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`]
         """
-        return super(DatacentersClient, self).get_all(name=name)
+        return super().get_all(name=name)
 
     def get_by_name(self, name):
         # type: (str) -> BoundDatacenter
@@ -110,4 +108,4 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get datacenter by name.
         :return: :class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`
         """
-        return super(DatacentersClient, self).get_by_name(name)
+        return super().get_by_name(name)

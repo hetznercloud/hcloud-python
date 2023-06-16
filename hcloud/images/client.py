@@ -21,7 +21,7 @@ class BoundImage(BoundModelBase):
                 client._client.servers, {"id": bound_to}, complete=False
             )
 
-        super(BoundImage, self).__init__(client, data)
+        super().__init__(client, data)
 
     def get_actions_list(self, sort=None, page=None, per_page=None, status=None):
         # type: (Optional[List[str]], Optional[int], Optional[int], Optional[List[str]]) -> PageResult[BoundAction, Meta]
@@ -122,7 +122,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         if per_page is not None:
             params["per_page"] = per_page
         response = self._client.request(
-            url="/images/{image_id}/actions".format(image_id=image.id),
+            url=f"/images/{image.id}/actions",
             method="GET",
             params=params,
         )
@@ -148,7 +148,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Specify how the results are sorted. Choices: `id` `command` `status` `progress`  `started` `finished` . You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default)
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super(ImagesClient, self).get_actions(image, sort=sort, status=status)
+        return super().get_actions(image, sort=sort, status=status)
 
     def get_by_id(self, id):
         # type: (int) -> BoundImage
@@ -157,9 +157,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         :param id: int
         :return: :class:`BoundImage <hcloud.images.client.BoundImage
         """
-        response = self._client.request(
-            url="/images/{image_id}".format(image_id=id), method="GET"
-        )
+        response = self._client.request(url=f"/images/{id}", method="GET")
         return BoundImage(self, response["image"])
 
     def get_list(
@@ -258,7 +256,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Include deprecated images in the response. Default: False
         :return: List[:class:`BoundImage <hcloud.images.client.BoundImage>`]
         """
-        return super(ImagesClient, self).get_all(
+        return super().get_all(
             name=name,
             label_selector=label_selector,
             bound_to=bound_to,
@@ -279,7 +277,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get image by name.
         :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
         """
-        return super(ImagesClient, self).get_by_name(name)
+        return super().get_by_name(name)
 
     def get_by_name_and_architecture(self, name, architecture):
         # type: (str, str) -> BoundImage
@@ -318,7 +316,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         if labels is not None:
             data.update({"labels": labels})
         response = self._client.request(
-            url="/images/{image_id}".format(image_id=image.id), method="PUT", json=data
+            url=f"/images/{image.id}", method="PUT", json=data
         )
         return BoundImage(self, response["image"])
 
@@ -329,9 +327,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         :param :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
         :return: bool
         """
-        self._client.request(
-            url="/images/{image_id}".format(image_id=image.id), method="DELETE"
-        )
+        self._client.request(url=f"/images/{image.id}", method="DELETE")
         # Return allays true, because the API does not return an action for it. When an error occurs a APIException will be raised
         return True
 

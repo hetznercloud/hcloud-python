@@ -10,7 +10,7 @@ from hcloud.images.domain import Image
 from hcloud.servers.client import BoundServer
 
 
-class TestBoundImage(object):
+class TestBoundImage:
     @pytest.fixture()
     def bound_image(self, hetzner_client):
         return BoundImage(client=hetzner_client.images, data=dict(id=14))
@@ -121,7 +121,7 @@ class TestBoundImage(object):
         assert action.progress == 0
 
 
-class TestImagesClient(object):
+class TestImagesClient:
     @pytest.fixture()
     def images_client(self):
         return ImagesClient(client=mock.MagicMock())

@@ -8,7 +8,7 @@ from hcloud.primary_ips.client import BoundPrimaryIP, PrimaryIPsClient
 from hcloud.primary_ips.domain import PrimaryIP
 
 
-class TestBoundPrimaryIP(object):
+class TestBoundPrimaryIP:
     @pytest.fixture()
     def bound_primary_ip(self, hetzner_client):
         return BoundPrimaryIP(client=hetzner_client.primary_ips, data=dict(id=14))
@@ -103,7 +103,7 @@ class TestBoundPrimaryIP(object):
         assert action.progress == 0
 
 
-class TestPrimaryIPsClient(object):
+class TestPrimaryIPsClient:
     @pytest.fixture()
     def primary_ips_client(self):
         return PrimaryIPsClient(client=mock.MagicMock())

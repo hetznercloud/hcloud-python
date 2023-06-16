@@ -7,7 +7,7 @@ from hcloud.datacenters.domain import DatacenterServerTypes
 from hcloud.locations.client import BoundLocation
 
 
-class TestBoundDatacenter(object):
+class TestBoundDatacenter:
     def test_bound_datacenter_init(self, datacenter_response):
         bound_datacenter = BoundDatacenter(
             client=mock.MagicMock(), data=datacenter_response["datacenter"]
@@ -55,7 +55,7 @@ class TestBoundDatacenter(object):
         )
 
 
-class TestDatacentersClient(object):
+class TestDatacentersClient:
     @pytest.fixture()
     def datacenters_client(self):
         return DatacentersClient(client=mock.MagicMock())

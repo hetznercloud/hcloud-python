@@ -12,7 +12,7 @@ from hcloud.volumes.client import BoundVolume, VolumesClient
 from hcloud.volumes.domain import Volume
 
 
-class TestBoundVolume(object):
+class TestBoundVolume:
     @pytest.fixture()
     def bound_volume(self, hetzner_client):
         return BoundVolume(client=hetzner_client.volumes, data=dict(id=14))
@@ -132,7 +132,7 @@ class TestBoundVolume(object):
         assert action.progress == 0
 
 
-class TestVolumesClient(object):
+class TestVolumesClient:
     @pytest.fixture()
     def volumes_client(self):
         return VolumesClient(client=mock.MagicMock())

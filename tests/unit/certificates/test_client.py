@@ -7,7 +7,7 @@ from hcloud.certificates.client import BoundCertificate, CertificatesClient
 from hcloud.certificates.domain import Certificate, ManagedCertificateStatus
 
 
-class TestBoundCertificate(object):
+class TestBoundCertificate:
     @pytest.fixture()
     def bound_certificate(self, hetzner_client):
         return BoundCertificate(client=hetzner_client.certificates, data=dict(id=14))
@@ -102,7 +102,7 @@ class TestBoundCertificate(object):
         assert action.command == "issue_certificate"
 
 
-class TestCertificatesClient(object):
+class TestCertificatesClient:
     @pytest.fixture()
     def certificates_client(self):
         return CertificatesClient(client=mock.MagicMock())

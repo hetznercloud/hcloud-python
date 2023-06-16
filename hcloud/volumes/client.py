@@ -20,7 +20,7 @@ class BoundVolume(BoundModelBase):
             data["server"] = BoundServer(
                 client._client.servers, {"id": server}, complete=False
             )
-        super(BoundVolume, self).__init__(client, data, complete)
+        super().__init__(client, data, complete)
 
     def get_actions_list(self, status=None, sort=None, page=None, per_page=None):
         # type: (Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction, Meta]]
@@ -119,9 +119,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         :param id: int
         :return: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>`
         """
-        response = self._client.request(
-            url="/volumes/{volume_id}".format(volume_id=id), method="GET"
-        )
+        response = self._client.request(url=f"/volumes/{id}", method="GET")
         return BoundVolume(self, response["volume"])
 
     def get_list(
@@ -170,9 +168,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter volumes by their status. The response will only contain volumes matching the status.
         :return: List[:class:`BoundVolume <hcloud.volumes.client.BoundVolume>`]
         """
-        return super(VolumesClient, self).get_all(
-            label_selector=label_selector, status=status
-        )
+        return super().get_all(label_selector=label_selector, status=status)
 
     def get_by_name(self, name):
         # type: (str) -> BoundVolume
@@ -182,7 +178,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get volume by name.
         :return: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>`
         """
-        return super(VolumesClient, self).get_by_name(name)
+        return super().get_by_name(name)
 
     def create(
         self,
@@ -271,7 +267,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
             params["per_page"] = per_page
 
         response = self._client.request(
-            url="/volumes/{volume_id}/actions".format(volume_id=volume.id),
+            url=f"/volumes/{volume.id}/actions",
             method="GET",
             params=params,
         )
@@ -292,7 +288,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super(VolumesClient, self).get_actions(volume, status=status, sort=sort)
+        return super().get_actions(volume, status=status, sort=sort)
 
     def update(self, volume, name=None, labels=None):
         # type:(Union[Volume, BoundVolume],  Optional[str],  Optional[Dict[str, str]]) -> BoundVolume
@@ -311,7 +307,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         if labels is not None:
             data.update({"labels": labels})
         response = self._client.request(
-            url="/volumes/{volume_id}".format(volume_id=volume.id),
+            url=f"/volumes/{volume.id}",
             method="PUT",
             json=data,
         )
@@ -324,9 +320,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         :param volume: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`
         :return: boolean
         """
-        self._client.request(
-            url="/volumes/{volume_id}".format(volume_id=volume.id), method="DELETE"
-        )
+        self._client.request(url=f"/volumes/{volume.id}", method="DELETE")
         return True
 
     def resize(self, volume, size):
@@ -339,7 +333,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         data = self._client.request(
-            url="/volumes/{volume_id}/actions/resize".format(volume_id=volume.id),
+            url=f"/volumes/{volume.id}/actions/resize",
             json={"size": size},
             method="POST",
         )
@@ -359,7 +353,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
             data["automount"] = automount
 
         data = self._client.request(
-            url="/volumes/{volume_id}/actions/attach".format(volume_id=volume.id),
+            url=f"/volumes/{volume.id}/actions/attach",
             json=data,
             method="POST",
         )
@@ -373,7 +367,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         data = self._client.request(
-            url="/volumes/{volume_id}/actions/detach".format(volume_id=volume.id),
+            url=f"/volumes/{volume.id}/actions/detach",
             method="POST",
         )
         return BoundAction(self._client.actions, data["action"])

@@ -1,7 +1,7 @@
 from hcloud.core.domain import add_meta_to_result
 
 
-class ClientEntityBase(object):
+class ClientEntityBase:
     max_per_page = 50
     results_list_attribute_name = None
 
@@ -77,7 +77,7 @@ class ClientEntityBase(object):
         return self._get_all(self.get_actions_list, "actions", *args, **kwargs)
 
 
-class GetEntityByNameMixin(object):
+class GetEntityByNameMixin:
     """
     Use as a mixin for ClientEntityBase classes
     """
@@ -91,7 +91,7 @@ class GetEntityByNameMixin(object):
         return entity
 
 
-class BoundModelBase(object):
+class BoundModelBase:
     """Bound Model Base"""
 
     model = None

@@ -11,7 +11,7 @@ from hcloud.servers.client import BoundServer
 from hcloud.servers.domain import Server
 
 
-class TestBoundFloatingIP(object):
+class TestBoundFloatingIP:
     @pytest.fixture()
     def bound_floating_ip(self, hetzner_client):
         return BoundFloatingIP(client=hetzner_client.floating_ips, data=dict(id=14))
@@ -127,7 +127,7 @@ class TestBoundFloatingIP(object):
         assert action.progress == 0
 
 
-class TestFloatingIPsClient(object):
+class TestFloatingIPsClient:
     @pytest.fixture()
     def floating_ips_client(self):
         return FloatingIPsClient(client=mock.MagicMock())

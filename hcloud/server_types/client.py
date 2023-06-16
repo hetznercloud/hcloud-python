@@ -16,9 +16,7 @@ class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
         :param id: int
         :return: :class:`BoundServerType <hcloud.server_types.client.BoundServerType>`
         """
-        response = self._client.request(
-            url="/server_types/{server_type_id}".format(server_type_id=id), method="GET"
-        )
+        response = self._client.request(url=f"/server_types/{id}", method="GET")
         return BoundServerType(self, response["server_type"])
 
     def get_list(self, name=None, page=None, per_page=None):
@@ -58,7 +56,7 @@ class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter server type by their name.
         :return: List[:class:`BoundServerType <hcloud.server_types.client.BoundServerType>`]
         """
-        return super(ServerTypesClient, self).get_all(name=name)
+        return super().get_all(name=name)
 
     def get_by_name(self, name):
         # type: (str) -> BoundServerType
@@ -68,4 +66,4 @@ class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get Server type by name.
         :return: :class:`BoundServerType <hcloud.server_types.client.BoundServerType>`
         """
-        return super(ServerTypesClient, self).get_by_name(name)
+        return super().get_by_name(name)

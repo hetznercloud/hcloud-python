@@ -32,7 +32,7 @@ from hcloud.volumes.client import BoundVolume
 from hcloud.volumes.domain import Volume
 
 
-class TestBoundServer(object):
+class TestBoundServer:
     @pytest.fixture()
     def bound_server(self, hetzner_client):
         return BoundServer(client=hetzner_client.servers, data=dict(id=14))
@@ -500,7 +500,7 @@ class TestBoundServer(object):
         assert action.command == "remove_from_placement_group"
 
 
-class TestServersClient(object):
+class TestServersClient:
     @pytest.fixture()
     def servers_client(self):
         return ServersClient(client=mock.MagicMock())

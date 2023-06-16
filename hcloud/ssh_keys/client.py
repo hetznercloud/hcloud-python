@@ -35,9 +35,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
         :param id: int
         :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`
         """
-        response = self._client.request(
-            url="/ssh_keys/{ssh_key_id}".format(ssh_key_id=id), method="GET"
-        )
+        response = self._client.request(url=f"/ssh_keys/{id}", method="GET")
         return BoundSSHKey(self, response["ssh_key"])
 
     def get_list(
@@ -94,7 +92,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter SSH keys by labels. The response will only contain SSH keys matching the label selector.
         :return:  List[:class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`]
         """
-        return super(SSHKeysClient, self).get_all(
+        return super().get_all(
             name=name, fingerprint=fingerprint, label_selector=label_selector
         )
 
@@ -106,7 +104,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get ssh key by name.
         :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`
         """
-        return super(SSHKeysClient, self).get_by_name(name)
+        return super().get_by_name(name)
 
     def get_by_fingerprint(self, fingerprint):
         # type: (str) -> BoundSSHKey
@@ -154,7 +152,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
         if labels is not None:
             data["labels"] = labels
         response = self._client.request(
-            url="/ssh_keys/{ssh_key_id}".format(ssh_key_id=ssh_key.id),
+            url=f"/ssh_keys/{ssh_key.id}",
             method="PUT",
             json=data,
         )
@@ -162,9 +160,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
 
     def delete(self, ssh_key):
         # type: (SSHKey) -> bool
-        self._client.request(
-            url="/ssh_keys/{ssh_key_id}".format(ssh_key_id=ssh_key.id), method="DELETE"
-        )
+        self._client.request(url=f"/ssh_keys/{ssh_key.id}", method="DELETE")
         """Deletes an SSH key. It cannot be used anymore.
 
         :param ssh_key: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>` or  :class:`SSHKey <hcloud.ssh_keys.domain.SSHKey>`
