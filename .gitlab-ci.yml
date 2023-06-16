@@ -4,7 +4,7 @@ stages:
 .tests_template: &tests_template
   before_script:
     - pip install tox
-    - apk add build-base
+    - apk add build-base git
   stage: test
   script: tox
   tags:
@@ -41,3 +41,4 @@ test-style:
   script:
     - tox -e flake8
     - tox -e black
+    - tox -e pre-commit
