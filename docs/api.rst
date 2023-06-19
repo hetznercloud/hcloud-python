@@ -27,3 +27,12 @@ Exceptions
 
 .. autoclass:: hcloud.actions.domain.ActionTimeoutException
     :members:
+
+Other
+-------------
+
+.. toctree::
+   :maxdepth: 3
+
+   api.helpers
+   api.deprecation

@@ -28,6 +28,11 @@ def server_type_response():
             "cpu_type": "shared",
             "architecture": "x86",
             "included_traffic": 21990232555520,
+            "deprecated": True,
+            "deprecation": {
+                "announced": "2023-06-01T00:00:00+00:00",
+                "unavailable_after": "2023-09-01T00:00:00+00:00",
+            },
         }
     }
 
@@ -60,6 +65,11 @@ def two_server_types_response():
                 "cpu_type": "shared",
                 "architecture": "x86",
                 "included_traffic": 21990232555520,
+                "deprecated": True,
+                "deprecation": {
+                    "announced": "2023-06-01T00:00:00+00:00",
+                    "unavailable_after": "2023-09-01T00:00:00+00:00",
+                },
             },
             {
                 "id": 2,
@@ -96,6 +106,8 @@ def two_server_types_response():
                 "cpu_type": "shared",
                 "architecture": "x86",
                 "included_traffic": 21990232555520,
+                "deprecated": False,
+                "deprecation": None,
             },
         ]
     }
@@ -129,6 +141,11 @@ def one_server_types_response():
                 "cpu_type": "shared",
                 "architecture": "x86",
                 "included_traffic": 21990232555520,
+                "deprecated": True,
+                "deprecation": {
+                    "announced": "2023-06-01T00:00:00+00:00",
+                    "unavailable_after": "2023-09-01T00:00:00+00:00",
+                },
             }
         ]
     }
