@@ -1,8 +1,8 @@
 import datetime
+from datetime import timezone
 from unittest import mock
 
 import pytest
-from dateutil.tz import tzoffset
 
 from hcloud.actions.client import BoundAction
 from hcloud.images.client import BoundImage, ImagesClient
@@ -26,14 +26,14 @@ class TestBoundImage:
         assert bound_image.image_size == 2.3
         assert bound_image.disk_size == 10
         assert bound_image.created == datetime.datetime(
-            2016, 1, 30, 23, 50, tzinfo=tzoffset(None, 0)
+            2016, 1, 30, 23, 50, tzinfo=timezone.utc
         )
         assert bound_image.os_flavor == "ubuntu"
         assert bound_image.os_version == "16.04"
         assert bound_image.architecture == "x86"
         assert bound_image.rapid_deploy is False
         assert bound_image.deprecated == datetime.datetime(
-            2018, 2, 28, 0, 0, tzinfo=tzoffset(None, 0)
+            2018, 2, 28, 0, 0, tzinfo=timezone.utc
         )
 
         assert isinstance(bound_image.created_from, BoundServer)
