@@ -5,6 +5,7 @@ import requests
 from hcloud.actions.client import ActionsClient
 from hcloud.certificates.client import CertificatesClient
 from hcloud.datacenters.client import DatacentersClient
+from hcloud.firewalls.client import FirewallsClient
 from hcloud.floating_ips.client import FloatingIPsClient
 from hcloud.images.client import ImagesClient
 from hcloud.isos.client import IsosClient
@@ -20,7 +21,6 @@ from hcloud.ssh_keys.client import SSHKeysClient
 from hcloud.volumes.client import VolumesClient
 
 from .__version__ import VERSION
-from .firewalls.client import FirewallsClient
 
 
 class APIException(Exception):
