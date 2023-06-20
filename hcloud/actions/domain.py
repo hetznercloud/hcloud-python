@@ -1,4 +1,4 @@
-from dateutil.parser import isoparse
+from datetime import datetime
 
 from hcloud.core.domain import BaseDomain
 
@@ -52,8 +52,8 @@ class Action(BaseDomain):
 
         self.status = status
         self.progress = progress
-        self.started = isoparse(started) if started else None
-        self.finished = isoparse(finished) if finished else None
+        self.started = datetime.fromisoformat(started) if started else None
+        self.finished = datetime.fromisoformat(finished) if finished else None
         self.resources = resources
         self.error = error
 

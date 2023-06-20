@@ -1,4 +1,4 @@
-from dateutil.parser import isoparse
+from datetime import datetime
 
 from hcloud.core.domain import BaseDomain
 
@@ -113,7 +113,7 @@ class Server(BaseDomain):
         self.id = id
         self.name = name
         self.status = status
-        self.created = isoparse(created) if created else None
+        self.created = datetime.fromisoformat(created) if created else None
         self.public_net = public_net
         self.server_type = server_type
         self.datacenter = datacenter

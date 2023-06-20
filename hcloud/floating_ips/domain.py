@@ -1,4 +1,4 @@
-from dateutil.parser import isoparse
+from datetime import datetime
 
 from hcloud.core.domain import BaseDomain
 
@@ -72,7 +72,7 @@ class FloatingIP(BaseDomain):
         self.blocked = blocked
         self.protection = protection
         self.labels = labels
-        self.created = isoparse(created) if created else None
+        self.created = datetime.fromisoformat(created) if created else None
         self.name = name
 
 

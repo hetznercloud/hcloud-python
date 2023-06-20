@@ -1,4 +1,4 @@
-from dateutil.parser import isoparse
+from datetime import datetime
 
 from hcloud.core.domain import BaseDomain, DomainIdentityMixin
 
@@ -85,11 +85,11 @@ class Image(BaseDomain, DomainIdentityMixin):
         self.id = id
         self.name = name
         self.type = type
-        self.created = isoparse(created) if created else None
+        self.created = datetime.fromisoformat(created) if created else None
         self.description = description
         self.image_size = image_size
         self.disk_size = disk_size
-        self.deprecated = isoparse(deprecated) if deprecated else None
+        self.deprecated = datetime.fromisoformat(deprecated) if deprecated else None
         self.bound_to = bound_to
         self.os_flavor = os_flavor
         self.os_version = os_version

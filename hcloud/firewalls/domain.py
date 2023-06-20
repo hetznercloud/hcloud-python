@@ -1,4 +1,4 @@
-from dateutil.parser import isoparse
+from datetime import datetime
 
 from hcloud.core.domain import BaseDomain
 
@@ -30,7 +30,7 @@ class Firewall(BaseDomain):
         self.rules = rules
         self.applied_to = applied_to
         self.labels = labels
-        self.created = isoparse(created) if created else None
+        self.created = datetime.fromisoformat(created) if created else None
 
 
 class FirewallRule:
