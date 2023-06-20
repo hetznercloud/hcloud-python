@@ -21,9 +21,10 @@ from hcloud.ssh_keys.client import SSHKeysClient
 from hcloud.volumes.client import VolumesClient
 
 from .__version__ import VERSION
+from ._exceptions import HCloudException
 
 
-class APIException(Exception):
+class APIException(HCloudException):
     """There was an error while performing an API Request"""
 
     def __init__(self, code, message, details):

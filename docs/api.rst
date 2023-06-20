@@ -19,7 +19,13 @@ API Clients
 Exceptions
 ---------------
 
+.. autoclass:: hcloud.HCloudException
+    :members:
+
 .. autoclass:: hcloud.APIException
+    :members:
+
+.. autoclass:: hcloud.actions.domain.ActionException
     :members:
 
 .. autoclass:: hcloud.actions.domain.ActionFailedException
