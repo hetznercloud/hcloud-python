@@ -12,22 +12,22 @@ stages:
 
 python37:
   <<: *tests_template
-  image: python:3.7-alpine
+  image: python:3.11-alpine
   script: tox -e py37
 
 python38:
   <<: *tests_template
-  image: python:3.8-alpine
+  image: python:3.11-alpine
   script: tox -e py38
 
 python39:
   <<: *tests_template
-  image: python:3.9-alpine
+  image: python:3.11-alpine
   script: tox -e py39
 
 python310:
   <<: *tests_template
-  image: python:3.10-alpine
+  image: python:3.11-alpine
   script: tox -e py310
 
 python311:
@@ -37,6 +37,6 @@ python311:
 
 test-style:
   <<: *tests_template
-  image: python:3.9-alpine
+  image: python:3.11-alpine
   script:
     - tox -e pre-commit
