@@ -291,6 +291,32 @@ class TestNetworksClient:
             },
         )
 
+    def test_create_with_subnet_vswitch(
+        self, networks_client, network_subnet, network_create_response
+    ):
+        networks_client._client.request.return_value = network_create_response
+        network_subnet.type = NetworkSubnet.TYPE_VSWITCH
+        network_subnet.vswitch_id = 1000
+        networks_client.create(
+            name="mynet", ip_range="10.0.0.0/8", subnets=[network_subnet]
+        )
+        networks_client._client.request.assert_called_with(
+            url="/networks",
+            method="POST",
+            json={
+                "name": "mynet",
+                "ip_range": "10.0.0.0/8",
+                "subnets": [
+                    {
+                        "type": NetworkSubnet.TYPE_VSWITCH,
+                        "ip_range": "10.0.1.0/24",
+                        "network_zone": "eu-central",
+                        "vswitch_id": 1000,
+                    }
+                ],
+            },
+        )
+
     def test_create_with_route(
         self, networks_client, network_route, network_create_response
     ):

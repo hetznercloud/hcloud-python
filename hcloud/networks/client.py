@@ -235,14 +235,19 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data = {"name": name, "ip_range": ip_range}
         if subnets is not None:
-            data["subnets"] = [
-                {
+            data_subnets = []
+            for subnet in subnets:
+                data_subnet = {
                     "type": subnet.type,
                     "ip_range": subnet.ip_range,
                     "network_zone": subnet.network_zone,
                 }
-                for subnet in subnets
-            ]
+                if subnet.vswitch_id is not None:
+                    data_subnet["vswitch_id"] = subnet.vswitch_id
+
+                data_subnets.append(data_subnet)
+            data["subnets"] = data_subnets
+
         if routes is not None:
             data["routes"] = [
                 {"destination": route.destination, "gateway": route.gateway}
