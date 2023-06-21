@@ -66,7 +66,7 @@ class ActionException(HCloudException):
 
 
 class ActionFailedException(ActionException):
-    """The Action you was waiting for failed"""
+    """The Action you were waiting for failed"""
 
 
 class ActionTimeoutException(ActionException):
