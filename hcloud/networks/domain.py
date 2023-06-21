@@ -16,6 +16,8 @@ class Network(BaseDomain):
            Subnets allocated in this network
     :param routes: List[:class:`NetworkRoute <hcloud.networks.domain.NetworkRoute>`]
            Routes set in this network
+    :param expose_routes_to_vswitch: bool
+           Indicates if the routes from this network should be exposed to the vSwitch connection.
     :param servers: List[:class:`BoundServer <hcloud.servers.client.BoundServer>`]
            Servers attached to this network
     :param protection: dict
@@ -30,6 +32,7 @@ class Network(BaseDomain):
         "ip_range",
         "subnets",
         "routes",
+        "expose_routes_to_vswitch",
         "servers",
         "protection",
         "labels",
@@ -44,6 +47,7 @@ class Network(BaseDomain):
         ip_range=None,
         subnets=None,
         routes=None,
+        expose_routes_to_vswitch=None,
         servers=None,
         protection=None,
         labels=None,
@@ -54,6 +58,7 @@ class Network(BaseDomain):
         self.ip_range = ip_range
         self.subnets = subnets
         self.routes = routes
+        self.expose_routes_to_vswitch = expose_routes_to_vswitch
         self.servers = servers
         self.protection = protection
         self.labels = labels
