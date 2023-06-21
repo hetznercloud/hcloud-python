@@ -2,6 +2,8 @@ from dateutil.parser import isoparse
 
 from hcloud.core.domain import BaseDomain
 
+from .._exceptions import HCloudException
+
 
 class Action(BaseDomain):
     """Action Domain
@@ -56,15 +58,16 @@ class Action(BaseDomain):
         self.error = error
 
 
-class ActionFailedException(Exception):
-    """The Action you was waiting for failed"""
+class ActionException(HCloudException):
+    """A generic action exception"""
 
     def __init__(self, action):
         self.action = action
 
 
-class ActionTimeoutException(Exception):
-    """The Action you was waiting for timeouted in hcloud-python."""
+class ActionFailedException(ActionException):
+    """The Action you were waiting for failed"""
 
-    def __init__(self, action):
-        self.action = action
+
+class ActionTimeoutException(ActionException):
+    """The Action you were waiting for timed out"""

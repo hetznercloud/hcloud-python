@@ -21,18 +21,7 @@ from hcloud.ssh_keys.client import SSHKeysClient
 from hcloud.volumes.client import VolumesClient
 
 from .__version__ import VERSION
-
-
-class APIException(Exception):
-    """There was an error while performing an API Request"""
-
-    def __init__(self, code, message, details):
-        self.code = code
-        self.message = message
-        self.details = details
-
-    def __str__(self):
-        return self.message
+from ._exceptions import APIException
 
 
 class Client:

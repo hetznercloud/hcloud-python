@@ -1,1 +1,2 @@
-from .hcloud import APIException, Client  # noqa
+from ._exceptions import APIException, HCloudException  # noqa
+from .hcloud import Client  # noqa
