@@ -70,4 +70,4 @@ class ActionFailedException(ActionException):
 
 
 class ActionTimeoutException(ActionException):
-    """The Action you was waiting for timed out"""
+    """The Action you were waiting for timed out"""
