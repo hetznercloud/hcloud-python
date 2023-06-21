@@ -33,7 +33,7 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
     ],
-    python_requires=">3.5",
+    python_requires=">=3.7",
     description="Official Hetzner Cloud python library",
     install_requires=requirements,
     extras_require=extras_require,
