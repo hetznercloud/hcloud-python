@@ -14,7 +14,8 @@ coverage: venv
 	venv/bin/coverage html
 	xdg-open htmlcov/index.html
 
-docs:
+export SPHINXBUILD=../venv/bin/sphinx-build
+docs: venv
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	xdg-open docs/_build/html/index.html
