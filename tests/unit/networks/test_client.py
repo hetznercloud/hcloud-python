@@ -268,6 +268,25 @@ class TestNetworksClient:
             json={"name": "mynet", "ip_range": "10.0.0.0/8"},
         )
 
+    def test_create_with_expose_routes_to_vswitch(
+        self, networks_client, network_create_response_with_expose_routes_to_vswitch
+    ):
+        networks_client._client.request.return_value = (
+            network_create_response_with_expose_routes_to_vswitch
+        )
+        networks_client.create(
+            name="mynet", ip_range="10.0.0.0/8", expose_routes_to_vswitch=True
+        )
+        networks_client._client.request.assert_called_with(
+            url="/networks",
+            method="POST",
+            json={
+                "name": "mynet",
+                "ip_range": "10.0.0.0/8",
+                "expose_routes_to_vswitch": True,
+            },
+        )
+
     def test_create_with_subnet(
         self, networks_client, network_subnet, network_create_response
     ):
@@ -291,6 +310,32 @@ class TestNetworksClient:
             },
         )
 
+    def test_create_with_subnet_vswitch(
+        self, networks_client, network_subnet, network_create_response
+    ):
+        networks_client._client.request.return_value = network_create_response
+        network_subnet.type = NetworkSubnet.TYPE_VSWITCH
+        network_subnet.vswitch_id = 1000
+        networks_client.create(
+            name="mynet", ip_range="10.0.0.0/8", subnets=[network_subnet]
+        )
+        networks_client._client.request.assert_called_with(
+            url="/networks",
+            method="POST",
+            json={
+                "name": "mynet",
+                "ip_range": "10.0.0.0/8",
+                "subnets": [
+                    {
+                        "type": NetworkSubnet.TYPE_VSWITCH,
+                        "ip_range": "10.0.1.0/24",
+                        "network_zone": "eu-central",
+                        "vswitch_id": 1000,
+                    }
+                ],
+            },
+        )
+
     def test_create_with_route(
         self, networks_client, network_route, network_create_response
     ):
@@ -305,6 +350,32 @@ class TestNetworksClient:
                 "name": "mynet",
                 "ip_range": "10.0.0.0/8",
                 "routes": [{"destination": "10.100.1.0/24", "gateway": "10.0.1.1"}],
+            },
+        )
+
+    def test_create_with_route_and_expose_routes_to_vswitch(
+        self,
+        networks_client,
+        network_route,
+        network_create_response_with_expose_routes_to_vswitch,
+    ):
+        networks_client._client.request.return_value = (
+            network_create_response_with_expose_routes_to_vswitch
+        )
+        networks_client.create(
+            name="mynet",
+            ip_range="10.0.0.0/8",
+            routes=[network_route],
+            expose_routes_to_vswitch=True,
+        )
+        networks_client._client.request.assert_called_with(
+            url="/networks",
+            method="POST",
+            json={
+                "name": "mynet",
+                "ip_range": "10.0.0.0/8",
+                "routes": [{"destination": "10.100.1.0/24", "gateway": "10.0.1.1"}],
+                "expose_routes_to_vswitch": True,
             },
         )
 
@@ -358,13 +429,18 @@ class TestNetworksClient:
     )
     def test_update(self, networks_client, network, response_update_network):
         networks_client._client.request.return_value = response_update_network
-        network = networks_client.update(network, name="new-name")
+        network = networks_client.update(
+            network, name="new-name", expose_routes_to_vswitch=True
+        )
         networks_client._client.request.assert_called_with(
-            url="/networks/1", method="PUT", json={"name": "new-name"}
+            url="/networks/1",
+            method="PUT",
+            json={"name": "new-name", "expose_routes_to_vswitch": True},
         )
 
         assert network.id == 4711
         assert network.name == "new-name"
+        assert network.expose_routes_to_vswitch is True
 
     @pytest.mark.parametrize(
         "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]

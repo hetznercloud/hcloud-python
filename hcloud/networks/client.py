@@ -30,17 +30,29 @@ class BoundNetwork(BoundModelBase):
 
         super().__init__(client, data, complete)
 
-    def update(self, name=None, labels=None):
-        # type: (Optional[str], Optional[Dict[str, str]]) -> BoundNetwork
+    def update(
+        self,
+        name=None,  # type: Optional[str]
+        expose_routes_to_vswitch=None,  # type: Optional[bool]
+        labels=None,  # type: Optional[Dict[str, str]]
+    ):  # type: (...) -> BoundNetwork
         """Updates a network. You can update a network’s name and a networks’s labels.
 
         :param name: str (optional)
                New name to set
+        :param expose_routes_to_vswitch: Optional[bool]
+                Indicates if the routes from this network should be exposed to the vSwitch connection.
+                The exposing only takes effect if a vSwitch connection is active.
         :param labels: Dict[str, str] (optional)
                User-defined labels (key-value pairs)
         :return: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>`
         """
-        return self._client.update(self, name, labels)
+        return self._client.update(
+            self,
+            name=name,
+            expose_routes_to_vswitch=expose_routes_to_vswitch,
+            labels=labels,
+        )
 
     def delete(self):
         # type: () -> BoundAction
@@ -217,6 +229,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         ip_range,  # type: str
         subnets=None,  # type: Optional[List[NetworkSubnet]]
         routes=None,  # type:  Optional[List[NetworkRoute]]
+        expose_routes_to_vswitch=None,  # type: Optional[bool]
         labels=None,  # type:  Optional[Dict[str, str]]
     ):
         """Creates a network with range ip_range.
@@ -229,25 +242,37 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
                 Array of subnets allocated
         :param routes: List[:class:`NetworkRoute <hcloud.networks.domain.NetworkRoute>`]
                 Array of routes set in this network
+        :param expose_routes_to_vswitch: Optional[bool]
+                Indicates if the routes from this network should be exposed to the vSwitch connection.
+                The exposing only takes effect if a vSwitch connection is active.
         :param labels: Dict[str, str] (optional)
                 User-defined labels (key-value pairs)
         :return: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>`
         """
         data = {"name": name, "ip_range": ip_range}
         if subnets is not None:
-            data["subnets"] = [
-                {
+            data_subnets = []
+            for subnet in subnets:
+                data_subnet = {
                     "type": subnet.type,
                     "ip_range": subnet.ip_range,
                     "network_zone": subnet.network_zone,
                 }
-                for subnet in subnets
-            ]
+                if subnet.vswitch_id is not None:
+                    data_subnet["vswitch_id"] = subnet.vswitch_id
+
+                data_subnets.append(data_subnet)
+            data["subnets"] = data_subnets
+
         if routes is not None:
             data["routes"] = [
                 {"destination": route.destination, "gateway": route.gateway}
                 for route in routes
             ]
+
+        if expose_routes_to_vswitch is not None:
+            data["expose_routes_to_vswitch"] = expose_routes_to_vswitch
+
         if labels is not None:
             data["labels"] = labels
 
@@ -255,13 +280,16 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
 
         return BoundNetwork(self, response["network"])
 
-    def update(self, network, name=None, labels=None):
-        # type:(Network,  Optional[str],  Optional[Dict[str, str]]) -> BoundNetwork
+    def update(self, network, name=None, expose_routes_to_vswitch=None, labels=None):
+        # type:(Network,  Optional[str], Optional[bool], Optional[Dict[str, str]]) -> BoundNetwork
         """Updates a network. You can update a network’s name and a network’s labels.
 
         :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
         :param name: str (optional)
                New name to set
+        :param expose_routes_to_vswitch: Optional[bool]
+                Indicates if the routes from this network should be exposed to the vSwitch connection.
+                The exposing only takes effect if a vSwitch connection is active.
         :param labels: Dict[str, str] (optional)
                User-defined labels (key-value pairs)
         :return: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>`
@@ -269,8 +297,13 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         data = {}
         if name is not None:
             data.update({"name": name})
+
+        if expose_routes_to_vswitch is not None:
+            data["expose_routes_to_vswitch"] = expose_routes_to_vswitch
+
         if labels is not None:
             data.update({"labels": labels})
+
         response = self._client.request(
             url=f"/networks/{network.id}",
             method="PUT",

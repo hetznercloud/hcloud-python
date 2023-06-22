@@ -24,6 +24,7 @@ def network_response():
                 },
             ],
             "routes": [{"destination": "10.100.1.0/24", "gateway": "10.0.1.1"}],
+            "expose_routes_to_vswitch": False,
             "servers": [42],
             "protection": {"delete": False},
             "labels": {},
@@ -55,6 +56,7 @@ def two_networks_response():
                     },
                 ],
                 "routes": [{"destination": "10.100.1.0/24", "gateway": "10.0.1.1"}],
+                "expose_routes_to_vswitch": False,
                 "servers": [42],
                 "protection": {"delete": False},
                 "labels": {},
@@ -73,6 +75,7 @@ def two_networks_response():
                     }
                 ],
                 "routes": [{"destination": "12.100.1.0/24", "gateway": "12.0.1.1"}],
+                "expose_routes_to_vswitch": False,
                 "servers": [45],
                 "protection": {"delete": False},
                 "labels": {},
@@ -105,6 +108,7 @@ def one_network_response():
                     },
                 ],
                 "routes": [{"destination": "10.100.1.0/24", "gateway": "10.0.1.1"}],
+                "expose_routes_to_vswitch": False,
                 "servers": [42],
                 "protection": {"delete": False},
                 "labels": {},
@@ -129,6 +133,32 @@ def network_create_response():
                 }
             ],
             "routes": [{"destination": "10.100.1.0/24", "gateway": "10.0.1.1"}],
+            "expose_routes_to_vswitch": False,
+            "servers": [42],
+            "protection": {"delete": False},
+            "labels": {},
+            "created": "2016-01-30T23:50:00+00:00",
+        }
+    }
+
+
+@pytest.fixture()
+def network_create_response_with_expose_routes_to_vswitch():
+    return {
+        "network": {
+            "id": 4711,
+            "name": "mynet",
+            "ip_range": "10.0.0.0/16",
+            "subnets": [
+                {
+                    "type": "cloud",
+                    "ip_range": "10.0.1.0/24",
+                    "network_zone": "eu-central",
+                    "gateway": "10.0.0.1",
+                }
+            ],
+            "routes": [{"destination": "10.100.1.0/24", "gateway": "10.0.1.1"}],
+            "expose_routes_to_vswitch": True,
             "servers": [42],
             "protection": {"delete": False},
             "labels": {},
@@ -153,6 +183,7 @@ def response_update_network():
                 }
             ],
             "routes": [{"destination": "10.100.1.0/24", "gateway": "10.0.1.1"}],
+            "expose_routes_to_vswitch": True,
             "servers": [42],
             "protection": {"delete": False},
             "labels": {},
