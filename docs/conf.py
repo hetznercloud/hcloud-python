@@ -23,12 +23,14 @@ release = VERSION
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.viewcode"]
-
+extensions = ["myst_parser", "sphinx.ext.autodoc", "sphinx.ext.viewcode"]
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
-source_suffix = [".rst"]
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".md": "markdown",
+}
 
 # A boolean that decides whether module names are prepended to all object names (for
 # object types where a “module” of some kind is defined), e.g. for py:function
