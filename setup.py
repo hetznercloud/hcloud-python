@@ -3,9 +3,6 @@ from setuptools import find_packages, setup
 with open("README.rst") as readme_file:
     readme = readme_file.read()
 
-with open("CHANGELOG.rst") as changelog_file:
-    changelog = changelog_file.read()
-
 version = {}
 with open("hcloud/__version__.py") as fp:
     exec(fp.read(), version)
@@ -15,7 +12,7 @@ setup(
     version=version["VERSION"],
     keywords="hcloud hetzner cloud",
     description="Official Hetzner Cloud python library",
-    long_description=readme + "\n\n" + changelog,
+    long_description=readme,
     author="Hetzner Cloud GmbH",
     author_email="support-cloud@hetzner.com",
     url="https://github.com/hetznercloud/hcloud-python",
