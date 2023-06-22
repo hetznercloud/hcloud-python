@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-
-"""The setup script."""
-
 from setuptools import find_packages, setup
 
 with open("README.rst") as readme_file:
@@ -10,17 +6,26 @@ with open("README.rst") as readme_file:
 with open("CHANGELOG.rst") as changelog_file:
     changelog = changelog_file.read()
 
-requirements = ["python-dateutil>=2.7.5", "requests>=2.20"]
-
-extras_require = {"docs": ["Sphinx==1.8.1", "sphinx-rtd-theme==0.4.2"]}
-
 version = {}
 with open("hcloud/__version__.py") as fp:
     exec(fp.read(), version)
 
 setup(
+    name="hcloud",
+    version=version["VERSION"],
+    keywords="hcloud hetzner cloud",
+    description="Official Hetzner Cloud python library",
+    long_description=readme + "\n\n" + changelog,
     author="Hetzner Cloud GmbH",
     author_email="support-cloud@hetzner.com",
+    url="https://github.com/hetznercloud/hcloud-python",
+    project_urls={
+        "Bug Tracker": "https://github.com/hetznercloud/hcloud-python/issues",
+        "Documentation": "https://hcloud-python.readthedocs.io/en/stable/",
+        "Changelog": "https://github.com/hetznercloud/hcloud-python/blob/main/CHANGELOG.md",
+        "Source Code": "https://github.com/hetznercloud/hcloud-python",
+    },
+    license="MIT license",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
@@ -34,17 +39,21 @@ setup(
         "Programming Language :: Python :: 3.11",
     ],
     python_requires=">=3.7",
-    description="Official Hetzner Cloud python library",
-    install_requires=requirements,
-    extras_require=extras_require,
-    license="MIT license",
-    long_description=readme + "\n\n" + changelog,
+    install_requires=[
+        "python-dateutil>=2.7.5",
+        "requests>=2.20",
+    ],
+    extras_require={
+        "docs": [
+            "sphinx==1.8.1",
+            "sphinx-rtd-theme==0.4.2",
+        ],
+        "test": [
+            "coverage>=7.2.7,<7.3",
+            "pytest>=7.3.2,<7.4",
+        ],
+    },
     include_package_data=True,
-    keywords="hcloud hetzner cloud",
-    name="hcloud",
     packages=find_packages(exclude=["examples", "tests*", "docs"]),
-    test_suite="tests",
-    url="https://github.com/hetznercloud/hcloud-python",
-    version=version["VERSION"],
     zip_safe=False,
 )
