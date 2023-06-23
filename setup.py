@@ -47,7 +47,7 @@ setup(
         ],
         "test": [
             "coverage>=7.2.7,<7.3",
-            "pytest>=7.3.2,<7.4",
+            "pytest>=7.4,<7.5",
         ],
     },
     include_package_data=True,
