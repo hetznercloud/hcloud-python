@@ -43,7 +43,7 @@ setup(
     extras_require={
         "docs": [
             "sphinx==1.8.1",
-            "sphinx-rtd-theme==0.4.2",
+            "sphinx-rtd-theme==1.2.2",
         ],
         "test": [
             "coverage>=7.2.7,<7.3",
