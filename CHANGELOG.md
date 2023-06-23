@@ -42,6 +42,35 @@
 
  * **server_type:** add field for included traffic ([#185](https://github.com/hetznercloud/hcloud-python/issues/185)) ([8ae0bc6](https://github.com/hetznercloud/hcloud-python/commit/8ae0bc6e032440538f3aeb2222a9bee34adab04b))
 
+
+## v1.19.0 (2023-04-12)
+
+- docs: link to PrivateNet broken by @apricote in [#177](https://github.com/hetznercloud/hcloud-python/issues/177)
+- feat: add support for ARM APIs by @apricote in [#182](https://github.com/hetznercloud/hcloud-python/issues/182)
+
+## v1.18.2 (2022-12-27)
+
+- fix: remove unused future dependency by @apricote in [#173](https://github.com/hetznercloud/hcloud-python/issues/173)
+- chore: update tests to use released python-3.11 by @apricote in [#175](https://github.com/hetznercloud/hcloud-python/issues/175)
+- chore: prepare release 1.18.2 by @apricote in [#174](https://github.com/hetznercloud/hcloud-python/issues/174)
+
+## v1.18.1 (2022-10-25)
+
+- Update Github Actions by @LKaemmerling in [#165](https://github.com/hetznercloud/hcloud-python/issues/165)
+- Add tests for Python 3.11 by @LKaemmerling in [#167](https://github.com/hetznercloud/hcloud-python/issues/167)
+
+## v1.18.0 (2022-08-17)
+
+- Remove use of external mock module by @s-t-e-v-e-n-k in [#162](https://github.com/hetznercloud/hcloud-python/issues/162)
+- document installation path via conda-forge by @s-m-e in [#149](https://github.com/hetznercloud/hcloud-python/issues/149)
+- Drop # -- coding: utf-8 -- from files by @jonasdlindner in [#154](https://github.com/hetznercloud/hcloud-python/issues/154)
+- Simplify Requirement Constraints by @LKaemmerling in [#163](https://github.com/hetznercloud/hcloud-python/issues/163)
+- Add validation helper for Label Values/Keys by @LKaemmerling in [#164](https://github.com/hetznercloud/hcloud-python/issues/164)
+
+## v1.17.0 (2022-06-29)
+
+- Add primary IP support by @LKaemmerling in [#160](https://github.com/hetznercloud/hcloud-python/issues/160)
+
 ## v1.16.0 (2021-08-17)
 
 - Feature: Add support for Load Balancer DNS PTRs
