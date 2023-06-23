@@ -37,6 +37,9 @@ source_suffix = {
 # directives. Default is True.
 add_module_names = False
 
+# Myst Parser
+myst_enable_extensions = ["colon_fence"]
+
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
