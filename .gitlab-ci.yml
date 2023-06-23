@@ -1,42 +1,29 @@
+default:
+  tags:
+    - cloud-integrations
+
 stages:
   - test
 
-.tests_template: &tests_template
+pre-commit:
+  stage: test
+
+  image: python:3.11-alpine
+  before_script:
+    - apk add build-base git
+    - pip install pre-commit
+  script:
+    - pre-commit run --all-files --show-diff-on-failure
+
+test:
+  stage: test
+
+  parallel:
+    matrix:
+      - python_version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
+  image: python:${python_version}-alpine
   before_script:
     - pip install tox
-    - apk add build-base git
-  stage: test
-  script: tox
-  tags:
-    - hc-bladerunner
-
-python37:
-  <<: *tests_template
-  image: python:3.7-alpine
-  script: tox -e py37
-
-python38:
-  <<: *tests_template
-  image: python:3.8-alpine
-  script: tox -e py38
-
-python39:
-  <<: *tests_template
-  image: python:3.9-alpine
-  script: tox -e py39
-
-python310:
-  <<: *tests_template
-  image: python:3.10-alpine
-  script: tox -e py310
-
-python311:
-  <<: *tests_template
-  image: python:3.11-alpine
-  script: tox -e py311
-
-test-style:
-  <<: *tests_template
-  image: python:3.9-alpine
   script:
-    - tox -e pre-commit
+    - tox -e ${python_version}

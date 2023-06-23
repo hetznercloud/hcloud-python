@@ -1,3 +1,10 @@
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+
+[tool.coverage.run]
+source = ["hcloud"]
+
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"

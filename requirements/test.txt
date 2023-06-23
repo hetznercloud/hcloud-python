@@ -1,4 +1,0 @@
--r base.txt
-
-pytest
-tox==3.23.1
