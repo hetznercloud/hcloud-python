@@ -1,7 +1,7 @@
+from datetime import datetime
 from unittest import mock
 
 import pytest
-from dateutil.parser import isoparse
 
 from hcloud.actions.client import BoundAction
 from hcloud.locations.client import BoundLocation
@@ -23,7 +23,9 @@ class TestBoundVolume:
         )
 
         assert bound_volume.id == 1
-        assert bound_volume.created == isoparse("2016-01-30T23:50:11+00:00")
+        assert bound_volume.created == datetime.fromisoformat(
+            "2016-01-30T23:50:11+00:00"
+        )
         assert bound_volume.name == "database-storage"
         assert isinstance(bound_volume.server, BoundServer)
         assert bound_volume.server.id == 12

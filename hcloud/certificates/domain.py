@@ -1,4 +1,4 @@
-from dateutil.parser import isoparse
+from datetime import datetime
 
 from hcloud.core.domain import BaseDomain, DomainIdentityMixin
 
@@ -59,9 +59,13 @@ class Certificate(BaseDomain, DomainIdentityMixin):
         self.certificate = certificate
         self.domain_names = domain_names
         self.fingerprint = fingerprint
-        self.not_valid_before = isoparse(not_valid_before) if not_valid_before else None
-        self.not_valid_after = isoparse(not_valid_after) if not_valid_after else None
-        self.created = isoparse(created) if created else None
+        self.not_valid_before = (
+            datetime.fromisoformat(not_valid_before) if not_valid_before else None
+        )
+        self.not_valid_after = (
+            datetime.fromisoformat(not_valid_after) if not_valid_after else None
+        )
+        self.created = datetime.fromisoformat(created) if created else None
         self.labels = labels
         self.status = status
 

@@ -1,6 +1,5 @@
 import datetime
-
-from dateutil.tz import tzoffset
+from datetime import timezone
 
 from hcloud.certificates.domain import Certificate
 
@@ -14,11 +13,11 @@ class TestCertificate:
             not_valid_before="2016-01-30T23:50+00:00",
         )
         assert certificate.created == datetime.datetime(
-            2016, 1, 30, 23, 50, tzinfo=tzoffset(None, 0)
+            2016, 1, 30, 23, 50, tzinfo=timezone.utc
         )
         assert certificate.not_valid_after == datetime.datetime(
-            2016, 1, 30, 23, 50, tzinfo=tzoffset(None, 0)
+            2016, 1, 30, 23, 50, tzinfo=timezone.utc
         )
         assert certificate.not_valid_before == datetime.datetime(
-            2016, 1, 30, 23, 50, tzinfo=tzoffset(None, 0)
+            2016, 1, 30, 23, 50, tzinfo=timezone.utc
         )

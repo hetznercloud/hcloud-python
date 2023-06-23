@@ -1,4 +1,4 @@
-from dateutil.parser import isoparse
+from datetime import datetime
 
 from hcloud.core.domain import BaseDomain, DomainIdentityMixin
 
@@ -36,4 +36,4 @@ class SSHKey(BaseDomain, DomainIdentityMixin):
         self.fingerprint = fingerprint
         self.public_key = public_key
         self.labels = labels
-        self.created = isoparse(created) if created else None
+        self.created = datetime.fromisoformat(created) if created else None

@@ -1,8 +1,8 @@
 import datetime
+from datetime import timezone
 from unittest import mock
 
 import pytest
-from dateutil.tz import tzoffset
 
 from hcloud.isos.client import BoundIso, IsosClient
 
@@ -21,7 +21,7 @@ class TestBoundIso:
         assert bound_iso.type == "public"
         assert bound_iso.architecture == "x86"
         assert bound_iso.deprecated == datetime.datetime(
-            2018, 2, 28, 0, 0, tzinfo=tzoffset(None, 0)
+            2018, 2, 28, 0, 0, tzinfo=timezone.utc
         )
 
 

@@ -1,4 +1,4 @@
-from dateutil.parser import isoparse
+from datetime import datetime
 
 from hcloud.core.domain import BaseDomain
 
@@ -54,7 +54,7 @@ class Network(BaseDomain):
     ):
         self.id = id
         self.name = name
-        self.created = isoparse(created) if created else None
+        self.created = datetime.fromisoformat(created) if created else None
         self.ip_range = ip_range
         self.subnets = subnets
         self.routes = routes

@@ -1,5 +1,6 @@
+from datetime import datetime
+
 import pytest
-from dateutil.parser import isoparse
 
 from hcloud.core.domain import (
     BaseDomain,
@@ -101,7 +102,7 @@ class ActionDomain(BaseDomain, DomainIdentityMixin):
     def __init__(self, id, name="name1", started=None):
         self.id = id
         self.name = name
-        self.started = isoparse(started) if started else None
+        self.started = datetime.fromisoformat(started) if started else None
 
 
 class TestBaseDomain:
@@ -125,7 +126,7 @@ class TestBaseDomain:
                 {
                     "id": 4,
                     "name": "name-name3",
-                    "started": isoparse("2016-01-30T23:50+00:00"),
+                    "started": datetime.fromisoformat("2016-01-30T23:50+00:00"),
                 },
             ),
         ],

@@ -1,4 +1,4 @@
-from dateutil.parser import isoparse
+from datetime import datetime
 
 from hcloud.core.domain import BaseDomain
 
@@ -25,7 +25,7 @@ class DeprecationInfo(BaseDomain):
         announced=None,
         unavailable_after=None,
     ):
-        self.announced = isoparse(announced) if announced else None
+        self.announced = datetime.fromisoformat(announced) if announced else None
         self.unavailable_after = (
-            isoparse(unavailable_after) if unavailable_after else None
+            datetime.fromisoformat(unavailable_after) if unavailable_after else None
         )
