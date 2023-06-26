@@ -1,3 +1,5 @@
+from warnings import warn
+
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from hcloud.isos.domain import Iso
 
@@ -24,6 +26,7 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
         name=None,  # type: Optional[str]
         architecture=None,  # type: Optional[List[str]]
         include_wildcard_architecture=None,  # type: Optional[bool]
+        include_architecture_wildcard=None,  # type: Optional[bool]
         page=None,  # type: Optional[int]
         per_page=None,  # type: Optional[int]
     ):
@@ -35,6 +38,8 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
         :param architecture: List[str] (optional)
                Can be used to filter ISOs by their architecture. Choices: x86 arm
         :param include_wildcard_architecture: bool (optional)
+               Deprecated, please use `include_architecture_wildcard` instead.
+        :param include_architecture_wildcard: bool (optional)
                Custom ISOs do not have an architecture set. You must also set this flag to True if you are filtering by
                architecture and also want custom ISOs.
         :param page: int (optional)
@@ -43,13 +48,21 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundIso <hcloud.isos.client.BoundIso>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
+
+        if include_wildcard_architecture is not None:
+            warn(
+                "The `include_wildcard_architecture` argument is deprecated, please use the `include_architecture_wildcard` argument instead.",
+                DeprecationWarning,
+            )
+            include_architecture_wildcard = include_wildcard_architecture
+
         params = {}
         if name is not None:
             params["name"] = name
         if architecture is not None:
             params["architecture"] = architecture
-        if include_wildcard_architecture is not None:
-            params["include_wildcard_architecture"] = include_wildcard_architecture
+        if include_architecture_wildcard is not None:
+            params["include_architecture_wildcard"] = include_architecture_wildcard
         if page is not None:
             params["page"] = page
         if per_page is not None:
@@ -64,6 +77,7 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
         name=None,  # type: Optional[str]
         architecture=None,  # type: Optional[List[str]]
         include_wildcard_architecture=None,  # type: Optional[bool]
+        include_architecture_wildcard=None,  # type: Optional[bool]
     ):
         # type: (...) -> List[BoundIso]
         """Get all ISOs
@@ -73,14 +87,24 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
         :param architecture: List[str] (optional)
                Can be used to filter ISOs by their architecture. Choices: x86 arm
         :param include_wildcard_architecture: bool (optional)
+               Deprecated, please use `include_architecture_wildcard` instead.
+        :param include_architecture_wildcard: bool (optional)
                Custom ISOs do not have an architecture set. You must also set this flag to True if you are filtering by
                architecture and also want custom ISOs.
         :return: List[:class:`BoundIso <hcloud.isos.client.BoundIso>`]
         """
+
+        if include_wildcard_architecture is not None:
+            warn(
+                "The `include_wildcard_architecture` argument is deprecated, please use the `include_architecture_wildcard` argument instead.",
+                DeprecationWarning,
+            )
+            include_architecture_wildcard = include_wildcard_architecture
+
         return super().get_all(
             name=name,
             architecture=architecture,
-            include_wildcard_architecture=include_wildcard_architecture,
+            include_architecture_wildcard=include_architecture_wildcard,
         )
 
     def get_by_name(self, name):
