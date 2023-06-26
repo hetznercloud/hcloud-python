@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.23.0](https://github.com/hetznercloud/hcloud-python/compare/v1.22.0...v1.23.0) (2023-06-26)
+
+
+### Features
+
+* remove python-dateutil dependency ([#221](https://github.com/hetznercloud/hcloud-python/issues/221)) ([8ea4aa0](https://github.com/hetznercloud/hcloud-python/commit/8ea4aa0ad12e85eeb14c81dfa2195e1a6ee79a76))
+
+
+### Bug Fixes
+
+* **isos:** invalid name for include_wildcard_architecture argument ([#222](https://github.com/hetznercloud/hcloud-python/issues/222)) ([c3dfcab](https://github.com/hetznercloud/hcloud-python/commit/c3dfcaba44d88fcf6913a6e68caee2afde06e551))
+
+
+### Dependencies
+
+* update dependency pytest to &gt;=7.4,&lt;7.5 ([#217](https://github.com/hetznercloud/hcloud-python/issues/217)) ([11e1f45](https://github.com/hetznercloud/hcloud-python/commit/11e1f455611b17a22328b3422d0b800552ea91e3))
+
 ## [1.22.0](https://github.com/hetznercloud/hcloud-python/compare/v1.21.0...v1.22.0) (2023-06-22)
 
 
