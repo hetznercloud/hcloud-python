@@ -1,11 +1,10 @@
 Hetzner Cloud Python
 ====================
 
-
-.. image:: https://github.com/hetznercloud/hcloud-python/workflows/Unit%20Tests/badge.svg
-    :target: https://github.com/hetznercloud/hcloud-cloud-controller-manager/actions
-.. image:: https://github.com/hetznercloud/hcloud-python/workflows/Code%20Style/badge.svg
-    :target: https://github.com/hetznercloud/hcloud-cloud-controller-manager/actions
+.. image:: https://github.com/hetznercloud/hcloud-python/actions/workflows/test.yml/badge.svg
+    :target: https://github.com/hetznercloud/hcloud-python/actions/workflows/test.yml
+.. image:: https://github.com/hetznercloud/hcloud-python/actions/workflows/lint.yml/badge.svg
+    :target: https://github.com/hetznercloud/hcloud-python/actions/workflows/lint.yml
 .. image:: https://readthedocs.org/projects/hcloud-python/badge/?version=latest
     :target: https://hcloud-python.readthedocs.io
 .. image:: https://img.shields.io/pypi/pyversions/hcloud.svg
@@ -32,7 +31,7 @@ Supported Python versions
 
 We support python versions until `end-of-life`_.
 
-.. _end-of-life: https://devguide.python.org/#status-of-python-branches
+.. _end-of-life: https://devguide.python.org/versions/#status-of-python-versions
 
 Development
 -----------
@@ -64,4 +63,4 @@ License
 -------------
 The MIT License (MIT). Please see `License File`_ for more information.
 
-.. _License File: https://github.com/hetznercloud/hcloud-python/blob/master/LICENSE
+.. _License File: https://github.com/hetznercloud/hcloud-python/blob/main/LICENSE
