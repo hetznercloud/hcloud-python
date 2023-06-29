@@ -1,1 +1,1 @@
-VERSION = "1.22.0"  # x-release-please-version
+VERSION = "1.23.0"  # x-release-please-version
