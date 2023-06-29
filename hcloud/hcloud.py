@@ -154,25 +154,15 @@ class Client:
         :return: str
             The user agent of this hcloud-python instance
         """
-        if self._application_name is not None and self._application_version is None:
-            return "{application_name} {prefix}/{version}".format(
-                application_name=self._application_name,
-                prefix=self.__user_agent_prefix,
-                version=self._version,
-            )
-        elif (
-            self._application_name is not None and self._application_version is not None
-        ):
-            return "{application_name}/{application_version} {prefix}/{version}".format(
-                application_name=self._application_name,
-                application_version=self._application_version,
-                prefix=self.__user_agent_prefix,
-                version=self._version,
-            )
-        else:
-            return "{prefix}/{version}".format(
-                prefix=self.__user_agent_prefix, version=self._version
-            )
+        user_agents = []
+        for name, version in [
+            (self._application_name, self._application_version),
+            (self.__user_agent_prefix, self._version),
+        ]:
+            if name is not None:
+                user_agents.append(name if version is None else f"{name}/{version}")
+
+        return " ".join(user_agents)
 
     def _get_headers(self):
         headers = {
