@@ -1,4 +1,4 @@
-from hcloud.core.domain import BaseDomain, DomainIdentityMixin
+from ..core.domain import BaseDomain, DomainIdentityMixin
 
 
 class LoadBalancerType(BaseDomain, DomainIdentityMixin):

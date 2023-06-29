@@ -1,5 +1,5 @@
-from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.load_balancer_types.domain import LoadBalancerType
+from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from .domain import LoadBalancerType
 
 
 class BoundLoadBalancerType(BoundModelBase):

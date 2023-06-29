@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from hcloud.core.domain import BaseDomain
+from ..core.domain import BaseDomain
 
 
 class PlacementGroup(BaseDomain):

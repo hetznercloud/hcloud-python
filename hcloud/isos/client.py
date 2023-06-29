@@ -1,7 +1,7 @@
 from warnings import warn
 
-from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.isos.domain import Iso
+from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from .domain import Iso
 
 
 class BoundIso(BoundModelBase):

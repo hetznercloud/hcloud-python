@@ -1,8 +1,8 @@
-from hcloud.actions.client import BoundAction
-from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.core.domain import add_meta_to_result
-from hcloud.locations.client import BoundLocation
-from hcloud.volumes.domain import CreateVolumeResponse, Volume
+from ..actions.client import BoundAction
+from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core.domain import add_meta_to_result
+from ..locations.client import BoundLocation
+from .domain import CreateVolumeResponse, Volume
 
 
 class BoundVolume(BoundModelBase):
@@ -13,7 +13,7 @@ class BoundVolume(BoundModelBase):
         if location is not None:
             data["location"] = BoundLocation(client._client.locations, location)
 
-        from hcloud.servers.client import BoundServer
+        from ..servers.client import BoundServer
 
         server = data.get("server")
         if server is not None:

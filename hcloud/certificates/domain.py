@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from hcloud.core.domain import BaseDomain, DomainIdentityMixin
+from ..core.domain import BaseDomain, DomainIdentityMixin
 
 
 class Certificate(BaseDomain, DomainIdentityMixin):

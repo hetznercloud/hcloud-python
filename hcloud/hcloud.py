@@ -2,26 +2,25 @@ import time
 
 import requests
 
-from hcloud.actions.client import ActionsClient
-from hcloud.certificates.client import CertificatesClient
-from hcloud.datacenters.client import DatacentersClient
-from hcloud.firewalls.client import FirewallsClient
-from hcloud.floating_ips.client import FloatingIPsClient
-from hcloud.images.client import ImagesClient
-from hcloud.isos.client import IsosClient
-from hcloud.load_balancer_types.client import LoadBalancerTypesClient
-from hcloud.load_balancers.client import LoadBalancersClient
-from hcloud.locations.client import LocationsClient
-from hcloud.networks.client import NetworksClient
-from hcloud.placement_groups.client import PlacementGroupsClient
-from hcloud.primary_ips.client import PrimaryIPsClient
-from hcloud.server_types.client import ServerTypesClient
-from hcloud.servers.client import ServersClient
-from hcloud.ssh_keys.client import SSHKeysClient
-from hcloud.volumes.client import VolumesClient
-
 from .__version__ import VERSION
 from ._exceptions import APIException
+from .actions.client import ActionsClient
+from .certificates.client import CertificatesClient
+from .datacenters.client import DatacentersClient
+from .firewalls.client import FirewallsClient
+from .floating_ips.client import FloatingIPsClient
+from .images.client import ImagesClient
+from .isos.client import IsosClient
+from .load_balancer_types.client import LoadBalancerTypesClient
+from .load_balancers.client import LoadBalancersClient
+from .locations.client import LocationsClient
+from .networks.client import NetworksClient
+from .placement_groups.client import PlacementGroupsClient
+from .primary_ips.client import PrimaryIPsClient
+from .server_types.client import ServerTypesClient
+from .servers.client import ServersClient
+from .ssh_keys.client import SSHKeysClient
+from .volumes.client import VolumesClient
 
 
 class Client:

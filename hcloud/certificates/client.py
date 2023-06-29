@@ -1,12 +1,12 @@
-from hcloud.actions.client import BoundAction
-from hcloud.certificates.domain import (
+from ..actions.client import BoundAction
+from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core.domain import add_meta_to_result
+from .domain import (
     Certificate,
     CreateManagedCertificateResponse,
     ManagedCertificateError,
     ManagedCertificateStatus,
 )
-from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.core.domain import add_meta_to_result
 
 
 class BoundCertificate(BoundModelBase):

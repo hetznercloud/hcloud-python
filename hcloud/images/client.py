@@ -1,14 +1,14 @@
-from hcloud.actions.client import BoundAction
-from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.core.domain import add_meta_to_result
-from hcloud.images.domain import Image
+from ..actions.client import BoundAction
+from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core.domain import add_meta_to_result
+from .domain import Image
 
 
 class BoundImage(BoundModelBase):
     model = Image
 
     def __init__(self, client, data):
-        from hcloud.servers.client import BoundServer
+        from ..servers.client import BoundServer
 
         created_from = data.get("created_from")
         if created_from is not None:

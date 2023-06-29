@@ -1,5 +1,5 @@
-from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.locations.domain import Location
+from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from .domain import Location
 
 
 class BoundLocation(BoundModelBase):

@@ -1,5 +1,5 @@
-from hcloud.core.domain import BaseDomain, DomainIdentityMixin
-from hcloud.deprecation.domain import DeprecationInfo
+from ..core.domain import BaseDomain, DomainIdentityMixin
+from ..deprecation.domain import DeprecationInfo
 
 
 class ServerType(BaseDomain, DomainIdentityMixin):
