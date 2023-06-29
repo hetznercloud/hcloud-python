@@ -1,8 +1,7 @@
 from datetime import datetime
 
-from hcloud.core.domain import BaseDomain
-
 from .._exceptions import HCloudException
+from ..core.domain import BaseDomain
 
 
 class Action(BaseDomain):

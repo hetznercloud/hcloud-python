@@ -1,5 +1,5 @@
-from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.server_types.domain import ServerType
+from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from .domain import ServerType
 
 
 class BoundServerType(BoundModelBase):

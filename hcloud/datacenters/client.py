@@ -1,7 +1,7 @@
-from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.datacenters.domain import Datacenter, DatacenterServerTypes
-from hcloud.locations.client import BoundLocation
-from hcloud.server_types.client import BoundServerType
+from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..locations.client import BoundLocation
+from ..server_types.client import BoundServerType
+from .domain import Datacenter, DatacenterServerTypes
 
 
 class BoundDatacenter(BoundModelBase):

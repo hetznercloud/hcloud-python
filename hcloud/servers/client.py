@@ -1,18 +1,19 @@
-from hcloud.actions.client import BoundAction
-from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.core.domain import add_meta_to_result
-from hcloud.datacenters.client import BoundDatacenter
-from hcloud.firewalls.client import BoundFirewall
-from hcloud.floating_ips.client import BoundFloatingIP
-from hcloud.images.client import BoundImage
-from hcloud.images.domain import CreateImageResponse
-from hcloud.isos.client import BoundIso
-from hcloud.networks.client import BoundNetwork  # noqa
-from hcloud.networks.domain import Network  # noqa
-from hcloud.placement_groups.client import BoundPlacementGroup
-from hcloud.primary_ips.client import BoundPrimaryIP
-from hcloud.server_types.client import BoundServerType
-from hcloud.servers.domain import (
+from ..actions.client import BoundAction
+from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core.domain import add_meta_to_result
+from ..datacenters.client import BoundDatacenter
+from ..firewalls.client import BoundFirewall
+from ..floating_ips.client import BoundFloatingIP
+from ..images.client import BoundImage
+from ..images.domain import CreateImageResponse
+from ..isos.client import BoundIso
+from ..networks.client import BoundNetwork  # noqa
+from ..networks.domain import Network  # noqa
+from ..placement_groups.client import BoundPlacementGroup
+from ..primary_ips.client import BoundPrimaryIP
+from ..server_types.client import BoundServerType
+from ..volumes.client import BoundVolume
+from .domain import (
     CreateServerResponse,
     EnableRescueResponse,
     IPv4Address,
@@ -24,7 +25,6 @@ from hcloud.servers.domain import (
     ResetPasswordResponse,
     Server,
 )
-from hcloud.volumes.client import BoundVolume
 
 
 class BoundServer(BoundModelBase):

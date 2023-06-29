@@ -1,13 +1,13 @@
-from hcloud.actions.client import BoundAction
-from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.primary_ips.domain import CreatePrimaryIPResponse, PrimaryIP
+from ..actions.client import BoundAction
+from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from .domain import CreatePrimaryIPResponse, PrimaryIP
 
 
 class BoundPrimaryIP(BoundModelBase):
     model = PrimaryIP
 
     def __init__(self, client, data, complete=True):
-        from hcloud.datacenters.client import BoundDatacenter
+        from ..datacenters.client import BoundDatacenter
 
         datacenter = data.get("datacenter", {})
         if datacenter:

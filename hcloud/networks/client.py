@@ -1,7 +1,7 @@
-from hcloud.actions.client import BoundAction
-from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.core.domain import add_meta_to_result
-from hcloud.networks.domain import Network, NetworkRoute, NetworkSubnet
+from ..actions.client import BoundAction
+from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core.domain import add_meta_to_result
+from .domain import Network, NetworkRoute, NetworkSubnet
 
 
 class BoundNetwork(BoundModelBase):
@@ -18,7 +18,7 @@ class BoundNetwork(BoundModelBase):
             routes = [NetworkRoute.from_dict(route) for route in routes]
             data["routes"] = routes
 
-        from hcloud.servers.client import BoundServer
+        from ..servers.client import BoundServer
 
         servers = data.get("servers", [])
         if servers is not None:

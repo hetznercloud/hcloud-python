@@ -1,5 +1,5 @@
-from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.ssh_keys.domain import SSHKey
+from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from .domain import SSHKey
 
 
 class BoundSSHKey(BoundModelBase):

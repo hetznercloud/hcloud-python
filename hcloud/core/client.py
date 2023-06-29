@@ -1,4 +1,4 @@
-from hcloud.core.domain import add_meta_to_result
+from .domain import add_meta_to_result
 
 
 class ClientEntityBase:
