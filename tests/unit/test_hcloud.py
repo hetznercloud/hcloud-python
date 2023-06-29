@@ -81,15 +81,16 @@ class TestHetznerClient:
         response = client.request(
             "POST", "/servers", params={"argument": "value"}, timeout=2
         )
-        client._requests_session.request.assert_called_once()
-        assert client._requests_session.request.call_args[0] == (
-            "POST",
-            "https://api.hetzner.cloud/v1/servers",
+        client._requests_session.request.assert_called_once_with(
+            method="POST",
+            url="https://api.hetzner.cloud/v1/servers",
+            headers={
+                "User-Agent": "hcloud-python/0.0.0",
+                "Authorization": "Bearer project_token",
+            },
+            params={"argument": "value"},
+            timeout=2,
         )
-        assert client._requests_session.request.call_args[1]["params"] == {
-            "argument": "value"
-        }
-        assert client._requests_session.request.call_args[1]["timeout"] == 2
         assert response == {"result": "data"}
 
     def test_request_fails(self, client, fail_response):
