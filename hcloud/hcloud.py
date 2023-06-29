@@ -1,4 +1,5 @@
 import time
+from typing import Optional, Union
 
 import requests
 
@@ -32,24 +33,19 @@ class Client:
 
     def __init__(
         self,
-        token,
-        api_endpoint="https://api.hetzner.cloud/v1",
-        application_name=None,
-        application_version=None,
-        poll_interval=1,
+        token: str,
+        api_endpoint: str = "https://api.hetzner.cloud/v1",
+        application_name: Optional[str] = None,
+        application_version: Optional[str] = None,
+        poll_interval: int = 1,
     ):
         """Create an new Client instance
 
-        :param token: str
-                Hetzner Cloud API token
-        :param api_endpoint: str
-                Hetzner Cloud API endpoint (default is https://api.hetzner.cloud/v1)
-        :param application_name: str
-                Your application name (default is None)
-        :param application_version: str
-                Your application _version (default is None)
-        :param poll_interval: int
-                Interval for polling information from Hetzner Cloud API in seconds (default is 1)
+        :param token: Hetzner Cloud API token
+        :param api_endpoint: Hetzner Cloud API endpoint
+        :param application_name: Your application name
+        :param application_version: Your application _version
+        :param poll_interval: Interval for polling information from Hetzner Cloud API in seconds
         """
         self.token = token
         self._api_endpoint = api_endpoint
@@ -148,11 +144,10 @@ class Client:
         :type: :class:`PlacementGroupsClient <hcloud.placement_groups.client.PlacementGroupsClient>`
         """
 
-    def _get_user_agent(self):
+    def _get_user_agent(self) -> str:
         """Get the user agent of the hcloud-python instance with the user application name (if specified)
 
-        :return: str
-            The user agent of this hcloud-python instance
+        :return: The user agent of this hcloud-python instance
         """
         user_agents = []
         for name, version in [
@@ -164,41 +159,46 @@ class Client:
 
         return " ".join(user_agents)
 
-    def _get_headers(self):
+    def _get_headers(self) -> dict:
         headers = {
             "User-Agent": self._get_user_agent(),
             "Authorization": f"Bearer {self.token}",
         }
         return headers
 
-    def _raise_exception_from_response(self, response):
+    def _raise_exception_from_response(self, response: requests.Response):
         raise APIException(
             code=response.status_code,
             message=response.reason,
             details={"content": response.content},
         )
 
-    def _raise_exception_from_content(self, content):
+    def _raise_exception_from_content(self, content: dict):
         raise APIException(
             code=content["error"]["code"],
             message=content["error"]["message"],
             details=content["error"]["details"],
         )
 
-    def request(self, method, url, tries=1, **kwargs):
+    def request(
+        self,
+        method: str,
+        url: str,
+        tries: int = 1,
+        **kwargs,
+    ) -> Union[bytes, dict]:
         """Perform a request to the Hetzner Cloud API, wrapper around requests.request
 
-        :param method: str
-                HTTP Method to perform the Request
-        :param url: str
-                URL of the Endpoint
-        :param tries: int
-                Tries of the request (used internally, should not be set by the user)
+        :param method: HTTP Method to perform the Request
+        :param url: URL of the Endpoint
+        :param tries: Tries of the request (used internally, should not be set by the user)
         :return: Response
-        :rtype: requests.Response
         """
         response = self._requests_session.request(
-            method, self._api_endpoint + url, headers=self._get_headers(), **kwargs
+            method=method,
+            url=self._api_endpoint + url,
+            headers=self._get_headers(),
+            **kwargs,
         )
 
         content = response.content
