@@ -178,11 +178,11 @@ class Client:
             details={"content": response.content},
         )
 
-    def _raise_exception_from_json_content(self, json_content):
+    def _raise_exception_from_content(self, content):
         raise APIException(
-            code=json_content["error"]["code"],
-            message=json_content["error"]["message"],
-            details=json_content["error"]["details"],
+            code=content["error"]["code"],
+            message=content["error"]["message"],
+            details=content["error"]["details"],
         )
 
     def request(self, method, url, tries=1, **kwargs):
@@ -201,22 +201,22 @@ class Client:
             method, self._api_endpoint + url, headers=self._get_headers(), **kwargs
         )
 
-        json_content = response.content
+        content = response.content
         try:
-            if len(json_content) > 0:
-                json_content = response.json()
+            if len(content) > 0:
+                content = response.json()
         except (TypeError, ValueError):
             self._raise_exception_from_response(response)
 
         if not response.ok:
-            if json_content:
-                if json_content["error"]["code"] == "rate_limit_exceeded" and tries < 5:
+            if content:
+                if content["error"]["code"] == "rate_limit_exceeded" and tries < 5:
                     time.sleep(tries * self._retry_wait_time)
                     tries = tries + 1
                     return self.request(method, url, tries, **kwargs)
                 else:
-                    self._raise_exception_from_json_content(json_content)
+                    self._raise_exception_from_content(content)
             else:
                 self._raise_exception_from_response(response)
 
-        return json_content
+        return content
