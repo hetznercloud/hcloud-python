@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from .._compat import isoparse
 from ..core.domain import BaseDomain
 
 
@@ -25,7 +24,7 @@ class DeprecationInfo(BaseDomain):
         announced=None,
         unavailable_after=None,
     ):
-        self.announced = datetime.fromisoformat(announced) if announced else None
+        self.announced = isoparse(announced) if announced else None
         self.unavailable_after = (
-            datetime.fromisoformat(unavailable_after) if unavailable_after else None
+            isoparse(unavailable_after) if unavailable_after else None
         )

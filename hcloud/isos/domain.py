@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from .._compat import isoparse
 from ..core.domain import BaseDomain, DomainIdentityMixin
 
 
@@ -36,4 +35,4 @@ class Iso(BaseDomain, DomainIdentityMixin):
         self.type = type
         self.architecture = architecture
         self.description = description
-        self.deprecated = datetime.fromisoformat(deprecated) if deprecated else None
+        self.deprecated = isoparse(deprecated) if deprecated else None

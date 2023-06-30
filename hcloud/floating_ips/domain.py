@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from .._compat import isoparse
 from ..core.domain import BaseDomain
 
 
@@ -72,7 +71,7 @@ class FloatingIP(BaseDomain):
         self.blocked = blocked
         self.protection = protection
         self.labels = labels
-        self.created = datetime.fromisoformat(created) if created else None
+        self.created = isoparse(created) if created else None
         self.name = name
 
 
