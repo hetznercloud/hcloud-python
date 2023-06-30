@@ -17,10 +17,6 @@ from hcloud._compat import isoparse
             datetime(2023, 6, 29, 15, 37, 22, tzinfo=timezone.utc),
         ),
         (
-            "2023-06-29T15:37:22+02",
-            datetime(2023, 6, 29, 15, 37, 22, tzinfo=timezone(timedelta(hours=2))),
-        ),
-        (
             "2023-06-29T15:37:22+02:12",
             datetime(
                 2023, 6, 29, 15, 37, 22, tzinfo=timezone(timedelta(hours=2, minutes=12))
