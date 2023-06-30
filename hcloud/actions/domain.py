@@ -1,4 +1,5 @@
-from .._compat import isoparse
+from dateutil.parser import isoparse
+
 from .._exceptions import HCloudException
 from ..core.domain import BaseDomain
 
