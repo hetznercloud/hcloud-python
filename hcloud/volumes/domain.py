@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from .._compat import isoparse
 from ..core.domain import BaseDomain, DomainIdentityMixin
 
 
@@ -66,7 +65,7 @@ class Volume(BaseDomain, DomainIdentityMixin):
         self.id = id
         self.name = name
         self.server = server
-        self.created = datetime.fromisoformat(created) if created else None
+        self.created = isoparse(created) if created else None
         self.location = location
         self.size = size
         self.linux_device = linux_device

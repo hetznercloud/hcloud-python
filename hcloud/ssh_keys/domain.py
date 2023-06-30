@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from .._compat import isoparse
 from ..core.domain import BaseDomain, DomainIdentityMixin
 
 
@@ -36,4 +35,4 @@ class SSHKey(BaseDomain, DomainIdentityMixin):
         self.fingerprint = fingerprint
         self.public_key = public_key
         self.labels = labels
-        self.created = datetime.fromisoformat(created) if created else None
+        self.created = isoparse(created) if created else None

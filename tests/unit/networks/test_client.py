@@ -1,8 +1,8 @@
-from datetime import datetime
 from unittest import mock
 
 import pytest
 
+from hcloud._compat import isoparse
 from hcloud.actions.client import BoundAction
 from hcloud.networks.client import BoundNetwork, NetworksClient
 from hcloud.networks.domain import Network, NetworkRoute, NetworkSubnet
@@ -20,9 +20,7 @@ class TestBoundNetwork:
         )
 
         assert bound_network.id == 1
-        assert bound_network.created == datetime.fromisoformat(
-            "2016-01-30T23:50:11+00:00"
-        )
+        assert bound_network.created == isoparse("2016-01-30T23:50:11+00:00")
         assert bound_network.name == "mynet"
         assert bound_network.ip_range == "10.0.0.0/16"
         assert bound_network.protection["delete"] is False

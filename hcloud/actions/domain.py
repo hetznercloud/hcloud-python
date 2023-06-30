@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from .._compat import isoparse
 from .._exceptions import HCloudException
 from ..core.domain import BaseDomain
 
@@ -51,8 +50,8 @@ class Action(BaseDomain):
 
         self.status = status
         self.progress = progress
-        self.started = datetime.fromisoformat(started) if started else None
-        self.finished = datetime.fromisoformat(finished) if finished else None
+        self.started = isoparse(started) if started else None
+        self.finished = isoparse(finished) if finished else None
         self.resources = resources
         self.error = error
 

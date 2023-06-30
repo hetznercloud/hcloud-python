@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from .._compat import isoparse
 from ..core.domain import BaseDomain
 
 
@@ -76,7 +75,7 @@ class LoadBalancer(BaseDomain):
     ):
         self.id = id
         self.name = name
-        self.created = datetime.fromisoformat(created) if created else None
+        self.created = isoparse(created) if created else None
         self.public_net = public_net
         self.private_net = private_net
         self.location = location

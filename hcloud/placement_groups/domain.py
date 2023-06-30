@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from .._compat import isoparse
 from ..core.domain import BaseDomain
 
 
@@ -35,7 +34,7 @@ class PlacementGroup(BaseDomain):
         self.labels = labels
         self.servers = servers
         self.type = type
-        self.created = datetime.fromisoformat(created) if created else None
+        self.created = isoparse(created) if created else None
 
 
 class CreatePlacementGroupResponse(BaseDomain):
