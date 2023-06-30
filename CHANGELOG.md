@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.23.1](https://github.com/hetznercloud/hcloud-python/compare/v1.23.0...v1.23.1) (2023-06-30)
+
+
+### Bug Fixes
+
+* handle Z timezone in ISO8601 datetime format ([#228](https://github.com/hetznercloud/hcloud-python/issues/228)) ([6a5c3f4](https://github.com/hetznercloud/hcloud-python/commit/6a5c3f42c092610c4a82cb79c0052499563549dc)), closes [#226](https://github.com/hetznercloud/hcloud-python/issues/226)
+
 ## [1.23.0](https://github.com/hetznercloud/hcloud-python/compare/v1.22.0...v1.23.0) (2023-06-26)
 
 
