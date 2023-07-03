@@ -1,8 +1,8 @@
 from unittest import mock
 
 import pytest
+from dateutil.parser import isoparse
 
-from hcloud._compat import isoparse
 from hcloud.actions.client import BoundAction
 from hcloud.networks.client import BoundNetwork, NetworksClient
 from hcloud.networks.domain import Network, NetworkRoute, NetworkSubnet

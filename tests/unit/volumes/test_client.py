@@ -1,8 +1,8 @@
 from unittest import mock
 
 import pytest
+from dateutil.parser import isoparse
 
-from hcloud._compat import isoparse
 from hcloud.actions.client import BoundAction
 from hcloud.locations.client import BoundLocation
 from hcloud.locations.domain import Location

@@ -1,6 +1,6 @@
 import pytest
+from dateutil.parser import isoparse
 
-from hcloud._compat import isoparse
 from hcloud.core.domain import (
     BaseDomain,
     DomainIdentityMixin,
