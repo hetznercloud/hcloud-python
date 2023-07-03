@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.24.0](https://github.com/hetznercloud/hcloud-python/compare/v1.23.1...v1.24.0) (2023-07-03)
+
+
+### Features
+
+* revert remove python-dateutil dependency ([#231](https://github.com/hetznercloud/hcloud-python/issues/231)) ([945bfde](https://github.com/hetznercloud/hcloud-python/commit/945bfde2ff0f64896e5c4d017e69236913e9d9dd)), closes [#226](https://github.com/hetznercloud/hcloud-python/issues/226)
+
+
+### Dependencies
+
+* update pre-commit hook asottile/pyupgrade to v3.8.0 ([#232](https://github.com/hetznercloud/hcloud-python/issues/232)) ([27f21bc](https://github.com/hetznercloud/hcloud-python/commit/27f21bc41e17a800a8a3bed1df7935e7fb31de42))
+
 ## [1.23.1](https://github.com/hetznercloud/hcloud-python/compare/v1.23.0...v1.23.1) (2023-06-30)
 
 
