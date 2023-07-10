@@ -1,19 +1,11 @@
-default:
-  tags:
-    - cloud-integrations
+include:
+  - project: cloud/integrations/ci
+    file:
+      - default.yml
+      - pre-commit.yml
 
 stages:
   - test
-
-pre-commit:
-  stage: test
-
-  image: python:3.11-alpine
-  before_script:
-    - apk add build-base git
-    - pip install pre-commit
-  script:
-    - pre-commit run --all-files --show-diff-on-failure
 
 test:
   stage: test
