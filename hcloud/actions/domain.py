@@ -61,12 +61,18 @@ class ActionException(HCloudException):
     """A generic action exception"""
 
     def __init__(self, action):
+        message = self.__doc__
+        if action.error is not None and "message" in action.error:
+            message += f": {action.error['message']}"
+
+        super().__init__(message)
+        self.message = message
         self.action = action
 
 
 class ActionFailedException(ActionException):
-    """The Action you were waiting for failed"""
+    """The pending action failed"""
 
 
 class ActionTimeoutException(ActionException):
-    """The Action you were waiting for timed out"""
+    """The pending action timed out"""

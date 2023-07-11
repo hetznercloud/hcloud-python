@@ -6,9 +6,7 @@ class APIException(HCloudException):
     """There was an error while performing an API Request"""
 
     def __init__(self, code, message, details):
+        super().__init__(message)
         self.code = code
         self.message = message
         self.details = details
-
-    def __str__(self):
-        return self.message
