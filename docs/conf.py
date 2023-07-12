@@ -3,7 +3,7 @@ import sys
 from datetime import datetime
 
 sys.path.insert(0, os.path.abspath(".."))
-from hcloud.__version__ import VERSION  # noqa
+import hcloud  # noqa
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -17,8 +17,8 @@ project = "Hetzner Cloud Python"
 author = "Hetzner Cloud GmbH"
 copyright = f"{datetime.now().year}, {author}"
 
-version = VERSION
-release = VERSION
+version = hcloud.__version__
+release = hcloud.__version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

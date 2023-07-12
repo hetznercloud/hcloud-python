@@ -4,12 +4,12 @@ with open("README.rst") as readme_file:
     readme = readme_file.read()
 
 version = {}
-with open("hcloud/__version__.py") as fp:
+with open("hcloud/_version.py") as fp:
     exec(fp.read(), version)
 
 setup(
     name="hcloud",
-    version=version["VERSION"],
+    version=version["__version__"],
     keywords="hcloud hetzner cloud",
     description="Official Hetzner Cloud python library",
     long_description=readme,
