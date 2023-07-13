@@ -38,7 +38,7 @@ Hetzner Cloud Python is also available as a ``conda``-package via `conda-forge`.
 From sources
 ------------
 
-The sources for Hetzner Cloud Python can be downloaded from the `Github repo`_.
+The sources for Hetzner Cloud Python can be downloaded from the Github repo.
 
 You can either clone the public repository:
 
@@ -46,18 +46,14 @@ You can either clone the public repository:
 
     $ git clone git://github.com/hetznercloud/hcloud-python
 
-Or download the `tarball`_:
+Or download the tarball:
 
 .. code-block:: console
 
-    $ curl  -OL https://github.com/hetznercloud/hcloud-python/tarball/master
+    $ curl  -OL https://github.com/hetznercloud/hcloud-python/tarball/main
 
 Once you have a copy of the source, you can install it with:
 
 .. code-block:: console
 
-    $ python setup.py install
-
-
-.. _Github repo: https://github.com/hetznercloud/hcloud-python
-.. _tarball: https://github.com/hetznercloud/hcloud-python/tarball/master
+    $ pip install .

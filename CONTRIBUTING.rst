@@ -55,19 +55,14 @@ If you are proposing a feature:
 Get Started!
 -------------
 
-Ready to contribute? Here's how to set up `hcloud-python` for local development.
+Ready to contribute? Here's how to set up ``hcloud-python`` for local development.
 
-1. Fork the `hcloud-python` repo on GitHub.
+1. Fork the ``hcloud-python`` repo on GitHub.
 2. Clone your fork locally::
 
     $ git clone git@github.com:your_name_here/hcloud-python.git
 
-3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
-
-    $ mkvirtualenv hcloud-python
-    $ cd hcloud-python/
-    $ python setup.py develop
-
+3. Read the ``Development`` section in the ``README.md``, to setup your development environment.
 4. Create a branch for local development::
 
     $ git checkout -b name-of-your-bugfix-or-feature
@@ -75,13 +70,13 @@ Ready to contribute? Here's how to set up `hcloud-python` for local development.
    Now you can make your changes locally.
 
 5. When you're done making changes, check that your changes pass pre-commit and the
-   tests, including testing other Python versions with tox::
+   tests::
 
-    $ tox -e pre-commit
-    $ python setup.py test or py.test
+    $ pre-commit run --all-files
+    $ make test
     $ tox
 
-   To get pre-commit and tox, just pip install them into your virtualenv.
+   To get ``pre-commit`` and ``tox``, you can ``pipx`` <https://pypa.github.io/pipx/> install them.
 
 6. Commit your changes and push your branch to GitHub::
 
@@ -99,27 +94,6 @@ Before you submit a pull request, check that it meets these guidelines:
 1. The pull request should include tests.
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
-   feature to the list in README.rst.
-3. The pull request should work for Python 2.7, 3.5 and 3.6, and for PyPy. Check
-   https://travis-ci.org/hetznercloud/hcloud-python/pull_requests
-   and make sure that the tests pass for all supported Python versions.
-
-Tips
------
-
-To run a subset of tests::
-
-$ py.test tests.test_hetznercloud
-
-
-How to release
----------------
-
-A reminder for the maintainers on how to release a new version.
-Make sure all your changes are committed (including an entry in CHANGELOG.rst).
-Then run::
-
-1. Change the version under /hcloud/version.py
-2. Push the change to the `master` branch and tag an new release through the `Github UI <https://github.com/hetznercloud/hcloud-python/releases>`_.
-
-Travis will then deploy to PyPI if tests pass.
+   feature to the list in README.md.
+3. The pull request should work for all the versions of Python the library supports, and
+   for PyPy.
