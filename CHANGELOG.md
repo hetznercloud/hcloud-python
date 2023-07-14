@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.25.0](https://github.com/hetznercloud/hcloud-python/compare/v1.24.0...v1.25.0) (2023-07-14)
+
+
+### Features
+
+* add details to raise exceptions ([#240](https://github.com/hetznercloud/hcloud-python/issues/240)) ([cf64e54](https://github.com/hetznercloud/hcloud-python/commit/cf64e549a2b28aea91062dea67db8733b4ecdd6f))
+* move hcloud.hcloud module to hcloud._client ([#243](https://github.com/hetznercloud/hcloud-python/issues/243)) ([413472d](https://github.com/hetznercloud/hcloud-python/commit/413472d7af1602b872a9b56324b9bffd0067eee6))
+
+
+### Dependencies
+
+* update pre-commit hook asottile/pyupgrade to v3.9.0 ([#238](https://github.com/hetznercloud/hcloud-python/issues/238)) ([0053ded](https://github.com/hetznercloud/hcloud-python/commit/0053ded5a1d0c2407134706830dd8ff3d4d1e8ce))
+* update pre-commit hook pre-commit/mirrors-prettier to v3 ([#235](https://github.com/hetznercloud/hcloud-python/issues/235)) ([047d4e1](https://github.com/hetznercloud/hcloud-python/commit/047d4e173a53e91252d57d01b2e95def1c4949d9))
+* update pre-commit hook psf/black to v23.7.0 ([#239](https://github.com/hetznercloud/hcloud-python/issues/239)) ([443bf26](https://github.com/hetznercloud/hcloud-python/commit/443bf262cb524dd674d2007db8100fec94dab80d))
+
 ## [1.24.0](https://github.com/hetznercloud/hcloud-python/compare/v1.23.1...v1.24.0) (2023-07-03)
 
 
