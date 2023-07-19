@@ -76,7 +76,7 @@ Ready to contribute? Here's how to set up ``hcloud-python`` for local developmen
     $ make test
     $ tox
 
-   To get ``pre-commit`` and ``tox``, you can ``pipx`` <https://pypa.github.io/pipx/> install them.
+   To get ``pre-commit`` and ``tox``, you can `pipx <https://pypa.github.io/pipx/>`_ install them.
 
 6. Commit your changes and push your branch to GitHub::
 
