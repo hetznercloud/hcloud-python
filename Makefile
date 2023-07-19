@@ -20,5 +20,14 @@ docs: venv
 	$(MAKE) -C docs html
 	xdg-open docs/_build/html/index.html
 
+docs-dev: venv docs
+	venv/bin/watchmedo shell-command \
+		--patterns="*.py;*.rst;*.md" \
+		--ignore-pattern=".git/*" \
+		--recursive \
+		--drop \
+		--command="$(MAKE) -C docs html" \
+		.
+
 clean:
 	git clean -xdf
