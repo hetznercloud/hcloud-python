@@ -69,22 +69,13 @@ Ready to contribute? Here's how to set up ``hcloud-python`` for local developmen
 
    Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass pre-commit and the
-   tests::
-
-    $ pre-commit run --all-files
-    $ make test
-    $ tox
-
-   To get ``pre-commit`` and ``tox``, you can `pipx <https://pypa.github.io/pipx/>`_ install them.
-
-6. Commit your changes and push your branch to GitHub::
+5. Commit your changes and push your branch to GitHub::
 
     $ git add .
     $ git commit -m "Your detailed description of your changes."
     $ git push origin name-of-your-bugfix-or-feature
 
-7. Submit a pull request through the GitHub website.
+6. Submit a pull request through the GitHub website.
 
 Pull Request Guidelines
 ------------------------
