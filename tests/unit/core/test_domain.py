@@ -104,6 +104,15 @@ class ActionDomain(BaseDomain, DomainIdentityMixin):
         self.started = isoparse(started) if started else None
 
 
+class SomeOtherDomain(BaseDomain):
+    __slots__ = ("id", "name", "child")
+
+    def __init__(self, id=None, name=None, child=None):
+        self.id = id
+        self.name = name
+        self.child = child
+
+
 class TestBaseDomain:
     @pytest.mark.parametrize(
         "data_dict,expected_result",
@@ -134,3 +143,23 @@ class TestBaseDomain:
         model = ActionDomain.from_dict(data_dict)
         for k, v in expected_result.items():
             assert getattr(model, k) == v
+
+    @pytest.mark.parametrize(
+        "data,expected",
+        [
+            (
+                SomeOtherDomain(id=1, name="name1"),
+                "SomeOtherDomain(id=1, name='name1', child=None)",
+            ),
+            (
+                SomeOtherDomain(
+                    id=2,
+                    name="name2",
+                    child=SomeOtherDomain(id=3, name="name3"),
+                ),
+                "SomeOtherDomain(id=2, name='name2', child=SomeOtherDomain(id=3, name='name3', child=None))",
+            ),
+        ],
+    )
+    def test_repr_ok(self, data, expected):
+        assert data.__repr__() == expected
