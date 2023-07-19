@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.26.0](https://github.com/hetznercloud/hcloud-python/compare/v1.25.0...v1.26.0) (2023-07-19)
+
+
+### Features
+
+* add __repr__ method to domains ([#246](https://github.com/hetznercloud/hcloud-python/issues/246)) ([4c22765](https://github.com/hetznercloud/hcloud-python/commit/4c227659bfb61551e44c41315b135039576960d3))
+* drop support for python 3.7 ([#242](https://github.com/hetznercloud/hcloud-python/issues/242)) ([2ce71e9](https://github.com/hetznercloud/hcloud-python/commit/2ce71e9ded5e9bb87ce96519ce59db942f4f9670))
+
 ## [1.25.0](https://github.com/hetznercloud/hcloud-python/compare/v1.24.0...v1.25.0) (2023-07-14)
 
 
