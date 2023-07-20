@@ -63,14 +63,15 @@ class Meta(BaseDomain):
         self.pagination = pagination
 
     @classmethod
-    def parse_meta(cls, json_content):
+    def parse_meta(cls, response: dict) -> Meta | None:
         meta = None
-        if json_content and "meta" in json_content:
+        if response and "meta" in response:
             meta = cls()
-            pagination_json = json_content["meta"].get("pagination")
-            if pagination_json:
-                pagination = Pagination(**pagination_json)
-                meta.pagination = pagination
+            try:
+                meta.pagination = Pagination(**response["meta"]["pagination"])
+            except KeyError:
+                pass
+
         return meta
 
 
