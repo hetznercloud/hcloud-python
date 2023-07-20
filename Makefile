@@ -6,6 +6,7 @@ venv:
 	venv/bin/pip install -e .[docs,test]
 
 lint: venv
+	venv/bin/pylint hcloud
 	venv/bin/mypy hcloud
 
 test: venv

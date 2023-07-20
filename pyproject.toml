@@ -12,3 +12,20 @@ source = ["hcloud"]
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[tool.pylint.main]
+py-version = "3.8"
+recursive = true
+jobs = 0
+
+[tool.pylint.reports]
+output-format = "colorized"
+
+[tool.pylint.basic]
+good-names = ["i", "j", "k", "ex", "_", "ip", "id"]
+
+[tool.pylint."messages control"]
+disable = [
+  "line-too-long",
+  "missing-module-docstring",
+]
