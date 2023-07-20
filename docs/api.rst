@@ -1,4 +1,4 @@
-hcloud-python API
+API References
 ==================
 
 Main Interface

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from setuptools import find_packages, setup
 
-with open("README.rst") as readme_file:
+with open("README.md") as readme_file:
     readme = readme_file.read()
 
 version = {}
@@ -46,6 +46,7 @@ setup(
             "sphinx>=6.2.1,<7.0",
             "sphinx-rtd-theme>=1.2.2,<1.3",
             "myst-parser>=2.0.0,<2.1",
+            "watchdog>=3.0.0,<3.1",
         ],
         "test": [
             "coverage>=7.2.7,<7.3",
