@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from warnings import warn
 
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin

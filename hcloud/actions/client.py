@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import time
 
 from ..core.client import BoundModelBase, ClientEntityBase

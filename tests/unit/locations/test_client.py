@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from unittest import mock  # noqa: F401
 
 import pytest  # noqa: F401

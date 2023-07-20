@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dateutil.parser import isoparse
 
 from .._exceptions import HCloudException

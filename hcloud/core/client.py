@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .domain import add_meta_to_result
 
 
@@ -34,7 +36,7 @@ class ClientEntityBase:
         list_function,  # type: function
         results_list_attribute_name,  # type: str
         *args,
-        **kwargs
+        **kwargs,
     ):
         # type (...) -> List[BoundModelBase]
 
