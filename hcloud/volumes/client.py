@@ -431,9 +431,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
             data.update({"delete": delete})
 
         response = self._client.request(
-            url="/volumes/{volume_id}/actions/change_protection".format(
-                volume_id=volume.id
-            ),
+            url=f"/volumes/{volume.id}/actions/change_protection",
             method="POST",
             json=data,
         )

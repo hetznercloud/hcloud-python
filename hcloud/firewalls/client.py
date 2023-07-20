@@ -397,9 +397,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         for rule in rules:
             data["rules"].append(rule.to_payload())
         response = self._client.request(
-            url="/firewalls/{firewall_id}/actions/set_rules".format(
-                firewall_id=firewall.id
-            ),
+            url=f"/firewalls/{firewall.id}/actions/set_rules",
             method="POST",
             json=data,
         )
@@ -420,9 +418,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         for resource in resources:
             data["apply_to"].append(resource.to_payload())
         response = self._client.request(
-            url="/firewalls/{firewall_id}/actions/apply_to_resources".format(
-                firewall_id=firewall.id
-            ),
+            url=f"/firewalls/{firewall.id}/actions/apply_to_resources",
             method="POST",
             json=data,
         )
@@ -443,9 +439,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         for resource in resources:
             data["remove_from"].append(resource.to_payload())
         response = self._client.request(
-            url="/firewalls/{firewall_id}/actions/remove_from_resources".format(
-                firewall_id=firewall.id
-            ),
+            url=f"/firewalls/{firewall.id}/actions/remove_from_resources",
             method="POST",
             json=data,
         )

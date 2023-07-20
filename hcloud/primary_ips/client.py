@@ -285,9 +285,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
             data.update({"delete": delete})
 
         response = self._client.request(
-            url="/primary_ips/{primary_ip_id}/actions/change_protection".format(
-                primary_ip_id=primary_ip.id
-            ),
+            url=f"/primary_ips/{primary_ip.id}/actions/change_protection",
             method="POST",
             json=data,
         )
@@ -309,9 +307,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/primary_ips/{primary_ip_id}/actions/assign".format(
-                primary_ip_id=primary_ip.id
-            ),
+            url=f"/primary_ips/{primary_ip.id}/actions/assign",
             method="POST",
             json={"assignee_id": assignee_id, "assignee_type": assignee_type},
         )
@@ -324,9 +320,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/primary_ips/{primary_ip_id}/actions/unassign".format(
-                primary_ip_id=primary_ip.id
-            ),
+            url=f"/primary_ips/{primary_ip.id}/actions/unassign",
             method="POST",
         )
         return BoundAction(self._client.actions, response["action"])
@@ -347,9 +341,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/primary_ips/{primary_ip_id}/actions/change_dns_ptr".format(
-                primary_ip_id=primary_ip.id
-            ),
+            url=f"/primary_ips/{primary_ip.id}/actions/change_dns_ptr",
             method="POST",
             json={"ip": ip, "dns_ptr": dns_ptr},
         )

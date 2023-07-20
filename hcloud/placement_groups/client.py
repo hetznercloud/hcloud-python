@@ -190,9 +190,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
             data["name"] = name
 
         response = self._client.request(
-            url="/placement_groups/{placement_group_id}".format(
-                placement_group_id=placement_group.id
-            ),
+            url=f"/placement_groups/{placement_group.id}",
             method="PUT",
             json=data,
         )
@@ -205,9 +203,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: boolean
         """
         self._client.request(
-            url="/placement_groups/{placement_group_id}".format(
-                placement_group_id=placement_group.id
-            ),
+            url=f"/placement_groups/{placement_group.id}",
             method="DELETE",
         )
         return True

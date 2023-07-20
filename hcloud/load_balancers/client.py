@@ -513,9 +513,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         if labels is not None:
             data.update({"labels": labels})
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}",
             method="PUT",
             json=data,
         )
@@ -528,9 +526,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         :return: boolean
         """
         self._client.request(
-            url="/load_balancers/{load_balancer_id}".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}",
             method="DELETE",
         )
         return True
@@ -567,9 +563,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             params["per_page"] = per_page
 
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}/actions",
             method="GET",
             params=params,
         )
@@ -611,9 +605,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         data = self.get_service_parameters(service)
 
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/add_service".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}/actions/add_service",
             method="POST",
             json=data,
         )
@@ -698,9 +690,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data = self.get_service_parameters(service)
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/update_service".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}/actions/update_service",
             method="POST",
             json=data,
         )
@@ -721,9 +711,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         data: dict[str, Any] = {"listen_port": service.listen_port}
 
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/delete_service".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}/actions/delete_service",
             method="POST",
             json=data,
         )
@@ -753,9 +741,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             data["ip"] = {"ip": target.ip.ip}
 
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/add_target".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}/actions/add_target",
             method="POST",
             json=data,
         )
@@ -782,9 +768,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             data["ip"] = {"ip": target.ip.ip}
 
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/remove_target".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}/actions/remove_target",
             method="POST",
             json=data,
         )
@@ -805,9 +789,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         data: dict[str, Any] = {"type": algorithm.type}
 
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/change_algorithm".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}/actions/change_algorithm",
             method="POST",
             json=data,
         )
@@ -829,9 +811,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         """
 
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/change_dns_ptr".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}/actions/change_dns_ptr",
             method="POST",
             json={"ip": ip, "dns_ptr": dns_ptr},
         )
@@ -854,9 +834,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             data.update({"delete": delete})
 
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/change_protection".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}/actions/change_protection",
             method="POST",
             json=data,
         )
@@ -881,9 +859,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             data.update({"ip": ip})
 
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/attach_to_network".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}/actions/attach_to_network",
             method="POST",
             json=data,
         )
@@ -902,9 +878,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data: dict[str, Any] = {"network": network.id}
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/detach_from_network".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}/actions/detach_from_network",
             method="POST",
             json=data,
         )
@@ -922,9 +896,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         """
 
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/enable_public_interface".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}/actions/enable_public_interface",
             method="POST",
         )
         return BoundAction(self._client.actions, response["action"])
@@ -941,9 +913,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         """
 
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/disable_public_interface".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}/actions/disable_public_interface",
             method="POST",
         )
         return BoundAction(self._client.actions, response["action"])
@@ -962,9 +932,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data: dict[str, Any] = {"load_balancer_type": load_balancer_type.id_or_name}
         response = self._client.request(
-            url="/load_balancers/{load_balancer_id}/actions/change_type".format(
-                load_balancer_id=load_balancer.id
-            ),
+            url=f"/load_balancers/{load_balancer.id}/actions/change_type",
             method="POST",
             json=data,
         )
