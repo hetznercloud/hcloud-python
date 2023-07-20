@@ -298,8 +298,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Used to identify the image.
         :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
         """
-        response = self.get_list(name=name, architecture=[architecture])
-        entities = getattr(response, self.results_list_attribute_name)
+        entities, _ = self.get_list(name=name, architecture=[architecture])
         entity = entities[0] if entities else None
         return entity
 
