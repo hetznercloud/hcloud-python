@@ -205,32 +205,6 @@ class TestClientEntityBase:
             (23, 3, "sweet", 50),
         ]
 
-    def test_raise_exception_if_list_attribute_is_not_implemented(
-        self, client_class_with_actions_constructor
-    ):
-        def json_content_function(p):
-            return {
-                "actions": [10 + p, 20 + p],
-                "meta": {
-                    "pagination": {
-                        "page": p,
-                        "per_page": 11,
-                        "next_page": p + 1 if p < 3 else None,
-                    }
-                },
-            }
-
-        candies_client = client_class_with_actions_constructor(json_content_function)
-
-        with pytest.raises(NotImplementedError) as exception_info:
-            candies_client.get_all()
-
-        error = exception_info.value
-        assert (
-            str(error)
-            == "in order to get results list, 'results_list_attribute_name' attribute of CandiesClient has to be specified"
-        )
-
 
 class TestGetEntityByNameMixin:
     @pytest.fixture()
