@@ -17,8 +17,6 @@ class LoadBalancerTypesPageResult(NamedTuple):
 
 
 class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "load_balancer_types"
-
     def get_by_id(self, id):
         # type: (int) -> load_balancer_types.client.BoundLoadBalancerType
         """Returns a specific Load Balancer Type.

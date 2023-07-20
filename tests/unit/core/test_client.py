@@ -91,8 +91,6 @@ class TestClientEntityBase:
                 meta: Meta
 
             class CandiesClient(ClientEntityBase):
-                results_list_attribute_name = "candies"
-
                 def get_list(self, status, page=None, per_page=None):
                     json_content = json_content_function(page)
                     results = [
@@ -221,8 +219,6 @@ class TestGetEntityByNameMixin:
                 meta: Meta
 
             class CandiesClient(ClientEntityBase, GetEntityByNameMixin):
-                results_list_attribute_name = "candies"
-
                 def get_list(self, name, page=None, per_page=None):
                     json_content = json_content_function(page)
                     results = json_content["candies"]

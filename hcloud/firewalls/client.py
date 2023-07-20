@@ -142,8 +142,6 @@ class FirewallsPageResult(NamedTuple):
 
 
 class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "firewalls"
-
     def get_actions_list(
         self,
         firewall,  # type: Firewall

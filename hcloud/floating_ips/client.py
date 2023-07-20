@@ -127,8 +127,6 @@ class FloatingIPsPageResult(NamedTuple):
 
 
 class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "floating_ips"
-
     def get_actions_list(
         self,
         floating_ip,  # type: FloatingIP

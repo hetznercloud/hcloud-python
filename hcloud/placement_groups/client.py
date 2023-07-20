@@ -38,8 +38,6 @@ class PlacementGroupsPageResult(NamedTuple):
 
 
 class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "placement_groups"
-
     def get_by_id(self, id):
         # type: (int) -> BoundPlacementGroup
         """Returns a specific Placement Group object

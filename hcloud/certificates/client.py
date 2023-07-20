@@ -91,8 +91,6 @@ class CertificatesPageResult(NamedTuple):
 
 
 class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "certificates"
-
     def get_by_id(self, id):
         # type: (int) -> BoundCertificate
         """Get a specific certificate by its ID.

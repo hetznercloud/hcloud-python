@@ -119,8 +119,6 @@ class VolumesPageResult(NamedTuple):
 
 
 class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "volumes"
-
     def get_by_id(self, id):
         # type: (int) -> volumes.client.BoundVolume
         """Get a specific volume by its id

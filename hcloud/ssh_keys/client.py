@@ -36,8 +36,6 @@ class SSHKeysPageResult(NamedTuple):
 
 
 class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "ssh_keys"
-
     def get_by_id(self, id):
         # type: (int) -> BoundSSHKey
         """Get a specific SSH Key by its ID

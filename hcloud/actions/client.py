@@ -37,8 +37,6 @@ class ActionsPageResult(NamedTuple):
 
 
 class ActionsClient(ClientEntityBase):
-    results_list_attribute_name = "actions"
-
     def get_by_id(self, id):
         # type: (int) -> BoundAction
         """Get a specific action by its ID.

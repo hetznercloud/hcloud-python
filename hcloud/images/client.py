@@ -97,8 +97,6 @@ class ImagesPageResult(NamedTuple):
 
 
 class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "images"
-
     def get_actions_list(
         self,
         image,  # type: Image

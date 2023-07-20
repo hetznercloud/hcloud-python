@@ -12,14 +12,6 @@ class ClientEntityBase:
         """
         self._client = client
 
-    def _is_list_attribute_implemented(self):
-        if self.results_list_attribute_name is None:
-            raise NotImplementedError(
-                "in order to get results list, 'results_list_attribute_name' attribute of {} has to be specified".format(
-                    self.__class__.__name__
-                )
-            )
-
     def _get_all(
         self,
         list_function,  # type: function

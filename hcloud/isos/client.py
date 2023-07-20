@@ -18,8 +18,6 @@ class IsosPageResult(NamedTuple):
 
 
 class IsosClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "isos"
-
     def get_by_id(self, id):
         # type: (int) -> BoundIso
         """Get a specific ISO by its id

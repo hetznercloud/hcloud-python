@@ -318,8 +318,6 @@ class LoadBalancersPageResult(NamedTuple):
 
 
 class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "load_balancers"
-
     def get_by_id(self, id):
         # type: (int) -> BoundLoadBalancer
         """Get a specific Load Balancer

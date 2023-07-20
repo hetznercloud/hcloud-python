@@ -52,8 +52,6 @@ class DatacentersPageResult(NamedTuple):
 
 
 class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "datacenters"
-
     def get_by_id(self, id):
         # type: (int) -> BoundDatacenter
         """Get a specific datacenter by its ID.

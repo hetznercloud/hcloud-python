@@ -17,8 +17,6 @@ class LocationsPageResult(NamedTuple):
 
 
 class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "locations"
-
     def get_by_id(self, id):
         # type: (int) -> locations.client.BoundLocation
         """Get a specific location by its ID.

@@ -93,8 +93,6 @@ class PrimaryIPsPageResult(NamedTuple):
 
 
 class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "primary_ips"
-
     def get_by_id(self, id):
         # type: (int) -> BoundPrimaryIP
         """Returns a specific Primary IP object.

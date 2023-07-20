@@ -161,8 +161,6 @@ class NetworksPageResult(NamedTuple):
 
 
 class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "networks"
-
     def get_by_id(self, id):
         # type: (int) -> BoundNetwork
         """Get a specific network

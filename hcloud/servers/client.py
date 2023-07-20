@@ -417,8 +417,6 @@ class ServersPageResult(NamedTuple):
 
 
 class ServersClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "servers"
-
     def get_by_id(self, id):
         # type: (int) -> BoundServer
         """Get a specific server
