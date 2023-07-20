@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import re
-from typing import Dict
 
 
 class LabelValidator:
@@ -11,7 +12,7 @@ class LabelValidator:
     )
 
     @staticmethod
-    def validate(labels: Dict[str, str]) -> bool:
+    def validate(labels: dict[str, str]) -> bool:
         """Validates Labels. If you want to know which key/value pair of the dict is not correctly formatted
         use :func:`~hcloud.helpers.labels.validate_verbose`.
 
@@ -25,7 +26,7 @@ class LabelValidator:
         return True
 
     @staticmethod
-    def validate_verbose(labels: Dict[str, str]) -> (bool, str):
+    def validate_verbose(labels: dict[str, str]) -> tuple(bool, str):
         """Validates Labels and returns the corresponding error message if something is wrong. Returns True, <empty string>
         if everything is fine.
 

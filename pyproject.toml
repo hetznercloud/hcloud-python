@@ -1,6 +1,7 @@
 [tool.isort]
 profile = "black"
 combine_as_imports = true
+add_imports = ["from __future__ import annotations"]
 
 [tool.coverage.run]
 source = ["hcloud"]

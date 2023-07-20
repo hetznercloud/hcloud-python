@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from ..locations.client import BoundLocation
 from ..server_types.client import BoundServerType

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from .domain import ServerType
 

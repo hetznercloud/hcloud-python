@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 class HCloudException(Exception):
     """There was an error while using the hcloud library"""
 

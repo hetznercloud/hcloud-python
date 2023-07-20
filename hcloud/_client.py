@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import time
-from typing import Optional, Union
 
 import requests
 
@@ -35,8 +36,8 @@ class Client:
         self,
         token: str,
         api_endpoint: str = "https://api.hetzner.cloud/v1",
-        application_name: Optional[str] = None,
-        application_version: Optional[str] = None,
+        application_name: str | None = None,
+        application_version: str | None = None,
         poll_interval: int = 1,
     ):
         """Create an new Client instance
@@ -186,7 +187,7 @@ class Client:
         url: str,
         tries: int = 1,
         **kwargs,
-    ) -> Union[bytes, dict]:
+    ) -> bytes | dict:
         """Perform a request to the Hetzner Cloud API, wrapper around requests.request
 
         :param method: HTTP Method to perform the Request
