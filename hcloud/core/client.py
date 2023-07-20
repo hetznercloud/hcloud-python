@@ -79,11 +79,8 @@ class GetEntityByNameMixin:
 
     def get_by_name(self, name):
         # type: (str) -> BoundModelBase
-        self._is_list_attribute_implemented()
-        response = self.get_list(name=name)
-        entities = getattr(response, self.results_list_attribute_name)
-        entity = entities[0] if entities else None
-        return entity
+        entities, _ = self.get_list(name=name)
+        return entities[0] if entities else None
 
 
 class BoundModelBase:
