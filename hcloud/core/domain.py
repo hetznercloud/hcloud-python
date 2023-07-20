@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from collections import namedtuple
-
 
 class BaseDomain:
     __slots__ = ()
@@ -73,10 +71,3 @@ class Meta(BaseDomain):
                 pass
 
         return meta
-
-
-def add_meta_to_result(result, json_content, attr_name):
-    # type: (List[BoundModelBase], json, string) -> PageResult
-    class_name = f"PageResults{attr_name.capitalize()}"
-    PageResults = namedtuple(class_name, [attr_name, "meta"])
-    return PageResults(**{attr_name: result, "meta": Meta.parse_meta(json_content)})

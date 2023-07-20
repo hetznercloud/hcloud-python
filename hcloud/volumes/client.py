@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from ..actions.client import BoundAction
+from typing import NamedTuple
+
+from ..actions.client import ActionsPageResult, BoundAction
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import add_meta_to_result
+from ..core.domain import Meta
 from ..locations.client import BoundLocation
 from .domain import CreateVolumeResponse, Volume
 
@@ -111,6 +113,11 @@ class BoundVolume(BoundModelBase):
         return self._client.change_protection(self, delete)
 
 
+class VolumesPageResult(NamedTuple):
+    volumes: list[BoundVolume]
+    meta: Meta | None
+
+
 class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
     results_list_attribute_name = "volumes"
 
@@ -158,7 +165,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         volumes = [
             BoundVolume(self, volume_data) for volume_data in response["volumes"]
         ]
-        return self._add_meta_to_result(volumes, response)
+        return VolumesPageResult(volumes, Meta.parse_meta(response))
 
     def get_all(self, label_selector=None, status=None):
         # type: (Optional[str], Optional[List[str]]) -> List[BoundVolume]
@@ -277,7 +284,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
             BoundAction(self._client.actions, action_data)
             for action_data in response["actions"]
         ]
-        return add_meta_to_result(actions, response, "actions")
+        return ActionsPageResult(actions, Meta.parse_meta(response))
 
     def get_actions(self, volume, status=None, sort=None):
         # type: (Union[Volume, BoundVolume], Optional[List[str]], Optional[List[str]]) -> List[BoundAction]

@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+from typing import NamedTuple
+
 from ..actions.client import BoundAction
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core.domain import Meta
 from .domain import CreatePlacementGroupResponse, PlacementGroup
 
 
@@ -27,6 +30,11 @@ class BoundPlacementGroup(BoundModelBase):
         :return: boolean
         """
         return self._client.delete(self)
+
+
+class PlacementGroupsPageResult(NamedTuple):
+    placement_groups: list[BoundPlacementGroup]
+    meta: Meta | None
 
 
 class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
@@ -92,7 +100,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
             for placement_group_data in response["placement_groups"]
         ]
 
-        return self._add_meta_to_result(placement_groups, response)
+        return PlacementGroupsPageResult(placement_groups, Meta.parse_meta(response))
 
     def get_all(self, label_selector=None, name=None, sort=None):
         # type: (Optional[str], Optional[str],  Optional[List[str]]) -> List[BoundPlacementGroup]

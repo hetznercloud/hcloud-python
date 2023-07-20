@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from ..actions.client import BoundAction
+from typing import NamedTuple
+
+from ..actions.client import ActionsPageResult, BoundAction
 from ..certificates.client import BoundCertificate
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import add_meta_to_result
+from ..core.domain import Meta
 from ..load_balancer_types.client import BoundLoadBalancerType
 from ..locations.client import BoundLocation
 from ..networks.client import BoundNetwork
@@ -310,6 +312,11 @@ class BoundLoadBalancer(BoundModelBase):
         return self._client.change_type(self, load_balancer_type)
 
 
+class LoadBalancersPageResult(NamedTuple):
+    load_balancers: list[BoundLoadBalancer]
+    meta: Meta | None
+
+
 class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
     results_list_attribute_name = "load_balancers"
 
@@ -360,11 +367,11 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             url="/load_balancers", method="GET", params=params
         )
 
-        ass_load_balancers = [
+        load_balancers = [
             BoundLoadBalancer(self, load_balancer_data)
             for load_balancer_data in response["load_balancers"]
         ]
-        return self._add_meta_to_result(ass_load_balancers, response)
+        return LoadBalancersPageResult(load_balancers, Meta.parse_meta(response))
 
     def get_all(self, name=None, label_selector=None):
         # type: (Optional[str], Optional[str]) -> List[BoundLoadBalancer]
@@ -550,7 +557,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             BoundAction(self._client.actions, action_data)
             for action_data in response["actions"]
         ]
-        return add_meta_to_result(actions, response, "actions")
+        return ActionsPageResult(actions, Meta.parse_meta(response))
 
     def get_actions(self, load_balancer, status=None, sort=None):
         # type: (LoadBalancer, Optional[List[str]], Optional[List[str]]) -> List[BoundAction]

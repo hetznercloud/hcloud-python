@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from ..actions.client import BoundAction
+from typing import NamedTuple
+
+from ..actions.client import ActionsPageResult, BoundAction
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import add_meta_to_result
+from ..core.domain import Meta
 from .domain import (
     CreateFirewallResponse,
     Firewall,
@@ -134,6 +136,11 @@ class BoundFirewall(BoundModelBase):
         return self._client.remove_from_resources(self, resources)
 
 
+class FirewallsPageResult(NamedTuple):
+    firewalls: list[BoundFirewall]
+    meta: Meta | None
+
+
 class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
     results_list_attribute_name = "firewalls"
 
@@ -177,7 +184,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
             BoundAction(self._client.actions, action_data)
             for action_data in response["actions"]
         ]
-        return add_meta_to_result(actions, response, "actions")
+        return ActionsPageResult(actions, Meta.parse_meta(response))
 
     def get_actions(
         self,
@@ -249,7 +256,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
             for firewall_data in response["firewalls"]
         ]
 
-        return self._add_meta_to_result(firewalls, response)
+        return FirewallsPageResult(firewalls, Meta.parse_meta(response))
 
     def get_all(self, label_selector=None, name=None, sort=None):
         # type: (Optional[str], Optional[str],  Optional[List[str]]) -> List[BoundFirewall]

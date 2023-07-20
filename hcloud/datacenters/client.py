@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+from typing import NamedTuple
+
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core.domain import Meta
 from ..locations.client import BoundLocation
 from ..server_types.client import BoundServerType
 from .domain import Datacenter, DatacenterServerTypes
@@ -41,6 +44,11 @@ class BoundDatacenter(BoundModelBase):
             )
 
         super().__init__(client, data)
+
+
+class DatacentersPageResult(NamedTuple):
+    datacenters: list[BoundDatacenter]
+    meta: Meta | None
 
 
 class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
@@ -90,7 +98,7 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
             for datacenter_data in response["datacenters"]
         ]
 
-        return self._add_meta_to_result(datacenters, response)
+        return DatacentersPageResult(datacenters, Meta.parse_meta(response))
 
     def get_all(self, name=None):
         # type: (Optional[str]) -> List[BoundDatacenter]

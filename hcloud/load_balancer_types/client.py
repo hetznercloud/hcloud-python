@@ -1,11 +1,19 @@
 from __future__ import annotations
 
+from typing import NamedTuple
+
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core.domain import Meta
 from .domain import LoadBalancerType
 
 
 class BoundLoadBalancerType(BoundModelBase):
     model = LoadBalancerType
+
+
+class LoadBalancerTypesPageResult(NamedTuple):
+    load_balancer_types: list[BoundLoadBalancerType]
+    meta: Meta | None
 
 
 class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
@@ -53,7 +61,9 @@ class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
             BoundLoadBalancerType(self, load_balancer_type_data)
             for load_balancer_type_data in response["load_balancer_types"]
         ]
-        return self._add_meta_to_result(load_balancer_types, response)
+        return LoadBalancerTypesPageResult(
+            load_balancer_types, Meta.parse_meta(response)
+        )
 
     def get_all(self, name=None):
         # type: (Optional[str]) -> List[BoundLoadBalancerType]

@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from typing import Any, NamedTuple
 from unittest import mock
 
 import pytest
 
+from hcloud.actions.client import ActionsPageResult
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.core.domain import BaseDomain, add_meta_to_result
+from hcloud.core.domain import BaseDomain, Meta
 
 
 class TestBoundModelBase:
@@ -84,6 +86,10 @@ class TestClientEntityBase:
     @pytest.fixture()
     def client_class_constructor(self):
         def constructor(json_content_function):
+            class CandiesPageResult(NamedTuple):
+                candies: list[Any]
+                meta: Meta
+
             class CandiesClient(ClientEntityBase):
                 results_list_attribute_name = "candies"
 
@@ -92,7 +98,7 @@ class TestClientEntityBase:
                     results = [
                         (r, page, status, per_page) for r in json_content["candies"]
                     ]
-                    return self._add_meta_to_result(results, json_content)
+                    return CandiesPageResult(results, Meta.parse_meta(json_content))
 
             return CandiesClient(mock.MagicMock())
 
@@ -107,7 +113,7 @@ class TestClientEntityBase:
                     results = [
                         (r, page, status, per_page) for r in json_content["actions"]
                     ]
-                    return add_meta_to_result(results, json_content, "actions")
+                    return ActionsPageResult(results, Meta.parse_meta(json_content))
 
             return CandiesClient(mock.MagicMock())
 
@@ -210,13 +216,17 @@ class TestGetEntityByNameMixin:
     @pytest.fixture()
     def client_class_constructor(self):
         def constructor(json_content_function):
+            class CandiesPageResult(NamedTuple):
+                candies: list[Any]
+                meta: Meta
+
             class CandiesClient(ClientEntityBase, GetEntityByNameMixin):
                 results_list_attribute_name = "candies"
 
                 def get_list(self, name, page=None, per_page=None):
                     json_content = json_content_function(page)
                     results = json_content["candies"]
-                    return self._add_meta_to_result(results, json_content)
+                    return CandiesPageResult(results, Meta.parse_meta(json_content))
 
             return CandiesClient(mock.MagicMock())
 

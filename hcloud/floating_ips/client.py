@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from ..actions.client import BoundAction
+from typing import NamedTuple
+
+from ..actions.client import ActionsPageResult, BoundAction
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import add_meta_to_result
+from ..core.domain import Meta
 from ..locations.client import BoundLocation
 from .domain import CreateFloatingIPResponse, FloatingIP
 
@@ -119,6 +121,11 @@ class BoundFloatingIP(BoundModelBase):
         return self._client.change_dns_ptr(self, ip, dns_ptr)
 
 
+class FloatingIPsPageResult(NamedTuple):
+    floating_ips: list[BoundFloatingIP]
+    meta: Meta | None
+
+
 class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
     results_list_attribute_name = "floating_ips"
 
@@ -164,7 +171,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
             BoundAction(self._client.actions, action_data)
             for action_data in response["actions"]
         ]
-        return add_meta_to_result(actions, response, "actions")
+        return ActionsPageResult(actions, Meta.parse_meta(response))
 
     def get_actions(
         self,
@@ -234,7 +241,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
             for floating_ip_data in response["floating_ips"]
         ]
 
-        return self._add_meta_to_result(floating_ips, response)
+        return FloatingIPsPageResult(floating_ips, Meta.parse_meta(response))
 
     def get_all(self, label_selector=None, name=None):
         # type: (Optional[str], Optional[str]) -> List[BoundFloatingIP]

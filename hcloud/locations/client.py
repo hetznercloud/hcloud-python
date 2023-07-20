@@ -1,11 +1,19 @@
 from __future__ import annotations
 
+from typing import NamedTuple
+
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core.domain import Meta
 from .domain import Location
 
 
 class BoundLocation(BoundModelBase):
     model = Location
+
+
+class LocationsPageResult(NamedTuple):
+    locations: list[BoundLocation]
+    meta: Meta | None
 
 
 class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
@@ -46,7 +54,7 @@ class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
             BoundLocation(self, location_data)
             for location_data in response["locations"]
         ]
-        return self._add_meta_to_result(locations, response)
+        return LocationsPageResult(locations, Meta.parse_meta(response))
 
     def get_all(self, name=None):
         # type: (Optional[str]) -> List[BoundLocation]

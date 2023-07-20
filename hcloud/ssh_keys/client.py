@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+from typing import NamedTuple
+
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core.domain import Meta
 from .domain import SSHKey
 
 
@@ -25,6 +28,11 @@ class BoundSSHKey(BoundModelBase):
         :return: boolean
         """
         return self._client.delete(self)
+
+
+class SSHKeysPageResult(NamedTuple):
+    ssh_keys: list[BoundSSHKey]
+    meta: Meta | None
 
 
 class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
@@ -77,10 +85,10 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
 
         response = self._client.request(url="/ssh_keys", method="GET", params=params)
 
-        ass_ssh_keys = [
+        ssh_keys = [
             BoundSSHKey(self, server_data) for server_data in response["ssh_keys"]
         ]
-        return self._add_meta_to_result(ass_ssh_keys, response)
+        return SSHKeysPageResult(ssh_keys, Meta.parse_meta(response))
 
     def get_all(self, name=None, fingerprint=None, label_selector=None):
         # type: (Optional[str], Optional[str], Optional[str]) -> List[BoundSSHKey]

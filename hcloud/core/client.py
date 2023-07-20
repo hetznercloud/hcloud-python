@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from .domain import add_meta_to_result
-
 
 class ClientEntityBase:
     max_per_page = 50
@@ -21,15 +19,6 @@ class ClientEntityBase:
                     self.__class__.__name__
                 )
             )
-
-    def _add_meta_to_result(
-        self,
-        results,  # type: List[BoundModelBase]
-        response,  # type: json
-    ):
-        # type: (...) -> PageResult
-        self._is_list_attribute_implemented()
-        return add_meta_to_result(results, response, self.results_list_attribute_name)
 
     def _get_all(
         self,
