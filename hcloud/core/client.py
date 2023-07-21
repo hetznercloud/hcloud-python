@@ -12,20 +12,15 @@ class ClientEntityBase:
         """
         self._client = client
 
-    def _get_all(
-        self,
-        list_function,  # type: function
-        *args,
-        **kwargs,
-    ):
-        # type (...) -> List[BoundModelBase]
+    def get_all(self, *args, **kwargs):
+        # type: (...) -> List[BoundModelBase]
         results = []
 
         page = 1
         while page:
             # The *PageResult tuples MUST have the following structure
             # `(result: List[Bound*], meta: Meta)`
-            result, meta = list_function(
+            result, meta = self.get_list(
                 page=page, per_page=self.max_per_page, *args, **kwargs
             )
             if result:
@@ -42,10 +37,6 @@ class ClientEntityBase:
                 page = None
 
         return results
-
-    def get_all(self, *args, **kwargs):
-        # type: (...) -> List[BoundModelBase]
-        return self._get_all(self.get_list, *args, **kwargs)
 
     def get_actions(self, *args, **kwargs):
         # type: (...) -> List[BoundModelBase]
