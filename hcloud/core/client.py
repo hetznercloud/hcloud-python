@@ -23,6 +23,8 @@ class ClientEntityBase:
 
         page = 1
         while page:
+            # The *PageResult tuples MUST have the following structure
+            # `(result: List[Bound*], meta: Meta)`
             result, meta = list_function(
                 page=page, per_page=self.max_per_page, *args, **kwargs
             )
