@@ -1,13 +1,18 @@
 from __future__ import annotations
 
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from ..core.domain import Meta
 from .domain import Location
 
+if TYPE_CHECKING:
+    from .._client import Client
+
 
 class BoundLocation(BoundModelBase):
+    _client: LocationsClient
+
     model = Location
 
 
@@ -17,6 +22,8 @@ class LocationsPageResult(NamedTuple):
 
 
 class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
+    _client: Client
+
     def get_by_id(self, id):
         # type: (int) -> locations.client.BoundLocation
         """Get a specific location by its ID.

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from ..actions.client import ActionsPageResult, BoundAction
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
@@ -8,8 +8,13 @@ from ..core.domain import Meta
 from ..locations.client import BoundLocation
 from .domain import CreateVolumeResponse, Volume
 
+if TYPE_CHECKING:
+    from .._client import Client
+
 
 class BoundVolume(BoundModelBase):
+    _client: VolumesClient
+
     model = Volume
 
     def __init__(self, client, data, complete=True):
@@ -119,6 +124,8 @@ class VolumesPageResult(NamedTuple):
 
 
 class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
+    _client: Client
+
     def get_by_id(self, id):
         # type: (int) -> volumes.client.BoundVolume
         """Get a specific volume by its id

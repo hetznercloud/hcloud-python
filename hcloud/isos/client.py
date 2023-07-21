@@ -1,14 +1,19 @@
 from __future__ import annotations
 
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 from warnings import warn
 
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from ..core.domain import Meta
 from .domain import Iso
 
+if TYPE_CHECKING:
+    from .._client import Client
+
 
 class BoundIso(BoundModelBase):
+    _client: IsosClient
+
     model = Iso
 
 
@@ -18,6 +23,8 @@ class IsosPageResult(NamedTuple):
 
 
 class IsosClient(ClientEntityBase, GetEntityByNameMixin):
+    _client: Client
+
     def get_by_id(self, id):
         # type: (int) -> BoundIso
         """Get a specific ISO by its id

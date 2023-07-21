@@ -1,14 +1,19 @@
 from __future__ import annotations
 
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from ..actions.client import BoundAction
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from ..core.domain import Meta
 from .domain import CreatePlacementGroupResponse, PlacementGroup
 
+if TYPE_CHECKING:
+    from .._client import Client
+
 
 class BoundPlacementGroup(BoundModelBase):
+    _client: PlacementGroupsClient
+
     model = PlacementGroup
 
     def update(self, labels=None, name=None):
@@ -38,6 +43,8 @@ class PlacementGroupsPageResult(NamedTuple):
 
 
 class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
+    _client: Client
+
     def get_by_id(self, id):
         # type: (int) -> BoundPlacementGroup
         """Returns a specific Placement Group object

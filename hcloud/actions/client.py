@@ -1,14 +1,19 @@
 from __future__ import annotations
 
 import time
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from ..core.client import BoundModelBase, ClientEntityBase
 from ..core.domain import Meta
 from .domain import Action, ActionFailedException, ActionTimeoutException
 
+if TYPE_CHECKING:
+    from .._client import Client
+
 
 class BoundAction(BoundModelBase):
+    _client: ActionsClient
+
     model = Action
 
     def wait_until_finished(self, max_retries=100):
@@ -37,6 +42,8 @@ class ActionsPageResult(NamedTuple):
 
 
 class ActionsClient(ClientEntityBase):
+    _client: Client
+
     def get_by_id(self, id):
         # type: (int) -> BoundAction
         """Get a specific action by its ID.

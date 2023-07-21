@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from ..actions.client import ActionsPageResult, BoundAction
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
@@ -12,8 +12,13 @@ from .domain import (
     ManagedCertificateStatus,
 )
 
+if TYPE_CHECKING:
+    from .._client import Client
+
 
 class BoundCertificate(BoundModelBase):
+    _client: CertificatesClient
+
     model = Certificate
 
     def __init__(self, client, data, complete=True):
@@ -91,6 +96,8 @@ class CertificatesPageResult(NamedTuple):
 
 
 class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
+    _client: Client
+
     def get_by_id(self, id):
         # type: (int) -> BoundCertificate
         """Get a specific certificate by its ID.

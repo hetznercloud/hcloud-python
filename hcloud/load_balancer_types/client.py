@@ -1,13 +1,18 @@
 from __future__ import annotations
 
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from ..core.domain import Meta
 from .domain import LoadBalancerType
 
+if TYPE_CHECKING:
+    from .._client import Client
+
 
 class BoundLoadBalancerType(BoundModelBase):
+    _client: LoadBalancerTypesClient
+
     model = LoadBalancerType
 
 
@@ -17,6 +22,8 @@ class LoadBalancerTypesPageResult(NamedTuple):
 
 
 class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
+    _client: Client
+
     def get_by_id(self, id):
         # type: (int) -> load_balancer_types.client.BoundLoadBalancerType
         """Returns a specific Load Balancer Type.
