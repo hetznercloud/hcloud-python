@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from ..actions.client import ActionsPageResult, BoundAction
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
@@ -8,8 +8,13 @@ from ..core.domain import Meta
 from ..locations.client import BoundLocation
 from .domain import CreateFloatingIPResponse, FloatingIP
 
+if TYPE_CHECKING:
+    from .._client import Client
+
 
 class BoundFloatingIP(BoundModelBase):
+    _client: FloatingIPsClient
+
     model = FloatingIP
 
     def __init__(self, client, data, complete=True):
@@ -127,6 +132,8 @@ class FloatingIPsPageResult(NamedTuple):
 
 
 class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
+    _client: Client
+
     def get_actions_list(
         self,
         floating_ip,  # type: FloatingIP

@@ -1,14 +1,19 @@
 from __future__ import annotations
 
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from ..actions.client import BoundAction
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from ..core.domain import Meta
 from .domain import CreatePrimaryIPResponse, PrimaryIP
 
+if TYPE_CHECKING:
+    from .._client import Client
+
 
 class BoundPrimaryIP(BoundModelBase):
+    _client: PrimaryIPsClient
+
     model = PrimaryIP
 
     def __init__(self, client, data, complete=True):
@@ -93,6 +98,8 @@ class PrimaryIPsPageResult(NamedTuple):
 
 
 class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
+    _client: Client
+
     def get_by_id(self, id):
         # type: (int) -> BoundPrimaryIP
         """Returns a specific Primary IP object.

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from ..core.domain import Meta
@@ -8,8 +8,13 @@ from ..locations.client import BoundLocation
 from ..server_types.client import BoundServerType
 from .domain import Datacenter, DatacenterServerTypes
 
+if TYPE_CHECKING:
+    from .._client import Client
+
 
 class BoundDatacenter(BoundModelBase):
+    _client: DatacentersClient
+
     model = Datacenter
 
     def __init__(self, client, data):
@@ -52,6 +57,8 @@ class DatacentersPageResult(NamedTuple):
 
 
 class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
+    _client: Client
+
     def get_by_id(self, id):
         # type: (int) -> BoundDatacenter
         """Get a specific datacenter by its ID.

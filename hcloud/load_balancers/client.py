@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from ..actions.client import ActionsPageResult, BoundAction
 from ..certificates.client import BoundCertificate
@@ -27,8 +27,13 @@ from .domain import (
     PublicNetwork,
 )
 
+if TYPE_CHECKING:
+    from .._client import Client
+
 
 class BoundLoadBalancer(BoundModelBase):
+    _client: LoadBalancersClient
+
     model = LoadBalancer
 
     def __init__(self, client, data, complete=True):
@@ -318,6 +323,8 @@ class LoadBalancersPageResult(NamedTuple):
 
 
 class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
+    _client: Client
+
     def get_by_id(self, id):
         # type: (int) -> BoundLoadBalancer
         """Get a specific Load Balancer

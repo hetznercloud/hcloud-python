@@ -1,13 +1,18 @@
 from __future__ import annotations
 
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
 from ..core.domain import Meta
 from .domain import SSHKey
 
+if TYPE_CHECKING:
+    from .._client import Client
+
 
 class BoundSSHKey(BoundModelBase):
+    _client: SSHKeysClient
+
     model = SSHKey
 
     def update(self, name=None, labels=None):
@@ -36,6 +41,8 @@ class SSHKeysPageResult(NamedTuple):
 
 
 class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
+    _client: Client
+
     def get_by_id(self, id):
         # type: (int) -> BoundSSHKey
         """Get a specific SSH Key by its ID
