@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+from typing import NamedTuple
+
 from ..actions.client import BoundAction
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core.domain import Meta
 from .domain import CreatePrimaryIPResponse, PrimaryIP
 
 
@@ -84,9 +87,12 @@ class BoundPrimaryIP(BoundModelBase):
         return self._client.change_dns_ptr(self, ip, dns_ptr)
 
 
-class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "primary_ips"
+class PrimaryIPsPageResult(NamedTuple):
+    primary_ips: list[BoundPrimaryIP]
+    meta: Meta | None
 
+
+class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
     def get_by_id(self, id):
         # type: (int) -> BoundPrimaryIP
         """Returns a specific Primary IP object.
@@ -139,7 +145,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
             for primary_ip_data in response["primary_ips"]
         ]
 
-        return self._add_meta_to_result(primary_ips, response)
+        return PrimaryIPsPageResult(primary_ips, Meta.parse_meta(response))
 
     def get_all(self, label_selector=None, name=None):
         # type: (Optional[str], Optional[str]) -> List[BoundPrimaryIP]

@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from ..actions.client import BoundAction
+from typing import NamedTuple
+
+from ..actions.client import ActionsPageResult, BoundAction
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import add_meta_to_result
+from ..core.domain import Meta
 from .domain import Image
 
 
@@ -89,9 +91,12 @@ class BoundImage(BoundModelBase):
         return self._client.change_protection(self, delete)
 
 
-class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "images"
+class ImagesPageResult(NamedTuple):
+    images: list[BoundImage]
+    meta: Meta | None
 
+
+class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
     def get_actions_list(
         self,
         image,  # type: Image
@@ -132,7 +137,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
             BoundAction(self._client.actions, action_data)
             for action_data in response["actions"]
         ]
-        return add_meta_to_result(actions, response, "actions")
+        return ActionsPageResult(actions, Meta.parse_meta(response))
 
     def get_actions(
         self,
@@ -224,7 +229,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         response = self._client.request(url="/images", method="GET", params=params)
         images = [BoundImage(self, image_data) for image_data in response["images"]]
 
-        return self._add_meta_to_result(images, response)
+        return ImagesPageResult(images, Meta.parse_meta(response))
 
     def get_all(
         self,
@@ -291,8 +296,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Used to identify the image.
         :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
         """
-        response = self.get_list(name=name, architecture=[architecture])
-        entities = getattr(response, self.results_list_attribute_name)
+        entities, _ = self.get_list(name=name, architecture=[architecture])
         entity = entities[0] if entities else None
         return entity
 

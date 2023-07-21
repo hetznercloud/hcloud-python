@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from ..actions.client import BoundAction
+from typing import NamedTuple
+
+from ..actions.client import ActionsPageResult, BoundAction
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import add_meta_to_result
+from ..core.domain import Meta
 from ..datacenters.client import BoundDatacenter
 from ..firewalls.client import BoundFirewall
 from ..floating_ips.client import BoundFloatingIP
@@ -409,9 +411,12 @@ class BoundServer(BoundModelBase):
         return self._client.remove_from_placement_group(self)
 
 
-class ServersClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "servers"
+class ServersPageResult(NamedTuple):
+    servers: list[BoundServer]
+    meta: Meta | None
 
+
+class ServersClient(ClientEntityBase, GetEntityByNameMixin):
     def get_by_id(self, id):
         # type: (int) -> BoundServer
         """Get a specific server
@@ -462,7 +467,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         ass_servers = [
             BoundServer(self, server_data) for server_data in response["servers"]
         ]
-        return self._add_meta_to_result(ass_servers, response)
+        return ServersPageResult(ass_servers, Meta.parse_meta(response))
 
     def get_all(self, name=None, label_selector=None, status=None):
         # type: (Optional[str], Optional[str], Optional[List[str]]) -> List[BoundServer]
@@ -625,7 +630,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
             BoundAction(self._client.actions, action_data)
             for action_data in response["actions"]
         ]
-        return add_meta_to_result(actions, response, "actions")
+        return ActionsPageResult(actions, Meta.parse_meta(response))
 
     def get_actions(self, server, status=None, sort=None):
         # type: (Server, Optional[List[str]], Optional[List[str]]) -> List[BoundAction]

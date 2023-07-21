@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from typing import Any, NamedTuple
 from unittest import mock
 
 import pytest
 
+from hcloud.actions.client import ActionsPageResult
 from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.core.domain import BaseDomain, add_meta_to_result
+from hcloud.core.domain import BaseDomain, Meta
 
 
 class TestBoundModelBase:
@@ -84,15 +86,17 @@ class TestClientEntityBase:
     @pytest.fixture()
     def client_class_constructor(self):
         def constructor(json_content_function):
-            class CandiesClient(ClientEntityBase):
-                results_list_attribute_name = "candies"
+            class CandiesPageResult(NamedTuple):
+                candies: list[Any]
+                meta: Meta
 
+            class CandiesClient(ClientEntityBase):
                 def get_list(self, status, page=None, per_page=None):
                     json_content = json_content_function(page)
                     results = [
                         (r, page, status, per_page) for r in json_content["candies"]
                     ]
-                    return self._add_meta_to_result(results, json_content)
+                    return CandiesPageResult(results, Meta.parse_meta(json_content))
 
             return CandiesClient(mock.MagicMock())
 
@@ -107,7 +111,7 @@ class TestClientEntityBase:
                     results = [
                         (r, page, status, per_page) for r in json_content["actions"]
                     ]
-                    return add_meta_to_result(results, json_content, "actions")
+                    return ActionsPageResult(results, Meta.parse_meta(json_content))
 
             return CandiesClient(mock.MagicMock())
 
@@ -205,44 +209,20 @@ class TestClientEntityBase:
             (23, 3, "sweet", 50),
         ]
 
-    def test_raise_exception_if_list_attribute_is_not_implemented(
-        self, client_class_with_actions_constructor
-    ):
-        def json_content_function(p):
-            return {
-                "actions": [10 + p, 20 + p],
-                "meta": {
-                    "pagination": {
-                        "page": p,
-                        "per_page": 11,
-                        "next_page": p + 1 if p < 3 else None,
-                    }
-                },
-            }
-
-        candies_client = client_class_with_actions_constructor(json_content_function)
-
-        with pytest.raises(NotImplementedError) as exception_info:
-            candies_client.get_all()
-
-        error = exception_info.value
-        assert (
-            str(error)
-            == "in order to get results list, 'results_list_attribute_name' attribute of CandiesClient has to be specified"
-        )
-
 
 class TestGetEntityByNameMixin:
     @pytest.fixture()
     def client_class_constructor(self):
         def constructor(json_content_function):
-            class CandiesClient(ClientEntityBase, GetEntityByNameMixin):
-                results_list_attribute_name = "candies"
+            class CandiesPageResult(NamedTuple):
+                candies: list[Any]
+                meta: Meta
 
+            class CandiesClient(ClientEntityBase, GetEntityByNameMixin):
                 def get_list(self, name, page=None, per_page=None):
                     json_content = json_content_function(page)
                     results = json_content["candies"]
-                    return self._add_meta_to_result(results, json_content)
+                    return CandiesPageResult(results, Meta.parse_meta(json_content))
 
             return CandiesClient(mock.MagicMock())
 

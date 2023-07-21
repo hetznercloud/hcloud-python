@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from typing import NamedTuple
 from warnings import warn
 
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core.domain import Meta
 from .domain import Iso
 
 
@@ -10,9 +12,12 @@ class BoundIso(BoundModelBase):
     model = Iso
 
 
-class IsosClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "isos"
+class IsosPageResult(NamedTuple):
+    isos: list[BoundIso]
+    meta: Meta | None
 
+
+class IsosClient(ClientEntityBase, GetEntityByNameMixin):
     def get_by_id(self, id):
         # type: (int) -> BoundIso
         """Get a specific ISO by its id
@@ -72,7 +77,7 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
 
         response = self._client.request(url="/isos", method="GET", params=params)
         isos = [BoundIso(self, iso_data) for iso_data in response["isos"]]
-        return self._add_meta_to_result(isos, response)
+        return IsosPageResult(isos, Meta.parse_meta(response))
 
     def get_all(
         self,

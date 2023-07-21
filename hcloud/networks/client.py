@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from ..actions.client import BoundAction
+from typing import NamedTuple
+
+from ..actions.client import ActionsPageResult, BoundAction
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import add_meta_to_result
+from ..core.domain import Meta
 from .domain import Network, NetworkRoute, NetworkSubnet
 
 
@@ -153,9 +155,12 @@ class BoundNetwork(BoundModelBase):
         return self._client.change_protection(self, delete=delete)
 
 
-class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "networks"
+class NetworksPageResult(NamedTuple):
+    networks: list[BoundNetwork]
+    meta: Meta | None
 
+
+class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
     def get_by_id(self, id):
         # type: (int) -> BoundNetwork
         """Get a specific network
@@ -198,10 +203,10 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
 
         response = self._client.request(url="/networks", method="GET", params=params)
 
-        ass_networks = [
+        networks = [
             BoundNetwork(self, network_data) for network_data in response["networks"]
         ]
-        return self._add_meta_to_result(ass_networks, response)
+        return NetworksPageResult(networks, Meta.parse_meta(response))
 
     def get_all(self, name=None, label_selector=None):
         # type: (Optional[str], Optional[str]) -> List[BoundNetwork]
@@ -359,7 +364,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
             BoundAction(self._client.actions, action_data)
             for action_data in response["actions"]
         ]
-        return add_meta_to_result(actions, response, "actions")
+        return ActionsPageResult(actions, Meta.parse_meta(response))
 
     def get_actions(self, network, status=None, sort=None):
         # type: (Network, Optional[List[str]], Optional[List[str]]) -> List[BoundAction]

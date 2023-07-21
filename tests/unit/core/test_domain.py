@@ -3,13 +3,7 @@ from __future__ import annotations
 import pytest
 from dateutil.parser import isoparse
 
-from hcloud.core.domain import (
-    BaseDomain,
-    DomainIdentityMixin,
-    Meta,
-    Pagination,
-    add_meta_to_result,
-)
+from hcloud.core.domain import BaseDomain, DomainIdentityMixin, Meta, Pagination
 
 
 class TestMeta:
@@ -45,27 +39,6 @@ class TestMeta:
         assert result.pagination.next_page == 3
         assert result.pagination.last_page == 10
         assert result.pagination.total_entries == 100
-
-    def test_add_meta_to_result(self):
-        json_content = {
-            "meta": {
-                "pagination": {
-                    "page": 2,
-                    "per_page": 10,
-                    "previous_page": 1,
-                    "next_page": 3,
-                    "last_page": 10,
-                    "total_entries": 100,
-                }
-            }
-        }
-        result = add_meta_to_result([1, 2, 3], json_content, "id_list")
-        assert result.id_list == [1, 2, 3]
-        assert result.meta.pagination.page == 2
-        assert result.meta.pagination.per_page == 10
-        assert result.meta.pagination.next_page == 3
-        assert result.meta.pagination.last_page == 10
-        assert result.meta.pagination.total_entries == 100
 
 
 class SomeDomain(BaseDomain, DomainIdentityMixin):

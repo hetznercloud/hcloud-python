@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from ..actions.client import BoundAction
+from typing import NamedTuple
+
+from ..actions.client import ActionsPageResult, BoundAction
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import add_meta_to_result
+from ..core.domain import Meta
 from .domain import (
     Certificate,
     CreateManagedCertificateResponse,
@@ -83,9 +85,12 @@ class BoundCertificate(BoundModelBase):
         return self._client.retry_issuance(self)
 
 
-class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "certificates"
+class CertificatesPageResult(NamedTuple):
+    certificates: list[BoundCertificate]
+    meta: Meta | None
 
+
+class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
     def get_by_id(self, id):
         # type: (int) -> BoundCertificate
         """Get a specific certificate by its ID.
@@ -138,7 +143,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
             for certificate_data in response["certificates"]
         ]
 
-        return self._add_meta_to_result(certificates, response)
+        return CertificatesPageResult(certificates, Meta.parse_meta(response))
 
     def get_all(self, name=None, label_selector=None):
         # type: (Optional[str], Optional[str]) -> List[BoundCertificate]
@@ -287,7 +292,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
             BoundAction(self._client.actions, action_data)
             for action_data in response["actions"]
         ]
-        return add_meta_to_result(actions, response, "actions")
+        return ActionsPageResult(actions, Meta.parse_meta(response))
 
     def get_actions(self, certificate, status=None, sort=None):
         # type: (Certificate, Optional[List[str]], Optional[List[str]]) -> List[BoundAction]

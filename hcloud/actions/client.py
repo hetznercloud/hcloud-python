@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import time
+from typing import NamedTuple
 
 from ..core.client import BoundModelBase, ClientEntityBase
+from ..core.domain import Meta
 from .domain import Action, ActionFailedException, ActionTimeoutException
 
 
@@ -29,9 +31,12 @@ class BoundAction(BoundModelBase):
             raise ActionFailedException(action=self)
 
 
-class ActionsClient(ClientEntityBase):
-    results_list_attribute_name = "actions"
+class ActionsPageResult(NamedTuple):
+    actions: list[BoundAction]
+    meta: Meta | None
 
+
+class ActionsClient(ClientEntityBase):
     def get_by_id(self, id):
         # type: (int) -> BoundAction
         """Get a specific action by its ID.
@@ -77,7 +82,7 @@ class ActionsClient(ClientEntityBase):
         actions = [
             BoundAction(self, action_data) for action_data in response["actions"]
         ]
-        return self._add_meta_to_result(actions, response)
+        return ActionsPageResult(actions, Meta.parse_meta(response))
 
     def get_all(self, status=None, sort=None):
         # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]

@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+from typing import NamedTuple
+
 from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core.domain import Meta
 from .domain import ServerType
 
 
@@ -8,9 +11,12 @@ class BoundServerType(BoundModelBase):
     model = ServerType
 
 
-class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
-    results_list_attribute_name = "server_types"
+class ServerTypesPageResult(NamedTuple):
+    server_types: list[BoundServerType]
+    meta: Meta | None
 
+
+class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
     def get_by_id(self, id):
         # type: (int) -> BoundServerType
         """Returns a specific Server Type.
@@ -48,7 +54,7 @@ class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
             BoundServerType(self, server_type_data)
             for server_type_data in response["server_types"]
         ]
-        return self._add_meta_to_result(server_types, response)
+        return ServerTypesPageResult(server_types, Meta.parse_meta(response))
 
     def get_all(self, name=None):
         # type: (Optional[str]) -> List[BoundServerType]

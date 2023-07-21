@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from collections import namedtuple
-
 
 class BaseDomain:
     __slots__ = ()
@@ -63,19 +61,13 @@ class Meta(BaseDomain):
         self.pagination = pagination
 
     @classmethod
-    def parse_meta(cls, json_content):
+    def parse_meta(cls, response: dict) -> Meta | None:
         meta = None
-        if json_content and "meta" in json_content:
+        if response and "meta" in response:
             meta = cls()
-            pagination_json = json_content["meta"].get("pagination")
-            if pagination_json:
-                pagination = Pagination(**pagination_json)
-                meta.pagination = pagination
+            try:
+                meta.pagination = Pagination(**response["meta"]["pagination"])
+            except KeyError:
+                pass
+
         return meta
-
-
-def add_meta_to_result(result, json_content, attr_name):
-    # type: (List[BoundModelBase], json, string) -> PageResult
-    class_name = f"PageResults{attr_name.capitalize()}"
-    PageResults = namedtuple(class_name, [attr_name, "meta"])
-    return PageResults(**{attr_name: result, "meta": Meta.parse_meta(json_content)})
