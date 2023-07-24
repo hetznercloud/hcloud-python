@@ -11,5 +11,6 @@ from .domain import (  # noqa: F401
     PublicNetworkFirewall,
     RequestConsoleResponse,
     ResetPasswordResponse,
+    Server,
     ServerCreatePublicNetwork,
 )

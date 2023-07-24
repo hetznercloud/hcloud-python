@@ -9,6 +9,7 @@ from .domain import (  # noqa: F401
     CreateLoadBalancerResponse,
     IPv4Address,
     IPv6Network,
+    LoadBalancer,
     LoadBalancerAlgorithm,
     LoadBalancerHealtCheckHttp,
     LoadBalancerHealthCheck,
