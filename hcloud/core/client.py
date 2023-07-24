@@ -3,7 +3,6 @@ from __future__ import annotations
 
 class ClientEntityBase:
     max_per_page = 50
-    results_list_attribute_name = None
 
     def __init__(self, client):
         """
