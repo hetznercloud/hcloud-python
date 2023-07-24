@@ -11,8 +11,12 @@ from hcloud.actions.domain import Action, ActionFailedException, ActionTimeoutEx
 class TestBoundAction:
     @pytest.fixture()
     def bound_running_action(self, mocked_requests):
+        action_client = ActionsClient(client=mocked_requests)
+        # Speed up tests that run `wait_until_finished`
+        action_client._client.poll_interval = 0.1
+
         return BoundAction(
-            client=ActionsClient(client=mocked_requests),
+            client=action_client,
             data=dict(id=14, status=Action.STATUS_RUNNING),
         )
 
