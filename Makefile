@@ -5,6 +5,9 @@ venv:
 	python3 -m venv venv
 	venv/bin/pip install -e .[docs,test]
 
+lint: venv
+	venv/bin/mypy hcloud
+
 test: venv
 	venv/bin/pytest -v
 
