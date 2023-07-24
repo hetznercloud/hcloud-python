@@ -6,8 +6,13 @@ import pytest
 from dateutil.parser import isoparse
 
 from hcloud.actions import BoundAction
-from hcloud.networks import BoundNetwork, NetworksClient
-from hcloud.networks import Network, NetworkRoute, NetworkSubnet
+from hcloud.networks import (
+    BoundNetwork,
+    Network,
+    NetworkRoute,
+    NetworksClient,
+    NetworkSubnet,
+)
 from hcloud.servers import BoundServer
 
 

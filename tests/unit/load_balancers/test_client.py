@@ -6,11 +6,12 @@ import pytest
 
 from hcloud.actions import BoundAction
 from hcloud.load_balancer_types import LoadBalancerType
-from hcloud.load_balancers import BoundLoadBalancer, LoadBalancersClient
 from hcloud.load_balancers import (
+    BoundLoadBalancer,
     LoadBalancer,
     LoadBalancerAlgorithm,
     LoadBalancerHealthCheck,
+    LoadBalancersClient,
     LoadBalancerService,
     LoadBalancerTarget,
     LoadBalancerTargetIP,

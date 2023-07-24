@@ -5,12 +5,9 @@ from unittest import mock
 import pytest
 
 from hcloud.actions import BoundAction
-from hcloud.floating_ips import BoundFloatingIP, FloatingIPsClient
-from hcloud.floating_ips import FloatingIP
-from hcloud.locations import BoundLocation
-from hcloud.locations import Location
-from hcloud.servers import BoundServer
-from hcloud.servers import Server
+from hcloud.floating_ips import BoundFloatingIP, FloatingIP, FloatingIPsClient
+from hcloud.locations import BoundLocation, Location
+from hcloud.servers import BoundServer, Server
 
 
 class TestBoundFloatingIP:

@@ -6,12 +6,9 @@ import pytest
 from dateutil.parser import isoparse
 
 from hcloud.actions import BoundAction
-from hcloud.locations import BoundLocation
-from hcloud.locations import Location
-from hcloud.servers import BoundServer
-from hcloud.servers import Server
-from hcloud.volumes import BoundVolume, VolumesClient
-from hcloud.volumes import Volume
+from hcloud.locations import BoundLocation, Location
+from hcloud.servers import BoundServer, Server
+from hcloud.volumes import BoundVolume, Volume, VolumesClient
 
 
 class TestBoundVolume:

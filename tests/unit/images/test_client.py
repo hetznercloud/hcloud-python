@@ -7,8 +7,7 @@ from unittest import mock
 import pytest
 
 from hcloud.actions import BoundAction
-from hcloud.images import BoundImage, ImagesClient
-from hcloud.images import Image
+from hcloud.images import BoundImage, Image, ImagesClient
 from hcloud.servers import BoundServer
 
 

@@ -4,10 +4,8 @@ from unittest import mock
 
 import pytest
 
-from hcloud.datacenters import BoundDatacenter
-from hcloud.datacenters import Datacenter
-from hcloud.primary_ips import BoundPrimaryIP, PrimaryIPsClient
-from hcloud.primary_ips import PrimaryIP
+from hcloud.datacenters import BoundDatacenter, Datacenter
+from hcloud.primary_ips import BoundPrimaryIP, PrimaryIP, PrimaryIPsClient
 
 
 class TestBoundPrimaryIP:

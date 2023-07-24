@@ -4,8 +4,13 @@ from unittest import mock
 
 import pytest
 
-from hcloud.actions import ActionsClient, BoundAction
-from hcloud.actions import Action, ActionFailedException, ActionTimeoutException
+from hcloud.actions import (
+    Action,
+    ActionFailedException,
+    ActionsClient,
+    ActionTimeoutException,
+    BoundAction,
+)
 
 
 class TestBoundAction:
