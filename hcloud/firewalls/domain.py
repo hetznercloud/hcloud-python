@@ -8,7 +8,7 @@ from ..core import BaseDomain
 
 if TYPE_CHECKING:
     from ..actions import BoundAction
-    from ..servers import Server
+    from ..servers import BoundServer, Server
     from .client import BoundFirewall
 
 
@@ -143,7 +143,7 @@ class FirewallResource:
     def __init__(
         self,
         type: str,
-        server: Server | None = None,
+        server: Server | BoundServer | None = None,
         label_selector: FirewallResourceLabelSelector | None = None,
     ):
         self.type = type
@@ -186,7 +186,7 @@ class CreateFirewallResponse(BaseDomain):
     def __init__(
         self,
         firewall: BoundFirewall,
-        actions: BoundAction,
+        actions: list[BoundAction] | None,
     ):
         self.firewall = firewall
         self.actions = actions

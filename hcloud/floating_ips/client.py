@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
@@ -10,7 +10,7 @@ from .domain import CreateFloatingIPResponse, FloatingIP
 if TYPE_CHECKING:
     from .._client import Client
     from ..locations import Location
-    from ..servers import Server
+    from ..servers import BoundServer, Server
 
 
 class BoundFloatingIP(BoundModelBase):
@@ -18,7 +18,7 @@ class BoundFloatingIP(BoundModelBase):
 
     model = FloatingIP
 
-    def __init__(self, client, data, complete=True):
+    def __init__(self, client: FloatingIPsClient, data: dict, complete: bool = True):
         from ..servers import BoundServer
 
         server = data.get("server")
@@ -144,7 +144,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_actions_list(
         self,
-        floating_ip: FloatingIP,
+        floating_ip: FloatingIP | BoundFloatingIP,
         status: list[str] | None = None,
         sort: list[str] | None = None,
         page: int | None = None,
@@ -163,7 +163,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if status is not None:
             params["status"] = status
         if sort is not None:
@@ -187,7 +187,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_actions(
         self,
-        floating_ip: FloatingIP,
+        floating_ip: FloatingIP | BoundFloatingIP,
         status: list[str] | None = None,
         sort: list[str] | None = None,
     ) -> list[BoundAction]:
@@ -231,7 +231,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter networks by their name.
         :return: (List[:class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
 
         if label_selector is not None:
             params["label_selector"] = label_selector
@@ -267,7 +267,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(label_selector=label_selector, name=name)
 
-    def get_by_name(self, name: str) -> BoundFloatingIP:
+    def get_by_name(self, name: str) -> BoundFloatingIP | None:
         """Get Floating IP by name
 
         :param name: str
@@ -281,8 +281,8 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         type: str,
         description: str | None = None,
         labels: str | None = None,
-        home_location: Location | None = None,
-        server: Server | None = None,
+        home_location: Location | BoundLocation | None = None,
+        server: Server | BoundServer | None = None,
         name: str | None = None,
     ) -> CreateFloatingIPResponse:
         """Creates a new Floating IP assigned to a server.
@@ -300,7 +300,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`CreateFloatingIPResponse <hcloud.floating_ips.domain.CreateFloatingIPResponse>`
         """
 
-        data = {"type": type}
+        data: dict[str, Any] = {"type": type}
         if description is not None:
             data["description"] = description
         if labels is not None:
@@ -325,7 +325,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def update(
         self,
-        floating_ip: FloatingIP,
+        floating_ip: FloatingIP | BoundFloatingIP,
         description: str | None = None,
         labels: dict[str, str] | None = None,
         name: str | None = None,
@@ -341,7 +341,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
                New name to set
         :return: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`
         """
-        data = {}
+        data: dict[str, Any] = {}
         if description is not None:
             data["description"] = description
         if labels is not None:
@@ -356,7 +356,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundFloatingIP(self, response["floating_ip"])
 
-    def delete(self, floating_ip: FloatingIP) -> bool:
+    def delete(self, floating_ip: FloatingIP | BoundFloatingIP) -> bool:
         """Deletes a Floating IP. If it is currently assigned to a server it will automatically get unassigned.
 
         :param floating_ip: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>` or  :class:`FloatingIP <hcloud.floating_ips.domain.FloatingIP>`
@@ -371,7 +371,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def change_protection(
         self,
-        floating_ip: FloatingIP,
+        floating_ip: FloatingIP | BoundFloatingIP,
         delete: bool | None = None,
     ) -> BoundAction:
         """Changes the protection configuration of the Floating IP.
@@ -381,7 +381,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
                If true, prevents the Floating IP from being deleted
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {}
+        data: dict[str, Any] = {}
         if delete is not None:
             data.update({"delete": delete})
 
@@ -394,7 +394,11 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, response["action"])
 
-    def assign(self, floating_ip: FloatingIP, server: Server) -> BoundAction:
+    def assign(
+        self,
+        floating_ip: FloatingIP | BoundFloatingIP,
+        server: Server | BoundServer,
+    ) -> BoundAction:
         """Assigns a Floating IP to a server.
 
         :param floating_ip: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>` or  :class:`FloatingIP <hcloud.floating_ips.domain.FloatingIP>`
@@ -411,7 +415,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, response["action"])
 
-    def unassign(self, floating_ip: FloatingIP) -> BoundAction:
+    def unassign(self, floating_ip: FloatingIP | BoundFloatingIP) -> BoundAction:
         """Unassigns a Floating IP, resulting in it being unreachable. You may assign it to a server again at a later time.
 
         :param floating_ip: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>` or  :class:`FloatingIP <hcloud.floating_ips.domain.FloatingIP>`
@@ -427,7 +431,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def change_dns_ptr(
         self,
-        floating_ip: FloatingIP,
+        floating_ip: FloatingIP | BoundFloatingIP,
         ip: str,
         dns_ptr: str,
     ) -> BoundAction:

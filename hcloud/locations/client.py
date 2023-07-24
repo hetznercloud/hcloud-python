@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
 from .domain import Location
@@ -48,7 +48,7 @@ class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundLocation <hcloud.locations.client.BoundLocation>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if name is not None:
             params["name"] = name
         if page is not None:
@@ -72,7 +72,7 @@ class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(name=name)
 
-    def get_by_name(self, name: str) -> BoundLocation:
+    def get_by_name(self, name: str) -> BoundLocation | None:
         """Get location by name
 
         :param name: str

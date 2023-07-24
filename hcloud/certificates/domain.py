@@ -49,17 +49,17 @@ class Certificate(BaseDomain, DomainIdentityMixin):
 
     def __init__(
         self,
-        id=None,
-        name=None,
-        certificate=None,
-        not_valid_before=None,
-        not_valid_after=None,
-        domain_names=None,
-        fingerprint=None,
-        created=None,
-        labels=None,
-        type=None,
-        status=None,
+        id: int | None = None,
+        name: str | None = None,
+        certificate: str | None = None,
+        not_valid_before: str | None = None,
+        not_valid_after: str | None = None,
+        domain_names: list[str] | None = None,
+        fingerprint: str | None = None,
+        created: str | None = None,
+        labels: dict[str, str] | None = None,
+        type: str | None = None,
+        status: ManagedCertificateStatus | None = None,
     ):
         self.id = id
         self.name = name
@@ -85,7 +85,12 @@ class ManagedCertificateStatus(BaseDomain):
           If issuance or renewal reports failure, this property contains information about what happened
     """
 
-    def __init__(self, issuance=None, renewal=None, error=None):
+    def __init__(
+        self,
+        issuance: str | None = None,
+        renewal: str | None = None,
+        error: ManagedCertificateError | None = None,
+    ):
         self.issuance = issuance
         self.renewal = renewal
         self.error = error
@@ -100,7 +105,7 @@ class ManagedCertificateError(BaseDomain):
         Message detailing the error
     """
 
-    def __init__(self, code=None, message=None):
+    def __init__(self, code: str | None = None, message: str | None = None):
         self.code = code
         self.message = message
 

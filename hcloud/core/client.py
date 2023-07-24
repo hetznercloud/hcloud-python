@@ -1,12 +1,18 @@
 from __future__ import annotations
 
-from typing import Callable
+from typing import TYPE_CHECKING, Any, Callable
+
+if TYPE_CHECKING:
+    from .._client import Client
+    from ..actions import BoundAction
 
 
 class ClientEntityBase:
-    max_per_page = 50
+    _client: Client
 
-    def __init__(self, client):
+    max_per_page: int = 50
+
+    def __init__(self, client: Client):
         """
         :param client: Client
         :return self
@@ -18,7 +24,7 @@ class ClientEntityBase:
         list_function: Callable,
         *args,
         **kwargs,
-    ) -> list[BoundModelBase]:
+    ) -> list:
         results = []
 
         page = 1
@@ -39,14 +45,15 @@ class ClientEntityBase:
             ):
                 page = meta.pagination.next_page
             else:
-                page = None
+                page = 0
 
         return results
 
-    def get_all(self, *args, **kwargs) -> list[BoundModelBase]:
+    def get_all(self, *args, **kwargs) -> list:
+        assert hasattr(self, "get_list")
         return self._get_all(self.get_list, *args, **kwargs)
 
-    def get_actions(self, *args, **kwargs) -> list[BoundModelBase]:
+    def get_actions(self, *args, **kwargs) -> list[BoundAction]:
         if not hasattr(self, "get_actions_list"):
             raise ValueError("this endpoint does not support get_actions method")
 
@@ -58,7 +65,8 @@ class GetEntityByNameMixin:
     Use as a mixin for ClientEntityBase classes
     """
 
-    def get_by_name(self, name: str) -> BoundModelBase:
+    def get_by_name(self, name: str):
+        assert hasattr(self, "get_list")
         entities, _ = self.get_list(name=name)
         return entities[0] if entities else None
 
@@ -66,9 +74,14 @@ class GetEntityByNameMixin:
 class BoundModelBase:
     """Bound Model Base"""
 
-    model = None
+    model: Any
 
-    def __init__(self, client, data={}, complete=True):
+    def __init__(
+        self,
+        client: ClientEntityBase,
+        data: dict,
+        complete: bool = True,
+    ):
         """
         :param client:
                 The client for the specific model to use
@@ -81,7 +94,7 @@ class BoundModelBase:
         self.complete = complete
         self.data_model = self.model.from_dict(data)
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str):
         """Allow magical access to the properties of the model
         :param name: str
         :return:

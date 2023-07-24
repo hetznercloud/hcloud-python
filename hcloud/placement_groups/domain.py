@@ -66,7 +66,7 @@ class CreatePlacementGroupResponse(BaseDomain):
     def __init__(
         self,
         placement_group: BoundPlacementGroup,
-        action: BoundAction,
+        action: BoundAction | None,
     ):
         self.placement_group = placement_group
         self.action = action

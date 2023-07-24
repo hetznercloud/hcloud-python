@@ -7,7 +7,7 @@ from dateutil.parser import isoparse
 from ..core import BaseDomain
 
 if TYPE_CHECKING:
-    from ..actions import Action, BoundAction
+    from ..actions import BoundAction
     from ..firewalls import BoundFirewall
     from ..floating_ips import BoundFloatingIP
     from ..networks import BoundNetwork
@@ -164,7 +164,7 @@ class CreateServerResponse(BaseDomain):
         self,
         server: BoundServer,
         action: BoundAction,
-        next_actions: list[Action],
+        next_actions: list[BoundAction],
         root_password: str,
     ):
         self.server = server
@@ -262,8 +262,8 @@ class PublicNetwork(BaseDomain):
         ipv4: IPv4Address,
         ipv6: IPv6Network,
         floating_ips: list[BoundFloatingIP],
-        primary_ipv4: BoundPrimaryIP,
-        primary_ipv6: BoundPrimaryIP,
+        primary_ipv4: BoundPrimaryIP | None,
+        primary_ipv6: BoundPrimaryIP | None,
         firewalls: list[PublicNetworkFirewall] | None = None,
     ):
         self.ipv4 = ipv4

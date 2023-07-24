@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
 from .domain import LoadBalancerType
@@ -53,7 +53,7 @@ class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundLoadBalancerType <hcloud.load_balancer_types.client.BoundLoadBalancerType>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if name is not None:
             params["name"] = name
         if page is not None:
@@ -81,7 +81,7 @@ class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(name=name)
 
-    def get_by_name(self, name: str) -> BoundLoadBalancerType:
+    def get_by_name(self, name: str) -> BoundLoadBalancerType | None:
         """Get Load Balancer type by name
 
         :param name: str

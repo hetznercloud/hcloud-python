@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
 from .domain import ServerType
@@ -48,7 +48,7 @@ class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundServerType <hcloud.server_types.client.BoundServerType>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if name is not None:
             params["name"] = name
         if page is not None:
@@ -74,7 +74,7 @@ class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(name=name)
 
-    def get_by_name(self, name: str) -> BoundServerType:
+    def get_by_name(self, name: str) -> BoundServerType | None:
         """Get Server type by name
 
         :param name: str

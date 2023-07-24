@@ -103,7 +103,7 @@ class CreatePrimaryIPResponse(BaseDomain):
     def __init__(
         self,
         primary_ip: BoundPrimaryIP,
-        action: BoundAction,
+        action: BoundAction | None,
     ):
         self.primary_ip = primary_ip
         self.action = action

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
 from ..locations import BoundLocation
@@ -16,7 +16,7 @@ class BoundDatacenter(BoundModelBase):
 
     model = Datacenter
 
-    def __init__(self, client, data):
+    def __init__(self, client: DatacentersClient, data: dict):
         location = data.get("location")
         if location is not None:
             data["location"] = BoundLocation(client._client.locations, location)
@@ -83,7 +83,7 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if name is not None:
             params["name"] = name
 
@@ -111,7 +111,7 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(name=name)
 
-    def get_by_name(self, name: str) -> BoundDatacenter:
+    def get_by_name(self, name: str) -> BoundDatacenter | None:
         """Get datacenter by name
 
         :param name: str

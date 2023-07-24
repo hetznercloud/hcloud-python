@@ -187,7 +187,7 @@ class Client:
         url: str,
         tries: int = 1,
         **kwargs,
-    ) -> bytes | dict:
+    ) -> dict:
         """Perform a request to the Hetzner Cloud API, wrapper around requests.request
 
         :param method: HTTP Method to perform the Request
@@ -211,6 +211,7 @@ class Client:
 
         if not response.ok:
             if content:
+                assert isinstance(content, dict)
                 if content["error"]["code"] == "rate_limit_exceeded" and tries < 5:
                     time.sleep(tries * self._retry_wait_time)
                     tries = tries + 1
@@ -220,4 +221,5 @@ class Client:
             else:
                 self._raise_exception_from_response(response)
 
-        return content
+        # TODO: return an empty dict instead of an empty string when content == "".
+        return content  # type: ignore[return-value]

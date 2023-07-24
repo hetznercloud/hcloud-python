@@ -1,6 +1,12 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from ..core import BaseDomain, DomainIdentityMixin
+
+if TYPE_CHECKING:
+    from ..locations import Location
+    from ..server_types import BoundServerType
 
 
 class Datacenter(BaseDomain, DomainIdentityMixin):
@@ -17,11 +23,11 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
 
     def __init__(
         self,
-        id=None,
-        name=None,
-        description=None,
-        location=None,
-        server_types=None,
+        id: int | None = None,
+        name: str | None = None,
+        description: str | None = None,
+        location: Location | None = None,
+        server_types: DatacenterServerTypes | None = None,
     ):
         self.id = id
         self.name = name
@@ -43,7 +49,12 @@ class DatacenterServerTypes:
 
     __slots__ = ("available", "supported", "available_for_migration")
 
-    def __init__(self, available, supported, available_for_migration):
+    def __init__(
+        self,
+        available: list[BoundServerType],
+        supported: list[BoundServerType],
+        available_for_migration: list[BoundServerType],
+    ):
         self.available = available
         self.supported = supported
         self.available_for_migration = available_for_migration

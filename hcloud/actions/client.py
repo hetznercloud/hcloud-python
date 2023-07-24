@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import Action, ActionFailedException, ActionTimeoutException
@@ -15,7 +15,7 @@ class BoundAction(BoundModelBase):
 
     model = Action
 
-    def wait_until_finished(self, max_retries=100):
+    def wait_until_finished(self, max_retries: int = 100) -> None:
         """Wait until the specific action has status="finished" (set Client.poll_interval to specify a delay between checks)
 
         :param max_retries: int
@@ -72,7 +72,7 @@ class ActionsClient(ClientEntityBase):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if status is not None:
             params["status"] = status
         if sort is not None:

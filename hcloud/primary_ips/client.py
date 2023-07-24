@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import BoundAction
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
@@ -8,7 +8,7 @@ from .domain import CreatePrimaryIPResponse, PrimaryIP
 
 if TYPE_CHECKING:
     from .._client import Client
-    from ..datacenters.domain import Datacenter
+    from ..datacenters import BoundDatacenter, Datacenter
 
 
 class BoundPrimaryIP(BoundModelBase):
@@ -16,7 +16,7 @@ class BoundPrimaryIP(BoundModelBase):
 
     model = PrimaryIP
 
-    def __init__(self, client, data, complete=True):
+    def __init__(self, client: PrimaryIPsClient, data: dict, complete: bool = True):
         from ..datacenters import BoundDatacenter
 
         datacenter = data.get("datacenter", {})
@@ -130,7 +130,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter resources by their ip. The response will only contain the resources matching the specified ip.
         :return: (List[:class:`BoundPrimaryIP <hcloud.primary_ips.client.BoundPrimaryIP>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
 
         if label_selector is not None:
             params["label_selector"] = label_selector
@@ -166,7 +166,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(label_selector=label_selector, name=name)
 
-    def get_by_name(self, name: str) -> BoundPrimaryIP:
+    def get_by_name(self, name: str) -> BoundPrimaryIP | None:
         """Get Primary IP by name
 
         :param name: str
@@ -178,7 +178,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
     def create(
         self,
         type: str,
-        datacenter: Datacenter,
+        datacenter: Datacenter | BoundDatacenter,
         name: str,
         assignee_type: str | None = "server",
         assignee_id: int | None = None,
@@ -199,7 +199,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`CreatePrimaryIPResponse <hcloud.primary_ips.domain.CreatePrimaryIPResponse>`
         """
 
-        data = {
+        data: dict[str, Any] = {
             "type": type,
             "assignee_type": assignee_type,
             "auto_delete": auto_delete,
@@ -224,7 +224,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def update(
         self,
-        primary_ip: PrimaryIP,
+        primary_ip: PrimaryIP | BoundPrimaryIP,
         auto_delete: bool | None = None,
         labels: dict[str, str] | None = None,
         name: str | None = None,
@@ -240,7 +240,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
                New name to set
         :return: :class:`BoundPrimaryIP <hcloud.primary_ips.client.BoundPrimaryIP>`
         """
-        data = {}
+        data: dict[str, Any] = {}
         if auto_delete is not None:
             data["auto_delete"] = auto_delete
         if labels is not None:
@@ -255,7 +255,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundPrimaryIP(self, response["primary_ip"])
 
-    def delete(self, primary_ip: PrimaryIP) -> bool:
+    def delete(self, primary_ip: PrimaryIP | BoundPrimaryIP) -> bool:
         """Deletes a Primary IP. If it is currently assigned to an assignee it will automatically get unassigned.
 
         :param primary_ip: :class:`BoundPrimaryIP <hcloud.primary_ips.client.BoundPrimaryIP>` or  :class:`PrimaryIP <hcloud.primary_ips.domain.PrimaryIP>`
@@ -270,7 +270,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def change_protection(
         self,
-        primary_ip: PrimaryIP,
+        primary_ip: PrimaryIP | BoundPrimaryIP,
         delete: bool | None = None,
     ) -> BoundAction:
         """Changes the protection configuration of the Primary IP.
@@ -280,7 +280,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
                If true, prevents the Primary IP from being deleted
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {}
+        data: dict[str, Any] = {}
         if delete is not None:
             data.update({"delete": delete})
 
@@ -295,7 +295,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def assign(
         self,
-        primary_ip: PrimaryIP,
+        primary_ip: PrimaryIP | BoundPrimaryIP,
         assignee_id: int,
         assignee_type: str = "server",
     ) -> BoundAction:
@@ -317,7 +317,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, response["action"])
 
-    def unassign(self, primary_ip: PrimaryIP) -> BoundAction:
+    def unassign(self, primary_ip: PrimaryIP | BoundPrimaryIP) -> BoundAction:
         """Unassigns a Primary IP, resulting in it being unreachable. You may assign it to a server again at a later time.
 
         :param primary_ip: :class:`BoundPrimaryIP <hcloud.primary_ips.client.BoundPrimaryIP>` or  :class:`PrimaryIP <hcloud.primary_ips.domain.PrimaryIP>`
@@ -333,7 +333,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def change_dns_ptr(
         self,
-        primary_ip: PrimaryIP,
+        primary_ip: PrimaryIP | BoundPrimaryIP,
         ip: str,
         dns_ptr: str,
     ) -> BoundAction:

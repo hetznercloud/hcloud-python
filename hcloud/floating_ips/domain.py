@@ -98,7 +98,7 @@ class CreateFloatingIPResponse(BaseDomain):
     def __init__(
         self,
         floating_ip: BoundFloatingIP,
-        action: BoundAction,
+        action: BoundAction | None,
     ):
         self.floating_ip = floating_ip
         self.action = action

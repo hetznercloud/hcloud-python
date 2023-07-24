@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
 from .domain import SSHKey
@@ -75,7 +75,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return:  (List[:class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if name is not None:
             params["name"] = name
         if fingerprint is not None:
@@ -114,7 +114,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
             name=name, fingerprint=fingerprint, label_selector=label_selector
         )
 
-    def get_by_name(self, name: str) -> SSHKeysClient:
+    def get_by_name(self, name: str) -> BoundSSHKey | None:
         """Get ssh key by name
 
         :param name: str
@@ -123,7 +123,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_by_name(name)
 
-    def get_by_fingerprint(self, fingerprint: str) -> BoundSSHKey:
+    def get_by_fingerprint(self, fingerprint: str) -> BoundSSHKey | None:
         """Get ssh key by fingerprint
 
         :param fingerprint: str
@@ -149,7 +149,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
                User-defined labels (key-value pairs)
         :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`
         """
-        data = {"name": name, "public_key": public_key}
+        data: dict[str, Any] = {"name": name, "public_key": public_key}
         if labels is not None:
             data["labels"] = labels
         response = self._client.request(url="/ssh_keys", method="POST", json=data)
@@ -157,7 +157,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
 
     def update(
         self,
-        ssh_key: SSHKey,
+        ssh_key: SSHKey | BoundSSHKey,
         name: str | None = None,
         labels: dict[str, str] | None = None,
     ) -> BoundSSHKey:
@@ -170,7 +170,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
                User-defined labels (key-value pairs)
         :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`
         """
-        data = {}
+        data: dict[str, Any] = {}
         if name is not None:
             data["name"] = name
         if labels is not None:
@@ -182,7 +182,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundSSHKey(self, response["ssh_key"])
 
-    def delete(self, ssh_key: SSHKey) -> bool:
+    def delete(self, ssh_key: SSHKey | BoundSSHKey) -> bool:
         self._client.request(url=f"/ssh_keys/{ssh_key.id}", method="DELETE")
         """Deletes an SSH key. It cannot be used anymore.
 

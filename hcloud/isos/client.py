@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 from warnings import warn
 
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
@@ -67,7 +67,7 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
             )
             include_architecture_wildcard = include_wildcard_architecture
 
-        params = {}
+        params: dict[str, Any] = {}
         if name is not None:
             params["name"] = name
         if architecture is not None:
@@ -117,7 +117,7 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
             include_architecture_wildcard=include_architecture_wildcard,
         )
 
-    def get_by_name(self, name: str) -> BoundIso:
+    def get_by_name(self, name: str) -> BoundIso | None:
         """Get iso by name
 
         :param name: str

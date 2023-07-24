@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
@@ -15,7 +15,7 @@ class BoundImage(BoundModelBase):
 
     model = Image
 
-    def __init__(self, client, data):
+    def __init__(self, client: ImagesClient, data: dict):
         from ..servers import BoundServer
 
         created_from = data.get("created_from")
@@ -115,7 +115,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_actions_list(
         self,
-        image: Image,
+        image: Image | BoundImage,
         sort: list[str] | None = None,
         page: int | None = None,
         per_page: int | None = None,
@@ -134,7 +134,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if sort is not None:
             params["sort"] = sort
         if status is not None:
@@ -156,7 +156,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_actions(
         self,
-        image: Image,
+        image: Image | BoundImage,
         sort: list[str] | None = None,
         status: list[str] | None = None,
     ) -> list[BoundAction]:
@@ -217,7 +217,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundImage <hcloud.images.client.BoundImage>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if name is not None:
             params["name"] = name
         if label_selector is not None:
@@ -285,7 +285,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
             include_deprecated=include_deprecated,
         )
 
-    def get_by_name(self, name: str) -> BoundImage:
+    def get_by_name(self, name: str) -> BoundImage | None:
         """Get image by name
 
         Deprecated: Use get_by_name_and_architecture instead.
@@ -296,7 +296,11 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_by_name(name)
 
-    def get_by_name_and_architecture(self, name: str, architecture: str) -> BoundImage:
+    def get_by_name_and_architecture(
+        self,
+        name: str,
+        architecture: str,
+    ) -> BoundImage | None:
         """Get image by name
 
         :param name: str
@@ -311,7 +315,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
 
     def update(
         self,
-        image: Image,
+        image: Image | BoundImage,
         description: str | None = None,
         type: str | None = None,
         labels: dict[str, str] | None = None,
@@ -328,7 +332,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                User-defined labels (key-value pairs)
         :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
         """
-        data = {}
+        data: dict[str, Any] = {}
         if description is not None:
             data.update({"description": description})
         if type is not None:
@@ -340,7 +344,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundImage(self, response["image"])
 
-    def delete(self, image: Image) -> bool:
+    def delete(self, image: Image | BoundImage) -> bool:
         """Deletes an Image. Only images of type snapshot and backup can be deleted.
 
         :param :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
@@ -352,7 +356,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
 
     def change_protection(
         self,
-        image: Image,
+        image: Image | BoundImage,
         delete: bool | None = None,
     ) -> BoundAction:
         """Changes the protection configuration of the image. Can only be used on snapshots.
@@ -362,7 +366,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                If true, prevents the snapshot from being deleted
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {}
+        data: dict[str, Any] = {}
         if delete is not None:
             data.update({"delete": delete})
 

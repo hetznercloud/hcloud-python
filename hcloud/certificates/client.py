@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
@@ -20,7 +20,7 @@ class BoundCertificate(BoundModelBase):
 
     model = Certificate
 
-    def __init__(self, client, data, complete=True):
+    def __init__(self, client: CertificatesClient, data: dict, complete: bool = True):
         status = data.get("status")
         if status is not None:
             error_data = status.get("error")
@@ -134,7 +134,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if name is not None:
             params["name"] = name
 
@@ -173,7 +173,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(name=name, label_selector=label_selector)
 
-    def get_by_name(self, name: str) -> BoundCertificate:
+    def get_by_name(self, name: str) -> BoundCertificate | None:
         """Get certificate by name
 
         :param name: str
@@ -201,7 +201,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
                User-defined labels (key-value pairs)
         :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`
         """
-        data = {
+        data: dict[str, Any] = {
             "name": name,
             "certificate": certificate,
             "private_key": private_key,
@@ -228,7 +228,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
                User-defined labels (key-value pairs)
         :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`
         """
-        data = {
+        data: dict[str, Any] = {
             "name": name,
             "type": Certificate.TYPE_MANAGED,
             "domain_names": domain_names,
@@ -243,7 +243,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
 
     def update(
         self,
-        certificate: Certificate,
+        certificate: Certificate | BoundCertificate,
         name: str | None = None,
         labels: dict[str, str] | None = None,
     ) -> BoundCertificate:
@@ -256,7 +256,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
                User-defined labels (key-value pairs)
         :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`
         """
-        data = {}
+        data: dict[str, Any] = {}
         if name is not None:
             data["name"] = name
         if labels is not None:
@@ -268,7 +268,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundCertificate(self, response["certificate"])
 
-    def delete(self, certificate: Certificate) -> bool:
+    def delete(self, certificate: Certificate | BoundCertificate) -> bool:
         self._client.request(
             url=f"/certificates/{certificate.id}",
             method="DELETE",
@@ -283,7 +283,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_actions_list(
         self,
-        certificate: Certificate,
+        certificate: Certificate | BoundCertificate,
         status: list[str] | None = None,
         sort: list[str] | None = None,
         page: int | None = None,
@@ -302,7 +302,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if status is not None:
             params["status"] = status
         if sort is not None:
@@ -327,7 +327,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_actions(
         self,
-        certificate: Certificate,
+        certificate: Certificate | BoundCertificate,
         status: list[str] | None = None,
         sort: list[str] | None = None,
     ) -> list[BoundAction]:
@@ -342,7 +342,10 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_actions(certificate, status=status, sort=sort)
 
-    def retry_issuance(self, certificate: Certificate) -> BoundAction:
+    def retry_issuance(
+        self,
+        certificate: Certificate | BoundCertificate,
+    ) -> BoundAction:
         """Returns all action objects for a Certificate.
 
         :param certificate: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>` or :class:`Certificate <hcloud.certificates.domain.Certificate>`

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
@@ -18,7 +18,7 @@ class BoundVolume(BoundModelBase):
 
     model = Volume
 
-    def __init__(self, client, data, complete=True):
+    def __init__(self, client: VolumesClient, data: dict, complete: bool = True):
         location = data.get("location")
         if location is not None:
             data["location"] = BoundLocation(client._client.locations, location)
@@ -72,7 +72,7 @@ class BoundVolume(BoundModelBase):
         self,
         name: str | None = None,
         labels: dict[str, str] | None = None,
-    ) -> BoundAction:
+    ) -> BoundVolume:
         """Updates the volume properties.
 
         :param name: str (optional)
@@ -83,7 +83,7 @@ class BoundVolume(BoundModelBase):
         """
         return self._client.update(self, name, labels)
 
-    def delete(self) -> BoundAction:
+    def delete(self) -> bool:
         """Deletes a volume. All volume data is irreversibly destroyed. The volume must not be attached to a server and it must not have delete protection enabled.
 
         :return: boolean
@@ -168,7 +168,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundVolume <hcloud.volumes.client.BoundVolume>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if name is not None:
             params["name"] = name
         if label_selector is not None:
@@ -201,7 +201,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(label_selector=label_selector, status=status)
 
-    def get_by_name(self, name: str) -> BoundVolume:
+    def get_by_name(self, name: str) -> BoundVolume | None:
         """Get volume by name
 
         :param name: str
@@ -243,7 +243,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         if not (bool(location) ^ bool(server)):
             raise ValueError("only one of server or location must be provided")
 
-        data = {"name": name, "size": size}
+        data: dict[str, Any] = {"name": name, "size": size}
         if labels is not None:
             data["labels"] = labels
         if location is not None:
@@ -270,7 +270,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_actions_list(
         self,
-        volume: Volume,
+        volume: Volume | BoundVolume,
         status: list[str] | None = None,
         sort: list[str] | None = None,
         page: int | None = None,
@@ -289,7 +289,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if status is not None:
             params["status"] = status
         if sort is not None:
@@ -342,7 +342,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
                User-defined labels (key-value pairs)
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {}
+        data: dict[str, Any] = {}
         if name is not None:
             data.update({"name": name})
         if labels is not None:
@@ -354,7 +354,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundVolume(self, response["volume"])
 
-    def delete(self, volume: Volume | BoundVolume) -> BoundAction:
+    def delete(self, volume: Volume | BoundVolume) -> bool:
         """Deletes a volume. All volume data is irreversibly destroyed. The volume must not be attached to a server and it must not have delete protection enabled.
 
         :param volume: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`
@@ -391,7 +391,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         :param automount: boolean
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {"server": server.id}
+        data: dict[str, Any] = {"server": server.id}
         if automount is not None:
             data["automount"] = automount
 
@@ -415,8 +415,8 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, data["action"])
 
     def change_protection(
-        self: Volume | BoundVolume,
-        volume: bool | None,
+        self,
+        volume: Volume | BoundVolume,
         delete: bool | None = None,
     ) -> BoundAction:
         """Changes the protection configuration of a volume.
@@ -426,7 +426,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
                If True, prevents the volume from being deleted
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {}
+        data: dict[str, Any] = {}
         if delete is not None:
             data.update({"delete": delete})
 

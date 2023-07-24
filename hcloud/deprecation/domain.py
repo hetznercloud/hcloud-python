@@ -24,8 +24,8 @@ class DeprecationInfo(BaseDomain):
 
     def __init__(
         self,
-        announced=None,
-        unavailable_after=None,
+        announced: str | None = None,
+        unavailable_after: str | None = None,
     ):
         self.announced = isoparse(announced) if announced else None
         self.unavailable_after = (

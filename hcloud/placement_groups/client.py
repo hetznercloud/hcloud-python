@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import BoundAction
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
@@ -16,7 +16,7 @@ class BoundPlacementGroup(BoundModelBase):
     model = PlacementGroup
 
     def update(
-        self: str | None,
+        self,
         labels: dict[str, str] | None = None,
         name: str | None = None,
     ) -> BoundPlacementGroup:
@@ -82,7 +82,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: (List[:class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
 
-        params = {}
+        params: dict[str, Any] = {}
 
         if label_selector is not None:
             params["label_selector"] = label_selector
@@ -124,7 +124,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(label_selector=label_selector, name=name, sort=sort)
 
-    def get_by_name(self, name: str) -> BoundPlacementGroup:
+    def get_by_name(self, name: str) -> BoundPlacementGroup | None:
         """Get Placement Group by name
 
         :param name: str
@@ -150,7 +150,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
 
         :return: :class:`CreatePlacementGroupResponse <hcloud.placement_groups.domain.CreatePlacementGroupResponse>`
         """
-        data = {"name": name, "type": type}
+        data: dict[str, Any] = {"name": name, "type": type}
         if labels is not None:
             data["labels"] = labels
         response = self._client.request(
@@ -169,7 +169,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def update(
         self,
-        placement_group: PlacementGroup,
+        placement_group: PlacementGroup | BoundPlacementGroup,
         labels: dict[str, str] | None = None,
         name: str | None = None,
     ) -> BoundPlacementGroup:
@@ -183,7 +183,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>`
         """
 
-        data = {}
+        data: dict[str, Any] = {}
         if labels is not None:
             data["labels"] = labels
         if name is not None:
@@ -198,7 +198,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundPlacementGroup(self, response["placement_group"])
 
-    def delete(self, placement_group: PlacementGroup) -> bool:
+    def delete(self, placement_group: PlacementGroup | BoundPlacementGroup) -> bool:
         """Deletes a Placement Group.
 
         :param placement_group: :class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>` or :class:`PlacementGroup <hcloud.placement_groups.domain.PlacementGroup>`

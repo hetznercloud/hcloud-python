@@ -1,9 +1,14 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from dateutil.parser import isoparse
 
 from .._exceptions import HCloudException
 from ..core import BaseDomain
+
+if TYPE_CHECKING:
+    from .client import BoundAction
 
 
 class Action(BaseDomain):
@@ -39,14 +44,14 @@ class Action(BaseDomain):
 
     def __init__(
         self,
-        id,
-        command=None,
-        status=None,
-        progress=None,
-        started=None,
-        finished=None,
-        resources=None,
-        error=None,
+        id: int,
+        command: str | None = None,
+        status: str | None = None,
+        progress: int | None = None,
+        started: str | None = None,
+        finished: str | None = None,
+        resources: list[dict] | None = None,
+        error: dict | None = None,
     ):
         self.id = id
         self.command = command
@@ -62,7 +67,8 @@ class Action(BaseDomain):
 class ActionException(HCloudException):
     """A generic action exception"""
 
-    def __init__(self, action):
+    def __init__(self, action: Action | BoundAction):
+        assert self.__doc__ is not None
         message = self.__doc__
         if action.error is not None and "message" in action.error:
             message += f": {action.error['message']}"
