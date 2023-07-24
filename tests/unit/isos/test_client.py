@@ -6,7 +6,7 @@ from unittest import mock
 
 import pytest
 
-from hcloud.isos.client import BoundIso, IsosClient
+from hcloud.isos import BoundIso, IsosClient
 
 
 class TestBoundIso:

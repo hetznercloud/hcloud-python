@@ -4,7 +4,7 @@ from unittest import mock
 
 import pytest
 
-from hcloud.load_balancer_types.client import LoadBalancerTypesClient
+from hcloud.load_balancer_types import LoadBalancerTypesClient
 
 
 class TestLoadBalancerTypesClient:

@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple
 
-from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import Meta
+from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
 from .domain import LoadBalancerType
 
 if TYPE_CHECKING:

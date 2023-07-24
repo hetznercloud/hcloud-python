@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ..core.domain import BaseDomain, DomainIdentityMixin
+from ..core import BaseDomain, DomainIdentityMixin
 
 
 class Datacenter(BaseDomain, DomainIdentityMixin):

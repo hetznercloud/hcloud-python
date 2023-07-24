@@ -4,9 +4,13 @@ from unittest import mock
 
 import pytest
 
-from hcloud.actions.client import BoundAction
-from hcloud.certificates.client import BoundCertificate, CertificatesClient
-from hcloud.certificates.domain import Certificate, ManagedCertificateStatus
+from hcloud.actions import BoundAction
+from hcloud.certificates import (
+    BoundCertificate,
+    Certificate,
+    CertificatesClient,
+    ManagedCertificateStatus,
+)
 
 
 class TestBoundCertificate:

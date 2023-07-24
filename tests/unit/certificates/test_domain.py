@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
-from hcloud.certificates.domain import Certificate
+from hcloud.certificates import Certificate
 
 
 class TestCertificate:

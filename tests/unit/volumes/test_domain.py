@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
-from hcloud.volumes.domain import Volume
+from hcloud.volumes import Volume
 
 
 class TestVolume:

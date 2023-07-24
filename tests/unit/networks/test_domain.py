@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
-from hcloud.networks.domain import Network
+from hcloud.networks import Network
 
 
 class TestNetwork:

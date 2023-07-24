@@ -6,23 +6,23 @@ import requests
 
 from .__version__ import VERSION
 from ._exceptions import APIException
-from .actions.client import ActionsClient
-from .certificates.client import CertificatesClient
-from .datacenters.client import DatacentersClient
-from .firewalls.client import FirewallsClient
-from .floating_ips.client import FloatingIPsClient
-from .images.client import ImagesClient
-from .isos.client import IsosClient
-from .load_balancer_types.client import LoadBalancerTypesClient
-from .load_balancers.client import LoadBalancersClient
-from .locations.client import LocationsClient
-from .networks.client import NetworksClient
-from .placement_groups.client import PlacementGroupsClient
-from .primary_ips.client import PrimaryIPsClient
-from .server_types.client import ServerTypesClient
-from .servers.client import ServersClient
-from .ssh_keys.client import SSHKeysClient
-from .volumes.client import VolumesClient
+from .actions import ActionsClient
+from .certificates import CertificatesClient
+from .datacenters import DatacentersClient
+from .firewalls import FirewallsClient
+from .floating_ips import FloatingIPsClient
+from .images import ImagesClient
+from .isos import IsosClient
+from .load_balancer_types import LoadBalancerTypesClient
+from .load_balancers import LoadBalancersClient
+from .locations import LocationsClient
+from .networks import NetworksClient
+from .placement_groups import PlacementGroupsClient
+from .primary_ips import PrimaryIPsClient
+from .server_types import ServerTypesClient
+from .servers import ServersClient
+from .ssh_keys import SSHKeysClient
+from .volumes import VolumesClient
 
 
 class Client:

@@ -4,21 +4,22 @@ from unittest import mock
 
 import pytest
 
-from hcloud.actions.client import BoundAction
-from hcloud.load_balancer_types.domain import LoadBalancerType
-from hcloud.load_balancers.client import BoundLoadBalancer, LoadBalancersClient
-from hcloud.load_balancers.domain import (
+from hcloud.actions import BoundAction
+from hcloud.load_balancer_types import LoadBalancerType
+from hcloud.load_balancers import (
+    BoundLoadBalancer,
     LoadBalancer,
     LoadBalancerAlgorithm,
     LoadBalancerHealthCheck,
+    LoadBalancersClient,
     LoadBalancerService,
     LoadBalancerTarget,
     LoadBalancerTargetIP,
     LoadBalancerTargetLabelSelector,
 )
-from hcloud.locations.domain import Location
-from hcloud.networks.domain import Network
-from hcloud.servers.domain import Server
+from hcloud.locations import Location
+from hcloud.networks import Network
+from hcloud.servers import Server
 
 
 class TestBoundLoadBalancer:

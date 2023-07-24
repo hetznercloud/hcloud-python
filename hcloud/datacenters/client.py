@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple
 
-from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import Meta
-from ..locations.client import BoundLocation
-from ..server_types.client import BoundServerType
+from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..locations import BoundLocation
+from ..server_types import BoundServerType
 from .domain import Datacenter, DatacenterServerTypes
 
 if TYPE_CHECKING:

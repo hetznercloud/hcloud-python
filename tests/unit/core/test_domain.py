@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 from dateutil.parser import isoparse
 
-from hcloud.core.domain import BaseDomain, DomainIdentityMixin, Meta, Pagination
+from hcloud.core import BaseDomain, DomainIdentityMixin, Meta, Pagination
 
 
 class TestMeta:

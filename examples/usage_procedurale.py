@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from hcloud import Client
-from hcloud.images.domain import Image
-from hcloud.server_types.domain import ServerType
-from hcloud.servers.domain import Server
-from hcloud.volumes.domain import Volume
+from hcloud.images import Image
+from hcloud.server_types import ServerType
+from hcloud.servers import Server
+from hcloud.volumes import Volume
 
 client = Client(token="project-token")
 

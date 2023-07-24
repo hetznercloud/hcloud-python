@@ -4,8 +4,7 @@ from unittest import mock
 
 import pytest
 
-from hcloud.ssh_keys.client import BoundSSHKey, SSHKeysClient
-from hcloud.ssh_keys.domain import SSHKey
+from hcloud.ssh_keys import BoundSSHKey, SSHKey, SSHKeysClient
 
 
 class TestBoundSSHKey:

@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
-from hcloud.floating_ips.domain import FloatingIP
+from hcloud.floating_ips import FloatingIP
 
 
 class TestFloatingIP:

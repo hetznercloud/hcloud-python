@@ -4,7 +4,7 @@ from unittest import mock
 
 import pytest
 
-from hcloud.placement_groups.client import BoundPlacementGroup, PlacementGroupsClient
+from hcloud.placement_groups import BoundPlacementGroup, PlacementGroupsClient
 
 
 def check_variables(placement_group, expected):

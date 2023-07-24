@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple
 
-from ..actions.client import BoundAction
-from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import Meta
+from ..actions import BoundAction
+from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
 from .domain import CreatePrimaryIPResponse, PrimaryIP
 
 if TYPE_CHECKING:
@@ -17,7 +16,7 @@ class BoundPrimaryIP(BoundModelBase):
     model = PrimaryIP
 
     def __init__(self, client, data, complete=True):
-        from ..datacenters.client import BoundDatacenter
+        from ..datacenters import BoundDatacenter
 
         datacenter = data.get("datacenter", {})
         if datacenter:

@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple
 
-from ..actions.client import ActionsPageResult, BoundAction
-from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import Meta
-from ..locations.client import BoundLocation
+from ..actions import ActionsPageResult, BoundAction
+from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..locations import BoundLocation
 from .domain import CreateVolumeResponse, Volume
 
 if TYPE_CHECKING:
@@ -22,7 +21,7 @@ class BoundVolume(BoundModelBase):
         if location is not None:
             data["location"] = BoundLocation(client._client.locations, location)
 
-        from ..servers.client import BoundServer
+        from ..servers import BoundServer
 
         server = data.get("server")
         if server is not None:

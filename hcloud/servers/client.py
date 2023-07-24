@@ -2,21 +2,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple
 
-from ..actions.client import ActionsPageResult, BoundAction
-from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import Meta
-from ..datacenters.client import BoundDatacenter
-from ..firewalls.client import BoundFirewall
-from ..floating_ips.client import BoundFloatingIP
-from ..images.client import BoundImage
-from ..images.domain import CreateImageResponse
-from ..isos.client import BoundIso
-from ..networks.client import BoundNetwork  # noqa
-from ..networks.domain import Network  # noqa
-from ..placement_groups.client import BoundPlacementGroup
-from ..primary_ips.client import BoundPrimaryIP
-from ..server_types.client import BoundServerType
-from ..volumes.client import BoundVolume
+from ..actions import ActionsPageResult, BoundAction
+from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..datacenters import BoundDatacenter
+from ..firewalls import BoundFirewall
+from ..floating_ips import BoundFloatingIP
+from ..images import BoundImage, CreateImageResponse
+from ..isos import BoundIso
+from ..networks import BoundNetwork  # noqa
+from ..networks import Network  # noqa
+from ..placement_groups import BoundPlacementGroup
+from ..primary_ips import BoundPrimaryIP
+from ..server_types import BoundServerType
+from ..volumes import BoundVolume
 from .domain import (
     CreateServerResponse,
     EnableRescueResponse,

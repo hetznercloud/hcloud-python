@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
-from hcloud.placement_groups.domain import PlacementGroup
+from hcloud.placement_groups import PlacementGroup
 
 
 class TestPlacementGroup:

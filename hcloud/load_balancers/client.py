@@ -2,14 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple
 
-from ..actions.client import ActionsPageResult, BoundAction
-from ..certificates.client import BoundCertificate
-from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import Meta
-from ..load_balancer_types.client import BoundLoadBalancerType
-from ..locations.client import BoundLocation
-from ..networks.client import BoundNetwork
-from ..servers.client import BoundServer
+from ..actions import ActionsPageResult, BoundAction
+from ..certificates import BoundCertificate
+from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..load_balancer_types import BoundLoadBalancerType
+from ..locations import BoundLocation
+from ..networks import BoundNetwork
+from ..servers import BoundServer
 from .domain import (
     CreateLoadBalancerResponse,
     IPv4Address,

@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
-from hcloud.primary_ips.domain import PrimaryIP
+from hcloud.primary_ips import PrimaryIP
 
 
 class TestPrimaryIP:
