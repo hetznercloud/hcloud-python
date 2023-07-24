@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from hcloud import Client
-from hcloud.images.domain import Image
-from hcloud.server_types.domain import ServerType
+from hcloud.images import Image
+from hcloud.server_types import ServerType
 
 # Create a client
 client = Client(token="project-token")

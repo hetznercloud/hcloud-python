@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
-from hcloud.images.domain import Image
+from hcloud.images import Image
 
 
 class TestImage:

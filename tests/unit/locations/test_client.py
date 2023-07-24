@@ -4,7 +4,7 @@ from unittest import mock  # noqa: F401
 
 import pytest  # noqa: F401
 
-from hcloud.locations.client import LocationsClient
+from hcloud.locations import LocationsClient
 
 
 class TestLocationsClient:

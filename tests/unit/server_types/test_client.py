@@ -5,7 +5,7 @@ from unittest import mock
 
 import pytest
 
-from hcloud.server_types.client import BoundServerType, ServerTypesClient
+from hcloud.server_types import BoundServerType, ServerTypesClient
 
 
 class TestBoundServerType:

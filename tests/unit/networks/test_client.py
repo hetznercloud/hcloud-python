@@ -5,10 +5,10 @@ from unittest import mock
 import pytest
 from dateutil.parser import isoparse
 
-from hcloud.actions.client import BoundAction
-from hcloud.networks.client import BoundNetwork, NetworksClient
-from hcloud.networks.domain import Network, NetworkRoute, NetworkSubnet
-from hcloud.servers.client import BoundServer
+from hcloud.actions import BoundAction
+from hcloud.networks import BoundNetwork, NetworksClient
+from hcloud.networks import Network, NetworkRoute, NetworkSubnet
+from hcloud.servers import BoundServer
 
 
 class TestBoundNetwork:

@@ -5,7 +5,7 @@ from datetime import timezone
 
 import pytest
 
-from hcloud.actions.domain import (
+from hcloud.actions import (
     Action,
     ActionException,
     ActionFailedException,

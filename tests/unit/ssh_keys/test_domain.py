@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
-from hcloud.ssh_keys.domain import SSHKey
+from hcloud.ssh_keys import SSHKey
 
 
 class TestSSHKey:

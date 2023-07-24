@@ -5,9 +5,9 @@ from unittest import mock
 
 import pytest
 
-from hcloud.actions.client import ActionsPageResult
-from hcloud.core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from hcloud.core.domain import BaseDomain, Meta
+from hcloud.actions import ActionsPageResult
+from hcloud.core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from hcloud.core import BaseDomain, Meta
 
 
 class TestBoundModelBase:

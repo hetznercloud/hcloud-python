@@ -4,25 +4,25 @@ from unittest import mock
 
 import pytest
 
-from hcloud.actions.client import BoundAction
-from hcloud.datacenters.client import BoundDatacenter
-from hcloud.datacenters.domain import Datacenter
-from hcloud.firewalls.client import BoundFirewall
-from hcloud.firewalls.domain import Firewall
-from hcloud.floating_ips.client import BoundFloatingIP
-from hcloud.images.client import BoundImage
-from hcloud.images.domain import Image
-from hcloud.isos.client import BoundIso
-from hcloud.isos.domain import Iso
-from hcloud.locations.domain import Location
-from hcloud.networks.client import BoundNetwork
-from hcloud.networks.domain import Network
-from hcloud.placement_groups.client import BoundPlacementGroup
-from hcloud.placement_groups.domain import PlacementGroup
-from hcloud.server_types.client import BoundServerType
-from hcloud.server_types.domain import ServerType
-from hcloud.servers.client import BoundServer, ServersClient
-from hcloud.servers.domain import (
+from hcloud.actions import BoundAction
+from hcloud.datacenters import BoundDatacenter
+from hcloud.datacenters import Datacenter
+from hcloud.firewalls import BoundFirewall
+from hcloud.firewalls import Firewall
+from hcloud.floating_ips import BoundFloatingIP
+from hcloud.images import BoundImage
+from hcloud.images import Image
+from hcloud.isos import BoundIso
+from hcloud.isos import Iso
+from hcloud.locations import Location
+from hcloud.networks import BoundNetwork
+from hcloud.networks import Network
+from hcloud.placement_groups import BoundPlacementGroup
+from hcloud.placement_groups import PlacementGroup
+from hcloud.server_types import BoundServerType
+from hcloud.server_types import ServerType
+from hcloud.servers import BoundServer, ServersClient
+from hcloud.servers import (
     IPv4Address,
     IPv6Network,
     PrivateNet,
@@ -30,8 +30,8 @@ from hcloud.servers.domain import (
     PublicNetworkFirewall,
     Server,
 )
-from hcloud.volumes.client import BoundVolume
-from hcloud.volumes.domain import Volume
+from hcloud.volumes import BoundVolume
+from hcloud.volumes import Volume
 
 
 class TestBoundServer:

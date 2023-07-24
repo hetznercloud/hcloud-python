@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
-from hcloud.load_balancers.domain import LoadBalancer
+from hcloud.load_balancers import LoadBalancer
 
 
 class TestLoadBalancers:

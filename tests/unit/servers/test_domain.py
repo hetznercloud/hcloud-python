@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
-from hcloud.servers.domain import Server
+from hcloud.servers import Server
 
 
 class TestServer:

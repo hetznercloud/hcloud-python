@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
-from hcloud.isos.domain import Iso
+from hcloud.isos import Iso
 
 
 class TestIso:

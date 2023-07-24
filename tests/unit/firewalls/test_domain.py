@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
-from hcloud.firewalls.domain import Firewall
+from hcloud.firewalls import Firewall
 
 
 class TestFirewall:
