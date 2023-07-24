@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, NamedTuple
 from warnings import warn
 
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core import Meta
+from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
 from .domain import Iso
 
 if TYPE_CHECKING:

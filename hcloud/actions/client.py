@@ -3,8 +3,7 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING, NamedTuple
 
-from ..core import BoundModelBase, ClientEntityBase
-from ..core import Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import Action, ActionFailedException, ActionTimeoutException
 
 if TYPE_CHECKING:
