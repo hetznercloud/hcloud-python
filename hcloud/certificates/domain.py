@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from dateutil.parser import isoparse
 
 from ..core import BaseDomain, DomainIdentityMixin
+
+if TYPE_CHECKING:
+    from ..actions import BoundAction
+    from .client import BoundCertificate
 
 
 class Certificate(BaseDomain, DomainIdentityMixin):
@@ -112,8 +118,8 @@ class CreateManagedCertificateResponse(BaseDomain):
 
     def __init__(
         self,
-        certificate,  # type: BoundCertificate
-        action,  # type: BoundAction
+        certificate: BoundCertificate,
+        action: BoundAction,
     ):
         self.certificate = certificate
         self.action = action

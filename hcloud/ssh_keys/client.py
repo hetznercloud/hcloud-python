@@ -14,8 +14,9 @@ class BoundSSHKey(BoundModelBase):
 
     model = SSHKey
 
-    def update(self, name=None, labels=None):
-        # type: (Optional[str], Optional[Dict[str, str]]) -> BoundSSHKey
+    def update(
+        self, name: str | None = None, labels: dict[str, str] | None = None
+    ) -> BoundSSHKey:
         """Updates an SSH key. You can update an SSH key name and an SSH key labels.
 
         :param description: str (optional)
@@ -26,8 +27,7 @@ class BoundSSHKey(BoundModelBase):
         """
         return self._client.update(self, name, labels)
 
-    def delete(self):
-        # type: () -> bool
+    def delete(self) -> bool:
         """Deletes an SSH key. It cannot be used anymore.
         :return: boolean
         """
@@ -42,8 +42,7 @@ class SSHKeysPageResult(NamedTuple):
 class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
     _client: Client
 
-    def get_by_id(self, id):
-        # type: (int) -> BoundSSHKey
+    def get_by_id(self, id: int) -> BoundSSHKey:
         """Get a specific SSH Key by its ID
 
         :param id: int
@@ -54,13 +53,12 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_list(
         self,
-        name=None,  # type: Optional[str]
-        fingerprint=None,  # type: Optional[str]
-        label_selector=None,  # type: Optional[str]
-        page=None,  # type: Optional[int]
-        per_page=None,  # type: Optional[int]
-    ):
-        # type: (...) -> PageResults[List[BoundSSHKey], Meta]
+        name: str | None = None,
+        fingerprint: str | None = None,
+        label_selector: str | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> SSHKeysPageResult:
         """Get a list of SSH keys from the account
 
         :param name: str (optional)
@@ -94,8 +92,12 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
         ]
         return SSHKeysPageResult(ssh_keys, Meta.parse_meta(response))
 
-    def get_all(self, name=None, fingerprint=None, label_selector=None):
-        # type: (Optional[str], Optional[str], Optional[str]) -> List[BoundSSHKey]
+    def get_all(
+        self,
+        name: str | None = None,
+        fingerprint: str | None = None,
+        label_selector: str | None = None,
+    ) -> list[BoundSSHKey]:
         """Get all SSH keys from the account
 
         :param name: str (optional)
@@ -110,8 +112,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
             name=name, fingerprint=fingerprint, label_selector=label_selector
         )
 
-    def get_by_name(self, name):
-        # type: (str) -> SSHKeysClient
+    def get_by_name(self, name: str) -> SSHKeysClient:
         """Get ssh key by name
 
         :param name: str
@@ -120,8 +121,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_by_name(name)
 
-    def get_by_fingerprint(self, fingerprint):
-        # type: (str) -> BoundSSHKey
+    def get_by_fingerprint(self, fingerprint: str) -> BoundSSHKey:
         """Get ssh key by fingerprint
 
         :param fingerprint: str
@@ -132,8 +132,9 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
         sshkeys = response.ssh_keys
         return sshkeys[0] if sshkeys else None
 
-    def create(self, name, public_key, labels=None):
-        # type: (str, str, Optional[Dict[str, str]]) -> BoundSSHKey
+    def create(
+        self, name: str, public_key: str, labels: dict[str, str] | None = None
+    ) -> BoundSSHKey:
         """Creates a new SSH key with the given name and public_key.
 
         :param name: str
@@ -149,8 +150,12 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
         response = self._client.request(url="/ssh_keys", method="POST", json=data)
         return BoundSSHKey(self, response["ssh_key"])
 
-    def update(self, ssh_key, name=None, labels=None):
-        # type: (SSHKey,  Optional[str],  Optional[Dict[str, str]]) -> BoundSSHKey
+    def update(
+        self,
+        ssh_key: SSHKey,
+        name: str | None = None,
+        labels: dict[str, str] | None = None,
+    ) -> BoundSSHKey:
         """Updates an SSH key. You can update an SSH key name and an SSH key labels.
 
         :param ssh_key: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>` or  :class:`SSHKey <hcloud.ssh_keys.domain.SSHKey>`
@@ -172,8 +177,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundSSHKey(self, response["ssh_key"])
 
-    def delete(self, ssh_key):
-        # type: (SSHKey) -> bool
+    def delete(self, ssh_key: SSHKey) -> bool:
         self._client.request(url=f"/ssh_keys/{ssh_key.id}", method="DELETE")
         """Deletes an SSH key. It cannot be used anymore.
 

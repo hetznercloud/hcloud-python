@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from dateutil.parser import isoparse
 
 from ..core import BaseDomain
+
+if TYPE_CHECKING:
+    from ..actions import BoundAction
+    from .client import BoundPlacementGroup
 
 
 class PlacementGroup(BaseDomain):
@@ -53,8 +59,8 @@ class CreatePlacementGroupResponse(BaseDomain):
 
     def __init__(
         self,
-        placement_group,  # type: BoundPlacementGroup
-        action,  # type: BoundAction
+        placement_group: BoundPlacementGroup,
+        action: BoundAction,
     ):
         self.placement_group = placement_group
         self.action = action

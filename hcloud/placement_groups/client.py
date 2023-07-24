@@ -15,8 +15,11 @@ class BoundPlacementGroup(BoundModelBase):
 
     model = PlacementGroup
 
-    def update(self, labels=None, name=None):
-        # type: (Optional[str], Optional[Dict[str, str]], Optional[str]) -> BoundPlacementGroup
+    def update(
+        self: str | None,
+        labels: dict[str, str] | None = None,
+        name: str | None = None,
+    ) -> BoundPlacementGroup:
         """Updates the name or labels of a Placement Group
 
         :param labels: Dict[str, str] (optional)
@@ -27,8 +30,7 @@ class BoundPlacementGroup(BoundModelBase):
         """
         return self._client.update(self, labels, name)
 
-    def delete(self):
-        # type: () -> bool
+    def delete(self) -> bool:
         """Deletes a Placement Group
 
         :return: boolean
@@ -44,8 +46,7 @@ class PlacementGroupsPageResult(NamedTuple):
 class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
     _client: Client
 
-    def get_by_id(self, id):
-        # type: (int) -> BoundPlacementGroup
+    def get_by_id(self, id: int) -> BoundPlacementGroup:
         """Returns a specific Placement Group object
 
         :param id: int
@@ -59,14 +60,13 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_list(
         self,
-        label_selector=None,  # type: Optional[str]
-        page=None,  # type: Optional[int]
-        per_page=None,  # type: Optional[int]
-        name=None,  # type: Optional[str]
-        sort=None,  # type: Optional[List[str]]
-        type=None,  # type: Optional[str]
-    ):
-        # type: (...) -> PageResults[List[BoundPlacementGroup]]
+        label_selector: str | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+        name: str | None = None,
+        sort: list[str] | None = None,
+        type: str | None = None,
+    ) -> PlacementGroupsPageResult:
         """Get a list of Placement Groups
 
         :param label_selector: str (optional)
@@ -106,8 +106,12 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
 
         return PlacementGroupsPageResult(placement_groups, Meta.parse_meta(response))
 
-    def get_all(self, label_selector=None, name=None, sort=None):
-        # type: (Optional[str], Optional[str],  Optional[List[str]]) -> List[BoundPlacementGroup]
+    def get_all(
+        self,
+        label_selector: str | None = None,
+        name: str | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundPlacementGroup]:
         """Get all Placement Groups
 
         :param label_selector: str (optional)
@@ -120,8 +124,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(label_selector=label_selector, name=name, sort=sort)
 
-    def get_by_name(self, name):
-        # type: (str) -> BoundPlacementGroup
+    def get_by_name(self, name: str) -> BoundPlacementGroup:
         """Get Placement Group by name
 
         :param name: str
@@ -132,11 +135,10 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def create(
         self,
-        name,  # type: str
-        type,  # type: str
-        labels=None,  # type: Optional[Dict[str, str]]
-    ):
-        # type: (...) -> CreatePlacementGroupResponse
+        name: str,
+        type: str,
+        labels: dict[str, str] | None = None,
+    ) -> CreatePlacementGroupResponse:
         """Creates a new Placement Group.
 
         :param name: str
@@ -165,8 +167,12 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return result
 
-    def update(self, placement_group, labels=None, name=None):
-        # type: (PlacementGroup, Optional[Dict[str, str]], Optional[str]) -> BoundPlacementGroup
+    def update(
+        self,
+        placement_group: PlacementGroup,
+        labels: dict[str, str] | None = None,
+        name: str | None = None,
+    ) -> BoundPlacementGroup:
         """Updates the description or labels of a Placement Group.
 
         :param placement_group: :class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>` or :class:`PlacementGroup <hcloud.placement_groups.domain.PlacementGroup>`
@@ -192,8 +198,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundPlacementGroup(self, response["placement_group"])
 
-    def delete(self, placement_group):
-        # type: (PlacementGroup) -> bool
+    def delete(self, placement_group: PlacementGroup) -> bool:
         """Deletes a Placement Group.
 
         :param placement_group: :class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>` or :class:`PlacementGroup <hcloud.placement_groups.domain.PlacementGroup>`

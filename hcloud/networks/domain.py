@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from dateutil.parser import isoparse
 
 from ..core import BaseDomain
+
+if TYPE_CHECKING:
+    from ..actions import BoundAction
+    from .client import BoundNetwork
 
 
 class Network(BaseDomain):
@@ -128,8 +134,8 @@ class CreateNetworkResponse(BaseDomain):
 
     def __init__(
         self,
-        network,  # type: BoundNetwork
-        action,  # type: BoundAction
+        network: BoundNetwork,
+        action: BoundAction,
     ):
         self.network = network
         self.action = action

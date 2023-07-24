@@ -24,8 +24,7 @@ class IsosPageResult(NamedTuple):
 class IsosClient(ClientEntityBase, GetEntityByNameMixin):
     _client: Client
 
-    def get_by_id(self, id):
-        # type: (int) -> BoundIso
+    def get_by_id(self, id: int) -> BoundIso:
         """Get a specific ISO by its id
 
         :param id: int
@@ -36,14 +35,13 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_list(
         self,
-        name=None,  # type: Optional[str]
-        architecture=None,  # type: Optional[List[str]]
-        include_wildcard_architecture=None,  # type: Optional[bool]
-        include_architecture_wildcard=None,  # type: Optional[bool]
-        page=None,  # type: Optional[int]
-        per_page=None,  # type: Optional[int]
-    ):
-        # type: (...) -> PageResults[List[BoundIso], Meta]
+        name: str | None = None,
+        architecture: list[str] | None = None,
+        include_wildcard_architecture: bool | None = None,
+        include_architecture_wildcard: bool | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> IsosPageResult:
         """Get a list of ISOs
 
         :param name: str (optional)
@@ -87,12 +85,11 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_all(
         self,
-        name=None,  # type: Optional[str]
-        architecture=None,  # type: Optional[List[str]]
-        include_wildcard_architecture=None,  # type: Optional[bool]
-        include_architecture_wildcard=None,  # type: Optional[bool]
-    ):
-        # type: (...) -> List[BoundIso]
+        name: str | None = None,
+        architecture: list[str] | None = None,
+        include_wildcard_architecture: bool | None = None,
+        include_architecture_wildcard: bool | None = None,
+    ) -> list[BoundIso]:
         """Get all ISOs
 
         :param name: str (optional)
@@ -120,8 +117,7 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
             include_architecture_wildcard=include_architecture_wildcard,
         )
 
-    def get_by_name(self, name):
-        # type: (str) -> BoundIso
+    def get_by_name(self, name: str) -> BoundIso:
         """Get iso by name
 
         :param name: str

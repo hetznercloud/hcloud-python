@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Callable
+
 
 class ClientEntityBase:
     max_per_page = 50
@@ -13,11 +15,10 @@ class ClientEntityBase:
 
     def _get_all(
         self,
-        list_function,  # type: function
+        list_function: Callable,
         *args,
         **kwargs,
-    ):
-        # type (...) -> List[BoundModelBase]
+    ) -> list[BoundModelBase]:
         results = []
 
         page = 1
@@ -42,12 +43,10 @@ class ClientEntityBase:
 
         return results
 
-    def get_all(self, *args, **kwargs):
-        # type: (...) -> List[BoundModelBase]
+    def get_all(self, *args, **kwargs) -> list[BoundModelBase]:
         return self._get_all(self.get_list, *args, **kwargs)
 
-    def get_actions(self, *args, **kwargs):
-        # type: (...) -> List[BoundModelBase]
+    def get_actions(self, *args, **kwargs) -> list[BoundModelBase]:
         if not hasattr(self, "get_actions_list"):
             raise ValueError("this endpoint does not support get_actions method")
 
@@ -59,8 +58,7 @@ class GetEntityByNameMixin:
     Use as a mixin for ClientEntityBase classes
     """
 
-    def get_by_name(self, name):
-        # type: (str) -> BoundModelBase
+    def get_by_name(self, name: str) -> BoundModelBase:
         entities, _ = self.get_list(name=name)
         return entities[0] if entities else None
 

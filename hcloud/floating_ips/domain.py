@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from dateutil.parser import isoparse
 
 from ..core import BaseDomain
+
+if TYPE_CHECKING:
+    from ..actions import BoundAction
+    from .client import BoundFloatingIP
 
 
 class FloatingIP(BaseDomain):
@@ -91,8 +97,8 @@ class CreateFloatingIPResponse(BaseDomain):
 
     def __init__(
         self,
-        floating_ip,  # type: BoundFloatingIP
-        action,  # type: BoundAction
+        floating_ip: BoundFloatingIP,
+        action: BoundAction,
     ):
         self.floating_ip = floating_ip
         self.action = action

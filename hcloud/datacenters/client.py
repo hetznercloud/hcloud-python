@@ -58,8 +58,7 @@ class DatacentersPageResult(NamedTuple):
 class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
     _client: Client
 
-    def get_by_id(self, id):
-        # type: (int) -> BoundDatacenter
+    def get_by_id(self, id: int) -> BoundDatacenter:
         """Get a specific datacenter by its ID.
 
         :param id: int
@@ -70,11 +69,10 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_list(
         self,
-        name=None,  # type: Optional[str]
-        page=None,  # type: Optional[int]
-        per_page=None,  # type: Optional[int]
-    ):
-        # type: (...) -> PageResults[List[BoundDatacenter], Meta]
+        name: str | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> DatacentersPageResult:
         """Get a list of datacenters
 
         :param name: str (optional)
@@ -104,8 +102,7 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
 
         return DatacentersPageResult(datacenters, Meta.parse_meta(response))
 
-    def get_all(self, name=None):
-        # type: (Optional[str]) -> List[BoundDatacenter]
+    def get_all(self, name: str | None = None) -> list[BoundDatacenter]:
         """Get all datacenters
 
         :param name: str (optional)
@@ -114,8 +111,7 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(name=name)
 
-    def get_by_name(self, name):
-        # type: (str) -> BoundDatacenter
+    def get_by_name(self, name: str) -> BoundDatacenter:
         """Get datacenter by name
 
         :param name: str

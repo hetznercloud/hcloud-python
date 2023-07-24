@@ -9,6 +9,8 @@ from .domain import CreateVolumeResponse, Volume
 
 if TYPE_CHECKING:
     from .._client import Client
+    from ..locations import Location
+    from ..servers import BoundServer, Server
 
 
 class BoundVolume(BoundModelBase):
@@ -30,8 +32,13 @@ class BoundVolume(BoundModelBase):
             )
         super().__init__(client, data, complete)
 
-    def get_actions_list(self, status=None, sort=None, page=None, per_page=None):
-        # type: (Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction, Meta]]
+    def get_actions_list(
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
         """Returns all action objects for a volume.
 
         :param status: List[str] (optional)
@@ -46,8 +53,9 @@ class BoundVolume(BoundModelBase):
         """
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
-    def get_actions(self, status=None, sort=None):
-        # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
+    def get_actions(
+        self, status: list[str] | None = None, sort: list[str] | None = None
+    ) -> list[BoundAction]:
         """Returns all action objects for a volume.
 
         :param status: List[str] (optional)
@@ -58,8 +66,9 @@ class BoundVolume(BoundModelBase):
         """
         return self._client.get_actions(self, status, sort)
 
-    def update(self, name=None, labels=None):
-        # type: (Optional[str], Optional[Dict[str, str]]) -> BoundAction
+    def update(
+        self, name: str | None = None, labels: dict[str, str] | None = None
+    ) -> BoundAction:
         """Updates the volume properties.
 
         :param name: str (optional)
@@ -70,16 +79,16 @@ class BoundVolume(BoundModelBase):
         """
         return self._client.update(self, name, labels)
 
-    def delete(self):
-        # type: () -> BoundAction
+    def delete(self) -> BoundAction:
         """Deletes a volume. All volume data is irreversibly destroyed. The volume must not be attached to a server and it must not have delete protection enabled.
 
         :return: boolean
         """
         return self._client.delete(self)
 
-    def attach(self, server, automount=None):
-        # type: (Union[Server, BoundServer], Optional[bool]) -> BoundAction
+    def attach(
+        self, server: Server | BoundServer, automount: bool | None = None
+    ) -> BoundAction:
         """Attaches a volume to a server. Works only if the server is in the same location as the volume.
 
         :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
@@ -88,16 +97,14 @@ class BoundVolume(BoundModelBase):
         """
         return self._client.attach(self, server, automount)
 
-    def detach(self):
-        # type: () -> BoundAction
+    def detach(self) -> BoundAction:
         """Detaches a volume from the server it’s attached to. You may attach it to a server again at a later time.
 
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         return self._client.detach(self)
 
-    def resize(self, size):
-        # type: (int) -> BoundAction
+    def resize(self, size: int) -> BoundAction:
         """Changes the size of a volume. Note that downsizing a volume is not possible.
 
         :param size: int
@@ -106,8 +113,7 @@ class BoundVolume(BoundModelBase):
         """
         return self._client.resize(self, size)
 
-    def change_protection(self, delete=None):
-        # type: (Optional[bool]) -> BoundAction
+    def change_protection(self, delete: bool | None = None) -> BoundAction:
         """Changes the protection configuration of a volume.
 
         :param delete: boolean
@@ -125,8 +131,7 @@ class VolumesPageResult(NamedTuple):
 class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
     _client: Client
 
-    def get_by_id(self, id):
-        # type: (int) -> volumes.client.BoundVolume
+    def get_by_id(self, id: int) -> BoundVolume:
         """Get a specific volume by its id
 
         :param id: int
@@ -136,9 +141,13 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundVolume(self, response["volume"])
 
     def get_list(
-        self, name=None, label_selector=None, page=None, per_page=None, status=None
-    ):
-        # type: (Optional[str], Optional[str], Optional[int], Optional[int], Optional[List[str]]) -> PageResults[List[BoundVolume], Meta]
+        self,
+        name: str | None = None,
+        label_selector: str | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+        status: list[str] | None = None,
+    ) -> VolumesPageResult:
         """Get a list of volumes from this account
 
         :param name: str (optional)
@@ -171,8 +180,9 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         ]
         return VolumesPageResult(volumes, Meta.parse_meta(response))
 
-    def get_all(self, label_selector=None, status=None):
-        # type: (Optional[str], Optional[List[str]]) -> List[BoundVolume]
+    def get_all(
+        self, label_selector: str | None = None, status: list[str] | None = None
+    ) -> list[BoundVolume]:
         """Get all volumes from this account
 
         :param label_selector:
@@ -183,8 +193,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(label_selector=label_selector, status=status)
 
-    def get_by_name(self, name):
-        # type: (str) -> BoundVolume
+    def get_by_name(self, name: str) -> BoundVolume:
         """Get volume by name
 
         :param name: str
@@ -195,15 +204,14 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
 
     def create(
         self,
-        size,  # type: int
-        name,  # type: str
-        labels=None,  # type: Optional[str]
-        location=None,  # type: Optional[Location]
-        server=None,  # type: Optional[Server],
-        automount=None,  # type: Optional[bool],
-        format=None,  # type: Optional[str],
-    ):
-        # type: (...) -> CreateVolumeResponse
+        size: int,
+        name: str,
+        labels: str | None = None,
+        location: Location | None = None,
+        server: Server | None = None,
+        automount: bool | None = None,
+        format: str | None = None,
+    ) -> CreateVolumeResponse:
         """Creates a new volume attached to a server.
 
         :param size: int
@@ -253,9 +261,13 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         return result
 
     def get_actions_list(
-        self, volume, status=None, sort=None, page=None, per_page=None
-    ):
-        # type: (Volume, Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction], Meta]
+        self,
+        volume: Volume,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
         """Returns all action objects for a volume.
 
         :param volume: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`
@@ -290,8 +302,12 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))
 
-    def get_actions(self, volume, status=None, sort=None):
-        # type: (Union[Volume, BoundVolume], Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
+    def get_actions(
+        self,
+        volume: Volume | BoundVolume,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundAction]:
         """Returns all action objects for a volume.
 
         :param volume: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`
@@ -303,8 +319,12 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_actions(volume, status=status, sort=sort)
 
-    def update(self, volume, name=None, labels=None):
-        # type:(Union[Volume, BoundVolume],  Optional[str],  Optional[Dict[str, str]]) -> BoundVolume
+    def update(
+        self,
+        volume: Volume | BoundVolume,
+        name: str | None = None,
+        labels: dict[str, str] | None = None,
+    ) -> BoundVolume:
         """Updates the volume properties.
 
         :param volume: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`
@@ -326,8 +346,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundVolume(self, response["volume"])
 
-    def delete(self, volume):
-        # type: (Union[Volume, BoundVolume]) -> BoundAction
+    def delete(self, volume: Volume | BoundVolume) -> BoundAction:
         """Deletes a volume. All volume data is irreversibly destroyed. The volume must not be attached to a server and it must not have delete protection enabled.
 
         :param volume: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`
@@ -336,8 +355,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         self._client.request(url=f"/volumes/{volume.id}", method="DELETE")
         return True
 
-    def resize(self, volume, size):
-        # type: (Union[Volume, BoundVolume], int) -> BoundAction
+    def resize(self, volume: Volume | BoundVolume, size: int) -> BoundAction:
         """Changes the size of a volume. Note that downsizing a volume is not possible.
 
         :param volume: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`
@@ -352,8 +370,12 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, data["action"])
 
-    def attach(self, volume, server, automount=None):
-        # type: (Union[Volume, BoundVolume], Union[Server, BoundServer], Optional[bool]) -> BoundAction
+    def attach(
+        self,
+        volume: Volume | BoundVolume,
+        server: Server | BoundServer,
+        automount: bool | None = None,
+    ) -> BoundAction:
         """Attaches a volume to a server. Works only if the server is in the same location as the volume.
 
         :param volume: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`
@@ -372,8 +394,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, data["action"])
 
-    def detach(self, volume):
-        # type: (Union[Volume, BoundVolume]) -> BoundAction
+    def detach(self, volume: Volume | BoundVolume) -> BoundAction:
         """Detaches a volume from the server it’s attached to. You may attach it to a server again at a later time.
 
         :param volume: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`
@@ -385,8 +406,11 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, data["action"])
 
-    def change_protection(self, volume, delete=None):
-        # type: (Union[Volume, BoundVolume], Optional[bool], Optional[bool]) -> BoundAction
+    def change_protection(
+        self: Volume | BoundVolume,
+        volume: bool | None,
+        delete: bool | None = None,
+    ) -> BoundAction:
         """Changes the protection configuration of a volume.
 
         :param volume: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`

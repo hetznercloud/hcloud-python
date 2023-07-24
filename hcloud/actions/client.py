@@ -43,8 +43,7 @@ class ActionsPageResult(NamedTuple):
 class ActionsClient(ClientEntityBase):
     _client: Client
 
-    def get_by_id(self, id):
-        # type: (int) -> BoundAction
+    def get_by_id(self, id: int) -> BoundAction:
         """Get a specific action by its ID.
 
         :param id: int
@@ -56,12 +55,11 @@ class ActionsClient(ClientEntityBase):
 
     def get_list(
         self,
-        status=None,  # type: Optional[List[str]]
-        sort=None,  # type: Optional[List[str]]
-        page=None,  # type: Optional[int]
-        per_page=None,  # type: Optional[int]
-    ):
-        # type: (...) -> PageResults[List[BoundAction]]
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
         """Get a list of actions from this account
 
         :param status: List[str] (optional)
@@ -90,8 +88,9 @@ class ActionsClient(ClientEntityBase):
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))
 
-    def get_all(self, status=None, sort=None):
-        # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
+    def get_all(
+        self, status: list[str] | None = None, sort: list[str] | None = None
+    ) -> list[BoundAction]:
         """Get all actions of the account
 
         :param status: List[str] (optional)

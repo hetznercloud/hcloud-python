@@ -23,8 +23,7 @@ class LoadBalancerTypesPageResult(NamedTuple):
 class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
     _client: Client
 
-    def get_by_id(self, id):
-        # type: (int) -> load_balancer_types.client.BoundLoadBalancerType
+    def get_by_id(self, id: int) -> BoundLoadBalancerType:
         """Returns a specific Load Balancer Type.
 
         :param id: int
@@ -38,8 +37,12 @@ class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundLoadBalancerType(self, response["load_balancer_type"])
 
-    def get_list(self, name=None, page=None, per_page=None):
-        # type: (Optional[str], Optional[int], Optional[int]) -> PageResults[List[BoundLoadBalancerType], Meta]
+    def get_list(
+        self,
+        name: str | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> LoadBalancerTypesPageResult:
         """Get a list of Load Balancer types
 
         :param name: str (optional)
@@ -69,8 +72,7 @@ class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
             load_balancer_types, Meta.parse_meta(response)
         )
 
-    def get_all(self, name=None):
-        # type: (Optional[str]) -> List[BoundLoadBalancerType]
+    def get_all(self, name: str | None = None) -> list[BoundLoadBalancerType]:
         """Get all Load Balancer types
 
         :param name: str (optional)
@@ -79,8 +81,7 @@ class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(name=name)
 
-    def get_by_name(self, name):
-        # type: (str) -> BoundLoadBalancerType
+    def get_by_name(self, name: str) -> BoundLoadBalancerType:
         """Get Load Balancer type by name
 
         :param name: str

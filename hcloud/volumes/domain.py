@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from dateutil.parser import isoparse
 
 from ..core import BaseDomain, DomainIdentityMixin
+
+if TYPE_CHECKING:
+    from ..actions import BoundAction
+    from .client import BoundVolume
 
 
 class Volume(BaseDomain, DomainIdentityMixin):
@@ -93,9 +99,9 @@ class CreateVolumeResponse(BaseDomain):
 
     def __init__(
         self,
-        volume,  # type: BoundVolume
-        action,  # type: BoundAction
-        next_actions,  # type: List[BoundAction]
+        volume: BoundVolume,
+        action: BoundAction,
+        next_actions: list[BoundAction],
     ):
         self.volume = volume
         self.action = action
