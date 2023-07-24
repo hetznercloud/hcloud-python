@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple
 
-from ..actions.client import ActionsPageResult, BoundAction
-from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import Meta
+from ..actions import ActionsPageResult, BoundAction
+from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core import Meta
 from .domain import (
     CreateFirewallResponse,
     Firewall,
@@ -40,7 +40,7 @@ class BoundFirewall(BoundModelBase):
 
         applied_to = data.get("applied_to", [])
         if applied_to:
-            from ..servers.client import BoundServer
+            from ..servers import BoundServer
 
             ats = []
             for a in applied_to:

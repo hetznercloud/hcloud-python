@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple
 
-from ..actions.client import ActionsPageResult, BoundAction
-from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import Meta
+from ..actions import ActionsPageResult, BoundAction
+from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core import Meta
 from .domain import Image
 
 if TYPE_CHECKING:
@@ -17,7 +17,7 @@ class BoundImage(BoundModelBase):
     model = Image
 
     def __init__(self, client, data):
-        from ..servers.client import BoundServer
+        from ..servers import BoundServer
 
         created_from = data.get("created_from")
         if created_from is not None:

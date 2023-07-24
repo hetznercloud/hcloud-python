@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dateutil.parser import isoparse
 
-from ..core.domain import BaseDomain, DomainIdentityMixin
+from ..core import BaseDomain, DomainIdentityMixin
 
 
 class SSHKey(BaseDomain, DomainIdentityMixin):

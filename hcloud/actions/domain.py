@@ -3,7 +3,7 @@ from __future__ import annotations
 from dateutil.parser import isoparse
 
 from .._exceptions import HCloudException
-from ..core.domain import BaseDomain
+from ..core import BaseDomain
 
 
 class Action(BaseDomain):

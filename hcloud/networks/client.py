@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple
 
-from ..actions.client import ActionsPageResult, BoundAction
-from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import Meta
+from ..actions import ActionsPageResult, BoundAction
+from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core import Meta
 from .domain import Network, NetworkRoute, NetworkSubnet
 
 if TYPE_CHECKING:
@@ -27,7 +27,7 @@ class BoundNetwork(BoundModelBase):
             routes = [NetworkRoute.from_dict(route) for route in routes]
             data["routes"] = routes
 
-        from ..servers.client import BoundServer
+        from ..servers import BoundServer
 
         servers = data.get("servers", [])
         if servers is not None:

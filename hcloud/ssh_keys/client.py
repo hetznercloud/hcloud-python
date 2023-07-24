@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple
 
-from ..core.client import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
-from ..core.domain import Meta
+from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin
+from ..core import Meta
 from .domain import SSHKey
 
 if TYPE_CHECKING:

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from ..core.domain import BaseDomain, DomainIdentityMixin
-from ..deprecation.domain import DeprecationInfo
+from ..core import BaseDomain, DomainIdentityMixin
+from ..deprecation import DeprecationInfo
 
 
 class ServerType(BaseDomain, DomainIdentityMixin):
