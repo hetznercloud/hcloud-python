@@ -158,7 +158,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
 
         action = None
         if response.get("action") is not None:
-            action = BoundAction(self._client.action, response["action"])
+            action = BoundAction(self._client.actions, response["action"])
 
         result = CreatePlacementGroupResponse(
             placement_group=BoundPlacementGroup(self, response["placement_group"]),
