@@ -7,6 +7,15 @@ include:
 stages:
   - test
 
+lint:
+  stage: test
+
+  image: python:3.11-alpine
+  before_script:
+    - make venv
+  script:
+    - make lint
+
 test:
   stage: test
 
