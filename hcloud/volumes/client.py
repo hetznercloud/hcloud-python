@@ -54,7 +54,9 @@ class BoundVolume(BoundModelBase):
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
     def get_actions(
-        self, status: list[str] | None = None, sort: list[str] | None = None
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
     ) -> list[BoundAction]:
         """Returns all action objects for a volume.
 
@@ -67,7 +69,9 @@ class BoundVolume(BoundModelBase):
         return self._client.get_actions(self, status, sort)
 
     def update(
-        self, name: str | None = None, labels: dict[str, str] | None = None
+        self,
+        name: str | None = None,
+        labels: dict[str, str] | None = None,
     ) -> BoundAction:
         """Updates the volume properties.
 
@@ -87,7 +91,9 @@ class BoundVolume(BoundModelBase):
         return self._client.delete(self)
 
     def attach(
-        self, server: Server | BoundServer, automount: bool | None = None
+        self,
+        server: Server | BoundServer,
+        automount: bool | None = None,
     ) -> BoundAction:
         """Attaches a volume to a server. Works only if the server is in the same location as the volume.
 
@@ -181,7 +187,9 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
         return VolumesPageResult(volumes, Meta.parse_meta(response))
 
     def get_all(
-        self, label_selector: str | None = None, status: list[str] | None = None
+        self,
+        label_selector: str | None = None,
+        status: list[str] | None = None,
     ) -> list[BoundVolume]:
         """Get all volumes from this account
 

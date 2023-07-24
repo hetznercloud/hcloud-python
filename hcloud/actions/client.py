@@ -89,7 +89,9 @@ class ActionsClient(ClientEntityBase):
         return ActionsPageResult(actions, Meta.parse_meta(response))
 
     def get_all(
-        self, status: list[str] | None = None, sort: list[str] | None = None
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
     ) -> list[BoundAction]:
         """Get all actions of the account
 

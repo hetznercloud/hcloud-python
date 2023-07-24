@@ -91,7 +91,9 @@ class BoundNetwork(BoundModelBase):
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
     def get_actions(
-        self, status: list[str] | None = None, sort: list[str] | None = None
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
     ) -> list[BoundAction]:
         """Returns all action objects for a network.
 
@@ -212,7 +214,9 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         return NetworksPageResult(networks, Meta.parse_meta(response))
 
     def get_all(
-        self, name: str | None = None, label_selector: str | None = None
+        self,
+        name: str | None = None,
+        label_selector: str | None = None,
     ) -> list[BoundNetwork]:
         """Get all networks from this account
 
@@ -395,7 +399,9 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         return super().get_actions(network, status=status, sort=sort)
 
     def add_subnet(
-        self, network: Network | BoundNetwork, subnet: NetworkSubnet
+        self,
+        network: Network | BoundNetwork,
+        subnet: NetworkSubnet,
     ) -> list[BoundAction]:
         """Adds a subnet entry to a network.
 
@@ -420,7 +426,9 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, response["action"])
 
     def delete_subnet(
-        self, network: Network | BoundNetwork, subnet: NetworkSubnet
+        self,
+        network: Network | BoundNetwork,
+        subnet: NetworkSubnet,
     ) -> list[BoundAction]:
         """Removes a subnet entry from a network
 
@@ -441,7 +449,9 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, response["action"])
 
     def add_route(
-        self, network: Network | BoundNetwork, route: NetworkRoute
+        self,
+        network: Network | BoundNetwork,
+        route: NetworkRoute,
     ) -> list[BoundAction]:
         """Adds a route entry to a network.
 
@@ -462,7 +472,9 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, response["action"])
 
     def delete_route(
-        self, network: Network | BoundNetwork, route: NetworkRoute
+        self,
+        network: Network | BoundNetwork,
+        route: NetworkRoute,
     ) -> list[BoundAction]:
         """Removes a route entry to a network.
 
@@ -483,7 +495,9 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, response["action"])
 
     def change_ip_range(
-        self, network: Network | BoundNetwork, ip_range: str
+        self,
+        network: Network | BoundNetwork,
+        ip_range: str,
     ) -> list[BoundAction]:
         """Changes the IP range of a network.
 
@@ -504,7 +518,9 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, response["action"])
 
     def change_protection(
-        self, network: Network | BoundNetwork, delete: bool | None = None
+        self,
+        network: Network | BoundNetwork,
+        delete: bool | None = None,
     ) -> BoundAction:
         """Changes the protection configuration of a network.
 

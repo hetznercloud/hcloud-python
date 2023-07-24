@@ -176,7 +176,9 @@ class BoundServer(BoundModelBase):
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
     def get_actions(
-        self, status: list[str] | None = None, sort: list[str] | None = None
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
     ) -> list[BoundAction]:
         """Returns all action objects for a server.
 
@@ -189,7 +191,9 @@ class BoundServer(BoundModelBase):
         return self._client.get_actions(self, status, sort)
 
     def update(
-        self, name: str | None = None, labels: dict[str, str] | None = None
+        self,
+        name: str | None = None,
+        labels: dict[str, str] | None = None,
     ) -> BoundServer:
         """Updates a server. You can update a server’s name and a server’s labels.
 
@@ -251,7 +255,9 @@ class BoundServer(BoundModelBase):
         return self._client.reset_password(self)
 
     def enable_rescue(
-        self, type: str | None = None, ssh_keys: list[str] | None = None
+        self,
+        type: str | None = None,
+        ssh_keys: list[str] | None = None,
     ) -> EnableRescueResponse:
         """Enable the Hetzner Rescue System for this server.
 
@@ -299,7 +305,9 @@ class BoundServer(BoundModelBase):
         return self._client.rebuild(self, image)
 
     def change_type(
-        self, server_type: BoundServerType, upgrade_disk: bool
+        self,
+        server_type: BoundServerType,
+        upgrade_disk: bool,
     ) -> BoundAction:
         """Changes the type (Cores, RAM and disk sizes) of a server.
 
@@ -352,7 +360,9 @@ class BoundServer(BoundModelBase):
         return self._client.change_dns_ptr(self, ip, dns_ptr)
 
     def change_protection(
-        self, delete: bool | None = None, rebuild: bool | None = None
+        self,
+        delete: bool | None = None,
+        rebuild: bool | None = None,
     ) -> BoundAction:
         """Changes the protection configuration of the server.
 
@@ -398,7 +408,9 @@ class BoundServer(BoundModelBase):
         return self._client.detach_from_network(self, network)
 
     def change_alias_ips(
-        self, network: Network | BoundNetwork, alias_ips: list[str]
+        self,
+        network: Network | BoundNetwork,
+        alias_ips: list[str],
     ) -> BoundAction:
         """Changes the alias IPs of an already attached network.
 
@@ -410,7 +422,8 @@ class BoundServer(BoundModelBase):
         return self._client.change_alias_ips(self, network, alias_ips)
 
     def add_to_placement_group(
-        self, placement_group: PlacementGroup | BoundPlacementGroup
+        self,
+        placement_group: PlacementGroup | BoundPlacementGroup,
     ) -> BoundAction:
         """Adds a server to a placement group.
 
@@ -1062,7 +1075,9 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, response["action"])
 
     def detach_from_network(
-        self, server: Server | BoundServer, network: Network | BoundNetwork
+        self,
+        server: Server | BoundServer,
+        network: Network | BoundNetwork,
     ) -> BoundAction:
         """Detaches a server from a network.
 

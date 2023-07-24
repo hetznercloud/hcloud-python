@@ -56,7 +56,9 @@ class BoundCertificate(BoundModelBase):
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
     def get_actions(
-        self, status: list[str] | None = None, sort: list[str] | None = None
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
     ) -> list[BoundAction]:
         """Returns all action objects for a Certificate.
 
@@ -69,7 +71,9 @@ class BoundCertificate(BoundModelBase):
         return self._client.get_actions(self, status, sort)
 
     def update(
-        self, name: str | None = None, labels: dict[str, str] | None = None
+        self,
+        name: str | None = None,
+        labels: dict[str, str] | None = None,
     ) -> BoundCertificate:
         """Updates an certificate. You can update an certificate name and the certificate labels.
 
@@ -155,7 +159,9 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         return CertificatesPageResult(certificates, Meta.parse_meta(response))
 
     def get_all(
-        self, name: str | None = None, label_selector: str | None = None
+        self,
+        name: str | None = None,
+        label_selector: str | None = None,
     ) -> list[BoundCertificate]:
         """Get all certificates
 

@@ -143,7 +143,9 @@ class BoundLoadBalancer(BoundModelBase):
         super().__init__(client, data, complete)
 
     def update(
-        self, name: str | None = None, labels: dict[str, str] | None = None
+        self,
+        name: str | None = None,
+        labels: dict[str, str] | None = None,
     ) -> BoundLoadBalancer:
         """Updates a Load Balancer. You can update a Load Balancers name and a Load Balancers labels.
 
@@ -184,7 +186,9 @@ class BoundLoadBalancer(BoundModelBase):
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
     def get_actions(
-        self, status: list[str] | None = None, sort: list[str] | None = None
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
     ) -> list[BoundAction]:
         """Returns all action objects for a Load Balancer.
 
@@ -271,7 +275,9 @@ class BoundLoadBalancer(BoundModelBase):
         return self._client.change_protection(self, delete)
 
     def attach_to_network(
-        self, network: Network | BoundNetwork, ip: str | None = None
+        self,
+        network: Network | BoundNetwork,
+        ip: str | None = None,
     ) -> BoundAction:
         """Attaches a Load Balancer to a Network
 
@@ -305,7 +311,8 @@ class BoundLoadBalancer(BoundModelBase):
         return self._client.disable_public_interface(self)
 
     def change_type(
-        self, load_balancer_type: LoadBalancerType | BoundLoadBalancerType
+        self,
+        load_balancer_type: LoadBalancerType | BoundLoadBalancerType,
     ) -> BoundAction:
         """Changes the type of a Load Balancer.
 
@@ -376,7 +383,9 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         return LoadBalancersPageResult(load_balancers, Meta.parse_meta(response))
 
     def get_all(
-        self, name: str | None = None, label_selector: str | None = None
+        self,
+        name: str | None = None,
+        label_selector: str | None = None,
     ) -> list[BoundLoadBalancer]:
         """Get all Load Balancers from this account
 
@@ -896,7 +905,8 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, response["action"])
 
     def enable_public_interface(
-        self, load_balancer: LoadBalancer | BoundLoadBalancer
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
     ) -> BoundAction:
         """Enables the public interface of a Load Balancer.
 
@@ -914,7 +924,8 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, response["action"])
 
     def disable_public_interface(
-        self, load_balancer: LoadBalancer | BoundLoadBalancer
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
     ) -> BoundAction:
         """Disables the public interface of a Load Balancer.
 

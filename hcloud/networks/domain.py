@@ -96,7 +96,12 @@ class NetworkSubnet(BaseDomain):
     __slots__ = ("type", "ip_range", "network_zone", "gateway", "vswitch_id")
 
     def __init__(
-        self, ip_range, type=None, network_zone=None, gateway=None, vswitch_id=None
+        self,
+        ip_range,
+        type=None,
+        network_zone=None,
+        gateway=None,
+        vswitch_id=None,
     ):
         self.type = type
         self.ip_range = ip_range

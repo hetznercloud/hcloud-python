@@ -15,7 +15,9 @@ class BoundSSHKey(BoundModelBase):
     model = SSHKey
 
     def update(
-        self, name: str | None = None, labels: dict[str, str] | None = None
+        self,
+        name: str | None = None,
+        labels: dict[str, str] | None = None,
     ) -> BoundSSHKey:
         """Updates an SSH key. You can update an SSH key name and an SSH key labels.
 
@@ -133,7 +135,10 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
         return sshkeys[0] if sshkeys else None
 
     def create(
-        self, name: str, public_key: str, labels: dict[str, str] | None = None
+        self,
+        name: str,
+        public_key: str,
+        labels: dict[str, str] | None = None,
     ) -> BoundSSHKey:
         """Creates a new SSH key with the given name and public_key.
 

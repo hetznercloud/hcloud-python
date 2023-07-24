@@ -214,7 +214,12 @@ class LoadBalancerHealtCheckHttp(BaseDomain):
     """
 
     def __init__(
-        self, domain=None, path=None, response=None, status_codes=None, tls=None
+        self,
+        domain=None,
+        path=None,
+        response=None,
+        status_codes=None,
+        tls=None,
     ):
         self.domain = domain
         self.path = path
@@ -239,7 +244,12 @@ class LoadBalancerTarget(BaseDomain):
     """
 
     def __init__(
-        self, type=None, server=None, label_selector=None, ip=None, use_private_ip=None
+        self,
+        type=None,
+        server=None,
+        label_selector=None,
+        ip=None,
+        use_private_ip=None,
     ):
         self.type = type
         self.server = server

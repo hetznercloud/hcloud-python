@@ -57,7 +57,9 @@ class BoundFloatingIP(BoundModelBase):
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
     def get_actions(
-        self, status: list[str] | None = None, sort: list[str] | None = None
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
     ) -> list[BoundAction]:
         """Returns all action objects for a Floating IP.
 
@@ -251,7 +253,9 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         return FloatingIPsPageResult(floating_ips, Meta.parse_meta(response))
 
     def get_all(
-        self, label_selector: str | None = None, name: str | None = None
+        self,
+        label_selector: str | None = None,
+        name: str | None = None,
     ) -> list[BoundFloatingIP]:
         """Get all floating ips from this account
 
@@ -366,7 +370,9 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         return True
 
     def change_protection(
-        self, floating_ip: FloatingIP, delete: bool | None = None
+        self,
+        floating_ip: FloatingIP,
+        delete: bool | None = None,
     ) -> BoundAction:
         """Changes the protection configuration of the Floating IP.
 
@@ -420,7 +426,10 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, response["action"])
 
     def change_dns_ptr(
-        self, floating_ip: FloatingIP, ip: str, dns_ptr: str
+        self,
+        floating_ip: FloatingIP,
+        ip: str,
+        dns_ptr: str,
     ) -> BoundAction:
         """Changes the hostname that will appear when getting the hostname belonging to this Floating IP.
 

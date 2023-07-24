@@ -36,7 +36,13 @@ class PlacementGroup(BaseDomain):
     TYPE_SPREAD = "spread"
 
     def __init__(
-        self, id=None, name=None, labels=None, servers=None, type=None, created=None
+        self,
+        id=None,
+        name=None,
+        labels=None,
+        servers=None,
+        type=None,
+        created=None,
     ):
         self.id = id
         self.name = name

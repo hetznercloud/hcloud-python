@@ -32,7 +32,13 @@ class Firewall(BaseDomain):
     __slots__ = ("id", "name", "labels", "rules", "applied_to", "created")
 
     def __init__(
-        self, id=None, name=None, labels=None, rules=None, applied_to=None, created=None
+        self,
+        id=None,
+        name=None,
+        labels=None,
+        rules=None,
+        applied_to=None,
+        created=None,
     ):
         self.id = id
         self.name = name

@@ -152,7 +152,9 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
         return PrimaryIPsPageResult(primary_ips, Meta.parse_meta(response))
 
     def get_all(
-        self, label_selector: str | None = None, name: str | None = None
+        self,
+        label_selector: str | None = None,
+        name: str | None = None,
     ) -> list[BoundPrimaryIP]:
         """Get all primary ips from this account
 
@@ -267,7 +269,9 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
         return True
 
     def change_protection(
-        self, primary_ip: PrimaryIP, delete: bool | None = None
+        self,
+        primary_ip: PrimaryIP,
+        delete: bool | None = None,
     ) -> BoundAction:
         """Changes the protection configuration of the Primary IP.
 
@@ -290,7 +294,10 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, response["action"])
 
     def assign(
-        self, primary_ip: PrimaryIP, assignee_id: int, assignee_type: str = "server"
+        self,
+        primary_ip: PrimaryIP,
+        assignee_id: int,
+        assignee_type: str = "server",
     ) -> BoundAction:
         """Assigns a Primary IP to a assignee_id.
 
@@ -325,7 +332,10 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundAction(self._client.actions, response["action"])
 
     def change_dns_ptr(
-        self, primary_ip: PrimaryIP, ip: str, dns_ptr: str
+        self,
+        primary_ip: PrimaryIP,
+        ip: str,
+        dns_ptr: str,
     ) -> BoundAction:
         """Changes the dns ptr that will appear when getting the dns ptr belonging to this Primary IP.
 

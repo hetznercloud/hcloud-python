@@ -87,7 +87,9 @@ class BoundFirewall(BoundModelBase):
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
     def get_actions(
-        self, status: list[str] | None = None, sort: list[str] | None = None
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
     ) -> list[BoundAction]:
         """Returns all action objects for a Firewall.
 
@@ -131,7 +133,8 @@ class BoundFirewall(BoundModelBase):
         return self._client.set_rules(self, rules)
 
     def apply_to_resources(
-        self, resources: list[FirewallResource]
+        self,
+        resources: list[FirewallResource],
     ) -> list[BoundAction]:
         """Applies one Firewall to multiple resources.
         :param resources: List[:class:`FirewallResource <hcloud.firewalls.domain.FirewallResource>`]
@@ -140,7 +143,8 @@ class BoundFirewall(BoundModelBase):
         return self._client.apply_to_resources(self, resources)
 
     def remove_from_resources(
-        self, resources: list[FirewallResource]
+        self,
+        resources: list[FirewallResource],
     ) -> list[BoundAction]:
         """Removes one Firewall from multiple resources.
         :param resources: List[:class:`FirewallResource <hcloud.firewalls.domain.FirewallResource>`]
@@ -379,7 +383,9 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         return True
 
     def set_rules(
-        self, firewall: Firewall, rules: list[FirewallRule]
+        self,
+        firewall: Firewall,
+        rules: list[FirewallRule],
     ) -> list[BoundAction]:
         """Sets the rules of a Firewall. All existing rules will be overwritten. Pass an empty rules array to remove all rules.
 
@@ -400,7 +406,9 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         return [BoundAction(self._client.actions, _) for _ in response["actions"]]
 
     def apply_to_resources(
-        self, firewall: Firewall, resources: list[FirewallResource]
+        self,
+        firewall: Firewall,
+        resources: list[FirewallResource],
     ) -> list[BoundAction]:
         """Applies one Firewall to multiple resources.
 
@@ -421,7 +429,9 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         return [BoundAction(self._client.actions, _) for _ in response["actions"]]
 
     def remove_from_resources(
-        self, firewall: Firewall, resources: list[FirewallResource]
+        self,
+        firewall: Firewall,
+        resources: list[FirewallResource],
     ) -> list[BoundAction]:
         """Removes one Firewall from multiple resources.
 

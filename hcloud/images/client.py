@@ -55,7 +55,9 @@ class BoundImage(BoundModelBase):
         )
 
     def get_actions(
-        self, sort: list[str] | None = None, status: list[str] | None = None
+        self,
+        sort: list[str] | None = None,
+        status: list[str] | None = None,
     ) -> list[BoundAction]:
         """Returns all action objects for the image.
 
@@ -349,7 +351,9 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
         return True
 
     def change_protection(
-        self, image: Image, delete: bool | None = None
+        self,
+        image: Image,
+        delete: bool | None = None,
     ) -> BoundAction:
         """Changes the protection configuration of the image. Can only be used on snapshots.
 

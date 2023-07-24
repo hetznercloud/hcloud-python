@@ -16,7 +16,12 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
     __slots__ = ("id", "name", "description", "location", "server_types")
 
     def __init__(
-        self, id=None, name=None, description=None, location=None, server_types=None
+        self,
+        id=None,
+        name=None,
+        description=None,
+        location=None,
+        server_types=None,
     ):
         self.id = id
         self.name = name
