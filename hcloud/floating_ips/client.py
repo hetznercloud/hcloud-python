@@ -106,7 +106,7 @@ class BoundFloatingIP(BoundModelBase):
         """
         return self._client.change_protection(self, delete)
 
-    def assign(self, server: Server) -> BoundAction:
+    def assign(self, server: Server | BoundServer) -> BoundAction:
         """Assigns a Floating IP to a server.
 
         :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
