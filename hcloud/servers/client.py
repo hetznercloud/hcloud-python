@@ -296,7 +296,7 @@ class BoundServer(BoundModelBase):
         """
         return self._client.create_image(self, description, type, labels)
 
-    def rebuild(self, image: Image) -> BoundAction:
+    def rebuild(self, image: Image | BoundImage) -> BoundAction:
         """Rebuilds a server overwriting its disk with the content of an image, thereby destroying all data on the target server.
 
         :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.servers.domain.Image>`
@@ -306,7 +306,7 @@ class BoundServer(BoundModelBase):
 
     def change_type(
         self,
-        server_type: BoundServerType,
+        server_type: ServerType | BoundServerType,
         upgrade_disk: bool,
     ) -> BoundAction:
         """Changes the type (Cores, RAM and disk sizes) of a server.
@@ -333,7 +333,7 @@ class BoundServer(BoundModelBase):
         """
         return self._client.disable_backup(self)
 
-    def attach_iso(self, iso: Iso) -> BoundAction:
+    def attach_iso(self, iso: Iso | BoundIso) -> BoundAction:
         """Attaches an ISO to a server.
 
         :param iso: :class:`BoundIso <hcloud.isos.client.BoundIso>` or :class:`Server <hcloud.isos.domain.Iso>`

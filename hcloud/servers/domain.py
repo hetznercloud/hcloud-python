@@ -165,7 +165,7 @@ class CreateServerResponse(BaseDomain):
         server: BoundServer,
         action: BoundAction,
         next_actions: list[BoundAction],
-        root_password: str,
+        root_password: str | None,
     ):
         self.server = server
         self.action = action
