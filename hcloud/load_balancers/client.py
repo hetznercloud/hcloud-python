@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
 from ..certificates import BoundCertificate
@@ -28,6 +28,9 @@ from .domain import (
 
 if TYPE_CHECKING:
     from .._client import Client
+    from ..load_balancer_types import LoadBalancerType
+    from ..locations import Location
+    from ..networks import Network
 
 
 class BoundLoadBalancer(BoundModelBase):
@@ -35,7 +38,7 @@ class BoundLoadBalancer(BoundModelBase):
 
     model = LoadBalancer
 
-    def __init__(self, client, data, complete=True):
+    def __init__(self, client: LoadBalancersClient, data: dict, complete: bool = True):
         algorithm = data.get("algorithm")
         if algorithm:
             data["algorithm"] = LoadBalancerAlgorithm(type=algorithm["type"])
@@ -139,8 +142,11 @@ class BoundLoadBalancer(BoundModelBase):
 
         super().__init__(client, data, complete)
 
-    def update(self, name=None, labels=None):
-        # type: (Optional[str], Optional[Dict[str, str]]) -> BoundLoadBalancer
+    def update(
+        self,
+        name: str | None = None,
+        labels: dict[str, str] | None = None,
+    ) -> BoundLoadBalancer:
         """Updates a Load Balancer. You can update a Load Balancers name and a Load Balancers labels.
 
         :param name: str (optional)
@@ -151,16 +157,20 @@ class BoundLoadBalancer(BoundModelBase):
         """
         return self._client.update(self, name, labels)
 
-    def delete(self):
-        # type: () -> BoundAction
+    def delete(self) -> bool:
         """Deletes a Load Balancer.
 
         :return: boolean
         """
         return self._client.delete(self)
 
-    def get_actions_list(self, status=None, sort=None, page=None, per_page=None):
-        # type: (Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction, Meta]]
+    def get_actions_list(
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
         """Returns all action objects for a Load Balancer.
 
         :param status: List[str] (optional)
@@ -175,8 +185,11 @@ class BoundLoadBalancer(BoundModelBase):
         """
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
-    def get_actions(self, status=None, sort=None):
-        # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
+    def get_actions(
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundAction]:
         """Returns all action objects for a Load Balancer.
 
         :param status: List[str] (optional)
@@ -187,8 +200,7 @@ class BoundLoadBalancer(BoundModelBase):
         """
         return self._client.get_actions(self, status, sort)
 
-    def add_service(self, service):
-        # type: (LoadBalancerService) -> List[BoundAction]
+    def add_service(self, service: LoadBalancerService) -> BoundAction:
         """Adds a service to a Load Balancer.
 
         :param service: :class:`LoadBalancerService <hcloud.load_balancers.domain.LoadBalancerService>`
@@ -197,8 +209,7 @@ class BoundLoadBalancer(BoundModelBase):
         """
         return self._client.add_service(self, service=service)
 
-    def update_service(self, service):
-        # type: (LoadBalancerService) -> List[BoundAction]
+    def update_service(self, service: LoadBalancerService) -> BoundAction:
         """Updates a service of an Load Balancer.
 
         :param service: :class:`LoadBalancerService <hcloud.load_balancers.domain.LoadBalancerService>`
@@ -207,8 +218,7 @@ class BoundLoadBalancer(BoundModelBase):
         """
         return self._client.update_service(self, service=service)
 
-    def delete_service(self, service):
-        # type: (LoadBalancerService) -> List[BoundAction]
+    def delete_service(self, service: LoadBalancerService) -> BoundAction:
         """Deletes a service from a Load Balancer.
 
         :param service: :class:`LoadBalancerService <hcloud.load_balancers.domain.LoadBalancerService>`
@@ -217,8 +227,7 @@ class BoundLoadBalancer(BoundModelBase):
         """
         return self._client.delete_service(self, service)
 
-    def add_target(self, target):
-        # type: (LoadBalancerTarget) -> List[BoundAction]
+    def add_target(self, target: LoadBalancerTarget) -> BoundAction:
         """Adds a target to a Load Balancer.
 
         :param target: :class:`LoadBalancerTarget <hcloud.load_balancers.domain.LoadBalancerTarget>`
@@ -227,8 +236,7 @@ class BoundLoadBalancer(BoundModelBase):
         """
         return self._client.add_target(self, target)
 
-    def remove_target(self, target):
-        # type: (LoadBalancerTarget) -> List[BoundAction]
+    def remove_target(self, target: LoadBalancerTarget) -> BoundAction:
         """Removes a target from a Load Balancer.
 
         :param target: :class:`LoadBalancerTarget <hcloud.load_balancers.domain.LoadBalancerTarget>`
@@ -237,8 +245,7 @@ class BoundLoadBalancer(BoundModelBase):
         """
         return self._client.remove_target(self, target)
 
-    def change_algorithm(self, algorithm):
-        # type: (LoadBalancerAlgorithm) -> List[BoundAction]
+    def change_algorithm(self, algorithm: LoadBalancerAlgorithm) -> BoundAction:
         """Changes the algorithm used by the Load Balancer
 
         :param algorithm: :class:`LoadBalancerAlgorithm <hcloud.load_balancers.domain.LoadBalancerAlgorithm>`
@@ -247,8 +254,7 @@ class BoundLoadBalancer(BoundModelBase):
         """
         return self._client.change_algorithm(self, algorithm)
 
-    def change_dns_ptr(self, ip, dns_ptr):
-        # type: (str, str) -> BoundAction
+    def change_dns_ptr(self, ip: str, dns_ptr: str) -> BoundAction:
         """Changes the hostname that will appear when getting the hostname belonging to the public IPs (IPv4 and IPv6) of this Load Balancer.
 
         :param ip: str
@@ -259,8 +265,7 @@ class BoundLoadBalancer(BoundModelBase):
         """
         return self._client.change_dns_ptr(self, ip, dns_ptr)
 
-    def change_protection(self, delete):
-        # type: (LoadBalancerService) -> List[BoundAction]
+    def change_protection(self, delete: bool) -> BoundAction:
         """Changes the protection configuration of a Load Balancer.
 
         :param delete: boolean
@@ -269,8 +274,11 @@ class BoundLoadBalancer(BoundModelBase):
         """
         return self._client.change_protection(self, delete)
 
-    def attach_to_network(self, network, ip=None):
-        # type: (Union[Network,BoundNetwork],Optional[str]) -> BoundAction
+    def attach_to_network(
+        self,
+        network: Network | BoundNetwork,
+        ip: str | None = None,
+    ) -> BoundAction:
         """Attaches a Load Balancer to a Network
 
         :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
@@ -280,8 +288,7 @@ class BoundLoadBalancer(BoundModelBase):
         """
         return self._client.attach_to_network(self, network, ip)
 
-    def detach_from_network(self, network):
-        # type: ( Union[Network,BoundNetwork]) -> BoundAction
+    def detach_from_network(self, network: Network | BoundNetwork) -> BoundAction:
         """Detaches a Load Balancer from a Network.
 
         :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
@@ -289,24 +296,24 @@ class BoundLoadBalancer(BoundModelBase):
         """
         return self._client.detach_from_network(self, network)
 
-    def enable_public_interface(self):
-        # type: () -> BoundAction
+    def enable_public_interface(self) -> BoundAction:
         """Enables the public interface of a Load Balancer.
 
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         return self._client.enable_public_interface(self)
 
-    def disable_public_interface(self):
-        # type: () -> BoundAction
+    def disable_public_interface(self) -> BoundAction:
         """Disables the public interface of a Load Balancer.
 
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         return self._client.disable_public_interface(self)
 
-    def change_type(self, load_balancer_type):
-        # type: (Union[LoadBalancerType,BoundLoadBalancerType]) -> BoundAction
+    def change_type(
+        self,
+        load_balancer_type: LoadBalancerType | BoundLoadBalancerType,
+    ) -> BoundAction:
         """Changes the type of a Load Balancer.
 
         :param load_balancer_type: :class:`BoundLoadBalancerType <hcloud.load_balancer_types.client.BoundLoadBalancerType>` or :class:`LoadBalancerType <hcloud.load_balancer_types.domain.LoadBalancerType>`
@@ -324,8 +331,7 @@ class LoadBalancersPageResult(NamedTuple):
 class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
     _client: Client
 
-    def get_by_id(self, id):
-        # type: (int) -> BoundLoadBalancer
+    def get_by_id(self, id: int) -> BoundLoadBalancer:
         """Get a specific Load Balancer
 
         :param id: int
@@ -339,12 +345,11 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_list(
         self,
-        name=None,  # type: Optional[str]
-        label_selector=None,  # type: Optional[str]
-        page=None,  # type: Optional[int]
-        per_page=None,  # type: Optional[int]
-    ):
-        # type: (...) -> PageResults[List[BoundLoadBalancer], Meta]
+        name: str | None = None,
+        label_selector: str | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> LoadBalancersPageResult:
         """Get a list of Load Balancers from this account
 
         :param name: str (optional)
@@ -357,7 +362,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if name is not None:
             params["name"] = name
         if label_selector is not None:
@@ -377,8 +382,11 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         ]
         return LoadBalancersPageResult(load_balancers, Meta.parse_meta(response))
 
-    def get_all(self, name=None, label_selector=None):
-        # type: (Optional[str], Optional[str]) -> List[BoundLoadBalancer]
+    def get_all(
+        self,
+        name: str | None = None,
+        label_selector: str | None = None,
+    ) -> list[BoundLoadBalancer]:
         """Get all Load Balancers from this account
 
         :param name: str (optional)
@@ -389,8 +397,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(name=name, label_selector=label_selector)
 
-    def get_by_name(self, name):
-        # type: (str) -> BoundLoadBalancer
+    def get_by_name(self, name: str) -> BoundLoadBalancer | None:
         """Get Load Balancer by name
 
         :param name: str
@@ -401,18 +408,17 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
 
     def create(
         self,
-        name,  # type: str
-        load_balancer_type,  # type: LoadBalancerType
-        algorithm=None,  # type: Optional[LoadBalancerAlgorithm]
-        services=None,  # type:  Optional[List[LoadBalancerService]]
-        targets=None,  # type:  Optional[List[LoadBalancerTarget]]
-        labels=None,  # type: Optional[Dict[str, str]]
-        location=None,  # type: Optional[Location]
-        network_zone=None,  # type: Optional[str]
-        public_interface=None,  # type: Optional[bool]
-        network=None,  # type: Optional[Union[Network,BoundNetwork]]
-    ):
-        # type: (...) -> CreateLoadBalancerResponse
+        name: str,
+        load_balancer_type: LoadBalancerType | BoundLoadBalancerType,
+        algorithm: LoadBalancerAlgorithm | None = None,
+        services: list[LoadBalancerService] | None = None,
+        targets: list[LoadBalancerTarget] | None = None,
+        labels: dict[str, str] | None = None,
+        location: Location | BoundLocation | None = None,
+        network_zone: str | None = None,
+        public_interface: bool | None = None,
+        network: Network | BoundNetwork | None = None,
+    ) -> CreateLoadBalancerResponse:
         """Creates a Load Balancer .
 
         :param name: str
@@ -437,7 +443,10 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                 Adds the Load Balancer to a Network
         :return: :class:`CreateLoadBalancerResponse <hcloud.load_balancers.domain.CreateLoadBalancerResponse>`
         """
-        data = {"name": name, "load_balancer_type": load_balancer_type.id_or_name}
+        data: dict[str, Any] = {
+            "name": name,
+            "load_balancer_type": load_balancer_type.id_or_name,
+        }
         if network is not None:
             data["network"] = network.id
         if public_interface is not None:
@@ -483,8 +492,12 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             action=BoundAction(self._client.actions, response["action"]),
         )
 
-    def update(self, load_balancer, name=None, labels=None):
-        # type:(LoadBalancer,  Optional[str],  Optional[Dict[str, str]]) -> BoundLoadBalancer
+    def update(
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+        name: str | None = None,
+        labels: dict[str, str] | None = None,
+    ) -> BoundLoadBalancer:
         """Updates a LoadBalancer. You can update a LoadBalancer’s name and a LoadBalancer’s labels.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -494,7 +507,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                User-defined labels (key-value pairs)
         :return: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>`
         """
-        data = {}
+        data: dict[str, Any] = {}
         if name is not None:
             data.update({"name": name})
         if labels is not None:
@@ -508,8 +521,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundLoadBalancer(self, response["load_balancer"])
 
-    def delete(self, load_balancer):
-        # type: (LoadBalancer) -> BoundAction
+    def delete(self, load_balancer: LoadBalancer | BoundLoadBalancer) -> bool:
         """Deletes a Load Balancer.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -524,9 +536,13 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         return True
 
     def get_actions_list(
-        self, load_balancer, status=None, sort=None, page=None, per_page=None
-    ):
-        # type: (LoadBalancer, Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction], Meta]
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
         """Returns all action objects for a Load Balancer.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -540,7 +556,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if status is not None:
             params["status"] = status
         if sort is not None:
@@ -563,8 +579,12 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))
 
-    def get_actions(self, load_balancer, status=None, sort=None):
-        # type: (LoadBalancer, Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
+    def get_actions(
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundAction]:
         """Returns all action objects for a Load Balancer.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -576,8 +596,11 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_actions(load_balancer, status=status, sort=sort)
 
-    def add_service(self, load_balancer, service):
-        # type: (Union[LoadBalancer, BoundLoadBalancer], LoadBalancerService) -> List[BoundAction]
+    def add_service(
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+        service: LoadBalancerService,
+    ) -> BoundAction:
         """Adds a service to a Load Balancer.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -596,8 +619,8 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, response["action"])
 
-    def get_service_parameters(self, service):
-        data = {}
+    def get_service_parameters(self, service: LoadBalancerService) -> dict[str, Any]:
+        data: dict[str, Any] = {}
         if service.protocol is not None:
             data["protocol"] = service.protocol
         if service.listen_port is not None:
@@ -661,8 +684,11 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                     data["health_check"]["http"]["tls"] = service.health_check.http.tls
         return data
 
-    def update_service(self, load_balancer, service):
-        # type: (Union[LoadBalancer, BoundLoadBalancer], LoadBalancerService) -> List[BoundAction]
+    def update_service(
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+        service: LoadBalancerService,
+    ) -> BoundAction:
         """Updates a service of an Load Balancer.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -680,8 +706,11 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, response["action"])
 
-    def delete_service(self, load_balancer, service):
-        # type: (Union[LoadBalancer, BoundLoadBalancer], LoadBalancerService) -> List[BoundAction]
+    def delete_service(
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+        service: LoadBalancerService,
+    ) -> BoundAction:
         """Deletes a service from a Load Balancer.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -689,7 +718,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                        The LoadBalancerService you want to delete from the Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {"listen_port": service.listen_port}
+        data: dict[str, Any] = {"listen_port": service.listen_port}
 
         response = self._client.request(
             url="/load_balancers/{load_balancer_id}/actions/delete_service".format(
@@ -700,8 +729,11 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, response["action"])
 
-    def add_target(self, load_balancer, target):
-        # type: (Union[LoadBalancer, BoundLoadBalancer], LoadBalancerTarget) -> List[BoundAction]
+    def add_target(
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+        target: LoadBalancerTarget,
+    ) -> BoundAction:
         """Adds a target to a Load Balancer.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -709,7 +741,10 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                        The LoadBalancerTarget you want to add to the Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {"type": target.type, "use_private_ip": target.use_private_ip}
+        data: dict[str, Any] = {
+            "type": target.type,
+            "use_private_ip": target.use_private_ip,
+        }
         if target.type == "server":
             data["server"] = {"id": target.server.id}
         elif target.type == "label_selector":
@@ -726,8 +761,11 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, response["action"])
 
-    def remove_target(self, load_balancer, target):
-        # type: (Union[LoadBalancer, BoundLoadBalancer], LoadBalancerTarget) -> List[BoundAction]
+    def remove_target(
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+        target: LoadBalancerTarget,
+    ) -> BoundAction:
         """Removes a target from a Load Balancer.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -735,7 +773,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                        The LoadBalancerTarget you want to remove from the Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {"type": target.type}
+        data: dict[str, Any] = {"type": target.type}
         if target.type == "server":
             data["server"] = {"id": target.server.id}
         elif target.type == "label_selector":
@@ -752,8 +790,11 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, response["action"])
 
-    def change_algorithm(self, load_balancer, algorithm):
-        # type: (Union[LoadBalancer, BoundLoadBalancer], Optional[bool]) -> BoundAction
+    def change_algorithm(
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+        algorithm: LoadBalancerAlgorithm,
+    ) -> BoundAction:
         """Changes the algorithm used by the Load Balancer
 
         :param load_balancer: :class:` <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -761,7 +802,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                        The LoadBalancerSubnet you want to add to the Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {"type": algorithm.type}
+        data: dict[str, Any] = {"type": algorithm.type}
 
         response = self._client.request(
             url="/load_balancers/{load_balancer_id}/actions/change_algorithm".format(
@@ -772,8 +813,12 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, response["action"])
 
-    def change_dns_ptr(self, load_balancer, ip, dns_ptr):
-        # type: (Union[LoadBalancer, BoundLoadBalancer], str, str) -> BoundAction
+    def change_dns_ptr(
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+        ip: str,
+        dns_ptr: str,
+    ) -> BoundAction:
         """Changes the hostname that will appear when getting the hostname belonging to the public IPs (IPv4 and IPv6) of this Load Balancer.
 
         :param ip: str
@@ -792,8 +837,11 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, response["action"])
 
-    def change_protection(self, load_balancer, delete=None):
-        # type: (Union[LoadBalancer, BoundLoadBalancer], Optional[bool]) -> BoundAction
+    def change_protection(
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+        delete: bool | None = None,
+    ) -> BoundAction:
         """Changes the protection configuration of a Load Balancer.
 
         :param load_balancer: :class:` <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -801,7 +849,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                If True, prevents the Load Balancer from being deleted
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {}
+        data: dict[str, Any] = {}
         if delete is not None:
             data.update({"delete": delete})
 
@@ -816,9 +864,9 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
 
     def attach_to_network(
         self,
-        load_balancer,  # type: Union[LoadBalancer, BoundLoadBalancer]
-        network,  # type: Union[Network, BoundNetwork]
-        ip=None,  # type: Optional[str]
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+        network: Network | BoundNetwork,
+        ip: str | None = None,
     ):
         """Attach a Load Balancer to a Network.
 
@@ -828,7 +876,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                 IP to request to be assigned to this Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {"network": network.id}
+        data: dict[str, Any] = {"network": network.id}
         if ip is not None:
             data.update({"ip": ip})
 
@@ -841,15 +889,18 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, response["action"])
 
-    def detach_from_network(self, load_balancer, network):
-        # type: (Union[LoadBalancer, BoundLoadBalancer], Union[Network,BoundNetwork]) -> BoundAction
+    def detach_from_network(
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+        network: Network | BoundNetwork,
+    ) -> BoundAction:
         """Detaches a Load Balancer from a Network.
 
         :param load_balancer: :class:` <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
         :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {"network": network.id}
+        data: dict[str, Any] = {"network": network.id}
         response = self._client.request(
             url="/load_balancers/{load_balancer_id}/actions/detach_from_network".format(
                 load_balancer_id=load_balancer.id
@@ -859,8 +910,10 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, response["action"])
 
-    def enable_public_interface(self, load_balancer):
-        # type: (Union[LoadBalancer, BoundLoadBalancer]) -> BoundAction
+    def enable_public_interface(
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+    ) -> BoundAction:
         """Enables the public interface of a Load Balancer.
 
         :param load_balancer: :class:` <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -876,8 +929,10 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, response["action"])
 
-    def disable_public_interface(self, load_balancer):
-        # type: (Union[LoadBalancer, BoundLoadBalancer]) -> BoundAction
+    def disable_public_interface(
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+    ) -> BoundAction:
         """Disables the public interface of a Load Balancer.
 
         :param load_balancer: :class:` <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -893,8 +948,11 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundAction(self._client.actions, response["action"])
 
-    def change_type(self, load_balancer, load_balancer_type):
-        # type: ([LoadBalancer, BoundLoadBalancer], [LoadBalancerType, BoundLoadBalancerType]) ->BoundAction
+    def change_type(
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+        load_balancer_type: LoadBalancerType | BoundLoadBalancerType,
+    ) -> BoundAction:
         """Changes the type of a Load Balancer.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
@@ -902,7 +960,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                Load Balancer type the Load Balancer should migrate to
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = {"load_balancer_type": load_balancer_type.id_or_name}
+        data: dict[str, Any] = {"load_balancer_type": load_balancer_type.id_or_name}
         response = self._client.request(
             url="/load_balancers/{load_balancer_id}/actions/change_type".format(
                 load_balancer_id=load_balancer.id

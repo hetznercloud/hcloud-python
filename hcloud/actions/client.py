@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import Action, ActionFailedException, ActionTimeoutException
@@ -15,7 +15,7 @@ class BoundAction(BoundModelBase):
 
     model = Action
 
-    def wait_until_finished(self, max_retries=100):
+    def wait_until_finished(self, max_retries: int = 100) -> None:
         """Wait until the specific action has status="finished" (set Client.poll_interval to specify a delay between checks)
 
         :param max_retries: int
@@ -43,8 +43,7 @@ class ActionsPageResult(NamedTuple):
 class ActionsClient(ClientEntityBase):
     _client: Client
 
-    def get_by_id(self, id):
-        # type: (int) -> BoundAction
+    def get_by_id(self, id: int) -> BoundAction:
         """Get a specific action by its ID.
 
         :param id: int
@@ -56,12 +55,11 @@ class ActionsClient(ClientEntityBase):
 
     def get_list(
         self,
-        status=None,  # type: Optional[List[str]]
-        sort=None,  # type: Optional[List[str]]
-        page=None,  # type: Optional[int]
-        per_page=None,  # type: Optional[int]
-    ):
-        # type: (...) -> PageResults[List[BoundAction]]
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
         """Get a list of actions from this account
 
         :param status: List[str] (optional)
@@ -74,7 +72,7 @@ class ActionsClient(ClientEntityBase):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if status is not None:
             params["status"] = status
         if sort is not None:
@@ -90,8 +88,11 @@ class ActionsClient(ClientEntityBase):
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))
 
-    def get_all(self, status=None, sort=None):
-        # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
+    def get_all(
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundAction]:
         """Get all actions of the account
 
         :param status: List[str] (optional)

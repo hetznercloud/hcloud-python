@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
@@ -20,7 +20,7 @@ class BoundCertificate(BoundModelBase):
 
     model = Certificate
 
-    def __init__(self, client, data, complete=True):
+    def __init__(self, client: CertificatesClient, data: dict, complete: bool = True):
         status = data.get("status")
         if status is not None:
             error_data = status.get("error")
@@ -34,8 +34,13 @@ class BoundCertificate(BoundModelBase):
             )
         super().__init__(client, data, complete)
 
-    def get_actions_list(self, status=None, sort=None, page=None, per_page=None):
-        # type: (Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction, Meta]]
+    def get_actions_list(
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
         """Returns all action objects for a Certificate.
 
         :param status: List[str] (optional)
@@ -50,8 +55,11 @@ class BoundCertificate(BoundModelBase):
         """
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
-    def get_actions(self, status=None, sort=None):
-        # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
+    def get_actions(
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundAction]:
         """Returns all action objects for a Certificate.
 
         :param status: List[str] (optional)
@@ -62,8 +70,11 @@ class BoundCertificate(BoundModelBase):
         """
         return self._client.get_actions(self, status, sort)
 
-    def update(self, name=None, labels=None):
-        # type: (Optional[str], Optional[Dict[str, str]]) -> BoundCertificate
+    def update(
+        self,
+        name: str | None = None,
+        labels: dict[str, str] | None = None,
+    ) -> BoundCertificate:
         """Updates an certificate. You can update an certificate name and the certificate labels.
 
         :param name: str (optional)
@@ -74,15 +85,13 @@ class BoundCertificate(BoundModelBase):
         """
         return self._client.update(self, name, labels)
 
-    def delete(self):
-        # type: () -> bool
+    def delete(self) -> bool:
         """Deletes a certificate.
         :return: boolean
         """
         return self._client.delete(self)
 
-    def retry_issuance(self):
-        # type: () -> BoundAction
+    def retry_issuance(self) -> BoundAction:
         """Retry a failed Certificate issuance or renewal.
         :return: BoundAction
         """
@@ -97,8 +106,7 @@ class CertificatesPageResult(NamedTuple):
 class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
     _client: Client
 
-    def get_by_id(self, id):
-        # type: (int) -> BoundCertificate
+    def get_by_id(self, id: int) -> BoundCertificate:
         """Get a specific certificate by its ID.
 
         :param id: int
@@ -109,12 +117,11 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_list(
         self,
-        name=None,  # type: Optional[str]
-        label_selector=None,  # type: Optional[str]
-        page=None,  # type: Optional[int]
-        per_page=None,  # type: Optional[int]
-    ):
-        # type: (...) -> PageResults[List[BoundCertificate], Meta]
+        name: str | None = None,
+        label_selector: str | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> CertificatesPageResult:
         """Get a list of certificates
 
         :param name: str (optional)
@@ -127,7 +134,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if name is not None:
             params["name"] = name
 
@@ -151,8 +158,11 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
 
         return CertificatesPageResult(certificates, Meta.parse_meta(response))
 
-    def get_all(self, name=None, label_selector=None):
-        # type: (Optional[str], Optional[str]) -> List[BoundCertificate]
+    def get_all(
+        self,
+        name: str | None = None,
+        label_selector: str | None = None,
+    ) -> list[BoundCertificate]:
         """Get all certificates
 
         :param name: str (optional)
@@ -163,8 +173,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(name=name, label_selector=label_selector)
 
-    def get_by_name(self, name):
-        # type: (str) -> BoundCertificate
+    def get_by_name(self, name: str) -> BoundCertificate | None:
         """Get certificate by name
 
         :param name: str
@@ -173,8 +182,13 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_by_name(name)
 
-    def create(self, name, certificate, private_key, labels=None):
-        # type: (str, str, str, Optional[Dict[str, str]]) -> BoundCertificate
+    def create(
+        self,
+        name: str,
+        certificate: str,
+        private_key: str,
+        labels: dict[str, str] | None = None,
+    ) -> BoundCertificate:
         """Creates a new Certificate with the given name, certificate and private_key. This methods allows only creating
            custom uploaded certificates. If you want to create a managed certificate use :func:`~hcloud.certificates.client.CertificatesClient.create_managed`
 
@@ -187,7 +201,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
                User-defined labels (key-value pairs)
         :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`
         """
-        data = {
+        data: dict[str, Any] = {
             "name": name,
             "certificate": certificate,
             "private_key": private_key,
@@ -198,8 +212,12 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         response = self._client.request(url="/certificates", method="POST", json=data)
         return BoundCertificate(self, response["certificate"])
 
-    def create_managed(self, name, domain_names, labels=None):
-        # type: (str, List[str], Optional[Dict[str, str]]) -> CreateManagedCertificateResponse
+    def create_managed(
+        self,
+        name: str,
+        domain_names: list[str],
+        labels: dict[str, str] | None = None,
+    ) -> CreateManagedCertificateResponse:
         """Creates a new managed Certificate with the given name and domain names. This methods allows only creating
            managed certificates for domains that are using the Hetzner DNS service. If you want to create a custom uploaded certificate use :func:`~hcloud.certificates.client.CertificatesClient.create`
 
@@ -210,7 +228,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
                User-defined labels (key-value pairs)
         :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`
         """
-        data = {
+        data: dict[str, Any] = {
             "name": name,
             "type": Certificate.TYPE_MANAGED,
             "domain_names": domain_names,
@@ -223,8 +241,12 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
             action=BoundAction(self._client.actions, response["action"]),
         )
 
-    def update(self, certificate, name=None, labels=None):
-        # type: (Certificate,  Optional[str],  Optional[Dict[str, str]]) -> BoundCertificate
+    def update(
+        self,
+        certificate: Certificate | BoundCertificate,
+        name: str | None = None,
+        labels: dict[str, str] | None = None,
+    ) -> BoundCertificate:
         """Updates a Certificate. You can update a certificate name and labels.
 
         :param certificate: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>` or  :class:`Certificate <hcloud.certificates.domain.Certificate>`
@@ -234,7 +256,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
                User-defined labels (key-value pairs)
         :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`
         """
-        data = {}
+        data: dict[str, Any] = {}
         if name is not None:
             data["name"] = name
         if labels is not None:
@@ -246,8 +268,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundCertificate(self, response["certificate"])
 
-    def delete(self, certificate):
-        # type: (Certificate) -> bool
+    def delete(self, certificate: Certificate | BoundCertificate) -> bool:
         self._client.request(
             url=f"/certificates/{certificate.id}",
             method="DELETE",
@@ -261,9 +282,13 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         return True
 
     def get_actions_list(
-        self, certificate, status=None, sort=None, page=None, per_page=None
-    ):
-        # type: (Certificate, Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResults[List[BoundAction], Meta]
+        self,
+        certificate: Certificate | BoundCertificate,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
         """Returns all action objects for a Certificate.
 
         :param certificate: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>` or :class:`Certificate <hcloud.certificates.domain.Certificate>`
@@ -277,7 +302,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if status is not None:
             params["status"] = status
         if sort is not None:
@@ -300,8 +325,12 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))
 
-    def get_actions(self, certificate, status=None, sort=None):
-        # type: (Certificate, Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
+    def get_actions(
+        self,
+        certificate: Certificate | BoundCertificate,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundAction]:
         """Returns all action objects for a Certificate.
 
         :param certificate: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>` or :class:`Certificate <hcloud.certificates.domain.Certificate>`
@@ -313,8 +342,10 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_actions(certificate, status=status, sort=sort)
 
-    def retry_issuance(self, certificate):
-        # type: (Certificate) -> BoundAction
+    def retry_issuance(
+        self,
+        certificate: Certificate | BoundCertificate,
+    ) -> BoundAction:
         """Returns all action objects for a Certificate.
 
         :param certificate: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>` or :class:`Certificate <hcloud.certificates.domain.Certificate>`

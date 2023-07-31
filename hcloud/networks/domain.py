@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from dateutil.parser import isoparse
 
 from ..core import BaseDomain
+
+if TYPE_CHECKING:
+    from ..actions import BoundAction
+    from .client import BoundNetwork
 
 
 class Network(BaseDomain):
@@ -90,7 +96,12 @@ class NetworkSubnet(BaseDomain):
     __slots__ = ("type", "ip_range", "network_zone", "gateway", "vswitch_id")
 
     def __init__(
-        self, ip_range, type=None, network_zone=None, gateway=None, vswitch_id=None
+        self,
+        ip_range,
+        type=None,
+        network_zone=None,
+        gateway=None,
+        vswitch_id=None,
     ):
         self.type = type
         self.ip_range = ip_range
@@ -128,8 +139,8 @@ class CreateNetworkResponse(BaseDomain):
 
     def __init__(
         self,
-        network,  # type: BoundNetwork
-        action,  # type: BoundAction
+        network: BoundNetwork,
+        action: BoundAction,
     ):
         self.network = network
         self.action = action

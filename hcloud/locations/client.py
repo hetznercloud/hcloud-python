@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
 from .domain import Location
@@ -23,8 +23,7 @@ class LocationsPageResult(NamedTuple):
 class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
     _client: Client
 
-    def get_by_id(self, id):
-        # type: (int) -> locations.client.BoundLocation
+    def get_by_id(self, id: int) -> BoundLocation:
         """Get a specific location by its ID.
 
         :param id: int
@@ -33,8 +32,12 @@ class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
         response = self._client.request(url=f"/locations/{id}", method="GET")
         return BoundLocation(self, response["location"])
 
-    def get_list(self, name=None, page=None, per_page=None):
-        # type: (Optional[str], Optional[int], Optional[int]) -> PageResult[List[BoundLocation], Meta]
+    def get_list(
+        self,
+        name: str | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> LocationsPageResult:
         """Get a list of locations
 
         :param name: str (optional)
@@ -45,7 +48,7 @@ class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundLocation <hcloud.locations.client.BoundLocation>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if name is not None:
             params["name"] = name
         if page is not None:
@@ -60,8 +63,7 @@ class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
         ]
         return LocationsPageResult(locations, Meta.parse_meta(response))
 
-    def get_all(self, name=None):
-        # type: (Optional[str]) -> List[BoundLocation]
+    def get_all(self, name: str | None = None) -> list[BoundLocation]:
         """Get all locations
 
         :param name: str (optional)
@@ -70,8 +72,7 @@ class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(name=name)
 
-    def get_by_name(self, name):
-        # type: (str) -> BoundLocation
+    def get_by_name(self, name: str) -> BoundLocation | None:
         """Get location by name
 
         :param name: str

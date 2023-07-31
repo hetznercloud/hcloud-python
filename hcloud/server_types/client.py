@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
 from .domain import ServerType
@@ -23,8 +23,7 @@ class ServerTypesPageResult(NamedTuple):
 class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
     _client: Client
 
-    def get_by_id(self, id):
-        # type: (int) -> BoundServerType
+    def get_by_id(self, id: int) -> BoundServerType:
         """Returns a specific Server Type.
 
         :param id: int
@@ -33,8 +32,12 @@ class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
         response = self._client.request(url=f"/server_types/{id}", method="GET")
         return BoundServerType(self, response["server_type"])
 
-    def get_list(self, name=None, page=None, per_page=None):
-        # type: (Optional[str], Optional[int], Optional[int]) -> PageResults[List[BoundServerType], Meta]
+    def get_list(
+        self,
+        name: str | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ServerTypesPageResult:
         """Get a list of Server types
 
         :param name: str (optional)
@@ -45,7 +48,7 @@ class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundServerType <hcloud.server_types.client.BoundServerType>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if name is not None:
             params["name"] = name
         if page is not None:
@@ -62,8 +65,7 @@ class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
         ]
         return ServerTypesPageResult(server_types, Meta.parse_meta(response))
 
-    def get_all(self, name=None):
-        # type: (Optional[str]) -> List[BoundServerType]
+    def get_all(self, name: str | None = None) -> list[BoundServerType]:
         """Get all Server types
 
         :param name: str (optional)
@@ -72,8 +74,7 @@ class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(name=name)
 
-    def get_by_name(self, name):
-        # type: (str) -> BoundServerType
+    def get_by_name(self, name: str) -> BoundServerType | None:
         """Get Server type by name
 
         :param name: str

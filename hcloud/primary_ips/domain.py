@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from dateutil.parser import isoparse
 
 from ..core import BaseDomain
+
+if TYPE_CHECKING:
+    from ..actions import BoundAction
+    from .client import BoundPrimaryIP
 
 
 class PrimaryIP(BaseDomain):
@@ -96,8 +102,8 @@ class CreatePrimaryIPResponse(BaseDomain):
 
     def __init__(
         self,
-        primary_ip,  # type: BoundPrimaryIP
-        action,  # type: BoundAction
+        primary_ip: BoundPrimaryIP,
+        action: BoundAction | None,
     ):
         self.primary_ip = primary_ip
         self.action = action

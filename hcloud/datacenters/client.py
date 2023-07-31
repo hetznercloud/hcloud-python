@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
 from ..locations import BoundLocation
@@ -16,7 +16,7 @@ class BoundDatacenter(BoundModelBase):
 
     model = Datacenter
 
-    def __init__(self, client, data):
+    def __init__(self, client: DatacentersClient, data: dict):
         location = data.get("location")
         if location is not None:
             data["location"] = BoundLocation(client._client.locations, location)
@@ -58,8 +58,7 @@ class DatacentersPageResult(NamedTuple):
 class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
     _client: Client
 
-    def get_by_id(self, id):
-        # type: (int) -> BoundDatacenter
+    def get_by_id(self, id: int) -> BoundDatacenter:
         """Get a specific datacenter by its ID.
 
         :param id: int
@@ -70,11 +69,10 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_list(
         self,
-        name=None,  # type: Optional[str]
-        page=None,  # type: Optional[int]
-        per_page=None,  # type: Optional[int]
-    ):
-        # type: (...) -> PageResults[List[BoundDatacenter], Meta]
+        name: str | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> DatacentersPageResult:
         """Get a list of datacenters
 
         :param name: str (optional)
@@ -85,7 +83,7 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if name is not None:
             params["name"] = name
 
@@ -104,8 +102,7 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
 
         return DatacentersPageResult(datacenters, Meta.parse_meta(response))
 
-    def get_all(self, name=None):
-        # type: (Optional[str]) -> List[BoundDatacenter]
+    def get_all(self, name: str | None = None) -> list[BoundDatacenter]:
         """Get all datacenters
 
         :param name: str (optional)
@@ -114,8 +111,7 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(name=name)
 
-    def get_by_name(self, name):
-        # type: (str) -> BoundDatacenter
+    def get_by_name(self, name: str) -> BoundDatacenter | None:
         """Get datacenter by name
 
         :param name: str

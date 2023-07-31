@@ -1,8 +1,15 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from dateutil.parser import isoparse
 
 from ..core import BaseDomain
+
+if TYPE_CHECKING:
+    from ..actions import BoundAction
+    from ..networks import BoundNetwork
+    from .client import BoundLoadBalancer
 
 
 class LoadBalancer(BaseDomain):
@@ -207,7 +214,12 @@ class LoadBalancerHealtCheckHttp(BaseDomain):
     """
 
     def __init__(
-        self, domain=None, path=None, response=None, status_codes=None, tls=None
+        self,
+        domain=None,
+        path=None,
+        response=None,
+        status_codes=None,
+        tls=None,
     ):
         self.domain = domain
         self.path = path
@@ -232,7 +244,12 @@ class LoadBalancerTarget(BaseDomain):
     """
 
     def __init__(
-        self, type=None, server=None, label_selector=None, ip=None, use_private_ip=None
+        self,
+        type=None,
+        server=None,
+        label_selector=None,
+        ip=None,
+        use_private_ip=None,
     ):
         self.type = type
         self.server = server
@@ -284,9 +301,9 @@ class PublicNetwork(BaseDomain):
 
     def __init__(
         self,
-        ipv4,  # type: IPv4Address
-        ipv6,  # type: IPv6Network
-        enabled,  # type: bool
+        ipv4: IPv4Address,
+        ipv6: IPv6Network,
+        enabled: bool,
     ):
         self.ipv4 = ipv4
         self.ipv6 = ipv6
@@ -304,8 +321,8 @@ class IPv4Address(BaseDomain):
 
     def __init__(
         self,
-        ip,  # type: str
-        dns_ptr,  # type: str
+        ip: str,
+        dns_ptr: str,
     ):
         self.ip = ip
         self.dns_ptr = dns_ptr
@@ -322,8 +339,8 @@ class IPv6Network(BaseDomain):
 
     def __init__(
         self,
-        ip,  # type: str
-        dns_ptr,  # type: str
+        ip: str,
+        dns_ptr: str,
     ):
         self.ip = ip
         self.dns_ptr = dns_ptr
@@ -342,8 +359,8 @@ class PrivateNet(BaseDomain):
 
     def __init__(
         self,
-        network,  # type: BoundNetwork
-        ip,  # type: str
+        network: BoundNetwork,
+        ip: str,
     ):
         self.network = network
         self.ip = ip
@@ -362,8 +379,8 @@ class CreateLoadBalancerResponse(BaseDomain):
 
     def __init__(
         self,
-        load_balancer,  # type: BoundLoadBalancer
-        action,  # type: BoundAction
+        load_balancer: BoundLoadBalancer,
+        action: BoundAction,
     ):
         self.load_balancer = load_balancer
         self.action = action

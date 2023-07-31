@@ -1,8 +1,18 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from dateutil.parser import isoparse
 
 from ..core import BaseDomain
+
+if TYPE_CHECKING:
+    from ..actions import BoundAction
+    from ..firewalls import BoundFirewall
+    from ..floating_ips import BoundFloatingIP
+    from ..networks import BoundNetwork
+    from ..primary_ips import BoundPrimaryIP, PrimaryIP
+    from .client import BoundServer
 
 
 class Server(BaseDomain):
@@ -152,10 +162,10 @@ class CreateServerResponse(BaseDomain):
 
     def __init__(
         self,
-        server,  # type: BoundServer
-        action,  # type: BoundAction
-        next_actions,  # type: List[Action]
-        root_password,  # type: str
+        server: BoundServer,
+        action: BoundAction,
+        next_actions: list[BoundAction],
+        root_password: str | None,
     ):
         self.server = server
         self.action = action
@@ -176,8 +186,8 @@ class ResetPasswordResponse(BaseDomain):
 
     def __init__(
         self,
-        action,  # type: BoundAction
-        root_password,  # type: str
+        action: BoundAction,
+        root_password: str,
     ):
         self.action = action
         self.root_password = root_password
@@ -196,8 +206,8 @@ class EnableRescueResponse(BaseDomain):
 
     def __init__(
         self,
-        action,  # type: BoundAction
-        root_password,  # type: str
+        action: BoundAction,
+        root_password: str,
     ):
         self.action = action
         self.root_password = root_password
@@ -218,9 +228,9 @@ class RequestConsoleResponse(BaseDomain):
 
     def __init__(
         self,
-        action,  # type: BoundAction
-        wss_url,  # type: str
-        password,  # type: str
+        action: BoundAction,
+        wss_url: str,
+        password: str,
     ):
         self.action = action
         self.wss_url = wss_url
@@ -249,12 +259,12 @@ class PublicNetwork(BaseDomain):
 
     def __init__(
         self,
-        ipv4,  # type: IPv4Address
-        ipv6,  # type: IPv6Network
-        floating_ips,  # type: List[BoundFloatingIP]
-        primary_ipv4,  # type: BoundPrimaryIP
-        primary_ipv6,  # type: BoundPrimaryIP
-        firewalls=None,  # type: List[PublicNetworkFirewall]
+        ipv4: IPv4Address,
+        ipv6: IPv6Network,
+        floating_ips: list[BoundFloatingIP],
+        primary_ipv4: BoundPrimaryIP | None,
+        primary_ipv6: BoundPrimaryIP | None,
+        firewalls: list[PublicNetworkFirewall] | None = None,
     ):
         self.ipv4 = ipv4
         self.ipv6 = ipv6
@@ -280,8 +290,8 @@ class PublicNetworkFirewall(BaseDomain):
 
     def __init__(
         self,
-        firewall,  # type: BoundFirewall
-        status,  # type: str
+        firewall: BoundFirewall,
+        status: str,
     ):
         self.firewall = firewall
         self.status = status
@@ -302,9 +312,9 @@ class IPv4Address(BaseDomain):
 
     def __init__(
         self,
-        ip,  # type: str
-        blocked,  # type: bool
-        dns_ptr,  # type: str
+        ip: str,
+        blocked: bool,
+        dns_ptr: str,
     ):
         self.ip = ip
         self.blocked = blocked
@@ -330,9 +340,9 @@ class IPv6Network(BaseDomain):
 
     def __init__(
         self,
-        ip,  # type: str
-        blocked,  # type: bool
-        dns_ptr,  # type: list
+        ip: str,
+        blocked: bool,
+        dns_ptr: list,
     ):
         self.ip = ip
         self.blocked = blocked
@@ -359,10 +369,10 @@ class PrivateNet(BaseDomain):
 
     def __init__(
         self,
-        network,  # type: BoundNetwork
-        ip,  # type: str
-        alias_ips,  # type: List[str]
-        mac_address,  # type: str
+        network: BoundNetwork,
+        ip: str,
+        alias_ips: list[str],
+        mac_address: str,
     ):
         self.network = network
         self.ip = ip
@@ -383,10 +393,10 @@ class ServerCreatePublicNetwork(BaseDomain):
 
     def __init__(
         self,
-        ipv4=None,  # type: hcloud.primary_ips.domain.PrimaryIP
-        ipv6=None,  # type: hcloud.primary_ips.domain.PrimaryIP
-        enable_ipv4=True,  # type: bool
-        enable_ipv6=True,  # type: bool
+        ipv4: PrimaryIP | None = None,
+        ipv6: PrimaryIP | None = None,
+        enable_ipv4: bool = True,
+        enable_ipv6: bool = True,
     ):
         self.ipv4 = ipv4
         self.ipv6 = ipv6

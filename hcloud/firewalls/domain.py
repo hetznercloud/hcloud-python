@@ -1,8 +1,15 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from dateutil.parser import isoparse
 
 from ..core import BaseDomain
+
+if TYPE_CHECKING:
+    from ..actions import BoundAction
+    from ..servers import BoundServer, Server
+    from .client import BoundFirewall
 
 
 class Firewall(BaseDomain):
@@ -25,7 +32,13 @@ class Firewall(BaseDomain):
     __slots__ = ("id", "name", "labels", "rules", "applied_to", "created")
 
     def __init__(
-        self, id=None, name=None, labels=None, rules=None, applied_to=None, created=None
+        self,
+        id=None,
+        name=None,
+        labels=None,
+        rules=None,
+        applied_to=None,
+        created=None,
     ):
         self.id = id
         self.name = name
@@ -80,12 +93,12 @@ class FirewallRule:
 
     def __init__(
         self,
-        direction,  # type: str
-        protocol,  # type: str
-        source_ips,  # type: List[str]
-        port=None,  # type: Optional[str]
-        destination_ips=None,  # type: Optional[List[str]]
-        description=None,  # type: Optional[str]
+        direction: str,
+        protocol: str,
+        source_ips: list[str],
+        port: str | None = None,
+        destination_ips: list[str] | None = None,
+        description: str | None = None,
     ):
         self.direction = direction
         self.port = port
@@ -129,9 +142,9 @@ class FirewallResource:
 
     def __init__(
         self,
-        type,  # type: str
-        server=None,  # type: Optional[Server]
-        label_selector=None,  # type: Optional[FirewallResourceLabelSelector]
+        type: str,
+        server: Server | BoundServer | None = None,
+        label_selector: FirewallResourceLabelSelector | None = None,
     ):
         self.type = type
         self.server = server
@@ -172,8 +185,8 @@ class CreateFirewallResponse(BaseDomain):
 
     def __init__(
         self,
-        firewall,  # type: BoundFirewall
-        actions,  # type: BoundAction
+        firewall: BoundFirewall,
+        actions: list[BoundAction] | None,
     ):
         self.firewall = firewall
         self.actions = actions

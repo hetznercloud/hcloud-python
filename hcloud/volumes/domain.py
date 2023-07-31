@@ -1,8 +1,16 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from dateutil.parser import isoparse
 
 from ..core import BaseDomain, DomainIdentityMixin
+
+if TYPE_CHECKING:
+    from ..actions import BoundAction
+    from ..locations import BoundLocation, Location
+    from ..servers import BoundServer, Server
+    from .client import BoundVolume
 
 
 class Volume(BaseDomain, DomainIdentityMixin):
@@ -53,17 +61,17 @@ class Volume(BaseDomain, DomainIdentityMixin):
 
     def __init__(
         self,
-        id,
-        name=None,
-        server=None,
-        created=None,
-        location=None,
-        size=None,
-        linux_device=None,
-        format=None,
-        protection=None,
-        labels=None,
-        status=None,
+        id: int,
+        name: str | None = None,
+        server: Server | BoundServer | None = None,
+        created: str | None = None,
+        location: Location | BoundLocation | None = None,
+        size: int | None = None,
+        linux_device: str | None = None,
+        format: str | None = None,
+        protection: dict | None = None,
+        labels: dict[str, str] | None = None,
+        status: str | None = None,
     ):
         self.id = id
         self.name = name
@@ -93,9 +101,9 @@ class CreateVolumeResponse(BaseDomain):
 
     def __init__(
         self,
-        volume,  # type: BoundVolume
-        action,  # type: BoundAction
-        next_actions,  # type: List[BoundAction]
+        volume: BoundVolume,
+        action: BoundAction,
+        next_actions: list[BoundAction],
     ):
         self.volume = volume
         self.action = action

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
 from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
@@ -21,7 +21,7 @@ class BoundFirewall(BoundModelBase):
 
     model = Firewall
 
-    def __init__(self, client, data, complete=True):
+    def __init__(self, client: FirewallsClient, data: dict, complete: bool = True):
         rules = data.get("rules", [])
         if rules:
             rules = [
@@ -65,8 +65,13 @@ class BoundFirewall(BoundModelBase):
 
         super().__init__(client, data, complete)
 
-    def get_actions_list(self, status=None, sort=None, page=None, per_page=None):
-        # type: (Optional[List[str]], Optional[List[str]], Optional[int], Optional[int]) -> PageResult[BoundAction, Meta]
+    def get_actions_list(
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
         """Returns all action objects for a Firewall.
 
         :param status: List[str] (optional)
@@ -81,8 +86,11 @@ class BoundFirewall(BoundModelBase):
         """
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
-    def get_actions(self, status=None, sort=None):
-        # type: (Optional[List[str]], Optional[List[str]]) -> List[BoundAction]
+    def get_actions(
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundAction]:
         """Returns all action objects for a Firewall.
 
         :param status: List[str] (optional)
@@ -94,8 +102,11 @@ class BoundFirewall(BoundModelBase):
         """
         return self._client.get_actions(self, status, sort)
 
-    def update(self, name=None, labels=None):
-        # type: (Optional[str], Optional[Dict[str, str]], Optional[str]) -> BoundFirewall
+    def update(
+        self,
+        name: str | None = None,
+        labels: dict[str, str] | None = None,
+    ) -> BoundFirewall:
         """Updates the name or labels of a Firewall.
 
         :param labels: Dict[str, str] (optional)
@@ -106,16 +117,14 @@ class BoundFirewall(BoundModelBase):
         """
         return self._client.update(self, labels, name)
 
-    def delete(self):
-        # type: () -> bool
+    def delete(self) -> bool:
         """Deletes a Firewall.
 
         :return: boolean
         """
         return self._client.delete(self)
 
-    def set_rules(self, rules):
-        # type: (List[FirewallRule]) -> List[BoundAction]
+    def set_rules(self, rules: list[FirewallRule]) -> list[BoundAction]:
         """Sets the rules of a Firewall. All existing rules will be overwritten. Pass an empty rules array to remove all rules.
         :param rules: List[:class:`FirewallRule <hcloud.firewalls.domain.FirewallRule>`]
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
@@ -123,16 +132,20 @@ class BoundFirewall(BoundModelBase):
 
         return self._client.set_rules(self, rules)
 
-    def apply_to_resources(self, resources):
-        # type: (List[FirewallResource]) -> List[BoundAction]
+    def apply_to_resources(
+        self,
+        resources: list[FirewallResource],
+    ) -> list[BoundAction]:
         """Applies one Firewall to multiple resources.
         :param resources: List[:class:`FirewallResource <hcloud.firewalls.domain.FirewallResource>`]
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
         return self._client.apply_to_resources(self, resources)
 
-    def remove_from_resources(self, resources):
-        # type: (List[FirewallResource]) -> List[BoundAction]
+    def remove_from_resources(
+        self,
+        resources: list[FirewallResource],
+    ) -> list[BoundAction]:
         """Removes one Firewall from multiple resources.
         :param resources: List[:class:`FirewallResource <hcloud.firewalls.domain.FirewallResource>`]
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
@@ -150,13 +163,12 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_actions_list(
         self,
-        firewall,  # type: Firewall
-        status=None,  # type: Optional[List[str]]
-        sort=None,  # type: Optional[List[str]]
-        page=None,  # type: Optional[int]
-        per_page=None,  # type: Optional[int]
-    ):
-        # type: (...) -> PageResults[List[BoundAction], Meta]
+        firewall: Firewall | BoundFirewall,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
         """Returns all action objects for a Firewall.
 
         :param firewall: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>` or  :class:`Firewall <hcloud.firewalls.domain.Firewall>`
@@ -170,7 +182,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
         if status is not None:
             params["status"] = status
         if sort is not None:
@@ -192,11 +204,10 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_actions(
         self,
-        firewall,  # type: Firewall
-        status=None,  # type: Optional[List[str]]
-        sort=None,  # type: Optional[List[str]]
-    ):
-        # type: (...) -> List[BoundAction]
+        firewall: Firewall | BoundFirewall,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundAction]:
         """Returns all action objects for a Firewall.
 
         :param firewall: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>` or  :class:`Firewall <hcloud.firewalls.domain.Firewall>`
@@ -209,8 +220,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_actions(firewall, status=status, sort=sort)
 
-    def get_by_id(self, id):
-        # type: (int) -> BoundFirewall
+    def get_by_id(self, id: int) -> BoundFirewall:
         """Returns a specific Firewall object.
 
         :param id: int
@@ -221,13 +231,12 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def get_list(
         self,
-        label_selector=None,  # type: Optional[str]
-        page=None,  # type: Optional[int]
-        per_page=None,  # type: Optional[int]
-        name=None,  # type: Optional[str]
-        sort=None,  # type: Optional[List[str]]
-    ):
-        # type: (...) -> PageResults[List[BoundFirewall]]
+        label_selector: str | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+        name: str | None = None,
+        sort: list[str] | None = None,
+    ) -> FirewallsPageResult:
         """Get a list of floating ips from this account
 
         :param label_selector: str (optional)
@@ -242,7 +251,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
                Choices: id name created (You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default))
         :return: (List[:class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params = {}
+        params: dict[str, Any] = {}
 
         if label_selector is not None:
             params["label_selector"] = label_selector
@@ -262,8 +271,12 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
 
         return FirewallsPageResult(firewalls, Meta.parse_meta(response))
 
-    def get_all(self, label_selector=None, name=None, sort=None):
-        # type: (Optional[str], Optional[str],  Optional[List[str]]) -> List[BoundFirewall]
+    def get_all(
+        self,
+        label_selector: str | None = None,
+        name: str | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundFirewall]:
         """Get all floating ips from this account
 
         :param label_selector: str (optional)
@@ -276,8 +289,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         """
         return super().get_all(label_selector=label_selector, name=name, sort=sort)
 
-    def get_by_name(self, name):
-        # type: (str) -> BoundFirewall
+    def get_by_name(self, name: str) -> BoundFirewall | None:
         """Get Firewall by name
 
         :param name: str
@@ -288,12 +300,11 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
 
     def create(
         self,
-        name,  # type: str
-        rules=None,  # type: Optional[List[FirewallRule]]
-        labels=None,  # type: Optional[str]
-        resources=None,  # type: Optional[List[FirewallResource]]
-    ):
-        # type: (...) -> CreateFirewallResponse
+        name: str,
+        rules: list[FirewallRule] | None = None,
+        labels: str | None = None,
+        resources: list[FirewallResource] | None = None,
+    ) -> CreateFirewallResponse:
         """Creates a new Firewall.
 
         :param name: str
@@ -305,7 +316,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`CreateFirewallResponse <hcloud.firewalls.domain.CreateFirewallResponse>`
         """
 
-        data = {"name": name}
+        data: dict[str, Any] = {"name": name}
         if labels is not None:
             data["labels"] = labels
 
@@ -330,8 +341,12 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return result
 
-    def update(self, firewall, labels=None, name=None):
-        # type: (Firewall,   Optional[Dict[str, str]], Optional[str]) -> BoundFirewall
+    def update(
+        self,
+        firewall: Firewall | BoundFirewall,
+        labels: dict[str, str] | None = None,
+        name: str | None = None,
+    ) -> BoundFirewall:
         """Updates the description or labels of a Firewall.
 
         :param firewall: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>` or  :class:`Firewall <hcloud.firewalls.domain.Firewall>`
@@ -341,7 +356,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
                New name to set
         :return: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>`
         """
-        data = {}
+        data: dict[str, Any] = {}
         if labels is not None:
             data["labels"] = labels
         if name is not None:
@@ -354,8 +369,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return BoundFirewall(self, response["firewall"])
 
-    def delete(self, firewall):
-        # type: (Firewall) -> bool
+    def delete(self, firewall: Firewall | BoundFirewall) -> bool:
         """Deletes a Firewall.
 
         :param firewall: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>` or  :class:`Firewall <hcloud.firewalls.domain.Firewall>`
@@ -368,15 +382,18 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         # Return always true, because the API does not return an action for it. When an error occurs a HcloudAPIException will be raised
         return True
 
-    def set_rules(self, firewall, rules):
-        # type: (Firewall, List[FirewallRule]) -> List[BoundAction]
+    def set_rules(
+        self,
+        firewall: Firewall | BoundFirewall,
+        rules: list[FirewallRule],
+    ) -> list[BoundAction]:
         """Sets the rules of a Firewall. All existing rules will be overwritten. Pass an empty rules array to remove all rules.
 
         :param firewall: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>` or  :class:`Firewall <hcloud.firewalls.domain.Firewall>`
         :param rules: List[:class:`FirewallRule <hcloud.firewalls.domain.FirewallRule>`]
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        data = {"rules": []}
+        data: dict[str, Any] = {"rules": []}
         for rule in rules:
             data["rules"].append(rule.to_payload())
         response = self._client.request(
@@ -388,15 +405,18 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return [BoundAction(self._client.actions, _) for _ in response["actions"]]
 
-    def apply_to_resources(self, firewall, resources):
-        # type: (Firewall, List[FirewallResource]) -> List[BoundAction]
+    def apply_to_resources(
+        self,
+        firewall: Firewall | BoundFirewall,
+        resources: list[FirewallResource],
+    ) -> list[BoundAction]:
         """Applies one Firewall to multiple resources.
 
         :param firewall: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>` or  :class:`Firewall <hcloud.firewalls.domain.Firewall>`
         :param resources: List[:class:`FirewallResource <hcloud.firewalls.domain.FirewallResource>`]
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        data = {"apply_to": []}
+        data: dict[str, Any] = {"apply_to": []}
         for resource in resources:
             data["apply_to"].append(resource.to_payload())
         response = self._client.request(
@@ -408,15 +428,18 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         )
         return [BoundAction(self._client.actions, _) for _ in response["actions"]]
 
-    def remove_from_resources(self, firewall, resources):
-        # type: (Firewall, List[FirewallResource]) -> List[BoundAction]
+    def remove_from_resources(
+        self,
+        firewall: Firewall | BoundFirewall,
+        resources: list[FirewallResource],
+    ) -> list[BoundAction]:
         """Removes one Firewall from multiple resources.
 
         :param firewall: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>` or  :class:`Firewall <hcloud.firewalls.domain.Firewall>`
         :param resources: List[:class:`FirewallResource <hcloud.firewalls.domain.FirewallResource>`]
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        data = {"remove_from": []}
+        data: dict[str, Any] = {"remove_from": []}
         for resource in resources:
             data["remove_from"].append(resource.to_payload())
         response = self._client.request(
