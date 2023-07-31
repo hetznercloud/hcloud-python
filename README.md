@@ -75,6 +75,12 @@ Build the documentation and open it in your browser:
 make docs
 ```
 
+Lint the code:
+
+```sh
+make lint
+```
+
 Run tests using the current `python3` version:
 
 ```sh
