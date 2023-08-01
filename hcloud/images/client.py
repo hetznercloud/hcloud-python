@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..actions import ActionsPageResult, BoundAction
+from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
 from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import Image
 
@@ -112,6 +112,16 @@ class ImagesPageResult(NamedTuple):
 
 class ImagesClient(ClientEntityBase):
     _client: Client
+
+    actions: ResourceActionsClient
+    """Images actions client
+
+    :type: :class:`ResourceActionsClient <hcloud.actions.ResourceActionsClient>`
+    """
+
+    def __init__(self, client: Client):
+        super().__init__(client)
+        self.actions = ResourceActionsClient(client, "/images")
 
     def get_actions_list(
         self,

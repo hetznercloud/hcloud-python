@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..actions import ActionsPageResult, BoundAction
+from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
 from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import (
     CreateFirewallResponse,
@@ -160,6 +160,16 @@ class FirewallsPageResult(NamedTuple):
 
 class FirewallsClient(ClientEntityBase):
     _client: Client
+
+    actions: ResourceActionsClient
+    """Firewalls actions client
+
+    :type: :class:`ResourceActionsClient <hcloud.actions.ResourceActionsClient>`
+    """
+
+    def __init__(self, client: Client):
+        super().__init__(client)
+        self.actions = ResourceActionsClient(client, "/firewalls")
 
     def get_actions_list(
         self,

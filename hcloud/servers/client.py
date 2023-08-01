@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..actions import ActionsPageResult, BoundAction
+from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
 from ..core import BoundModelBase, ClientEntityBase, Meta
 from ..datacenters import BoundDatacenter
 from ..firewalls import BoundFirewall
@@ -447,6 +447,16 @@ class ServersPageResult(NamedTuple):
 
 class ServersClient(ClientEntityBase):
     _client: Client
+
+    actions: ResourceActionsClient
+    """Servers actions client
+
+    :type: :class:`ResourceActionsClient <hcloud.actions.ResourceActionsClient>`
+    """
+
+    def __init__(self, client: Client):
+        super().__init__(client)
+        self.actions = ResourceActionsClient(client, "/servers")
 
     def get_by_id(self, id: int) -> BoundServer:
         """Get a specific server

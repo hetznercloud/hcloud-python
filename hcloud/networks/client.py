@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..actions import ActionsPageResult, BoundAction
+from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
 from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import Network, NetworkRoute, NetworkSubnet
 
@@ -167,6 +167,16 @@ class NetworksPageResult(NamedTuple):
 
 class NetworksClient(ClientEntityBase):
     _client: Client
+
+    actions: ResourceActionsClient
+    """Networks actions client
+
+    :type: :class:`ResourceActionsClient <hcloud.actions.ResourceActionsClient>`
+    """
+
+    def __init__(self, client: Client):
+        super().__init__(client)
+        self.actions = ResourceActionsClient(client, "/networks")
 
     def get_by_id(self, id: int) -> BoundNetwork:
         """Get a specific network

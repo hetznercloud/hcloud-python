@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..actions import ActionsPageResult, BoundAction
+from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
 from ..core import BoundModelBase, ClientEntityBase, Meta
 from ..locations import BoundLocation
 from .domain import CreateFloatingIPResponse, FloatingIP
@@ -140,6 +140,16 @@ class FloatingIPsPageResult(NamedTuple):
 
 class FloatingIPsClient(ClientEntityBase):
     _client: Client
+
+    actions: ResourceActionsClient
+    """Floating IPs actions client
+
+    :type: :class:`ResourceActionsClient <hcloud.actions.ResourceActionsClient>`
+    """
+
+    def __init__(self, client: Client):
+        super().__init__(client)
+        self.actions = ResourceActionsClient(client, "/floating_ips")
 
     def get_actions_list(
         self,

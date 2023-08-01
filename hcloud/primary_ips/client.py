@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..actions import BoundAction
+from ..actions import BoundAction, ResourceActionsClient
 from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import CreatePrimaryIPResponse, PrimaryIP
 
@@ -98,6 +98,16 @@ class PrimaryIPsPageResult(NamedTuple):
 
 class PrimaryIPsClient(ClientEntityBase):
     _client: Client
+
+    actions: ResourceActionsClient
+    """Primary IPs actions client
+
+    :type: :class:`ResourceActionsClient <hcloud.actions.ResourceActionsClient>`
+    """
+
+    def __init__(self, client: Client):
+        super().__init__(client)
+        self.actions = ResourceActionsClient(client, "/primary_ips")
 
     def get_by_id(self, id: int) -> BoundPrimaryIP:
         """Returns a specific Primary IP object.
