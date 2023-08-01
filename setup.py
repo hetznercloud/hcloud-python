@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from setuptools import find_packages, setup
 
-with open("README.md") as readme_file:
+with open("README.md", encoding="utf-8") as readme_file:
     readme = readme_file.read()
 
 version = {}
-with open("hcloud/__version__.py") as fp:
+with open("hcloud/__version__.py", encoding="utf-8") as fp:
     exec(fp.read(), version)
 
 setup(
@@ -57,6 +57,6 @@ setup(
         ],
     },
     include_package_data=True,
-    packages=find_packages(exclude=["examples", "tests*", "docs"]),
+    packages=find_packages(),
     zip_safe=False,
 )
