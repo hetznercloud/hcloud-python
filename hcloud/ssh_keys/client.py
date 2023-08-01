@@ -183,11 +183,11 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundSSHKey(self, response["ssh_key"])
 
     def delete(self, ssh_key: SSHKey | BoundSSHKey) -> bool:
-        self._client.request(url=f"/ssh_keys/{ssh_key.id}", method="DELETE")
         """Deletes an SSH key. It cannot be used anymore.
 
         :param ssh_key: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>` or  :class:`SSHKey <hcloud.ssh_keys.domain.SSHKey>`
         :return: True
         """
+        self._client.request(url=f"/ssh_keys/{ssh_key.id}", method="DELETE")
         # Return always true, because the API does not return an action for it. When an error occurs a HcloudAPIException will be raised
         return True
