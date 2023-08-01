@@ -313,9 +313,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
             params["per_page"] = per_page
 
         response = self._client.request(
-            url="/certificates/{certificate_id}/actions".format(
-                certificate_id=certificate.id
-            ),
+            url=f"/certificates/{certificate.id}/actions",
             method="GET",
             params=params,
         )
@@ -352,9 +350,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/certificates/{certificate_id}/actions/retry".format(
-                certificate_id=certificate.id
-            ),
+            url=f"/certificates/{certificate.id}/actions/retry",
             method="POST",
         )
         return BoundAction(self._client.actions, response["action"])

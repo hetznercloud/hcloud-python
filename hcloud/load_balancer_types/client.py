@@ -30,9 +30,7 @@ class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundLoadBalancerType <hcloud.load_balancer_type.client.BoundLoadBalancerType>`
         """
         response = self._client.request(
-            url="/load_balancer_types/{load_balancer_type_id}".format(
-                load_balancer_type_id=id
-            ),
+            url=f"/load_balancer_types/{id}",
             method="GET",
         )
         return BoundLoadBalancerType(self, response["load_balancer_type"])

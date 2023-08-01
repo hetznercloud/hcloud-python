@@ -371,9 +371,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
             data.update({"delete": delete})
 
         response = self._client.request(
-            url="/images/{image_id}/actions/change_protection".format(
-                image_id=image.id
-            ),
+            url=f"/images/{image.id}/actions/change_protection",
             method="POST",
             json=data,
         )

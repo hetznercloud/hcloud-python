@@ -173,9 +173,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         if per_page is not None:
             params["per_page"] = per_page
         response = self._client.request(
-            url="/floating_ips/{floating_ip_id}/actions".format(
-                floating_ip_id=floating_ip.id
-            ),
+            url=f"/floating_ips/{floating_ip.id}/actions",
             method="GET",
             params=params,
         )
@@ -386,9 +384,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
             data.update({"delete": delete})
 
         response = self._client.request(
-            url="/floating_ips/{floating_ip_id}/actions/change_protection".format(
-                floating_ip_id=floating_ip.id
-            ),
+            url=f"/floating_ips/{floating_ip.id}/actions/change_protection",
             method="POST",
             json=data,
         )
@@ -407,9 +403,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/floating_ips/{floating_ip_id}/actions/assign".format(
-                floating_ip_id=floating_ip.id
-            ),
+            url=f"/floating_ips/{floating_ip.id}/actions/assign",
             method="POST",
             json={"server": server.id},
         )
@@ -422,9 +416,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/floating_ips/{floating_ip_id}/actions/unassign".format(
-                floating_ip_id=floating_ip.id
-            ),
+            url=f"/floating_ips/{floating_ip.id}/actions/unassign",
             method="POST",
         )
         return BoundAction(self._client.actions, response["action"])
@@ -445,9 +437,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/floating_ips/{floating_ip_id}/actions/change_dns_ptr".format(
-                floating_ip_id=floating_ip.id
-            ),
+            url=f"/floating_ips/{floating_ip.id}/actions/change_dns_ptr",
             method="POST",
             json={"ip": ip, "dns_ptr": dns_ptr},
         )

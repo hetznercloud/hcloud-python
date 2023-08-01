@@ -420,9 +420,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
             data["vswitch_id"] = subnet.vswitch_id
 
         response = self._client.request(
-            url="/networks/{network_id}/actions/add_subnet".format(
-                network_id=network.id
-            ),
+            url=f"/networks/{network.id}/actions/add_subnet",
             method="POST",
             json=data,
         )
@@ -443,9 +441,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         data: dict[str, Any] = {"ip_range": subnet.ip_range}
 
         response = self._client.request(
-            url="/networks/{network_id}/actions/delete_subnet".format(
-                network_id=network.id
-            ),
+            url=f"/networks/{network.id}/actions/delete_subnet",
             method="POST",
             json=data,
         )
@@ -469,9 +465,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         }
 
         response = self._client.request(
-            url="/networks/{network_id}/actions/add_route".format(
-                network_id=network.id
-            ),
+            url=f"/networks/{network.id}/actions/add_route",
             method="POST",
             json=data,
         )
@@ -495,9 +489,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         }
 
         response = self._client.request(
-            url="/networks/{network_id}/actions/delete_route".format(
-                network_id=network.id
-            ),
+            url=f"/networks/{network.id}/actions/delete_route",
             method="POST",
             json=data,
         )
@@ -518,9 +510,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         data: dict[str, Any] = {"ip_range": ip_range}
 
         response = self._client.request(
-            url="/networks/{network_id}/actions/change_ip_range".format(
-                network_id=network.id
-            ),
+            url=f"/networks/{network.id}/actions/change_ip_range",
             method="POST",
             json=data,
         )
@@ -543,9 +533,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
             data.update({"delete": delete})
 
         response = self._client.request(
-            url="/networks/{network_id}/actions/change_protection".format(
-                network_id=network.id
-            ),
+            url=f"/networks/{network.id}/actions/change_protection",
             method="POST",
             json=data,
         )

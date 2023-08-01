@@ -787,9 +787,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`ResetPasswordResponse <hcloud.servers.domain.ResetPasswordResponse>`
         """
         response = self._client.request(
-            url="/servers/{server_id}/actions/reset_password".format(
-                server_id=server.id
-            ),
+            url=f"/servers/{server.id}/actions/reset_password",
             method="POST",
         )
         return ResetPasswordResponse(
@@ -844,9 +842,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
             data.update({"ssh_keys": ssh_keys})
 
         response = self._client.request(
-            url="/servers/{server_id}/actions/enable_rescue".format(
-                server_id=server.id
-            ),
+            url=f"/servers/{server.id}/actions/enable_rescue",
             method="POST",
             json=data,
         )
@@ -862,9 +858,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/servers/{server_id}/actions/disable_rescue".format(
-                server_id=server.id
-            ),
+            url=f"/servers/{server.id}/actions/disable_rescue",
             method="POST",
         )
         return BoundAction(self._client.actions, response["action"])
@@ -934,9 +928,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/servers/{server_id}/actions/enable_backup".format(
-                server_id=server.id
-            ),
+            url=f"/servers/{server.id}/actions/enable_backup",
             method="POST",
         )
         return BoundAction(self._client.actions, response["action"])
@@ -948,9 +940,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/servers/{server_id}/actions/disable_backup".format(
-                server_id=server.id
-            ),
+            url=f"/servers/{server.id}/actions/disable_backup",
             method="POST",
         )
         return BoundAction(self._client.actions, response["action"])
@@ -1003,9 +993,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data: dict[str, Any] = {"ip": ip, "dns_ptr": dns_ptr}
         response = self._client.request(
-            url="/servers/{server_id}/actions/change_dns_ptr".format(
-                server_id=server.id
-            ),
+            url=f"/servers/{server.id}/actions/change_dns_ptr",
             method="POST",
             json=data,
         )
@@ -1033,9 +1021,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
             data.update({"rebuild": rebuild})
 
         response = self._client.request(
-            url="/servers/{server_id}/actions/change_protection".format(
-                server_id=server.id
-            ),
+            url=f"/servers/{server.id}/actions/change_protection",
             method="POST",
             json=data,
         )
@@ -1048,9 +1034,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`RequestConsoleResponse <hcloud.servers.domain.RequestConsoleResponse>`
         """
         response = self._client.request(
-            url="/servers/{server_id}/actions/request_console".format(
-                server_id=server.id
-            ),
+            url=f"/servers/{server.id}/actions/request_console",
             method="POST",
         )
         return RequestConsoleResponse(
@@ -1082,9 +1066,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         if alias_ips is not None:
             data.update({"alias_ips": alias_ips})
         response = self._client.request(
-            url="/servers/{server_id}/actions/attach_to_network".format(
-                server_id=server.id
-            ),
+            url=f"/servers/{server.id}/actions/attach_to_network",
             method="POST",
             json=data,
         )
@@ -1103,9 +1085,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data: dict[str, Any] = {"network": network.id}
         response = self._client.request(
-            url="/servers/{server_id}/actions/detach_from_network".format(
-                server_id=server.id
-            ),
+            url=f"/servers/{server.id}/actions/detach_from_network",
             method="POST",
             json=data,
         )
@@ -1127,9 +1107,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data: dict[str, Any] = {"network": network.id, "alias_ips": alias_ips}
         response = self._client.request(
-            url="/servers/{server_id}/actions/change_alias_ips".format(
-                server_id=server.id
-            ),
+            url=f"/servers/{server.id}/actions/change_alias_ips",
             method="POST",
             json=data,
         )
@@ -1148,9 +1126,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         """
         data: dict[str, Any] = {"placement_group": str(placement_group.id)}
         response = self._client.request(
-            url="/servers/{server_id}/actions/add_to_placement_group".format(
-                server_id=server.id
-            ),
+            url=f"/servers/{server.id}/actions/add_to_placement_group",
             method="POST",
             json=data,
         )
@@ -1163,9 +1139,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url="/servers/{server_id}/actions/remove_from_placement_group".format(
-                server_id=server.id
-            ),
+            url=f"/servers/{server.id}/actions/remove_from_placement_group",
             method="POST",
         )
         return BoundAction(self._client.actions, response["action"])
