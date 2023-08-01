@@ -48,13 +48,13 @@ myst_enable_extensions = ["colon_fence"]
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
 
-html_logo = "_static/logo-hetzner-online.svg"
+html_logo = "_static/logo-hetzner.svg"
 html_favicon = "_static/favicon.png"
 # Theme options are theme-specific and customize the look and feel of a theme further.
 # For a list of options available for each theme, see the documentation.
 html_theme_options = {
     "logo_only": True,
-    "style_nav_header_background": "#efefef",
+    "style_nav_header_background": "#fff",
 }
 html_css_files = [
     "custom.css",

@@ -2,3 +2,11 @@
   /* Version in Nav is off-white by default, but we restyle the header to have an off-white bg */
   color: #404040;
 }
+
+.wy-side-nav-search input[type="text"] {
+  border-color: #404040;
+}
+
+.logo {
+  margin: 1rem !important;
+}

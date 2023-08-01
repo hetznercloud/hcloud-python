@@ -25,7 +25,7 @@ docs: venv
 
 docs-dev: venv docs
 	venv/bin/watchmedo shell-command \
-		--patterns="*.py;*.rst;*.md" \
+		--patterns="*.py;*.rst;*.md;*.css" \
 		--ignore-pattern=".git/*" \
 		--recursive \
 		--drop \
