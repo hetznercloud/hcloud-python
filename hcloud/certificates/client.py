@@ -269,15 +269,15 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
         return BoundCertificate(self, response["certificate"])
 
     def delete(self, certificate: Certificate | BoundCertificate) -> bool:
-        self._client.request(
-            url=f"/certificates/{certificate.id}",
-            method="DELETE",
-        )
         """Deletes a certificate.
 
         :param certificate: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>` or  :class:`Certificate <hcloud.certificates.domain.Certificate>`
         :return: True
         """
+        self._client.request(
+            url=f"/certificates/{certificate.id}",
+            method="DELETE",
+        )
         # Return always true, because the API does not return an action for it. When an error occurs a HcloudAPIException will be raised
         return True
 
