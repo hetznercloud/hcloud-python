@@ -333,7 +333,8 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
         actions = []
         if response.get("actions") is not None:
             actions = [
-                BoundAction(self._client.actions, _) for _ in response["actions"]
+                BoundAction(self._client.actions, action_data)
+                for action_data in response["actions"]
             ]
 
         result = CreateFirewallResponse(
@@ -401,7 +402,10 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
             method="POST",
             json=data,
         )
-        return [BoundAction(self._client.actions, _) for _ in response["actions"]]
+        return [
+            BoundAction(self._client.actions, action_data)
+            for action_data in response["actions"]
+        ]
 
     def apply_to_resources(
         self,
@@ -422,7 +426,10 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
             method="POST",
             json=data,
         )
-        return [BoundAction(self._client.actions, _) for _ in response["actions"]]
+        return [
+            BoundAction(self._client.actions, action_data)
+            for action_data in response["actions"]
+        ]
 
     def remove_from_resources(
         self,
@@ -443,4 +450,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
             method="POST",
             json=data,
         )
-        return [BoundAction(self._client.actions, _) for _ in response["actions"]]
+        return [
+            BoundAction(self._client.actions, action_data)
+            for action_data in response["actions"]
+        ]
