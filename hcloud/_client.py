@@ -217,8 +217,8 @@ class Client:
                     time.sleep(tries * self._retry_wait_time)
                     tries = tries + 1
                     return self.request(method, url, tries, **kwargs)
-                else:
-                    self._raise_exception_from_content(content)
+
+                self._raise_exception_from_content(content)
             else:
                 self._raise_exception_from_response(response)
 
