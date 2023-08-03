@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Any, Callable
 
 if TYPE_CHECKING:
     from .._client import Client
-    from ..actions import BoundAction
 
 
 class ClientEntityBase:
@@ -53,16 +52,6 @@ class ClientEntityBase:
         assert hasattr(self, "get_list")
         entities, _ = self.get_list(**kwargs)
         return entities[0] if entities else None
-
-    def get_all(self, *args, **kwargs) -> list:  # type: ignore[no-untyped-def]
-        assert hasattr(self, "get_list")
-        return self._get_all(self.get_list, *args, **kwargs)
-
-    def get_actions(self, *args, **kwargs) -> list[BoundAction]:  # type: ignore[no-untyped-def]
-        if not hasattr(self, "get_actions_list"):
-            raise ValueError("this endpoint does not support get_actions method")
-
-        return self._get_all(self.get_actions_list, *args, **kwargs)
 
 
 class BoundModelBase:
