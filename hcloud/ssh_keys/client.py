@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import SSHKey
 
 if TYPE_CHECKING:
@@ -41,7 +41,7 @@ class SSHKeysPageResult(NamedTuple):
     meta: Meta | None
 
 
-class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
+class SSHKeysClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundSSHKey:
@@ -124,7 +124,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get ssh key by name.
         :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def get_by_fingerprint(self, fingerprint: str) -> BoundSSHKey | None:
         """Get ssh key by fingerprint

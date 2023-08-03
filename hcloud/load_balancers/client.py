@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
 from ..certificates import BoundCertificate
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from ..load_balancer_types import BoundLoadBalancerType
 from ..locations import BoundLocation
 from ..networks import BoundNetwork
@@ -328,7 +328,7 @@ class LoadBalancersPageResult(NamedTuple):
     meta: Meta | None
 
 
-class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
+class LoadBalancersClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundLoadBalancer:
@@ -404,7 +404,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get Load Balancer by name.
         :return: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def create(
         self,

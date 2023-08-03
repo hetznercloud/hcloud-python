@@ -19,7 +19,7 @@ class ClientEntityBase:
         """
         self._client = client
 
-    def _iter_pages( # type: ignore[no-untyped-def]
+    def _iter_pages(  # type: ignore[no-untyped-def]
         self,
         list_function: Callable,
         *args,
@@ -49,6 +49,11 @@ class ClientEntityBase:
 
         return results
 
+    def _get_first_by(self, **kwargs):  # type: ignore[no-untyped-def]
+        assert hasattr(self, "get_list")
+        entities, _ = self.get_list(**kwargs)
+        return entities[0] if entities else None
+
     def get_all(self, *args, **kwargs) -> list:  # type: ignore[no-untyped-def]
         assert hasattr(self, "get_list")
         return self._get_all(self.get_list, *args, **kwargs)
@@ -58,17 +63,6 @@ class ClientEntityBase:
             raise ValueError("this endpoint does not support get_actions method")
 
         return self._get_all(self.get_actions_list, *args, **kwargs)
-
-
-class GetEntityByNameMixin:
-    """
-    Use as a mixin for ClientEntityBase classes
-    """
-
-    def get_by_name(self, name: str):  # type: ignore[no-untyped-def]
-        assert hasattr(self, "get_list")
-        entities, _ = self.get_list(name=name)
-        return entities[0] if entities else None
 
 
 class BoundModelBase:

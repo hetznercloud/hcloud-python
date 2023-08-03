@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from ..locations import BoundLocation
 from .domain import CreateVolumeResponse, Volume
 
@@ -134,7 +134,7 @@ class VolumesPageResult(NamedTuple):
     meta: Meta | None
 
 
-class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
+class VolumesClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundVolume:
@@ -212,7 +212,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get volume by name.
         :return: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def create(
         self,

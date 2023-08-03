@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from ..datacenters import BoundDatacenter
 from ..firewalls import BoundFirewall
 from ..floating_ips import BoundFloatingIP
@@ -445,7 +445,7 @@ class ServersPageResult(NamedTuple):
     meta: Meta | None
 
 
-class ServersClient(ClientEntityBase, GetEntityByNameMixin):
+class ServersClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundServer:
@@ -528,7 +528,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get server by name.
         :return: :class:`BoundServer <hcloud.servers.client.BoundServer>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def create(
         self,

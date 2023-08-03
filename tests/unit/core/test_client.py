@@ -6,13 +6,7 @@ from unittest import mock
 import pytest
 
 from hcloud.actions import ActionsPageResult
-from hcloud.core import (
-    BaseDomain,
-    BoundModelBase,
-    ClientEntityBase,
-    GetEntityByNameMixin,
-    Meta,
-)
+from hcloud.core import BaseDomain, BoundModelBase, ClientEntityBase, Meta
 
 
 class TestBoundModelBase:
@@ -203,26 +197,7 @@ class TestClientEntityBase:
             (23, 3, "sweet", 50),
         ]
 
-
-class TestGetEntityByNameMixin:
-    @pytest.fixture()
-    def client_class_constructor(self):
-        def constructor(json_content_function):
-            class CandiesPageResult(NamedTuple):
-                candies: list[Any]
-                meta: Meta
-
-            class CandiesClient(ClientEntityBase, GetEntityByNameMixin):
-                def get_list(self, name, page=None, per_page=None):
-                    json_content = json_content_function(page)
-                    results = json_content["candies"]
-                    return CandiesPageResult(results, Meta.parse_meta(json_content))
-
-            return CandiesClient(mock.MagicMock())
-
-        return constructor
-
-    def test_get_by_name_result_exists(self, client_class_constructor):
+    def test_get_first_by_result_exists(self, client_class_constructor):
         json_content = {"candies": [1]}
 
         def json_content_function(p):
@@ -230,11 +205,11 @@ class TestGetEntityByNameMixin:
 
         candies_client = client_class_constructor(json_content_function)
 
-        result = candies_client.get_by_name(name="sweet")
+        result = candies_client._get_first_by(status="sweet")
 
-        assert result == 1
+        assert result == (1, None, "sweet", None)
 
-    def test_get_by_name_result_does_not_exist(self, client_class_constructor):
+    def test_get_first_by_result_does_not_exist(self, client_class_constructor):
         json_content = {"candies": []}
 
         def json_content_function(p):
@@ -242,6 +217,6 @@ class TestGetEntityByNameMixin:
 
         candies_client = client_class_constructor(json_content_function)
 
-        result = candies_client.get_by_name(name="sweet")
+        result = candies_client._get_first_by(status="sweet")
 
         assert result is None

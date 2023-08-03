@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import Image
 
 if TYPE_CHECKING:
@@ -110,7 +110,7 @@ class ImagesPageResult(NamedTuple):
     meta: Meta | None
 
 
-class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
+class ImagesClient(ClientEntityBase):
     _client: Client
 
     def get_actions_list(
@@ -300,7 +300,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get image by name.
         :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def get_by_name_and_architecture(
         self,

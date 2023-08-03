@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import (
     Certificate,
     CreateManagedCertificateResponse,
@@ -103,7 +103,7 @@ class CertificatesPageResult(NamedTuple):
     meta: Meta | None
 
 
-class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
+class CertificatesClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundCertificate:
@@ -180,7 +180,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get certificate by name.
         :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def create(
         self,

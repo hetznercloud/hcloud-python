@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import (
     CreateFirewallResponse,
     Firewall,
@@ -158,7 +158,7 @@ class FirewallsPageResult(NamedTuple):
     meta: Meta | None
 
 
-class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
+class FirewallsClient(ClientEntityBase):
     _client: Client
 
     def get_actions_list(
@@ -306,7 +306,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get Firewall by name.
         :return: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def create(
         self,

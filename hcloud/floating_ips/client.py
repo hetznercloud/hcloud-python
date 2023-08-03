@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from ..locations import BoundLocation
 from .domain import CreateFloatingIPResponse, FloatingIP
 
@@ -139,7 +139,7 @@ class FloatingIPsPageResult(NamedTuple):
     meta: Meta | None
 
 
-class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
+class FloatingIPsClient(ClientEntityBase):
     _client: Client
 
     def get_actions_list(
@@ -277,7 +277,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get Floating IP by name.
         :return: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def create(
         self,

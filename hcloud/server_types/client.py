@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import ServerType
 
 if TYPE_CHECKING:
@@ -20,7 +20,7 @@ class ServerTypesPageResult(NamedTuple):
     meta: Meta | None
 
 
-class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
+class ServerTypesClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundServerType:
@@ -81,4 +81,4 @@ class ServerTypesClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get Server type by name.
         :return: :class:`BoundServerType <hcloud.server_types.client.BoundServerType>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
