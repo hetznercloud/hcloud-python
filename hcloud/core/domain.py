@@ -2,7 +2,7 @@ from __future__ import annotations
 
 
 class BaseDomain:
-    __slots__ = ()
+    __slots__: tuple[str, ...] = ()
 
     @classmethod
     def from_dict(cls, data: dict):  # type: ignore[no-untyped-def]
@@ -13,7 +13,7 @@ class BaseDomain:
         return cls(**supported_data)
 
     def __repr__(self) -> str:
-        kwargs = [f"{key}={getattr(self, key)!r}" for key in self.__slots__]  # type: ignore[var-annotated]
+        kwargs = [f"{key}={getattr(self, key)!r}" for key in self.__slots__]
         return f"{self.__class__.__qualname__}({', '.join(kwargs)})"
 
 
