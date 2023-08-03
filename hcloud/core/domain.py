@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+from datetime import datetime
+from typing import Any
+
+from .client import BoundModelBase
+
 
 class BaseDomain:
     __slots__: tuple[str, ...] = ()
@@ -12,9 +17,32 @@ class BaseDomain:
         supported_data = {k: v for k, v in data.items() if k in cls.__slots__}
         return cls(**supported_data)
 
+    def to_dict(self) -> dict:
+        """Recursively convert a domain object to a dict."""
+        return _make_serializable(self)  # type: ignore
+
     def __repr__(self) -> str:
         kwargs = [f"{key}={getattr(self, key)!r}" for key in self.__slots__]
         return f"{self.__class__.__qualname__}({', '.join(kwargs)})"
+
+
+def _make_serializable(value: Any) -> dict | list | str | int | float:
+    if isinstance(value, (BaseDomain, BoundModelBase)):
+        if isinstance(value, BoundModelBase):
+            value = value.data_model
+
+        return {key: _make_serializable(getattr(value, key)) for key in value.__slots__}
+
+    if isinstance(value, dict):
+        return {key: _make_serializable(value[key]) for key in value}
+
+    if isinstance(value, list):
+        return [_make_serializable(child) for child in value]
+
+    if isinstance(value, datetime):
+        return value.isoformat()
+
+    return value
 
 
 class DomainIdentityMixin:
