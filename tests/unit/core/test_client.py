@@ -122,7 +122,7 @@ class TestClientEntityBase:
 
         return constructor
 
-    def test_get_all_no_meta(self, client_class_constructor):
+    def test_iter_pages_no_meta(self, client_class_constructor):
         json_content = {"candies": [1, 2]}
 
         def json_content_function(p):
@@ -130,11 +130,11 @@ class TestClientEntityBase:
 
         candies_client = client_class_constructor(json_content_function)
 
-        result = candies_client.get_all(status="sweet")
+        result = candies_client._iter_pages(candies_client.get_list, status="sweet")
 
         assert result == [(1, 1, "sweet", 50), (2, 1, "sweet", 50)]
 
-    def test_get_all_no_next_page(self, client_class_constructor):
+    def test_iter_pages_no_next_page(self, client_class_constructor):
         json_content = {
             "candies": [1, 2],
             "meta": {"pagination": {"page": 1, "per_page": 11, "next_page": None}},
@@ -145,11 +145,11 @@ class TestClientEntityBase:
 
         candies_client = client_class_constructor(json_content_function)
 
-        result = candies_client.get_all(status="sweet")
+        result = candies_client._iter_pages(candies_client.get_list, status="sweet")
 
         assert result == [(1, 1, "sweet", 50), (2, 1, "sweet", 50)]
 
-    def test_get_all_ok(self, client_class_constructor):
+    def test_iter_pages_ok(self, client_class_constructor):
         def json_content_function(p):
             return {
                 "candies": [10 + p, 20 + p],
@@ -164,7 +164,7 @@ class TestClientEntityBase:
 
         candies_client = client_class_constructor(json_content_function)
 
-        result = candies_client.get_all(status="sweet")
+        result = candies_client._iter_pages(candies_client.get_list, status="sweet")
 
         assert result == [
             (11, 1, "sweet", 50),
@@ -174,19 +174,6 @@ class TestClientEntityBase:
             (13, 3, "sweet", 50),
             (23, 3, "sweet", 50),
         ]
-
-    def test_get_actions_no_method(self, client_class_constructor):
-        json_content = {"candies": [1, 2]}
-
-        def json_content_function(p):
-            return json_content
-
-        candies_client = client_class_constructor(json_content_function)
-
-        with pytest.raises(ValueError) as exception_info:
-            candies_client.get_actions()
-        error = exception_info.value
-        assert str(error) == "this endpoint does not support get_actions method"
 
     def test_get_actions_ok(self, client_class_with_actions_constructor):
         def json_content_function(p):
@@ -203,7 +190,9 @@ class TestClientEntityBase:
 
         candies_client = client_class_with_actions_constructor(json_content_function)
 
-        result = candies_client.get_actions(status="sweet")
+        result = candies_client._iter_pages(
+            candies_client.get_actions_list, status="sweet"
+        )
 
         assert result == [
             (11, 1, "sweet", 50),

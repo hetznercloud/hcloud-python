@@ -199,7 +199,12 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
 
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super().get_actions(floating_ip, status=status, sort=sort)
+        return self._iter_pages(
+            self.get_actions_list,
+            floating_ip,
+            status=status,
+            sort=sort,
+        )
 
     def get_by_id(self, id: int) -> BoundFloatingIP:
         """Returns a specific Floating IP object.
@@ -263,7 +268,7 @@ class FloatingIPsClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter networks by their name.
         :return: List[:class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`]
         """
-        return super().get_all(label_selector=label_selector, name=name)
+        return self._iter_pages(self.get_list, label_selector=label_selector, name=name)
 
     def get_by_name(self, name: str) -> BoundFloatingIP | None:
         """Get Floating IP by name

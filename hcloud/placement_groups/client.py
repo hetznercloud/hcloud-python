@@ -122,7 +122,12 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
                Choices: id name created (You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default))
         :return: List[:class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>`]
         """
-        return super().get_all(label_selector=label_selector, name=name, sort=sort)
+        return self._iter_pages(
+            self.get_list,
+            label_selector=label_selector,
+            name=name,
+            sort=sort,
+        )
 
     def get_by_name(self, name: str) -> BoundPlacementGroup | None:
         """Get Placement Group by name

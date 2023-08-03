@@ -226,7 +226,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter networks by labels. The response will only contain networks matching the label selector.
         :return: List[:class:`BoundNetwork <hcloud.networks.client.BoundNetwork>`]
         """
-        return super().get_all(name=name, label_selector=label_selector)
+        return self._iter_pages(self.get_list, name=name, label_selector=label_selector)
 
     def get_by_name(self, name: str) -> BoundNetwork | None:
         """Get network by name
@@ -396,7 +396,12 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super().get_actions(network, status=status, sort=sort)
+        return self._iter_pages(
+            self.get_actions_list,
+            network,
+            status=status,
+            sort=sort,
+        )
 
     def add_subnet(
         self,

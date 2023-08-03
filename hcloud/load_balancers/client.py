@@ -395,7 +395,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter Load Balancers by labels. The response will only contain Load Balancers matching the label selector.
         :return: List[:class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>`]
         """
-        return super().get_all(name=name, label_selector=label_selector)
+        return self._iter_pages(self.get_list, name=name, label_selector=label_selector)
 
     def get_by_name(self, name: str) -> BoundLoadBalancer | None:
         """Get Load Balancer by name
@@ -567,7 +567,12 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super().get_actions(load_balancer, status=status, sort=sort)
+        return self._iter_pages(
+            self.get_actions_list,
+            load_balancer,
+            status=status,
+            sort=sort,
+        )
 
     def add_service(
         self,

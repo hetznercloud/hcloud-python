@@ -110,8 +110,11 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter SSH keys by labels. The response will only contain SSH keys matching the label selector.
         :return:  List[:class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`]
         """
-        return super().get_all(
-            name=name, fingerprint=fingerprint, label_selector=label_selector
+        return self._iter_pages(
+            self.get_list,
+            name=name,
+            fingerprint=fingerprint,
+            label_selector=label_selector,
         )
 
     def get_by_name(self, name: str) -> BoundSSHKey | None:

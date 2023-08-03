@@ -169,7 +169,12 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Specify how the results are sorted. Choices: `id` `command` `status` `progress`  `started` `finished` . You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default)
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super().get_actions(image, sort=sort, status=status)
+        return self._iter_pages(
+            self.get_actions_list,
+            image,
+            sort=sort,
+            status=status,
+        )
 
     def get_by_id(self, id: int) -> BoundImage:
         """Get a specific Image
@@ -274,7 +279,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Include deprecated images in the response. Default: False
         :return: List[:class:`BoundImage <hcloud.images.client.BoundImage>`]
         """
-        return super().get_all(
+        return self._iter_pages(
+            self.get_list,
             name=name,
             label_selector=label_selector,
             bound_to=bound_to,

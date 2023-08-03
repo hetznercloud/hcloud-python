@@ -70,7 +70,7 @@ class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter locations by their name.
         :return: List[:class:`BoundLocation <hcloud.locations.client.BoundLocation>`]
         """
-        return super().get_all(name=name)
+        return self._iter_pages(self.get_list, name=name)
 
     def get_by_name(self, name: str) -> BoundLocation | None:
         """Get location by name

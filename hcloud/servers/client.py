@@ -514,7 +514,12 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter servers by their status. The response will only contain servers matching the status.
         :return: List[:class:`BoundServer <hcloud.servers.client.BoundServer>`]
         """
-        return super().get_all(name=name, label_selector=label_selector, status=status)
+        return self._iter_pages(
+            self.get_list,
+            name=name,
+            label_selector=label_selector,
+            status=status,
+        )
 
     def get_by_name(self, name: str) -> BoundServer | None:
         """Get server by name
@@ -682,7 +687,12 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super().get_actions(server, status=status, sort=sort)
+        return self._iter_pages(
+            self.get_actions_list,
+            server,
+            status=status,
+            sort=sort,
+        )
 
     def update(
         self,

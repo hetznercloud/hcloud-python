@@ -19,7 +19,7 @@ class ClientEntityBase:
         """
         self._client = client
 
-    def _get_all(  # type: ignore[no-untyped-def]
+    def _iter_pages( # type: ignore[no-untyped-def]
         self,
         list_function: Callable,
         *args,

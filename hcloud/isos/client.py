@@ -111,7 +111,8 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
             )
             include_architecture_wildcard = include_wildcard_architecture
 
-        return super().get_all(
+        return self._iter_pages(
+            self.get_list,
             name=name,
             architecture=architecture,
             include_architecture_wildcard=include_architecture_wildcard,

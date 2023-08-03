@@ -77,7 +77,7 @@ class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter Load Balancer type by their name.
         :return: List[:class:`BoundLoadBalancerType <hcloud.load_balancer_types.client.BoundLoadBalancerType>`]
         """
-        return super().get_all(name=name)
+        return self._iter_pages(self.get_list, name=name)
 
     def get_by_name(self, name: str) -> BoundLoadBalancerType | None:
         """Get Load Balancer type by name
