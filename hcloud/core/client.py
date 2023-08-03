@@ -31,17 +31,12 @@ class ClientEntityBase:
             # The *PageResult tuples MUST have the following structure
             # `(result: List[Bound*], meta: Meta)`
             result, meta = list_function(
-                page=page, per_page=self.max_per_page, *args, **kwargs
+                *args, page=page, per_page=self.max_per_page, **kwargs
             )
             if result:
                 results.extend(result)
 
-            if (
-                meta
-                and meta.pagination
-                and meta.pagination.next_page
-                and meta.pagination.next_page
-            ):
+            if meta and meta.pagination and meta.pagination.next_page:
                 page = meta.pagination.next_page
             else:
                 page = 0

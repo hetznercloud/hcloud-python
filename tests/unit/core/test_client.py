@@ -90,7 +90,7 @@ class TestClientEntityBase:
                 meta: Meta
 
             class CandiesClient(ClientEntityBase):
-                def get_list(self, status, page=None, per_page=None):
+                def get_list(self, status=None, page=None, per_page=None):
                     json_content = json_content_function(page)
                     results = [
                         (r, page, status, per_page) for r in json_content["candies"]
