@@ -315,9 +315,7 @@ class ImagesClient(ClientEntityBase):
                Used to identify the image.
         :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
         """
-        entities, _ = self.get_list(name=name, architecture=[architecture])
-        entity = entities[0] if entities else None
-        return entity
+        return self._get_first_by(name=name, architecture=[architecture])
 
     def update(
         self,

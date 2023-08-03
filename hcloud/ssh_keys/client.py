@@ -133,9 +133,7 @@ class SSHKeysClient(ClientEntityBase):
                 Used to get ssh key by fingerprint.
         :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`
         """
-        response = self.get_list(fingerprint=fingerprint)
-        sshkeys = response.ssh_keys
-        return sshkeys[0] if sshkeys else None
+        return self._get_first_by(fingerprint=fingerprint)
 
     def create(
         self,
