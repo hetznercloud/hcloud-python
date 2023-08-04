@@ -19,7 +19,7 @@ class ClientEntityBase:
         """
         self._client = client
 
-    def _get_all(
+    def _get_all(  # type: ignore[no-untyped-def]
         self,
         list_function: Callable,
         *args,
@@ -49,11 +49,11 @@ class ClientEntityBase:
 
         return results
 
-    def get_all(self, *args, **kwargs) -> list:
+    def get_all(self, *args, **kwargs) -> list:  # type: ignore[no-untyped-def]
         assert hasattr(self, "get_list")
         return self._get_all(self.get_list, *args, **kwargs)
 
-    def get_actions(self, *args, **kwargs) -> list[BoundAction]:
+    def get_actions(self, *args, **kwargs) -> list[BoundAction]:  # type: ignore[no-untyped-def]
         if not hasattr(self, "get_actions_list"):
             raise ValueError("this endpoint does not support get_actions method")
 
@@ -65,7 +65,7 @@ class GetEntityByNameMixin:
     Use as a mixin for ClientEntityBase classes
     """
 
-    def get_by_name(self, name: str):
+    def get_by_name(self, name: str):  # type: ignore[no-untyped-def]
         assert hasattr(self, "get_list")
         entities, _ = self.get_list(name=name)
         return entities[0] if entities else None
@@ -94,7 +94,7 @@ class BoundModelBase:
         self.complete = complete
         self.data_model = self.model.from_dict(data)
 
-    def __getattr__(self, name: str):
+    def __getattr__(self, name: str):  # type: ignore[no-untyped-def]
         """Allow magical access to the properties of the model
         :param name: str
         :return:
@@ -105,8 +105,9 @@ class BoundModelBase:
             value = getattr(self.data_model, name)
         return value
 
-    def reload(self):
+    def reload(self) -> None:
         """Reloads the model and tries to get all data from the APIx"""
+        assert hasattr(self._client, "get_by_id")
         bound_model = self._client.get_by_id(self.data_model.id)
         self.data_model = bound_model.data_model
         self.complete = True

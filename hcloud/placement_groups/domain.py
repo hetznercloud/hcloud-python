@@ -37,12 +37,12 @@ class PlacementGroup(BaseDomain):
 
     def __init__(
         self,
-        id=None,
-        name=None,
-        labels=None,
-        servers=None,
-        type=None,
-        created=None,
+        id: int | None = None,
+        name: str | None = None,
+        labels: dict[str, str] | None = None,
+        servers: list[int] | None = None,
+        type: str | None = None,
+        created: str | None = None,
     ):
         self.id = id
         self.name = name

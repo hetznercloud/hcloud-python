@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+from typing import NoReturn
 
 import requests
 
@@ -167,21 +168,21 @@ class Client:
         }
         return headers
 
-    def _raise_exception_from_response(self, response: requests.Response):
+    def _raise_exception_from_response(self, response: requests.Response) -> NoReturn:
         raise APIException(
             code=response.status_code,
             message=response.reason,
             details={"content": response.content},
         )
 
-    def _raise_exception_from_content(self, content: dict):
+    def _raise_exception_from_content(self, content: dict) -> NoReturn:
         raise APIException(
             code=content["error"]["code"],
             message=content["error"]["message"],
             details=content["error"]["details"],
         )
 
-    def request(
+    def request(  # type: ignore[no-untyped-def]
         self,
         method: str,
         url: str,

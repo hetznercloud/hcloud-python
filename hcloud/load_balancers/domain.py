@@ -8,7 +8,11 @@ from ..core import BaseDomain
 
 if TYPE_CHECKING:
     from ..actions import BoundAction
+    from ..certificates import BoundCertificate
+    from ..load_balancer_types import BoundLoadBalancerType
+    from ..locations import BoundLocation
     from ..networks import BoundNetwork
+    from ..servers import BoundServer
     from .client import BoundLoadBalancer
 
 
@@ -67,21 +71,21 @@ class LoadBalancer(BaseDomain):
 
     def __init__(
         self,
-        id,
-        name=None,
-        public_net=None,
-        private_net=None,
-        location=None,
-        algorithm=None,
-        services=None,
-        load_balancer_type=None,
-        protection=None,
-        labels=None,
-        targets=None,
-        created=None,
-        outgoing_traffic=None,
-        ingoing_traffic=None,
-        included_traffic=None,
+        id: int,
+        name: str | None = None,
+        public_net: PublicNetwork | None = None,
+        private_net: PrivateNet | None = None,
+        location: BoundLocation | None = None,
+        algorithm: LoadBalancerAlgorithm | None = None,
+        services: list[LoadBalancerService] | None = None,
+        load_balancer_type: BoundLoadBalancerType | None = None,
+        protection: dict | None = None,
+        labels: dict[str, str] | None = None,
+        targets: list[LoadBalancerTarget] | None = None,
+        created: str | None = None,
+        outgoing_traffic: int | None = None,
+        ingoing_traffic: int | None = None,
+        included_traffic: int | None = None,
     ):
         self.id = id
         self.name = name
@@ -119,12 +123,12 @@ class LoadBalancerService(BaseDomain):
 
     def __init__(
         self,
-        protocol=None,
-        listen_port=None,
-        destination_port=None,
-        proxyprotocol=None,
-        health_check=None,
-        http=None,
+        protocol: str | None = None,
+        listen_port: int | None = None,
+        destination_port: int | None = None,
+        proxyprotocol: bool | None = None,
+        health_check: LoadBalancerHealthCheck | None = None,
+        http: LoadBalancerServiceHttp | None = None,
     ):
         self.protocol = protocol
         self.listen_port = listen_port
@@ -151,11 +155,11 @@ class LoadBalancerServiceHttp(BaseDomain):
 
     def __init__(
         self,
-        cookie_name=None,
-        cookie_lifetime=None,
-        certificates=None,
-        redirect_http=None,
-        sticky_sessions=None,
+        cookie_name: str | None = None,
+        cookie_lifetime: str | None = None,
+        certificates: list[BoundCertificate] | None = None,
+        redirect_http: bool | None = None,
+        sticky_sessions: bool | None = None,
     ):
         self.cookie_name = cookie_name
         self.cookie_lifetime = cookie_lifetime
@@ -183,12 +187,12 @@ class LoadBalancerHealthCheck(BaseDomain):
 
     def __init__(
         self,
-        protocol=None,
-        port=None,
-        interval=None,
-        timeout=None,
-        retries=None,
-        http=None,
+        protocol: str | None = None,
+        port: int | None = None,
+        interval: int | None = None,
+        timeout: int | None = None,
+        retries: int | None = None,
+        http: LoadBalancerHealtCheckHttp | None = None,
     ):
         self.protocol = protocol
         self.port = port
@@ -215,11 +219,11 @@ class LoadBalancerHealtCheckHttp(BaseDomain):
 
     def __init__(
         self,
-        domain=None,
-        path=None,
-        response=None,
-        status_codes=None,
-        tls=None,
+        domain: str | None = None,
+        path: str | None = None,
+        response: str | None = None,
+        status_codes: list | None = None,
+        tls: bool | None = None,
     ):
         self.domain = domain
         self.path = path
@@ -245,11 +249,11 @@ class LoadBalancerTarget(BaseDomain):
 
     def __init__(
         self,
-        type=None,
-        server=None,
-        label_selector=None,
-        ip=None,
-        use_private_ip=None,
+        type: str | None = None,
+        server: BoundServer | None = None,
+        label_selector: LoadBalancerTargetLabelSelector | None = None,
+        ip: LoadBalancerTargetIP | None = None,
+        use_private_ip: bool | None = None,
     ):
         self.type = type
         self.server = server
@@ -264,7 +268,7 @@ class LoadBalancerTargetLabelSelector(BaseDomain):
     :param selector: str Target label selector
     """
 
-    def __init__(self, selector=None):
+    def __init__(self, selector: str | None = None):
         self.selector = selector
 
 
@@ -274,7 +278,7 @@ class LoadBalancerTargetIP(BaseDomain):
     :param ip: str Target IP
     """
 
-    def __init__(self, ip=None):
+    def __init__(self, ip: str | None = None):
         self.ip = ip
 
 
@@ -285,7 +289,7 @@ class LoadBalancerAlgorithm(BaseDomain):
             Algorithm of the Load Balancer. Choices: round_robin, least_connections
     """
 
-    def __init__(self, type=None):
+    def __init__(self, type: str | None = None):
         self.type = type
 
 

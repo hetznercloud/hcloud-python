@@ -38,14 +38,14 @@ class LoadBalancerType(BaseDomain, DomainIdentityMixin):
 
     def __init__(
         self,
-        id=None,
-        name=None,
-        description=None,
-        max_connections=None,
-        max_services=None,
-        max_targets=None,
-        max_assigned_certificates=None,
-        prices=None,
+        id: int | None = None,
+        name: str | None = None,
+        description: str | None = None,
+        max_connections: int | None = None,
+        max_services: int | None = None,
+        max_targets: int | None = None,
+        max_assigned_certificates: int | None = None,
+        prices: dict | None = None,
     ):
         self.id = id
         self.name = name

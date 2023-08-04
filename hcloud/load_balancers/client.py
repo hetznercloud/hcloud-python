@@ -845,7 +845,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         load_balancer: LoadBalancer | BoundLoadBalancer,
         network: Network | BoundNetwork,
         ip: str | None = None,
-    ):
+    ) -> BoundAction:
         """Attach a Load Balancer to a Network.
 
         :param load_balancer: :class:` <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`

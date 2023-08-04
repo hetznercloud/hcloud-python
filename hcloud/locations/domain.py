@@ -37,14 +37,14 @@ class Location(BaseDomain, DomainIdentityMixin):
 
     def __init__(
         self,
-        id=None,
-        name=None,
-        description=None,
-        country=None,
-        city=None,
-        latitude=None,
-        longitude=None,
-        network_zone=None,
+        id: int | None = None,
+        name: str | None = None,
+        description: str | None = None,
+        country: str | None = None,
+        city: str | None = None,
+        latitude: float | None = None,
+        longitude: float | None = None,
+        network_zone: str | None = None,
     ):
         self.id = id
         self.name = name
