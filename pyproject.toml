@@ -3,6 +3,9 @@ profile = "black"
 combine_as_imports = true
 add_imports = ["from __future__ import annotations"]
 
+[tool.mypy]
+disallow_untyped_defs = true
+
 [tool.coverage.run]
 source = ["hcloud"]
 
