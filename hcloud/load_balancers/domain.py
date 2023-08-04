@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from dateutil.parser import isoparse
 
@@ -137,6 +137,74 @@ class LoadBalancerService(BaseDomain):
         self.health_check = health_check
         self.http = http
 
+    def to_payload(self) -> dict[str, Any]:
+        payload: dict[str, Any] = {}
+
+        if self.protocol is not None:
+            payload["protocol"] = self.protocol
+        if self.listen_port is not None:
+            payload["listen_port"] = self.listen_port
+        if self.destination_port is not None:
+            payload["destination_port"] = self.destination_port
+        if self.proxyprotocol is not None:
+            payload["proxyprotocol"] = self.proxyprotocol
+
+        if self.http is not None:
+            http: dict[str, Any] = {}
+            if self.http.cookie_name is not None:
+                http["cookie_name"] = self.http.cookie_name
+            if self.http.cookie_lifetime is not None:
+                http["cookie_lifetime"] = self.http.cookie_lifetime
+            if self.http.redirect_http is not None:
+                http["redirect_http"] = self.http.redirect_http
+            if self.http.sticky_sessions is not None:
+                http["sticky_sessions"] = self.http.sticky_sessions
+
+            http["certificates"] = [
+                certificate.id for certificate in self.http.certificates or []
+            ]
+
+            payload["http"] = http
+
+        if self.health_check is not None:
+            health_check: dict[str, Any] = {
+                "protocol": self.health_check.protocol,
+                "port": self.health_check.port,
+                "interval": self.health_check.interval,
+                "timeout": self.health_check.timeout,
+                "retries": self.health_check.retries,
+            }
+            if self.health_check.protocol is not None:
+                health_check["protocol"] = self.health_check.protocol
+            if self.health_check.port is not None:
+                health_check["port"] = self.health_check.port
+            if self.health_check.interval is not None:
+                health_check["interval"] = self.health_check.interval
+            if self.health_check.timeout is not None:
+                health_check["timeout"] = self.health_check.timeout
+            if self.health_check.retries is not None:
+                health_check["retries"] = self.health_check.retries
+
+            if self.health_check.http is not None:
+                health_check_http: dict[str, Any] = {}
+                if self.health_check.http.domain is not None:
+                    health_check_http["domain"] = self.health_check.http.domain
+                if self.health_check.http.path is not None:
+                    health_check_http["path"] = self.health_check.http.path
+                if self.health_check.http.response is not None:
+                    health_check_http["response"] = self.health_check.http.response
+                if self.health_check.http.status_codes is not None:
+                    health_check_http[
+                        "status_codes"
+                    ] = self.health_check.http.status_codes
+                if self.health_check.http.tls is not None:
+                    health_check_http["tls"] = self.health_check.http.tls
+
+                health_check["http"] = health_check_http
+
+            payload["health_check"] = health_check
+        return payload
+
 
 class LoadBalancerServiceHttp(BaseDomain):
     """LoadBalancerServiceHttp Domain
@@ -260,6 +328,30 @@ class LoadBalancerTarget(BaseDomain):
         self.label_selector = label_selector
         self.ip = ip
         self.use_private_ip = use_private_ip
+
+    def to_payload(self) -> dict[str, Any]:
+        payload: dict[str, Any] = {
+            "type": self.type,
+        }
+        if self.use_private_ip is not None:
+            payload["use_private_ip"] = self.use_private_ip
+
+        if self.type == "server":
+            if self.server is None:
+                raise ValueError(f"server is not defined in target {self!r}")
+            payload["server"] = {"id": self.server.id}
+
+        elif self.type == "label_selector":
+            if self.label_selector is None:
+                raise ValueError(f"label_selector is not defined in target {self!r}")
+            payload["label_selector"] = {"selector": self.label_selector.selector}
+
+        elif self.type == "ip":
+            if self.ip is None:
+                raise ValueError(f"ip is not defined in target {self!r}")
+            payload["ip"] = {"ip": self.ip.ip}
+
+        return payload
 
 
 class LoadBalancerTargetLabelSelector(BaseDomain):
