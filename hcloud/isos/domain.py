@@ -26,12 +26,12 @@ class Iso(BaseDomain, DomainIdentityMixin):
 
     def __init__(
         self,
-        id=None,
-        name=None,
-        type=None,
-        architecture=None,
-        description=None,
-        deprecated=None,
+        id: int | None = None,
+        name: str | None = None,
+        type: str | None = None,
+        architecture: str | None = None,
+        description: str | None = None,
+        deprecated: str | None = None,
     ):
         self.id = id
         self.name = name

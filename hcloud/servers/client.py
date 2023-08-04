@@ -602,15 +602,15 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
             data["placement_group"] = placement_group.id
 
         if public_net is not None:
-            pn = {
+            data_public_net: dict[str, Any] = {
                 "enable_ipv4": public_net.enable_ipv4,
                 "enable_ipv6": public_net.enable_ipv6,
             }
             if public_net.ipv4 is not None:
-                pn.update({"ipv4": public_net.ipv4.id})
+                data_public_net["ipv4"] = public_net.ipv4.id
             if public_net.ipv6 is not None:
-                pn.update({"ipv6": public_net.ipv6.id})
-            data["public_net"] = pn
+                data_public_net["ipv6"] = public_net.ipv6.id
+            data["public_net"] = data_public_net
 
         response = self._client.request(url="/servers", method="POST", json=data)
 

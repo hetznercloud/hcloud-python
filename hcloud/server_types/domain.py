@@ -54,19 +54,19 @@ class ServerType(BaseDomain, DomainIdentityMixin):
 
     def __init__(
         self,
-        id=None,
-        name=None,
-        description=None,
-        cores=None,
-        memory=None,
-        disk=None,
-        prices=None,
-        storage_type=None,
-        cpu_type=None,
-        architecture=None,
-        deprecated=None,
-        deprecation=None,
-        included_traffic=None,
+        id: int | None = None,
+        name: str | None = None,
+        description: str | None = None,
+        cores: int | None = None,
+        memory: int | None = None,
+        disk: int | None = None,
+        prices: dict | None = None,
+        storage_type: str | None = None,
+        cpu_type: str | None = None,
+        architecture: str | None = None,
+        deprecated: bool | None = None,
+        deprecation: dict | None = None,
+        included_traffic: int | None = None,
     ):
         self.id = id
         self.name = name

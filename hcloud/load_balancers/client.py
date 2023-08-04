@@ -456,30 +456,9 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         if algorithm is not None:
             data["algorithm"] = {"type": algorithm.type}
         if services is not None:
-            service_list = []
-            for service in services:
-                service_list.append(self.get_service_parameters(service))
-            data["services"] = service_list
-
+            data["services"] = [service.to_payload() for service in services]
         if targets is not None:
-            target_list = []
-            for target in targets:
-                target_data = {
-                    "type": target.type,
-                    "use_private_ip": target.use_private_ip,
-                }
-                if target.type == "server":
-                    target_data["server"] = {"id": target.server.id}
-                elif target.type == "label_selector":
-                    target_data["label_selector"] = {
-                        "selector": target.label_selector.selector
-                    }
-                elif target.type == "ip":
-                    target_data["ip"] = {"ip": target.ip.ip}
-                target_list.append(target_data)
-
-            data["targets"] = target_list
-
+            data["targets"] = [target.to_payload() for target in targets]
         if network_zone is not None:
             data["network_zone"] = network_zone
         if location is not None:
@@ -602,7 +581,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                        The LoadBalancerService you want to add to the Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = self.get_service_parameters(service)
+        data: dict[str, Any] = service.to_payload()
 
         response = self._client.request(
             url=f"/load_balancers/{load_balancer.id}/actions/add_service",
@@ -610,71 +589,6 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
             json=data,
         )
         return BoundAction(self._client.actions, response["action"])
-
-    def get_service_parameters(self, service: LoadBalancerService) -> dict[str, Any]:
-        data: dict[str, Any] = {}
-        if service.protocol is not None:
-            data["protocol"] = service.protocol
-        if service.listen_port is not None:
-            data["listen_port"] = service.listen_port
-        if service.destination_port is not None:
-            data["destination_port"] = service.destination_port
-        if service.proxyprotocol is not None:
-            data["proxyprotocol"] = service.proxyprotocol
-        if service.http is not None:
-            data["http"] = {}
-            if service.http.cookie_name is not None:
-                data["http"]["cookie_name"] = service.http.cookie_name
-            if service.http.cookie_lifetime is not None:
-                data["http"]["cookie_lifetime"] = service.http.cookie_lifetime
-            if service.http.redirect_http is not None:
-                data["http"]["redirect_http"] = service.http.redirect_http
-            if service.http.sticky_sessions is not None:
-                data["http"]["sticky_sessions"] = service.http.sticky_sessions
-            certificate_ids = []
-            for certificate in service.http.certificates:
-                certificate_ids.append(certificate.id)
-            data["http"]["certificates"] = certificate_ids
-        if service.health_check is not None:
-            data["health_check"] = {
-                "protocol": service.health_check.protocol,
-                "port": service.health_check.port,
-                "interval": service.health_check.interval,
-                "timeout": service.health_check.timeout,
-                "retries": service.health_check.retries,
-            }
-            data["health_check"] = {}
-            if service.health_check.protocol is not None:
-                data["health_check"]["protocol"] = service.health_check.protocol
-            if service.health_check.port is not None:
-                data["health_check"]["port"] = service.health_check.port
-            if service.health_check.interval is not None:
-                data["health_check"]["interval"] = service.health_check.interval
-            if service.health_check.timeout is not None:
-                data["health_check"]["timeout"] = service.health_check.timeout
-            if service.health_check.retries is not None:
-                data["health_check"]["retries"] = service.health_check.retries
-            if service.health_check.http is not None:
-                data["health_check"]["http"] = {}
-                if service.health_check.http.domain is not None:
-                    data["health_check"]["http"][
-                        "domain"
-                    ] = service.health_check.http.domain
-                if service.health_check.http.path is not None:
-                    data["health_check"]["http"][
-                        "path"
-                    ] = service.health_check.http.path
-                if service.health_check.http.response is not None:
-                    data["health_check"]["http"][
-                        "response"
-                    ] = service.health_check.http.response
-                if service.health_check.http.status_codes is not None:
-                    data["health_check"]["http"][
-                        "status_codes"
-                    ] = service.health_check.http.status_codes
-                if service.health_check.http.tls is not None:
-                    data["health_check"]["http"]["tls"] = service.health_check.http.tls
-        return data
 
     def update_service(
         self,
@@ -688,7 +602,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                        The LoadBalancerService with updated values within for the Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data = self.get_service_parameters(service)
+        data: dict[str, Any] = service.to_payload()
         response = self._client.request(
             url=f"/load_balancers/{load_balancer.id}/actions/update_service",
             method="POST",
@@ -729,16 +643,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                        The LoadBalancerTarget you want to add to the Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data: dict[str, Any] = {
-            "type": target.type,
-            "use_private_ip": target.use_private_ip,
-        }
-        if target.type == "server":
-            data["server"] = {"id": target.server.id}
-        elif target.type == "label_selector":
-            data["label_selector"] = {"selector": target.label_selector.selector}
-        elif target.type == "ip":
-            data["ip"] = {"ip": target.ip.ip}
+        data: dict[str, Any] = target.to_payload()
 
         response = self._client.request(
             url=f"/load_balancers/{load_balancer.id}/actions/add_target",
@@ -759,13 +664,9 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
                        The LoadBalancerTarget you want to remove from the Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data: dict[str, Any] = {"type": target.type}
-        if target.type == "server":
-            data["server"] = {"id": target.server.id}
-        elif target.type == "label_selector":
-            data["label_selector"] = {"selector": target.label_selector.selector}
-        elif target.type == "ip":
-            data["ip"] = {"ip": target.ip.ip}
+        data: dict[str, Any] = target.to_payload()
+        # Do not send use_private_ip on remove_target
+        data.pop("use_private_ip", None)
 
         response = self._client.request(
             url=f"/load_balancers/{load_balancer.id}/actions/remove_target",
@@ -845,7 +746,7 @@ class LoadBalancersClient(ClientEntityBase, GetEntityByNameMixin):
         load_balancer: LoadBalancer | BoundLoadBalancer,
         network: Network | BoundNetwork,
         ip: str | None = None,
-    ):
+    ) -> BoundAction:
         """Attach a Load Balancer to a Network.
 
         :param load_balancer: :class:` <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`

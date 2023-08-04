@@ -8,10 +8,16 @@ from ..core import BaseDomain
 
 if TYPE_CHECKING:
     from ..actions import BoundAction
+    from ..datacenters import BoundDatacenter
     from ..firewalls import BoundFirewall
     from ..floating_ips import BoundFloatingIP
+    from ..images import BoundImage
+    from ..isos import BoundIso
     from ..networks import BoundNetwork
+    from ..placement_groups import BoundPlacementGroup
     from ..primary_ips import BoundPrimaryIP, PrimaryIP
+    from ..server_types import BoundServerType
+    from ..volumes import BoundVolume
     from .client import BoundServer
 
 
@@ -100,27 +106,27 @@ class Server(BaseDomain):
 
     def __init__(
         self,
-        id,
-        name=None,
-        status=None,
-        created=None,
-        public_net=None,
-        server_type=None,
-        datacenter=None,
-        image=None,
-        iso=None,
-        rescue_enabled=None,
-        locked=None,
-        backup_window=None,
-        outgoing_traffic=None,
-        ingoing_traffic=None,
-        included_traffic=None,
-        protection=None,
-        labels=None,
-        volumes=None,
-        private_net=None,
-        primary_disk_size=None,
-        placement_group=None,
+        id: int,
+        name: str | None = None,
+        status: str | None = None,
+        created: str | None = None,
+        public_net: PublicNetwork | None = None,
+        server_type: BoundServerType | None = None,
+        datacenter: BoundDatacenter | None = None,
+        image: BoundImage | None = None,
+        iso: BoundIso | None = None,
+        rescue_enabled: bool | None = None,
+        locked: bool | None = None,
+        backup_window: str | None = None,
+        outgoing_traffic: int | None = None,
+        ingoing_traffic: int | None = None,
+        included_traffic: int | None = None,
+        protection: dict | None = None,
+        labels: dict[str, str] | None = None,
+        volumes: list[BoundVolume] | None = None,
+        private_net: list[PrivateNet] | None = None,
+        primary_disk_size: int | None = None,
+        placement_group: BoundPlacementGroup | None = None,
     ):
         self.id = id
         self.name = name

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from dateutil.parser import isoparse
 
@@ -33,12 +33,12 @@ class Firewall(BaseDomain):
 
     def __init__(
         self,
-        id=None,
-        name=None,
-        labels=None,
-        rules=None,
-        applied_to=None,
-        created=None,
+        id: int | None = None,
+        name: str | None = None,
+        labels: dict[str, str] | None = None,
+        rules: list[FirewallRule] | None = None,
+        applied_to: list[FirewallResource] | None = None,
+        created: str | None = None,
     ):
         self.id = id
         self.name = name
@@ -107,18 +107,18 @@ class FirewallRule:
         self.destination_ips = destination_ips or []
         self.description = description
 
-    def to_payload(self):
-        payload = {
+    def to_payload(self) -> dict[str, Any]:
+        payload: dict[str, Any] = {
             "direction": self.direction,
             "protocol": self.protocol,
             "source_ips": self.source_ips,
         }
         if len(self.destination_ips) > 0:
-            payload.update({"destination_ips": self.destination_ips})
+            payload["destination_ips"] = self.destination_ips
         if self.port is not None:
-            payload.update({"port": self.port})
+            payload["port"] = self.port
         if self.description is not None:
-            payload.update({"description": self.description})
+            payload["description"] = self.description
         return payload
 
 
@@ -150,15 +150,13 @@ class FirewallResource:
         self.server = server
         self.label_selector = label_selector
 
-    def to_payload(self):
-        payload = {"type": self.type}
+    def to_payload(self) -> dict[str, Any]:
+        payload: dict[str, Any] = {"type": self.type}
         if self.server is not None:
-            payload.update({"server": {"id": self.server.id}})
+            payload["server"] = {"id": self.server.id}
 
         if self.label_selector is not None:
-            payload.update(
-                {"label_selector": {"selector": self.label_selector.selector}}
-            )
+            payload["label_selector"] = {"selector": self.label_selector.selector}
         return payload
 
 
@@ -168,7 +166,7 @@ class FirewallResourceLabelSelector(BaseDomain):
     :param selector: str Target label selector
     """
 
-    def __init__(self, selector=None):
+    def __init__(self, selector: str | None = None):
         self.selector = selector
 
 

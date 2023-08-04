@@ -5,7 +5,7 @@ class BaseDomain:
     __slots__ = ()
 
     @classmethod
-    def from_dict(cls, data: dict):
+    def from_dict(cls, data: dict):  # type: ignore[no-untyped-def]
         supported_data = {k: v for k, v in data.items() if k in cls.__slots__}
         return cls(**supported_data)
 

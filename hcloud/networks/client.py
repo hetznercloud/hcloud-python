@@ -245,7 +245,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         routes: list[NetworkRoute] | None = None,
         expose_routes_to_vswitch: bool | None = None,
         labels: dict[str, str] | None = None,
-    ):
+    ) -> BoundNetwork:
         """Creates a network with range ip_range.
 
         :param name: str
@@ -267,7 +267,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
         if subnets is not None:
             data_subnets = []
             for subnet in subnets:
-                data_subnet = {
+                data_subnet: dict[str, Any] = {
                     "type": subnet.type,
                     "ip_range": subnet.ip_range,
                     "network_zone": subnet.network_zone,

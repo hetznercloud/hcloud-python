@@ -133,7 +133,7 @@ class TestBoundLoadBalancer:
                 LoadBalancerTarget(
                     type="server", server=Server(id=1), use_private_ip=True
                 ),
-                {"server": {"id": 1}},
+                {"server": {"id": 1}, "use_private_ip": True},
             ),
             (
                 LoadBalancerTarget(type="ip", ip=LoadBalancerTargetIP(ip="127.0.0.1")),
@@ -153,9 +153,9 @@ class TestBoundLoadBalancer:
     ):
         hetzner_client.request.return_value = response_add_target
         action = bound_load_balancer.add_target(target)
-        params.update({"type": target.type, "use_private_ip": target.use_private_ip})
+        params.update({"type": target.type})
         hetzner_client.request.assert_called_with(
-            json=params, url="/load_balancers/14/actions/add_target", method="POST"
+            url="/load_balancers/14/actions/add_target", method="POST", json=params
         )
 
         assert action.id == 13
@@ -196,7 +196,7 @@ class TestBoundLoadBalancer:
         action = bound_load_balancer.remove_target(target)
         params.update({"type": target.type})
         hetzner_client.request.assert_called_with(
-            json=params, url="/load_balancers/14/actions/remove_target", method="POST"
+            url="/load_balancers/14/actions/remove_target", method="POST", json=params
         )
 
         assert action.id == 13
