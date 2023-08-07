@@ -40,6 +40,7 @@ class Client:
         application_name: str | None = None,
         application_version: str | None = None,
         poll_interval: int = 1,
+        timeout: float | tuple[float, float] | None = None,
     ):
         """Create an new Client instance
 
@@ -48,12 +49,14 @@ class Client:
         :param application_name: Your application name
         :param application_version: Your application _version
         :param poll_interval: Interval for polling information from Hetzner Cloud API in seconds
+        :param timeout: Requests timeout in seconds
         """
         self.token = token
         self._api_endpoint = api_endpoint
         self._application_name = application_name
         self._application_version = application_version
         self._requests_session = requests.Session()
+        self._requests_timeout = timeout
         self.poll_interval = poll_interval
 
         self.datacenters = DatacentersClient(self)
@@ -194,12 +197,16 @@ class Client:
         :param method: HTTP Method to perform the Request
         :param url: URL of the Endpoint
         :param tries: Tries of the request (used internally, should not be set by the user)
+        :param timeout: Requests timeout in seconds
         :return: Response
         """
+        timeout = kwargs.pop("timeout", self._requests_timeout)
+
         response = self._requests_session.request(
             method=method,
             url=self._api_endpoint + url,
             headers=self._get_headers(),
+            timeout=timeout,
             **kwargs,
         )
 
@@ -217,8 +224,8 @@ class Client:
                     time.sleep(tries * self._retry_wait_time)
                     tries = tries + 1
                     return self.request(method, url, tries, **kwargs)
-                else:
-                    self._raise_exception_from_content(content)
+
+                self._raise_exception_from_content(content)
             else:
                 self._raise_exception_from_response(response)
 
