@@ -178,7 +178,8 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
     def create(
         self,
         type: str,
-        datacenter: Datacenter | BoundDatacenter,
+        # TODO: Make the datacenter argument optional
+        datacenter: Datacenter | BoundDatacenter | None,
         name: str,
         assignee_type: str | None = "server",
         assignee_id: int | None = None,
@@ -203,12 +204,12 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
             "type": type,
             "assignee_type": assignee_type,
             "auto_delete": auto_delete,
-            "datacenter": datacenter.id_or_name,
             "name": name,
         }
-        if assignee_id:
+        if datacenter is not None:
+            data["datacenter"] = datacenter.id_or_name
+        if assignee_id is not None:
             data["assignee_id"] = assignee_id
-            data.pop("datacenter")
         if labels is not None:
             data["labels"] = labels
 
