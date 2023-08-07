@@ -307,15 +307,19 @@ class TestBoundServer:
 
     def test_rebuild(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
-        action = bound_server.rebuild(Image(name="ubuntu-20.04"))
+        response = bound_server.rebuild(
+            Image(name="ubuntu-20.04"),
+            return_response=True,
+        )
         hetzner_client.request.assert_called_with(
             url="/servers/14/actions/rebuild",
             method="POST",
             json={"image": "ubuntu-20.04"},
         )
 
-        assert action.id == 1
-        assert action.progress == 0
+        assert response.action.id == 1
+        assert response.action.progress == 0
+        assert response.root_password is None or isinstance(response.root_password, str)
 
     def test_enable_backup(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
@@ -1040,15 +1044,25 @@ class TestServersClient:
     )
     def test_rebuild(self, servers_client, server, generic_action):
         servers_client._client.request.return_value = generic_action
-        action = servers_client.rebuild(server, Image(name="ubuntu-20.04"))
+        response = servers_client.rebuild(
+            server,
+            Image(name="ubuntu-20.04"),
+            return_response=True,
+        )
         servers_client._client.request.assert_called_with(
             url="/servers/1/actions/rebuild",
             method="POST",
             json={"image": "ubuntu-20.04"},
         )
 
-        assert action.id == 1
-        assert action.progress == 0
+        assert response.action.id == 1
+        assert response.action.progress == 0
+        assert response.root_password is None or isinstance(response.root_password, str)
+
+    def test_rebuild_return_response_deprecation(self, servers_client, generic_action):
+        servers_client._client.request.return_value = generic_action
+        with pytest.deprecated_call():
+            servers_client.rebuild(Server(id=1), Image(name="ubuntu-20.04"))
 
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]

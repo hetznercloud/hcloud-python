@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
@@ -21,6 +22,7 @@ from .domain import (
     PrivateNet,
     PublicNetwork,
     PublicNetworkFirewall,
+    RebuildResponse,
     RequestConsoleResponse,
     ResetPasswordResponse,
     Server,
@@ -299,13 +301,18 @@ class BoundServer(BoundModelBase, Server):
         """
         return self._client.create_image(self, description, type, labels)
 
-    def rebuild(self, image: Image | BoundImage) -> BoundAction:
+    def rebuild(
+        self,
+        image: Image | BoundImage,
+        *,
+        return_response: bool = False,
+    ) -> RebuildResponse | BoundAction:
         """Rebuilds a server overwriting its disk with the content of an image, thereby destroying all data on the target server.
 
-        :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.servers.domain.Image>`
-        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        :param image: Image to use for the rebuilt server
+        :param return_response: Whether to return the full response or only the action.
         """
-        return self._client.rebuild(self, image)
+        return self._client.rebuild(self, image, return_response=return_response)
 
     def change_type(
         self,
@@ -930,12 +937,14 @@ class ServersClient(ClientEntityBase):
         self,
         server: Server | BoundServer,
         image: Image | BoundImage,
-    ) -> BoundAction:
+        *,
+        return_response: bool = False,
+    ) -> RebuildResponse | BoundAction:
         """Rebuilds a server overwriting its disk with the content of an image, thereby destroying all data on the target server.
 
-        :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
-        :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.servers.domain.Image>`
-        :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
+        :param server: Server to rebuild
+        :param image: Image to use for the rebuilt server
+        :param return_response: Whether to return the full response or only the action.
         """
         data: dict[str, Any] = {"image": image.id_or_name}
         response = self._client.request(
@@ -943,7 +952,22 @@ class ServersClient(ClientEntityBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+
+        rebuild_response = RebuildResponse(
+            action=BoundAction(self._client.actions, response["action"]),
+            root_password=response.get("root_password"),
+        )
+
+        if not return_response:
+            warnings.warn(
+                "Returning only the 'action' is deprecated, please set the "
+                "'return_response' keyword argument to 'True' to return the full "
+                "rebuild response and update your code accordingly.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return rebuild_response.action
+        return rebuild_response
 
     def enable_backup(self, server: Server | BoundServer) -> BoundAction:
         """Enables and configures the automatic daily backup option for the server. Enabling automatic backups will increase the price of the server by 20%.
