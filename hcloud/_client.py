@@ -197,6 +197,7 @@ class Client:
         :param method: HTTP Method to perform the Request
         :param url: URL of the Endpoint
         :param tries: Tries of the request (used internally, should not be set by the user)
+        :param timeout: Requests timeout in seconds
         :return: Response
         """
         timeout = kwargs.pop("timeout", self._requests_timeout)
