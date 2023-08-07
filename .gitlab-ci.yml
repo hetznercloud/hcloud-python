@@ -12,6 +12,7 @@ lint:
 
   image: python:3.11-alpine
   before_script:
+    - apk add make
     - make venv
   script:
     - make lint
