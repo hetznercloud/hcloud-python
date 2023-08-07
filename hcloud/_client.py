@@ -40,7 +40,7 @@ class Client:
         application_name: str | None = None,
         application_version: str | None = None,
         poll_interval: int = 1,
-        timeout: float | tuple[float, float] | None = 15.0,
+        timeout: float | tuple[float, float] | None = None,
     ):
         """Create an new Client instance
 
