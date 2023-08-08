@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.1](https://github.com/hetznercloud/hcloud-python/compare/v1.27.0...v1.27.1) (2023-08-08)
+
+
+### Bug Fixes
+
+* missing long_description content_type in setup.py ([#279](https://github.com/hetznercloud/hcloud-python/issues/279)) ([6d79d1d](https://github.com/hetznercloud/hcloud-python/commit/6d79d1d18d3731c3db70184c841428e9c4b2a32c))
+
 ## [1.27.0](https://github.com/hetznercloud/hcloud-python/compare/v1.26.0...v1.27.0) (2023-08-08)
 
 
