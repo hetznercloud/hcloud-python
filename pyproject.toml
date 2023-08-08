@@ -26,6 +26,15 @@ good-names = ["i", "j", "k", "ex", "_", "ip", "id"]
 
 [tool.pylint."messages control"]
 disable = [
+  "fixme",
   "line-too-long",
+  "missing-class-docstring",
   "missing-module-docstring",
+  "redefined-builtin",
+  # Consider disabling line-by-line
+  "too-few-public-methods",
+  "too-many-public-methods",
+  "too-many-arguments",
+  "too-many-instance-attributes",
+  "too-many-lines",
 ]

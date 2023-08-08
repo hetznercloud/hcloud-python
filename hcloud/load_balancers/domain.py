@@ -69,6 +69,7 @@ class LoadBalancer(BaseDomain):
         "included_traffic",
     )
 
+    # pylint: disable=too-many-locals
     def __init__(
         self,
         id: int,
@@ -137,7 +138,11 @@ class LoadBalancerService(BaseDomain):
         self.health_check = health_check
         self.http = http
 
+    # pylint: disable=too-many-branches
     def to_payload(self) -> dict[str, Any]:
+        """
+        Generates the request payload from this domain object.
+        """
         payload: dict[str, Any] = {}
 
         if self.protocol is not None:
@@ -334,6 +339,9 @@ class LoadBalancerTarget(BaseDomain):
         self.health_status = health_status
 
     def to_payload(self) -> dict[str, Any]:
+        """
+        Generates the request payload from this domain object.
+        """
         payload: dict[str, Any] = {
             "type": self.type,
         }

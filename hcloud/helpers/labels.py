@@ -18,10 +18,10 @@ class LabelValidator:
 
         :return:  bool
         """
-        for k, v in labels.items():
-            if LabelValidator.KEY_REGEX.match(k) is None:
+        for key, value in labels.items():
+            if LabelValidator.KEY_REGEX.match(key) is None:
                 return False
-            if LabelValidator.VALUE_REGEX.match(v) is None:
+            if LabelValidator.VALUE_REGEX.match(value) is None:
                 return False
         return True
 
@@ -32,9 +32,15 @@ class LabelValidator:
 
         :return:  bool, str
         """
-        for k, v in labels.items():
-            if LabelValidator.KEY_REGEX.match(k) is None:
-                return False, f"label key {k} is not correctly formatted"
-            if LabelValidator.VALUE_REGEX.match(v) is None:
-                return False, f"label value {v} (key: {k}) is not correctly formatted"
+        for key, value in labels.items():
+            if LabelValidator.KEY_REGEX.match(key) is None:
+                return (
+                    False,
+                    f"label key {key} is not correctly formatted",
+                )
+            if LabelValidator.VALUE_REGEX.match(value) is None:
+                return (
+                    False,
+                    f"label value {value} (key: {key}) is not correctly formatted",
+                )
         return True, ""

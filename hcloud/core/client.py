@@ -45,6 +45,7 @@ class ClientEntityBase:
 
     def _get_first_by(self, **kwargs):  # type: ignore[no-untyped-def]
         assert hasattr(self, "get_list")
+        # pylint: disable=no-member
         entities, _ = self.get_list(**kwargs)
         return entities[0] if entities else None
 
