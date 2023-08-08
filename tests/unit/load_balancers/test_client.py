@@ -518,3 +518,53 @@ class TestLoadBalancerslient:
 
         assert action.id == 1
         assert action.progress == 0
+
+    def test_actions_get_by_id(self, load_balancers_client, response_get_actions):
+        load_balancers_client._client.request.return_value = {
+            "action": response_get_actions["actions"][0]
+        }
+        action = load_balancers_client.actions.get_by_id(13)
+
+        load_balancers_client._client.request.assert_called_with(
+            url="/load_balancers/actions/13", method="GET"
+        )
+
+        assert isinstance(action, BoundAction)
+        assert action._client == load_balancers_client._client.actions
+        assert action.id == 13
+        assert action.command == "change_protection"
+
+    def test_actions_get_list(self, load_balancers_client, response_get_actions):
+        load_balancers_client._client.request.return_value = response_get_actions
+        result = load_balancers_client.actions.get_list()
+
+        load_balancers_client._client.request.assert_called_with(
+            url="/load_balancers/actions",
+            method="GET",
+            params={},
+        )
+
+        actions = result.actions
+        assert result.meta is None
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == load_balancers_client._client.actions
+        assert actions[0].id == 13
+        assert actions[0].command == "change_protection"
+
+    def test_actions_get_all(self, load_balancers_client, response_get_actions):
+        load_balancers_client._client.request.return_value = response_get_actions
+        actions = load_balancers_client.actions.get_all()
+
+        load_balancers_client._client.request.assert_called_with(
+            url="/load_balancers/actions",
+            method="GET",
+            params={"page": 1, "per_page": 50},
+        )
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == load_balancers_client._client.actions
+        assert actions[0].id == 13
+        assert actions[0].command == "change_protection"
