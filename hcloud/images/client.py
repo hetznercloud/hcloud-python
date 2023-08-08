@@ -180,7 +180,7 @@ class ImagesClient(ClientEntityBase):
         """Get a specific Image
 
         :param id: int
-        :return: :class:`BoundImage <hcloud.images.client.BoundImage
+        :return: :class:`BoundImage <hcloud.images.client.BoundImage`
         """
         response = self._client.request(url=f"/images/{id}", method="GET")
         return BoundImage(self, response["image"])

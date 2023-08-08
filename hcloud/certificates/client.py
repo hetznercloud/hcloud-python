@@ -81,7 +81,7 @@ class BoundCertificate(BoundModelBase):
                New name to set
         :param labels: Dict[str, str] (optional)
                User-defined labels (key-value pairs)
-        :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>
+        :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`
         """
         return self._client.update(self, name, labels)
 

@@ -46,13 +46,13 @@ class BoundFloatingIP(BoundModelBase):
 
         :param status: List[str] (optional)
                 Response will have only actions with specified statuses. Choices: `running` `success` `error`
-         :param sort: List[str] (optional)
+        :param sort: List[str] (optional)
                 Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
-         :param page: int (optional)
+        :param page: int (optional)
                 Specifies the page to fetch
-         :param per_page: int (optional)
+        :param per_page: int (optional)
                 Specifies how many results are returned by page
-         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
+        :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
         return self._client.get_actions_list(self, status, sort, page, per_page)
 
@@ -67,7 +67,6 @@ class BoundFloatingIP(BoundModelBase):
                Response will have only actions with specified statuses. Choices: `running` `success` `error`
         :param sort: List[str] (optional)
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
-
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
         return self._client.get_actions(self, status, sort)

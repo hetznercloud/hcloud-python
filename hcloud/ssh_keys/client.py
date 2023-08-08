@@ -25,7 +25,7 @@ class BoundSSHKey(BoundModelBase):
                New Description to set
         :param labels: Dict[str, str] (optional)
                User-defined labels (key-value pairs)
-        :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>
+        :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`
         """
         return self._client.update(self, name, labels)
 
