@@ -147,6 +147,7 @@ class TestBoundServer:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == hetzner_client.actions
         assert actions[0].id == 13
         assert actions[0].command == "start_server"
 
@@ -167,6 +168,7 @@ class TestBoundServer:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == hetzner_client.actions
         assert actions[0].id == 13
         assert actions[0].command == "start_server"
 
@@ -604,10 +606,16 @@ class TestServersClient:
         )
 
         bound_server = response.server
+        bound_action = response.action
 
         assert bound_server._client is servers_client
         assert bound_server.id == 1
         assert bound_server.name == "my-server"
+
+        assert isinstance(bound_action, BoundAction)
+        assert bound_action._client == servers_client._client.actions
+        assert bound_action.id == 1
+        assert bound_action.command == "create_server"
 
     def test_create_with_location(self, servers_client, response_create_simple_server):
         servers_client._client.request.return_value = response_create_simple_server

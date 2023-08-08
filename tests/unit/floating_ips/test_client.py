@@ -52,6 +52,7 @@ class TestBoundFloatingIP:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == hetzner_client.actions
         assert actions[0].id == 13
         assert actions[0].command == "assign_floating_ip"
 

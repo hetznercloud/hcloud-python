@@ -30,6 +30,8 @@ class TestBoundAction:
     ):
         mocked_requests.request.side_effect = [running_action, successfully_action]
         bound_running_action.wait_until_finished()
+        mocked_requests.request.assert_called_with(url="/actions/2", method="GET")
+
         assert bound_running_action.status == "success"
         assert mocked_requests.request.call_count == 2
 
