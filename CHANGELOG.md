@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.27.0](https://github.com/hetznercloud/hcloud-python/compare/v1.26.0...v1.27.0) (2023-08-08)
+
+
+### Features
+
+* add global request timeout option ([#271](https://github.com/hetznercloud/hcloud-python/issues/271)) ([07a663f](https://github.com/hetznercloud/hcloud-python/commit/07a663fd8628d305a7461a90a94c61a97c12421b))
+* reexport references in parent ressources modules ([#256](https://github.com/hetznercloud/hcloud-python/issues/256)) ([854c12b](https://github.com/hetznercloud/hcloud-python/commit/854c12bbde3a5f0dcc77cabe72ecab2fd72fbac0))
+* the package is now typed ([#265](https://github.com/hetznercloud/hcloud-python/issues/265)) ([da8baa5](https://github.com/hetznercloud/hcloud-python/commit/da8baa551628fb759c790871362fef1e3666c56b))
+
+
+### Bug Fixes
+
+* allow omitting `datacenter` when creating a primary ip ([#171](https://github.com/hetznercloud/hcloud-python/issues/171)) ([4375dc6](https://github.com/hetznercloud/hcloud-python/commit/4375dc6ec351207380a011ec35e1397bf2bd17e9))
+* ineffective doc strings ([#266](https://github.com/hetznercloud/hcloud-python/issues/266)) ([bb34df9](https://github.com/hetznercloud/hcloud-python/commit/bb34df9390030e70f39bb82c92f4040eef18eb3b))
+* invalid attribute in placement group ([#258](https://github.com/hetznercloud/hcloud-python/issues/258)) ([23b3607](https://github.com/hetznercloud/hcloud-python/commit/23b36079d997d28d73cb9edc9a51a8c3b4481d7e))
+
+
+### Dependencies
+
+* update pre-commit hook asottile/pyupgrade to v3.10.1 ([#261](https://github.com/hetznercloud/hcloud-python/issues/261)) ([efa5780](https://github.com/hetznercloud/hcloud-python/commit/efa5780d0de3080bffe43994c064a0f1bcf6da43))
+* update pre-commit hook pre-commit/mirrors-prettier to v3.0.1 ([#269](https://github.com/hetznercloud/hcloud-python/issues/269)) ([2239b0b](https://github.com/hetznercloud/hcloud-python/commit/2239b0bc9beae457215c6514b0b823cc84a4a463))
+* update pre-commit hook pycqa/flake8 to v6.1.0 ([#260](https://github.com/hetznercloud/hcloud-python/issues/260)) ([fd01384](https://github.com/hetznercloud/hcloud-python/commit/fd013842f7f94e98520ed403a8cd91b68a4c4e5c))
+
+
+### Documentation
+
+* update documentation ([#247](https://github.com/hetznercloud/hcloud-python/issues/247)) ([e63741f](https://github.com/hetznercloud/hcloud-python/commit/e63741fab50524f4e4098af5c77f806915ae93c8))
+* update hetzner logo ([#264](https://github.com/hetznercloud/hcloud-python/issues/264)) ([ee79851](https://github.com/hetznercloud/hcloud-python/commit/ee79851dbf00e50d7f6b398fd4323f3e14831831))
+
 ## [1.26.0](https://github.com/hetznercloud/hcloud-python/compare/v1.25.0...v1.26.0) (2023-07-19)
 
 
