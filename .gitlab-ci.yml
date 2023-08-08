@@ -12,7 +12,7 @@ lint:
 
   image: python:3.11-alpine
   before_script:
-    - apk add make
+    - apk add make bash
     - make venv
   script:
     - make lint
@@ -26,6 +26,7 @@ test:
 
   image: python:${python_version}-alpine
   before_script:
+    - apk add make
     - pip install tox
   script:
     - tox -e ${python_version}
