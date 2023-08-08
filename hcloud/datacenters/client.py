@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from ..locations import BoundLocation
 from ..server_types import BoundServerType
 from .domain import Datacenter, DatacenterServerTypes
@@ -55,7 +55,7 @@ class DatacentersPageResult(NamedTuple):
     meta: Meta | None
 
 
-class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
+class DatacentersClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundDatacenter:
@@ -109,7 +109,7 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter datacenters by their name.
         :return: List[:class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`]
         """
-        return super().get_all(name=name)
+        return self._iter_pages(self.get_list, name=name)
 
     def get_by_name(self, name: str) -> BoundDatacenter | None:
         """Get datacenter by name
@@ -118,4 +118,4 @@ class DatacentersClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get datacenter by name.
         :return: :class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)

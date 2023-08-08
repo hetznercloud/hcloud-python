@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import Location
 
 if TYPE_CHECKING:
@@ -20,7 +20,7 @@ class LocationsPageResult(NamedTuple):
     meta: Meta | None
 
 
-class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
+class LocationsClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundLocation:
@@ -70,7 +70,7 @@ class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter locations by their name.
         :return: List[:class:`BoundLocation <hcloud.locations.client.BoundLocation>`]
         """
-        return super().get_all(name=name)
+        return self._iter_pages(self.get_list, name=name)
 
     def get_by_name(self, name: str) -> BoundLocation | None:
         """Get location by name
@@ -79,4 +79,4 @@ class LocationsClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get location by name.
         :return: :class:`BoundLocation <hcloud.locations.client.BoundLocation>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)

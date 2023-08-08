@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import BoundAction
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import CreatePrimaryIPResponse, PrimaryIP
 
 if TYPE_CHECKING:
@@ -96,7 +96,7 @@ class PrimaryIPsPageResult(NamedTuple):
     meta: Meta | None
 
 
-class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
+class PrimaryIPsClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundPrimaryIP:
@@ -164,7 +164,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter networks by their name.
         :return: List[:class:`BoundPrimaryIP <hcloud.primary_ips.client.BoundPrimaryIP>`]
         """
-        return super().get_all(label_selector=label_selector, name=name)
+        return self._iter_pages(self.get_list, label_selector=label_selector, name=name)
 
     def get_by_name(self, name: str) -> BoundPrimaryIP | None:
         """Get Primary IP by name
@@ -173,7 +173,7 @@ class PrimaryIPsClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get Primary IP by name.
         :return: :class:`BoundPrimaryIP <hcloud.primary_ips.client.BoundPrimaryIP>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def create(
         self,

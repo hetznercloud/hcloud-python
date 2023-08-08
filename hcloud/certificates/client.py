@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import (
     Certificate,
     CreateManagedCertificateResponse,
@@ -103,7 +103,7 @@ class CertificatesPageResult(NamedTuple):
     meta: Meta | None
 
 
-class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
+class CertificatesClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundCertificate:
@@ -171,7 +171,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter certificates by labels. The response will only contain certificates matching the label selector.
         :return: List[:class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`]
         """
-        return super().get_all(name=name, label_selector=label_selector)
+        return self._iter_pages(self.get_list, name=name, label_selector=label_selector)
 
     def get_by_name(self, name: str) -> BoundCertificate | None:
         """Get certificate by name
@@ -180,7 +180,7 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get certificate by name.
         :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def create(
         self,
@@ -338,7 +338,12 @@ class CertificatesClient(ClientEntityBase, GetEntityByNameMixin):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super().get_actions(certificate, status=status, sort=sort)
+        return self._iter_pages(
+            self.get_actions_list,
+            certificate,
+            status=status,
+            sort=sort,
+        )
 
     def retry_issuance(
         self,

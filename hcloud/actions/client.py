@@ -101,4 +101,4 @@ class ActionsClient(ClientEntityBase):
                Specify how the results are sorted. Choices: `id` `command` `status` `progress`  `started` `finished` . You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default)
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super().get_all(status=status, sort=sort)
+        return self._iter_pages(self.get_list, status=status, sort=sort)

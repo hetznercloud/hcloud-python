@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from ..locations import BoundLocation
 from .domain import CreateVolumeResponse, Volume
 
@@ -134,7 +134,7 @@ class VolumesPageResult(NamedTuple):
     meta: Meta | None
 
 
-class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
+class VolumesClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundVolume:
@@ -199,7 +199,11 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter volumes by their status. The response will only contain volumes matching the status.
         :return: List[:class:`BoundVolume <hcloud.volumes.client.BoundVolume>`]
         """
-        return super().get_all(label_selector=label_selector, status=status)
+        return self._iter_pages(
+            self.get_list,
+            label_selector=label_selector,
+            status=status,
+        )
 
     def get_by_name(self, name: str) -> BoundVolume | None:
         """Get volume by name
@@ -208,7 +212,7 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get volume by name.
         :return: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def create(
         self,
@@ -325,7 +329,12 @@ class VolumesClient(ClientEntityBase, GetEntityByNameMixin):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super().get_actions(volume, status=status, sort=sort)
+        return self._iter_pages(
+            self.get_actions_list,
+            volume,
+            status=status,
+            sort=sort,
+        )
 
     def update(
         self,

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import SSHKey
 
 if TYPE_CHECKING:
@@ -41,7 +41,7 @@ class SSHKeysPageResult(NamedTuple):
     meta: Meta | None
 
 
-class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
+class SSHKeysClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundSSHKey:
@@ -110,8 +110,11 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter SSH keys by labels. The response will only contain SSH keys matching the label selector.
         :return:  List[:class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`]
         """
-        return super().get_all(
-            name=name, fingerprint=fingerprint, label_selector=label_selector
+        return self._iter_pages(
+            self.get_list,
+            name=name,
+            fingerprint=fingerprint,
+            label_selector=label_selector,
         )
 
     def get_by_name(self, name: str) -> BoundSSHKey | None:
@@ -121,7 +124,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get ssh key by name.
         :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def get_by_fingerprint(self, fingerprint: str) -> BoundSSHKey | None:
         """Get ssh key by fingerprint
@@ -130,9 +133,7 @@ class SSHKeysClient(ClientEntityBase, GetEntityByNameMixin):
                 Used to get ssh key by fingerprint.
         :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`
         """
-        response = self.get_list(fingerprint=fingerprint)
-        sshkeys = response.ssh_keys
-        return sshkeys[0] if sshkeys else None
+        return self._get_first_by(fingerprint=fingerprint)
 
     def create(
         self,

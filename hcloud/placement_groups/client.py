@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import BoundAction
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import CreatePlacementGroupResponse, PlacementGroup
 
 if TYPE_CHECKING:
@@ -43,7 +43,7 @@ class PlacementGroupsPageResult(NamedTuple):
     meta: Meta | None
 
 
-class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
+class PlacementGroupsClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundPlacementGroup:
@@ -122,7 +122,12 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
                Choices: id name created (You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default))
         :return: List[:class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>`]
         """
-        return super().get_all(label_selector=label_selector, name=name, sort=sort)
+        return self._iter_pages(
+            self.get_list,
+            label_selector=label_selector,
+            name=name,
+            sort=sort,
+        )
 
     def get_by_name(self, name: str) -> BoundPlacementGroup | None:
         """Get Placement Group by name
@@ -131,7 +136,7 @@ class PlacementGroupsClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get Placement Group by name
         :return: class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def create(
         self,

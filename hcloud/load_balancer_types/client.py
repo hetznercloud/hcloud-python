@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import LoadBalancerType
 
 if TYPE_CHECKING:
@@ -20,7 +20,7 @@ class LoadBalancerTypesPageResult(NamedTuple):
     meta: Meta | None
 
 
-class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
+class LoadBalancerTypesClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundLoadBalancerType:
@@ -77,7 +77,7 @@ class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter Load Balancer type by their name.
         :return: List[:class:`BoundLoadBalancerType <hcloud.load_balancer_types.client.BoundLoadBalancerType>`]
         """
-        return super().get_all(name=name)
+        return self._iter_pages(self.get_list, name=name)
 
     def get_by_name(self, name: str) -> BoundLoadBalancerType | None:
         """Get Load Balancer type by name
@@ -86,4 +86,4 @@ class LoadBalancerTypesClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get Load Balancer type by name.
         :return: :class:`BoundLoadBalancerType <hcloud.load_balancer_types.client.BoundLoadBalancerType>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)

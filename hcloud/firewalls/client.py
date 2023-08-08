@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import (
     CreateFirewallResponse,
     Firewall,
@@ -158,7 +158,7 @@ class FirewallsPageResult(NamedTuple):
     meta: Meta | None
 
 
-class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
+class FirewallsClient(ClientEntityBase):
     _client: Client
 
     def get_actions_list(
@@ -218,7 +218,12 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
 
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super().get_actions(firewall, status=status, sort=sort)
+        return self._iter_pages(
+            self.get_actions_list,
+            firewall,
+            status=status,
+            sort=sort,
+        )
 
     def get_by_id(self, id: int) -> BoundFirewall:
         """Returns a specific Firewall object.
@@ -287,7 +292,12 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
                Choices: id name created (You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default))
         :return: List[:class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>`]
         """
-        return super().get_all(label_selector=label_selector, name=name, sort=sort)
+        return self._iter_pages(
+            self.get_list,
+            label_selector=label_selector,
+            name=name,
+            sort=sort,
+        )
 
     def get_by_name(self, name: str) -> BoundFirewall | None:
         """Get Firewall by name
@@ -296,7 +306,7 @@ class FirewallsClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get Firewall by name.
         :return: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def create(
         self,

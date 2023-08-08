@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 from warnings import warn
 
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import Iso
 
 if TYPE_CHECKING:
@@ -21,7 +21,7 @@ class IsosPageResult(NamedTuple):
     meta: Meta | None
 
 
-class IsosClient(ClientEntityBase, GetEntityByNameMixin):
+class IsosClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundIso:
@@ -111,7 +111,8 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
             )
             include_architecture_wildcard = include_wildcard_architecture
 
-        return super().get_all(
+        return self._iter_pages(
+            self.get_list,
             name=name,
             architecture=architecture,
             include_architecture_wildcard=include_architecture_wildcard,
@@ -124,4 +125,4 @@ class IsosClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get iso by name.
         :return: :class:`BoundIso <hcloud.isos.client.BoundIso>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)

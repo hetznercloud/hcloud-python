@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import Image
 
 if TYPE_CHECKING:
@@ -110,7 +110,7 @@ class ImagesPageResult(NamedTuple):
     meta: Meta | None
 
 
-class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
+class ImagesClient(ClientEntityBase):
     _client: Client
 
     def get_actions_list(
@@ -169,7 +169,12 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Specify how the results are sorted. Choices: `id` `command` `status` `progress`  `started` `finished` . You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default)
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super().get_actions(image, sort=sort, status=status)
+        return self._iter_pages(
+            self.get_actions_list,
+            image,
+            sort=sort,
+            status=status,
+        )
 
     def get_by_id(self, id: int) -> BoundImage:
         """Get a specific Image
@@ -274,7 +279,8 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Include deprecated images in the response. Default: False
         :return: List[:class:`BoundImage <hcloud.images.client.BoundImage>`]
         """
-        return super().get_all(
+        return self._iter_pages(
+            self.get_list,
             name=name,
             label_selector=label_selector,
             bound_to=bound_to,
@@ -294,7 +300,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get image by name.
         :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def get_by_name_and_architecture(
         self,
@@ -309,9 +315,7 @@ class ImagesClient(ClientEntityBase, GetEntityByNameMixin):
                Used to identify the image.
         :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
         """
-        entities, _ = self.get_list(name=name, architecture=[architecture])
-        entity = entities[0] if entities else None
-        return entity
+        return self._get_first_by(name=name, architecture=[architecture])
 
     def update(
         self,

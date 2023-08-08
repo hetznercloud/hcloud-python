@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import Network, NetworkRoute, NetworkSubnet
 
 if TYPE_CHECKING:
@@ -165,7 +165,7 @@ class NetworksPageResult(NamedTuple):
     meta: Meta | None
 
 
-class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
+class NetworksClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundNetwork:
@@ -226,7 +226,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter networks by labels. The response will only contain networks matching the label selector.
         :return: List[:class:`BoundNetwork <hcloud.networks.client.BoundNetwork>`]
         """
-        return super().get_all(name=name, label_selector=label_selector)
+        return self._iter_pages(self.get_list, name=name, label_selector=label_selector)
 
     def get_by_name(self, name: str) -> BoundNetwork | None:
         """Get network by name
@@ -235,7 +235,7 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get network by name.
         :return: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def create(
         self,
@@ -396,7 +396,12 @@ class NetworksClient(ClientEntityBase, GetEntityByNameMixin):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super().get_actions(network, status=status, sort=sort)
+        return self._iter_pages(
+            self.get_actions_list,
+            network,
+            status=status,
+            sort=sort,
+        )
 
     def add_subnet(
         self,

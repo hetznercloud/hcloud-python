@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction
-from ..core import BoundModelBase, ClientEntityBase, GetEntityByNameMixin, Meta
+from ..core import BoundModelBase, ClientEntityBase, Meta
 from ..datacenters import BoundDatacenter
 from ..firewalls import BoundFirewall
 from ..floating_ips import BoundFloatingIP
@@ -445,7 +445,7 @@ class ServersPageResult(NamedTuple):
     meta: Meta | None
 
 
-class ServersClient(ClientEntityBase, GetEntityByNameMixin):
+class ServersClient(ClientEntityBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundServer:
@@ -514,7 +514,12 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                Can be used to filter servers by their status. The response will only contain servers matching the status.
         :return: List[:class:`BoundServer <hcloud.servers.client.BoundServer>`]
         """
-        return super().get_all(name=name, label_selector=label_selector, status=status)
+        return self._iter_pages(
+            self.get_list,
+            name=name,
+            label_selector=label_selector,
+            status=status,
+        )
 
     def get_by_name(self, name: str) -> BoundServer | None:
         """Get server by name
@@ -523,7 +528,7 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                Used to get server by name.
         :return: :class:`BoundServer <hcloud.servers.client.BoundServer>`
         """
-        return super().get_by_name(name)
+        return self._get_first_by(name=name)
 
     def create(
         self,
@@ -682,7 +687,12 @@ class ServersClient(ClientEntityBase, GetEntityByNameMixin):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return super().get_actions(server, status=status, sort=sort)
+        return self._iter_pages(
+            self.get_actions_list,
+            server,
+            status=status,
+            sort=sort,
+        )
 
     def update(
         self,
