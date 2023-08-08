@@ -1,6 +1,9 @@
 name: Release Python Package
 
 on:
+  push:
+    branches: [main]
+  pull_request:
   release:
     types: [created]
 
@@ -21,7 +24,11 @@ jobs:
       - name: Build
         run: python3 -m build
 
+      - name: Check
+        run: twine check dist/*
+
       - name: Publish
+        if: github.event_name == 'release'
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
