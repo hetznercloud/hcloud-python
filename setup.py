@@ -15,6 +15,7 @@ setup(
     keywords="hcloud hetzner cloud",
     description="Official Hetzner Cloud python library",
     long_description=readme,
+    long_description_content_type="text/markdown",
     author="Hetzner Cloud GmbH",
     author_email="support-cloud@hetzner.com",
     url="https://github.com/hetznercloud/hcloud-python",
