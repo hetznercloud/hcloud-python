@@ -58,6 +58,6 @@ setup(
         ],
     },
     include_package_data=True,
-    packages=find_packages(exclude=["tests*"]),
+    packages=find_packages(exclude=["examples", "tests*", "docs"]),
     zip_safe=False,
 )
