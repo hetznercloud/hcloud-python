@@ -62,7 +62,7 @@ class BoundVolume(BoundModelBase):
 
         :param status: List[str] (optional)
                Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort:List[str] (optional)
+        :param sort: List[str] (optional)
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
@@ -325,7 +325,7 @@ class VolumesClient(ClientEntityBase):
         :param volume: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`
         :param status: List[str] (optional)
                Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort:List[str] (optional)
+        :param sort: List[str] (optional)
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """

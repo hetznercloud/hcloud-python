@@ -172,7 +172,7 @@ class NetworksClient(ClientEntityBase):
         """Get a specific network
 
         :param id: int
-        :return: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>
+        :return: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>`
         """
         response = self._client.request(url=f"/networks/{id}", method="GET")
         return BoundNetwork(self, response["network"])
