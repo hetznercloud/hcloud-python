@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.2](https://github.com/hetznercloud/hcloud-python/compare/v1.27.1...v1.27.2) (2023-08-09)
+
+
+### Documentation
+
+* fix python references ([#281](https://github.com/hetznercloud/hcloud-python/issues/281)) ([0c0518e](https://github.com/hetznercloud/hcloud-python/commit/0c0518e38e8c6ebe280ee85259480fb5671c2d84))
+
 ## [1.27.1](https://github.com/hetznercloud/hcloud-python/compare/v1.27.0...v1.27.1) (2023-08-08)
 
 
