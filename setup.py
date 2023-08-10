@@ -52,7 +52,7 @@ setup(
         "test": [
             "coverage>=7.2.7,<7.3",
             "pytest>=7.4,<7.5",
-            "mypy>=1.4.1,<1.5",
+            "mypy>=1.5,<1.6",
             "types-python-dateutil",
             "types-requests",
         ],
