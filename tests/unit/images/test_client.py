@@ -63,6 +63,7 @@ class TestBoundImage:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == hetzner_client.actions
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"
 
@@ -81,6 +82,7 @@ class TestBoundImage:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == hetzner_client.actions
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"
 
@@ -308,3 +310,53 @@ class TestImagesClient:
         )
 
         assert delete_success is True
+
+    def test_actions_get_by_id(self, images_client, response_get_actions):
+        images_client._client.request.return_value = {
+            "action": response_get_actions["actions"][0]
+        }
+        action = images_client.actions.get_by_id(13)
+
+        images_client._client.request.assert_called_with(
+            url="/images/actions/13", method="GET"
+        )
+
+        assert isinstance(action, BoundAction)
+        assert action._client == images_client._client.actions
+        assert action.id == 13
+        assert action.command == "change_protection"
+
+    def test_actions_get_list(self, images_client, response_get_actions):
+        images_client._client.request.return_value = response_get_actions
+        result = images_client.actions.get_list()
+
+        images_client._client.request.assert_called_with(
+            url="/images/actions",
+            method="GET",
+            params={},
+        )
+
+        actions = result.actions
+        assert result.meta is None
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == images_client._client.actions
+        assert actions[0].id == 13
+        assert actions[0].command == "change_protection"
+
+    def test_actions_get_all(self, images_client, response_get_actions):
+        images_client._client.request.return_value = response_get_actions
+        actions = images_client.actions.get_all()
+
+        images_client._client.request.assert_called_with(
+            url="/images/actions",
+            method="GET",
+            params={"page": 1, "per_page": 50},
+        )
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == images_client._client.actions
+        assert actions[0].id == 13
+        assert actions[0].command == "change_protection"

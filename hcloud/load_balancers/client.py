@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..actions import ActionsPageResult, BoundAction
+from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
 from ..certificates import BoundCertificate
 from ..core import BoundModelBase, ClientEntityBase, Meta
 from ..load_balancer_types import BoundLoadBalancerType
@@ -330,6 +330,16 @@ class LoadBalancersPageResult(NamedTuple):
 
 class LoadBalancersClient(ClientEntityBase):
     _client: Client
+
+    actions: ResourceActionsClient
+    """Load Balancers scoped actions client
+
+    :type: :class:`ResourceActionsClient <hcloud.actions.client.ResourceActionsClient>`
+    """
+
+    def __init__(self, client: Client):
+        super().__init__(client)
+        self.actions = ResourceActionsClient(client, "/load_balancers")
 
     def get_by_id(self, id: int) -> BoundLoadBalancer:
         """Get a specific Load Balancer

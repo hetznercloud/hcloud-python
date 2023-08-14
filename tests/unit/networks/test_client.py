@@ -60,6 +60,7 @@ class TestBoundNetwork:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == hetzner_client.actions
         assert actions[0].id == 13
         assert actions[0].command == "add_subnet"
 
@@ -585,3 +586,53 @@ class TestNetworksClient:
 
         assert action.id == 1
         assert action.progress == 0
+
+    def test_actions_get_by_id(self, networks_client, response_get_actions):
+        networks_client._client.request.return_value = {
+            "action": response_get_actions["actions"][0]
+        }
+        action = networks_client.actions.get_by_id(13)
+
+        networks_client._client.request.assert_called_with(
+            url="/networks/actions/13", method="GET"
+        )
+
+        assert isinstance(action, BoundAction)
+        assert action._client == networks_client._client.actions
+        assert action.id == 13
+        assert action.command == "add_subnet"
+
+    def test_actions_get_list(self, networks_client, response_get_actions):
+        networks_client._client.request.return_value = response_get_actions
+        result = networks_client.actions.get_list()
+
+        networks_client._client.request.assert_called_with(
+            url="/networks/actions",
+            method="GET",
+            params={},
+        )
+
+        actions = result.actions
+        assert result.meta is None
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == networks_client._client.actions
+        assert actions[0].id == 13
+        assert actions[0].command == "add_subnet"
+
+    def test_actions_get_all(self, networks_client, response_get_actions):
+        networks_client._client.request.return_value = response_get_actions
+        actions = networks_client.actions.get_all()
+
+        networks_client._client.request.assert_called_with(
+            url="/networks/actions",
+            method="GET",
+            params={"page": 1, "per_page": 50},
+        )
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == networks_client._client.actions
+        assert actions[0].id == 13
+        assert actions[0].command == "add_subnet"

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+import warnings
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..core import BoundModelBase, ClientEntityBase, Meta
@@ -40,8 +41,12 @@ class ActionsPageResult(NamedTuple):
     meta: Meta | None
 
 
-class ActionsClient(ClientEntityBase):
-    _client: Client
+class ResourceActionsClient(ClientEntityBase):
+    _resource: str
+
+    def __init__(self, client: Client, resource: str | None):
+        super().__init__(client)
+        self._resource = resource or ""
 
     def get_by_id(self, id: int) -> BoundAction:
         """Get a specific action by its ID.
@@ -49,9 +54,11 @@ class ActionsClient(ClientEntityBase):
         :param id: int
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-
-        response = self._client.request(url=f"/actions/{id}", method="GET")
-        return BoundAction(self, response["action"])
+        response = self._client.request(
+            url=f"{self._resource}/actions/{id}",
+            method="GET",
+        )
+        return BoundAction(self._client.actions, response["action"])
 
     def get_list(
         self,
@@ -60,7 +67,7 @@ class ActionsClient(ClientEntityBase):
         page: int | None = None,
         per_page: int | None = None,
     ) -> ActionsPageResult:
-        """Get a list of actions from this account
+        """Get a list of actions.
 
         :param status: List[str] (optional)
                Response will have only actions with specified statuses. Choices: `running` `success` `error`
@@ -82,9 +89,14 @@ class ActionsClient(ClientEntityBase):
         if per_page is not None:
             params["per_page"] = per_page
 
-        response = self._client.request(url="/actions", method="GET", params=params)
+        response = self._client.request(
+            url=f"{self._resource}/actions",
+            method="GET",
+            params=params,
+        )
         actions = [
-            BoundAction(self, action_data) for action_data in response["actions"]
+            BoundAction(self._client.actions, action_data)
+            for action_data in response["actions"]
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))
 
@@ -93,7 +105,7 @@ class ActionsClient(ClientEntityBase):
         status: list[str] | None = None,
         sort: list[str] | None = None,
     ) -> list[BoundAction]:
-        """Get all actions of the account
+        """Get all actions.
 
         :param status: List[str] (optional)
                Response will have only actions with specified statuses. Choices: `running` `success` `error`
@@ -102,3 +114,52 @@ class ActionsClient(ClientEntityBase):
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
         return self._iter_pages(self.get_list, status=status, sort=sort)
+
+
+class ActionsClient(ResourceActionsClient):
+    def __init__(self, client: Client):
+        super().__init__(client, None)
+
+    def get_list(
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
+        """
+        .. deprecated:: 1.28
+        Use :func:`client.<resource>.actions.get_list` instead,
+        e.g. using :attr:`hcloud.certificates.client.CertificatesClient.actions`.
+
+        `Starting 1 October 2023, it will no longer be available. <https://docs.hetzner.cloud/changelog#2023-07-20-actions-list-endpoint-is-deprecated>`_
+        """
+        warnings.warn(
+            "The 'client.actions.get_list' method is deprecated, please use the "
+            "'client.<resource>.actions.get_list' method instead (e.g. "
+            "'client.certificates.actions.get_list').",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return super().get_list(status=status, sort=sort, page=page, per_page=per_page)
+
+    def get_all(
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundAction]:
+        """
+        .. deprecated:: 1.28
+        Use :func:`client.<resource>.actions.get_all` instead,
+        e.g. using :attr:`hcloud.certificates.client.CertificatesClient.actions`.
+
+        `Starting 1 October 2023, it will no longer be available. <https://docs.hetzner.cloud/changelog#2023-07-20-actions-list-endpoint-is-deprecated>`_
+        """
+        warnings.warn(
+            "The 'client.actions.get_all' method is deprecated, please use the "
+            "'client.<resource>.actions.get_all' method instead (e.g. "
+            "'client.certificates.actions.get_all').",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return super().get_all(status=status, sort=sort)

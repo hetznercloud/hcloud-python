@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..actions import ActionsPageResult, BoundAction
+from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
 from ..core import BoundModelBase, ClientEntityBase, Meta
 from .domain import (
     Certificate,
@@ -105,6 +105,16 @@ class CertificatesPageResult(NamedTuple):
 
 class CertificatesClient(ClientEntityBase):
     _client: Client
+
+    actions: ResourceActionsClient
+    """Certificates scoped actions client
+
+    :type: :class:`ResourceActionsClient <hcloud.actions.client.ResourceActionsClient>`
+    """
+
+    def __init__(self, client: Client):
+        super().__init__(client)
+        self.actions = ResourceActionsClient(client, "/certificates")
 
     def get_by_id(self, id: int) -> BoundCertificate:
         """Get a specific certificate by its ID.

@@ -52,6 +52,7 @@ class TestBoundFloatingIP:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == hetzner_client.actions
         assert actions[0].id == 13
         assert actions[0].command == "assign_floating_ip"
 
@@ -391,3 +392,53 @@ class TestFloatingIPsClient:
         )
         assert action.id == 1
         assert action.progress == 0
+
+    def test_actions_get_by_id(self, floating_ips_client, response_get_actions):
+        floating_ips_client._client.request.return_value = {
+            "action": response_get_actions["actions"][0]
+        }
+        action = floating_ips_client.actions.get_by_id(13)
+
+        floating_ips_client._client.request.assert_called_with(
+            url="/floating_ips/actions/13", method="GET"
+        )
+
+        assert isinstance(action, BoundAction)
+        assert action._client == floating_ips_client._client.actions
+        assert action.id == 13
+        assert action.command == "assign_floating_ip"
+
+    def test_actions_get_list(self, floating_ips_client, response_get_actions):
+        floating_ips_client._client.request.return_value = response_get_actions
+        result = floating_ips_client.actions.get_list()
+
+        floating_ips_client._client.request.assert_called_with(
+            url="/floating_ips/actions",
+            method="GET",
+            params={},
+        )
+
+        actions = result.actions
+        assert result.meta is None
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == floating_ips_client._client.actions
+        assert actions[0].id == 13
+        assert actions[0].command == "assign_floating_ip"
+
+    def test_actions_get_all(self, floating_ips_client, response_get_actions):
+        floating_ips_client._client.request.return_value = response_get_actions
+        actions = floating_ips_client.actions.get_all()
+
+        floating_ips_client._client.request.assert_called_with(
+            url="/floating_ips/actions",
+            method="GET",
+            params={"page": 1, "per_page": 50},
+        )
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == floating_ips_client._client.actions
+        assert actions[0].id == 13
+        assert actions[0].command == "assign_floating_ip"

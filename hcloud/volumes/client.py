@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..actions import ActionsPageResult, BoundAction
+from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
 from ..core import BoundModelBase, ClientEntityBase, Meta
 from ..locations import BoundLocation
 from .domain import CreateVolumeResponse, Volume
@@ -136,6 +136,16 @@ class VolumesPageResult(NamedTuple):
 
 class VolumesClient(ClientEntityBase):
     _client: Client
+
+    actions: ResourceActionsClient
+    """Volumes scoped actions client
+
+    :type: :class:`ResourceActionsClient <hcloud.actions.client.ResourceActionsClient>`
+    """
+
+    def __init__(self, client: Client):
+        super().__init__(client)
+        self.actions = ResourceActionsClient(client, "/volumes")
 
     def get_by_id(self, id: int) -> BoundVolume:
         """Get a specific volume by its id

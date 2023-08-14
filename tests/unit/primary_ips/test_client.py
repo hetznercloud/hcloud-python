@@ -4,6 +4,7 @@ from unittest import mock
 
 import pytest
 
+from hcloud.actions import BoundAction
 from hcloud.datacenters import BoundDatacenter, Datacenter
 from hcloud.primary_ips import BoundPrimaryIP, PrimaryIP, PrimaryIPsClient
 
@@ -295,3 +296,53 @@ class TestPrimaryIPsClient:
         )
         assert action.id == 1
         assert action.progress == 0
+
+    def test_actions_get_by_id(self, primary_ips_client, response_get_actions):
+        primary_ips_client._client.request.return_value = {
+            "action": response_get_actions["actions"][0]
+        }
+        action = primary_ips_client.actions.get_by_id(13)
+
+        primary_ips_client._client.request.assert_called_with(
+            url="/primary_ips/actions/13", method="GET"
+        )
+
+        assert isinstance(action, BoundAction)
+        assert action._client == primary_ips_client._client.actions
+        assert action.id == 13
+        assert action.command == "assign_primary_ip"
+
+    def test_actions_get_list(self, primary_ips_client, response_get_actions):
+        primary_ips_client._client.request.return_value = response_get_actions
+        result = primary_ips_client.actions.get_list()
+
+        primary_ips_client._client.request.assert_called_with(
+            url="/primary_ips/actions",
+            method="GET",
+            params={},
+        )
+
+        actions = result.actions
+        assert result.meta is None
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == primary_ips_client._client.actions
+        assert actions[0].id == 13
+        assert actions[0].command == "assign_primary_ip"
+
+    def test_actions_get_all(self, primary_ips_client, response_get_actions):
+        primary_ips_client._client.request.return_value = response_get_actions
+        actions = primary_ips_client.actions.get_all()
+
+        primary_ips_client._client.request.assert_called_with(
+            url="/primary_ips/actions",
+            method="GET",
+            params={"page": 1, "per_page": 50},
+        )
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == primary_ips_client._client.actions
+        assert actions[0].id == 13
+        assert actions[0].command == "assign_primary_ip"

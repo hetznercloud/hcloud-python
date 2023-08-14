@@ -52,6 +52,7 @@ class TestBoundVolume:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == hetzner_client.actions
         assert actions[0].id == 13
         assert actions[0].command == "attach_volume"
 
@@ -384,3 +385,53 @@ class TestVolumesClient:
         )
         assert action.id == 1
         assert action.progress == 0
+
+    def test_actions_get_by_id(self, volumes_client, response_get_actions):
+        volumes_client._client.request.return_value = {
+            "action": response_get_actions["actions"][0]
+        }
+        action = volumes_client.actions.get_by_id(13)
+
+        volumes_client._client.request.assert_called_with(
+            url="/volumes/actions/13", method="GET"
+        )
+
+        assert isinstance(action, BoundAction)
+        assert action._client == volumes_client._client.actions
+        assert action.id == 13
+        assert action.command == "attach_volume"
+
+    def test_actions_get_list(self, volumes_client, response_get_actions):
+        volumes_client._client.request.return_value = response_get_actions
+        result = volumes_client.actions.get_list()
+
+        volumes_client._client.request.assert_called_with(
+            url="/volumes/actions",
+            method="GET",
+            params={},
+        )
+
+        actions = result.actions
+        assert result.meta is None
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == volumes_client._client.actions
+        assert actions[0].id == 13
+        assert actions[0].command == "attach_volume"
+
+    def test_actions_get_all(self, volumes_client, response_get_actions):
+        volumes_client._client.request.return_value = response_get_actions
+        actions = volumes_client.actions.get_all()
+
+        volumes_client._client.request.assert_called_with(
+            url="/volumes/actions",
+            method="GET",
+            params={"page": 1, "per_page": 50},
+        )
+
+        assert len(actions) == 1
+        assert isinstance(actions[0], BoundAction)
+        assert actions[0]._client == volumes_client._client.actions
+        assert actions[0].id == 13
+        assert actions[0].command == "attach_volume"
