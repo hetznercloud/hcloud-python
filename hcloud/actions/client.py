@@ -131,6 +131,8 @@ class ActionsClient(ResourceActionsClient):
         .. deprecated:: 1.28
         Use :func:`client.<resource>.actions.get_list` instead,
         e.g. using :attr:`hcloud.certificates.client.CertificatesClient.actions`.
+
+        `Starting 1 October 2023, it will no longer be available. <https://docs.hetzner.cloud/changelog#2023-07-20-actions-list-endpoint-is-deprecated>`_
         """
         warnings.warn(
             "The 'client.actions.get_list' method is deprecated, please use the "
@@ -150,6 +152,8 @@ class ActionsClient(ResourceActionsClient):
         .. deprecated:: 1.28
         Use :func:`client.<resource>.actions.get_all` instead,
         e.g. using :attr:`hcloud.certificates.client.CertificatesClient.actions`.
+
+        `Starting 1 October 2023, it will no longer be available. <https://docs.hetzner.cloud/changelog#2023-07-20-actions-list-endpoint-is-deprecated>`_
         """
         warnings.warn(
             "The 'client.actions.get_all' method is deprecated, please use the "
