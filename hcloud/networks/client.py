@@ -169,9 +169,9 @@ class NetworksClient(ClientEntityBase):
     _client: Client
 
     actions: ResourceActionsClient
-    """Networks actions client
+    """Networks scoped actions client
 
-    :type: :class:`ResourceActionsClient <hcloud.actions.ResourceActionsClient>`
+    :type: :class:`ResourceActionsClient <hcloud.actions.client.ResourceActionsClient>`
     """
 
     def __init__(self, client: Client):

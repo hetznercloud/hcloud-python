@@ -127,6 +127,11 @@ class ActionsClient(ResourceActionsClient):
         page: int | None = None,
         per_page: int | None = None,
     ) -> ActionsPageResult:
+        """
+        .. deprecated:: 1.28
+        Use :func:`client.<resource>.actions.get_list` instead,
+        e.g. using :attr:`hcloud.certificates.client.CertificatesClient.actions`.
+        """
         warnings.warn(
             "The 'client.actions.get_list' method is deprecated, please use the "
             "'client.<resource>.actions.get_list' method instead (e.g. "
@@ -141,6 +146,11 @@ class ActionsClient(ResourceActionsClient):
         status: list[str] | None = None,
         sort: list[str] | None = None,
     ) -> list[BoundAction]:
+        """
+        .. deprecated:: 1.28
+        Use :func:`client.<resource>.actions.get_all` instead,
+        e.g. using :attr:`hcloud.certificates.client.CertificatesClient.actions`.
+        """
         warnings.warn(
             "The 'client.actions.get_all' method is deprecated, please use the "
             "'client.<resource>.actions.get_all' method instead (e.g. "

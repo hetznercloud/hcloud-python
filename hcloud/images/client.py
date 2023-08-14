@@ -114,9 +114,9 @@ class ImagesClient(ClientEntityBase):
     _client: Client
 
     actions: ResourceActionsClient
-    """Images actions client
+    """Images scoped actions client
 
-    :type: :class:`ResourceActionsClient <hcloud.actions.ResourceActionsClient>`
+    :type: :class:`ResourceActionsClient <hcloud.actions.client.ResourceActionsClient>`
     """
 
     def __init__(self, client: Client):

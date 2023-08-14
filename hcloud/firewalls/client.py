@@ -162,9 +162,9 @@ class FirewallsClient(ClientEntityBase):
     _client: Client
 
     actions: ResourceActionsClient
-    """Firewalls actions client
+    """Firewalls scoped actions client
 
-    :type: :class:`ResourceActionsClient <hcloud.actions.ResourceActionsClient>`
+    :type: :class:`ResourceActionsClient <hcloud.actions.client.ResourceActionsClient>`
     """
 
     def __init__(self, client: Client):
