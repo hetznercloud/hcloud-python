@@ -50,7 +50,7 @@ setup(
             "watchdog>=3.0.0,<3.1",
         ],
         "test": [
-            "coverage>=7.2.7,<7.3",
+            "coverage>=7.3,<7.4",
             "pytest>=7.4,<7.5",
             "mypy>=1.5,<1.6",
             "types-python-dateutil",
