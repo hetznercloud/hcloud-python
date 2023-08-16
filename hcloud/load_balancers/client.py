@@ -20,6 +20,7 @@ from .domain import (
     LoadBalancerService,
     LoadBalancerServiceHttp,
     LoadBalancerTarget,
+    LoadBalancerTargetHealthStatus,
     LoadBalancerTargetIP,
     LoadBalancerTargetLabelSelector,
     PrivateNet,
@@ -83,6 +84,17 @@ class BoundLoadBalancer(BoundModelBase):
                     tmp_target.use_private_ip = target["use_private_ip"]
                 elif target["type"] == "ip":
                     tmp_target.ip = LoadBalancerTargetIP(ip=target["ip"]["ip"])
+
+                target_health_status = target.get("health_status")
+                if target_health_status is not None:
+                    tmp_target.health_status = [
+                        LoadBalancerTargetHealthStatus(
+                            listen_port=target_health_status_item["listen_port"],
+                            status=target_health_status_item["status"],
+                        )
+                        for target_health_status_item in target_health_status
+                    ]
+
                 tmp_targets.append(tmp_target)
             data["targets"] = tmp_targets
 

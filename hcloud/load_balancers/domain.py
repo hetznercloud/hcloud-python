@@ -313,6 +313,8 @@ class LoadBalancerTarget(BaseDomain):
             Target IP
     :param use_private_ip: bool
             use the private IP instead of primary public IP
+    :param health_status: list
+            List of health statuses of the services on this target. Only present for target types "server" and "ip".
     """
 
     def __init__(
@@ -322,12 +324,14 @@ class LoadBalancerTarget(BaseDomain):
         label_selector: LoadBalancerTargetLabelSelector | None = None,
         ip: LoadBalancerTargetIP | None = None,
         use_private_ip: bool | None = None,
+        health_status: list[LoadBalancerTargetHealthStatus] | None = None,
     ):
         self.type = type
         self.server = server
         self.label_selector = label_selector
         self.ip = ip
         self.use_private_ip = use_private_ip
+        self.health_status = health_status
 
     def to_payload(self) -> dict[str, Any]:
         payload: dict[str, Any] = {
@@ -352,6 +356,22 @@ class LoadBalancerTarget(BaseDomain):
             payload["ip"] = {"ip": self.ip.ip}
 
         return payload
+
+
+class LoadBalancerTargetHealthStatus(BaseDomain):
+    """LoadBalancerTargetHealthStatus Domain
+
+    :param listen_port: Load Balancer Target listen port
+    :param status: Load Balancer Target status. Choices: healthy, unhealthy, unknown
+    """
+
+    def __init__(
+        self,
+        listen_port: int | None = None,
+        status: str | None = None,
+    ):
+        self.listen_port = listen_port
+        self.status = status
 
 
 class LoadBalancerTargetLabelSelector(BaseDomain):

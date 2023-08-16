@@ -26,6 +26,9 @@ LoadBalancerClient
 .. autoclass:: hcloud.load_balancers.domain.LoadBalancerTarget
     :members:
 
+.. autoclass:: hcloud.load_balancers.domain.LoadBalancerTargetHealthStatus
+    :members:
+
 .. autoclass:: hcloud.load_balancers.domain.LoadBalancerTargetLabelSelector
     :members:
 
