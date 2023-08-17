@@ -16,6 +16,7 @@ from .domain import (  # noqa: F401
     LoadBalancerService,
     LoadBalancerServiceHttp,
     LoadBalancerTarget,
+    LoadBalancerTargetHealthStatus,
     LoadBalancerTargetIP,
     LoadBalancerTargetLabelSelector,
     PrivateNet,
