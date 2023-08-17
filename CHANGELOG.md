@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.28.0](https://github.com/hetznercloud/hcloud-python/compare/v1.27.2...v1.28.0) (2023-08-17)
+
+
+### Features
+
+* add load balancer target health status field ([#288](https://github.com/hetznercloud/hcloud-python/issues/288)) ([5780418](https://github.com/hetznercloud/hcloud-python/commit/5780418f00a42e20cccacec6e030e464105807ba))
+* implement resource actions clients ([#252](https://github.com/hetznercloud/hcloud-python/issues/252)) ([4bb9a97](https://github.com/hetznercloud/hcloud-python/commit/4bb9a9730eadea9fd0569d5d11b7585dbb5da157))
+
+
+### Dependencies
+
+* update dependency coverage to &gt;=7.3,&lt;7.4 ([#286](https://github.com/hetznercloud/hcloud-python/issues/286)) ([a4df4fa](https://github.com/hetznercloud/hcloud-python/commit/a4df4fa1cc7a17e1afdea1c33f4428a8a594a011))
+* update dependency mypy to &gt;=1.5,&lt;1.6 ([#284](https://github.com/hetznercloud/hcloud-python/issues/284)) ([9dd5c81](https://github.com/hetznercloud/hcloud-python/commit/9dd5c8110bf679c13e8e6ba08e760019b4dae706))
+* update pre-commit hook pre-commit/mirrors-prettier to v3.0.2 ([#287](https://github.com/hetznercloud/hcloud-python/issues/287)) ([6bf03cb](https://github.com/hetznercloud/hcloud-python/commit/6bf03cb9ab1203f172e1634d28a99a7cb3210ad0))
+
+
+### Documentation
+
+* fail on warning ([#289](https://github.com/hetznercloud/hcloud-python/issues/289)) ([e61300e](https://github.com/hetznercloud/hcloud-python/commit/e61300eda7f0ba15e0a91cce3e4b8f7542ed42c8))
+
 ## [1.27.2](https://github.com/hetznercloud/hcloud-python/compare/v1.27.1...v1.27.2) (2023-08-09)
 
 
