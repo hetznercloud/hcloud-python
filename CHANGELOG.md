@@ -19,7 +19,6 @@
 ### Documentation
 
 * fail on warning ([#289](https://github.com/hetznercloud/hcloud-python/issues/289)) ([e61300e](https://github.com/hetznercloud/hcloud-python/commit/e61300eda7f0ba15e0a91cce3e4b8f7542ed42c8))
-* https://docs.hetzner.cloud/#load-balancers-get-a-load-balancer ([5780418](https://github.com/hetznercloud/hcloud-python/commit/5780418f00a42e20cccacec6e030e464105807ba))
 
 ## [1.27.2](https://github.com/hetznercloud/hcloud-python/compare/v1.27.1...v1.27.2) (2023-08-09)
 
