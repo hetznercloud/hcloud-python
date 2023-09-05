@@ -7,9 +7,7 @@ class BaseDomain:
     @classmethod
     def from_dict(cls, data: dict):  # type: ignore[no-untyped-def]
         """
-        Build the domain object from dict.
-
-        :return: _description_
+        Build the domain object from the data dict.
         """
         supported_data = {k: v for k, v in data.items() if k in cls.__slots__}
         return cls(**supported_data)
