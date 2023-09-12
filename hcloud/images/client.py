@@ -16,6 +16,7 @@ class BoundImage(BoundModelBase):
     model = Image
 
     def __init__(self, client: ImagesClient, data: dict):
+        # pylint: disable=import-outside-toplevel
         from ..servers import BoundServer
 
         created_from = data.get("created_from")

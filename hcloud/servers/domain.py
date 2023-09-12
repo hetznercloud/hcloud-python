@@ -104,6 +104,7 @@ class Server(BaseDomain):
         "placement_group",
     )
 
+    # pylint: disable=too-many-locals
     def __init__(
         self,
         id: int,

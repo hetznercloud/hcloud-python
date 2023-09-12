@@ -42,7 +42,7 @@ class Client:
         poll_interval: int = 1,
         timeout: float | tuple[float, float] | None = None,
     ):
-        """Create an new Client instance
+        """Create a new Client instance
 
         :param token: Hetzner Cloud API token
         :param api_endpoint: Hetzner Cloud API endpoint

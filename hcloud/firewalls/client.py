@@ -39,29 +39,32 @@ class BoundFirewall(BoundModelBase):
 
         applied_to = data.get("applied_to", [])
         if applied_to:
+            # pylint: disable=import-outside-toplevel
             from ..servers import BoundServer
 
-            ats = []
-            for a in applied_to:
-                if a["type"] == FirewallResource.TYPE_SERVER:
-                    ats.append(
+            data_applied_to = []
+            for firewall_resource in applied_to:
+                if firewall_resource["type"] == FirewallResource.TYPE_SERVER:
+                    data_applied_to.append(
                         FirewallResource(
-                            type=a["type"],
+                            type=firewall_resource["type"],
                             server=BoundServer(
-                                client._client.servers, a["server"], complete=False
+                                client._client.servers,
+                                firewall_resource["server"],
+                                complete=False,
                             ),
                         )
                     )
-                elif a["type"] == FirewallResource.TYPE_LABEL_SELECTOR:
-                    ats.append(
+                elif firewall_resource["type"] == FirewallResource.TYPE_LABEL_SELECTOR:
+                    data_applied_to.append(
                         FirewallResource(
-                            type=a["type"],
+                            type=firewall_resource["type"],
                             label_selector=FirewallResourceLabelSelector(
-                                selector=a["label_selector"]["selector"]
+                                selector=firewall_resource["label_selector"]["selector"]
                             ),
                         )
                     )
-            data["applied_to"] = ats
+            data["applied_to"] = data_applied_to
 
         super().__init__(client, data, complete)
 

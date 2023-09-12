@@ -17,6 +17,7 @@ class BoundPrimaryIP(BoundModelBase):
     model = PrimaryIP
 
     def __init__(self, client: PrimaryIPsClient, data: dict, complete: bool = True):
+        # pylint: disable=import-outside-toplevel
         from ..datacenters import BoundDatacenter
 
         datacenter = data.get("datacenter", {})

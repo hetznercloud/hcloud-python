@@ -19,6 +19,7 @@ class BoundFloatingIP(BoundModelBase):
     model = FloatingIP
 
     def __init__(self, client: FloatingIPsClient, data: dict, complete: bool = True):
+        # pylint: disable=import-outside-toplevel
         from ..servers import BoundServer
 
         server = data.get("server")

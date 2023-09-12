@@ -108,6 +108,9 @@ class FirewallRule:
         self.description = description
 
     def to_payload(self) -> dict[str, Any]:
+        """
+        Generates the request payload from this domain object.
+        """
         payload: dict[str, Any] = {
             "direction": self.direction,
             "protocol": self.protocol,
@@ -151,6 +154,9 @@ class FirewallResource:
         self.label_selector = label_selector
 
     def to_payload(self) -> dict[str, Any]:
+        """
+        Generates the request payload from this domain object.
+        """
         payload: dict[str, Any] = {"type": self.type}
         if self.server is not None:
             payload["server"] = {"id": self.server.id}

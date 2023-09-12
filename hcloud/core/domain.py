@@ -6,6 +6,9 @@ class BaseDomain:
 
     @classmethod
     def from_dict(cls, data: dict):  # type: ignore[no-untyped-def]
+        """
+        Build the domain object from the data dict.
+        """
         supported_data = {k: v for k, v in data.items() if k in cls.__slots__}
         return cls(**supported_data)
 
@@ -22,12 +25,14 @@ class DomainIdentityMixin:
 
     @property
     def id_or_name(self) -> int | str:
+        """
+        Return the first defined value, and fails if none is defined.
+        """
         if self.id is not None:
             return self.id
-        elif self.name is not None:
+        if self.name is not None:
             return self.name
-        else:
-            raise ValueError("id or name must be set")
+        raise ValueError("id or name must be set")
 
 
 class Pagination(BaseDomain):
@@ -65,6 +70,9 @@ class Meta(BaseDomain):
 
     @classmethod
     def parse_meta(cls, response: dict) -> Meta | None:
+        """
+        If present, extract the meta details from the response and return a meta object.
+        """
         meta = None
         if response and "meta" in response:
             meta = cls()
