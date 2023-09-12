@@ -5,6 +5,7 @@ from .domain import (  # noqa: F401
     CreateFirewallResponse,
     Firewall,
     FirewallResource,
+    FirewallResourceAppliedToResources,
     FirewallResourceLabelSelector,
     FirewallRule,
 )

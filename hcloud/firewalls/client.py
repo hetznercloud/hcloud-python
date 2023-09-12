@@ -8,6 +8,7 @@ from .domain import (
     CreateFirewallResponse,
     Firewall,
     FirewallResource,
+    FirewallResourceAppliedToResources,
     FirewallResourceLabelSelector,
     FirewallRule,
 )
@@ -44,6 +45,16 @@ class BoundFirewall(BoundModelBase):
 
             data_applied_to = []
             for firewall_resource in applied_to:
+                applied_to_resources = None
+                if firewall_resource.get("applied_to_resources"):
+                    applied_to_resources = [
+                        FirewallResourceAppliedToResources(
+                            type=resource["type"],
+                            server=resource.get("server"),
+                        )
+                        for resource in firewall_resource.get("applied_to_resources")
+                    ]
+
                 if firewall_resource["type"] == FirewallResource.TYPE_SERVER:
                     data_applied_to.append(
                         FirewallResource(
@@ -53,6 +64,7 @@ class BoundFirewall(BoundModelBase):
                                 firewall_resource["server"],
                                 complete=False,
                             ),
+                            applied_to_resources=applied_to_resources,
                         )
                     )
                 elif firewall_resource["type"] == FirewallResource.TYPE_LABEL_SELECTOR:
@@ -62,8 +74,10 @@ class BoundFirewall(BoundModelBase):
                             label_selector=FirewallResourceLabelSelector(
                                 selector=firewall_resource["label_selector"]["selector"]
                             ),
+                            applied_to_resources=applied_to_resources,
                         )
                     )
+
             data["applied_to"] = data_applied_to
 
         super().__init__(client, data, complete)
