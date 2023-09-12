@@ -50,7 +50,15 @@ class BoundFirewall(BoundModelBase):
                     applied_to_resources = [
                         FirewallResourceAppliedToResources(
                             type=resource["type"],
-                            server=resource.get("server"),
+                            server=(
+                                BoundServer(
+                                    client._client.servers,
+                                    resource.get("server"),
+                                    complete=False,
+                                )
+                                if resource.get("server") is not None
+                                else None
+                            ),
                         )
                         for resource in firewall_resource.get("applied_to_resources")
                     ]
