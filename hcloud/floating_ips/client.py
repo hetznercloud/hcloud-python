@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from ..servers import BoundServer, Server
 
 
-class BoundFloatingIP(BoundModelBase):
+class BoundFloatingIP(BoundModelBase, FloatingIP):
     _client: FloatingIPsClient
 
     model = FloatingIP

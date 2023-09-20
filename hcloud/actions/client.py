@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundAction(BoundModelBase):
+class BoundAction(BoundModelBase, Action):
     _client: ActionsClient
 
     model = Action

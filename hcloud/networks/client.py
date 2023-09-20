@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundNetwork(BoundModelBase):
+class BoundNetwork(BoundModelBase, Network):
     _client: NetworksClient
 
     model = Network

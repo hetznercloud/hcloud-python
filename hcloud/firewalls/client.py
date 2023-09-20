@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundFirewall(BoundModelBase):
+class BoundFirewall(BoundModelBase, Firewall):
     _client: FirewallsClient
 
     model = Firewall

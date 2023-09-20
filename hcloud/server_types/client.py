@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundServerType(BoundModelBase):
+class BoundServerType(BoundModelBase, ServerType):
     _client: ServerTypesClient
 
     model = ServerType

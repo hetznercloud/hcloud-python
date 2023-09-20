@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from ..servers import BoundServer, Server
 
 
-class BoundVolume(BoundModelBase):
+class BoundVolume(BoundModelBase, Volume):
     _client: VolumesClient
 
     model = Volume

@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundCertificate(BoundModelBase):
+class BoundCertificate(BoundModelBase, Certificate):
     _client: CertificatesClient
 
     model = Certificate

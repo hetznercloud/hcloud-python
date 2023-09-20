@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundSSHKey(BoundModelBase):
+class BoundSSHKey(BoundModelBase, SSHKey):
     _client: SSHKeysClient
 
     model = SSHKey

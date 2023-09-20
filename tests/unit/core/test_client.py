@@ -20,7 +20,7 @@ class TestBoundModelBase:
                 self.name = name
                 self.description = description
 
-        class BoundModel(BoundModelBase):
+        class BoundModel(BoundModelBase, Model):
             model = Model
 
         return BoundModel
