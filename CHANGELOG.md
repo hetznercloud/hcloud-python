@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.29.0](https://github.com/hetznercloud/hcloud-python/compare/v1.28.0...v1.29.0) (2023-09-25)
+
+
+### Features
+
+* add domain attribute type hints to bound models ([#300](https://github.com/hetznercloud/hcloud-python/issues/300)) ([6d46d06](https://github.com/hetznercloud/hcloud-python/commit/6d46d06c42e2e86e88b32a74d7fbd588911cc8ad))
+* **firewalls:** add `applied_to_resources` to `FirewallResource` ([#297](https://github.com/hetznercloud/hcloud-python/issues/297)) ([55d2b20](https://github.com/hetznercloud/hcloud-python/commit/55d2b2043ec1e3a040eb9e360ca0dc0c299ad60f))
+
+
+### Bug Fixes
+
+* missing BaseDomain base class inheritance ([#303](https://github.com/hetznercloud/hcloud-python/issues/303)) ([0ee7598](https://github.com/hetznercloud/hcloud-python/commit/0ee759856cb1352f6cc538b7ef86a91cd20380f2))
+
+
+### Dependencies
+
+* update actions/checkout action to v4 ([#295](https://github.com/hetznercloud/hcloud-python/issues/295)) ([c02b446](https://github.com/hetznercloud/hcloud-python/commit/c02b4468f0e499791bbee8fe48fe7a737985df1f))
+* update dependency sphinx to &gt;=7.2.2,&lt;7.3 ([#291](https://github.com/hetznercloud/hcloud-python/issues/291)) ([10234ea](https://github.com/hetznercloud/hcloud-python/commit/10234ea7bf51a427b18f2b5605d9ffa7ac5f5ee8))
+* update dependency sphinx to v7 ([#211](https://github.com/hetznercloud/hcloud-python/issues/211)) ([f635c94](https://github.com/hetznercloud/hcloud-python/commit/f635c94c23b8ae49283b9b7fcb4fe7b948b203b9))
+* update pre-commit hook asottile/pyupgrade to v3.11.0 ([#298](https://github.com/hetznercloud/hcloud-python/issues/298)) ([4bbd0cc](https://github.com/hetznercloud/hcloud-python/commit/4bbd0ccb0f606e2f90f8242951d3f4d9b86d7aea))
+* update pre-commit hook asottile/pyupgrade to v3.11.1 ([#299](https://github.com/hetznercloud/hcloud-python/issues/299)) ([2f9fcd7](https://github.com/hetznercloud/hcloud-python/commit/2f9fcd7bb80efb8da6eafab0ee70a8dda93eb6f1))
+* update pre-commit hook asottile/pyupgrade to v3.13.0 ([#301](https://github.com/hetznercloud/hcloud-python/issues/301)) ([951dbf3](https://github.com/hetznercloud/hcloud-python/commit/951dbf3e3b3816ffaeb44a583251a5a3a4b90b70))
+* update pre-commit hook pre-commit/mirrors-prettier to v3.0.3 ([#294](https://github.com/hetznercloud/hcloud-python/issues/294)) ([381e336](https://github.com/hetznercloud/hcloud-python/commit/381e336ff1259fa26cb6abae3b7341cb16229a4b))
+* update pre-commit hook psf/black to v23.9.1 ([#296](https://github.com/hetznercloud/hcloud-python/issues/296)) ([4374a7b](https://github.com/hetznercloud/hcloud-python/commit/4374a7be9f244a72f1fc0c2dd76357cf63f19bfd))
+
+
+### Documentation
+
+* load token from env in examples scripts ([#302](https://github.com/hetznercloud/hcloud-python/issues/302)) ([f18c9a6](https://github.com/hetznercloud/hcloud-python/commit/f18c9a60e045743b26892eeb1fe9e5737a63c11f))
+
 ## [1.28.0](https://github.com/hetznercloud/hcloud-python/compare/v1.27.2...v1.28.0) (2023-08-17)
 
 
