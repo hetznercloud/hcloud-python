@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+from os import environ
+
 from hcloud import Client
 from hcloud.images import Image
 from hcloud.server_types import ServerType
 
-# Please paste your API token here between the quotes
-client = Client(token="{YOUR_API_TOKEN}")
+assert (
+    "HCLOUD_TOKEN" in environ
+), "Please export your API token in the HCLOUD_TOKEN environment variable"
+token = environ["HCLOUD_TOKEN"]
+
+client = Client(token=token)
+
 response = client.servers.create(
     name="my-server",
     server_type=ServerType("cx11"),

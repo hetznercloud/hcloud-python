@@ -1,9 +1,14 @@
 from __future__ import annotations
 
+from os import environ
+
 from hcloud import Client
 
-client = Client(
-    token="{YOUR_API_TOKEN}"
-)  # Please paste your API token here between the quotes
+assert (
+    "HCLOUD_TOKEN" in environ
+), "Please export your API token in the HCLOUD_TOKEN environment variable"
+token = environ["HCLOUD_TOKEN"]
+
+client = Client(token=token)
 servers = client.servers.get_all()
 print(servers)

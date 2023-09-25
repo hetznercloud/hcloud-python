@@ -1,12 +1,19 @@
 from __future__ import annotations
 
+from os import environ
+
 from hcloud import Client
 from hcloud.images import Image
 from hcloud.server_types import ServerType
 from hcloud.servers import Server
 from hcloud.volumes import Volume
 
-client = Client(token="project-token")
+assert (
+    "HCLOUD_TOKEN" in environ
+), "Please export your API token in the HCLOUD_TOKEN environment variable"
+token = environ["HCLOUD_TOKEN"]
+
+client = Client(token=token)
 
 # Create 2 servers
 response1 = client.servers.create(
