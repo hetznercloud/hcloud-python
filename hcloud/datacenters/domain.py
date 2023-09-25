@@ -36,7 +36,7 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
         self.server_types = server_types
 
 
-class DatacenterServerTypes:
+class DatacenterServerTypes(BaseDomain):
     """DatacenterServerTypes Domain
 
     :param available: List[:class:`BoundServerTypes <hcloud.server_types.client.BoundServerTypes>`]

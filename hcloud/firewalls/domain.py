@@ -48,7 +48,7 @@ class Firewall(BaseDomain):
         self.created = isoparse(created) if created else None
 
 
-class FirewallRule:
+class FirewallRule(BaseDomain):
     """Firewall Rule Domain
 
     :param direction: str
@@ -125,7 +125,7 @@ class FirewallRule:
         return payload
 
 
-class FirewallResource:
+class FirewallResource(BaseDomain):
     """Firewall Used By Domain
 
     :param type: str
