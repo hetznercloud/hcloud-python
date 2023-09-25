@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from ..datacenters import BoundDatacenter, Datacenter
 
 
-class BoundPrimaryIP(BoundModelBase):
+class BoundPrimaryIP(BoundModelBase, PrimaryIP):
     _client: PrimaryIPsClient
 
     model = PrimaryIP

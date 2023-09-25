@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundLoadBalancerType(BoundModelBase):
+class BoundLoadBalancerType(BoundModelBase, LoadBalancerType):
     _client: LoadBalancerTypesClient
 
     model = LoadBalancerType

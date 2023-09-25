@@ -34,7 +34,7 @@ if TYPE_CHECKING:
     from ..networks import Network
 
 
-class BoundLoadBalancer(BoundModelBase):
+class BoundLoadBalancer(BoundModelBase, LoadBalancer):
     _client: LoadBalancersClient
 
     model = LoadBalancer

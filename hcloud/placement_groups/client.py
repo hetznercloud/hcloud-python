@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundPlacementGroup(BoundModelBase):
+class BoundPlacementGroup(BoundModelBase, PlacementGroup):
     _client: PlacementGroupsClient
 
     model = PlacementGroup

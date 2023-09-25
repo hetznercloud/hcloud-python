@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundDatacenter(BoundModelBase):
+class BoundDatacenter(BoundModelBase, Datacenter):
     _client: DatacentersClient
 
     model = Datacenter

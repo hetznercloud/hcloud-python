@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundLocation(BoundModelBase):
+class BoundLocation(BoundModelBase, Location):
     _client: LocationsClient
 
     model = Location

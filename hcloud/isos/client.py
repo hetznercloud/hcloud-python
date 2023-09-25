@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundIso(BoundModelBase):
+class BoundIso(BoundModelBase, Iso):
     _client: IsosClient
 
     model = Iso

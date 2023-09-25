@@ -42,7 +42,7 @@ if TYPE_CHECKING:
     from .domain import ServerCreatePublicNetwork
 
 
-class BoundServer(BoundModelBase):
+class BoundServer(BoundModelBase, Server):
     _client: ServersClient
 
     model = Server

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundImage(BoundModelBase):
+class BoundImage(BoundModelBase, Image):
     _client: ImagesClient
 
     model = Image
