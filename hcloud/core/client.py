@@ -90,3 +90,9 @@ class BoundModelBase:
         bound_model = self._client.get_by_id(self.data_model.id)
         self.data_model = bound_model.data_model
         self.complete = True
+
+    def __repr__(self) -> str:
+        # Override and reset hcloud.core.domain.BaseDomain.__repr__ method for bound
+        # models, as they will generate a lot of API call trying to print all the fields
+        # of the model.
+        return object.__repr__(self)
