@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.1](https://github.com/hetznercloud/hcloud-python/compare/v1.29.0...v1.29.1) (2023-09-26)
+
+
+### Bug Fixes
+
+* prevent api calls when printing bound models ([#305](https://github.com/hetznercloud/hcloud-python/issues/305)) ([c1de7ef](https://github.com/hetznercloud/hcloud-python/commit/c1de7efc851b3b10e2a50e66268fc8fb0ff648a8))
+
 ## [1.29.0](https://github.com/hetznercloud/hcloud-python/compare/v1.28.0...v1.29.0) (2023-09-25)
 
 
