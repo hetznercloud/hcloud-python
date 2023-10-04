@@ -21,9 +21,6 @@ jobs = 0
 [tool.pylint.reports]
 output-format = "colorized"
 
-[tool.pylint.basic]
-good-names = ["i", "j", "k", "ex", "_", "ip", "id"]
-
 [tool.pylint."messages control"]
 disable = [
   "fixme",
@@ -31,6 +28,7 @@ disable = [
   "missing-class-docstring",
   "missing-module-docstring",
   "redefined-builtin",
+  "duplicate-code",
   # Consider disabling line-by-line
   "too-few-public-methods",
   "too-many-public-methods",
