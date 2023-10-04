@@ -9,8 +9,6 @@ from ..firewalls import BoundFirewall
 from ..floating_ips import BoundFloatingIP
 from ..images import BoundImage, CreateImageResponse
 from ..isos import BoundIso
-from ..networks import BoundNetwork  # noqa
-from ..networks import Network  # noqa
 from ..placement_groups import BoundPlacementGroup
 from ..primary_ips import BoundPrimaryIP
 from ..server_types import BoundServerType
@@ -35,6 +33,7 @@ if TYPE_CHECKING:
     from ..images import Image
     from ..isos import Iso
     from ..locations import BoundLocation, Location
+    from ..networks import BoundNetwork, Network
     from ..placement_groups import PlacementGroup
     from ..server_types import ServerType
     from ..ssh_keys import BoundSSHKey, SSHKey
@@ -131,6 +130,9 @@ class BoundServer(BoundModelBase, Server):
 
         private_nets = data.get("private_net")
         if private_nets:
+            # pylint: disable=import-outside-toplevel
+            from ..networks import BoundNetwork
+
             private_nets = [
                 PrivateNet(
                     network=BoundNetwork(
