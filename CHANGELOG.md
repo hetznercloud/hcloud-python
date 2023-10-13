@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.30.0](https://github.com/hetznercloud/hcloud-python/compare/v1.29.1...v1.30.0) (2023-10-13)
+
+
+### Features
+
+* add deprecation field to Iso ([#318](https://github.com/hetznercloud/hcloud-python/issues/318)) ([036b52f](https://github.com/hetznercloud/hcloud-python/commit/036b52fe51bcbb6b610c0c99ca224d3c4bbfc68d))
+* support python 3.12 ([#311](https://github.com/hetznercloud/hcloud-python/issues/311)) ([7e8cd1d](https://github.com/hetznercloud/hcloud-python/commit/7e8cd1d92e56d210fe3fb180e403122ef0e7bd7f))
+
+
+### Dependencies
+
+* update dependency mypy to &gt;=1.6,&lt;1.7 ([#317](https://github.com/hetznercloud/hcloud-python/issues/317)) ([d248bbd](https://github.com/hetznercloud/hcloud-python/commit/d248bbd4e55f3bcf6a107cfa4f38768df0bf3de5))
+* update dependency pylint to v3 ([#307](https://github.com/hetznercloud/hcloud-python/issues/307)) ([277841d](https://github.com/hetznercloud/hcloud-python/commit/277841dd84ba3b2bbc99a06a3f97e114d1c83dcb))
+* update pre-commit hook asottile/pyupgrade to v3.14.0 ([#308](https://github.com/hetznercloud/hcloud-python/issues/308)) ([07a4513](https://github.com/hetznercloud/hcloud-python/commit/07a4513e284b9ee964bca003d0a9dfd948d39b02))
+* update pre-commit hook asottile/pyupgrade to v3.15.0 ([#312](https://github.com/hetznercloud/hcloud-python/issues/312)) ([c544639](https://github.com/hetznercloud/hcloud-python/commit/c5446394acfa25d23761da4c6b5b75fb6d376b23))
+* update pre-commit hook pre-commit/pre-commit-hooks to v4.5.0 ([#313](https://github.com/hetznercloud/hcloud-python/issues/313)) ([e51eaa9](https://github.com/hetznercloud/hcloud-python/commit/e51eaa990336251c2afc8c83d4c5e6f5e5bb857b))
+* update python docker tag to v3.12 ([#309](https://github.com/hetznercloud/hcloud-python/issues/309)) ([3a1ee67](https://github.com/hetznercloud/hcloud-python/commit/3a1ee675f2c980a4d9e63188e8ffceb64f4797fc))
+
 ## [1.29.1](https://github.com/hetznercloud/hcloud-python/compare/v1.29.0...v1.29.1) (2023-09-26)
 
 
