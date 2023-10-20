@@ -26,9 +26,10 @@ class TestIso:
         )
 
     def test_deprecation(self, deprecated_iso: Iso):
-        assert deprecated_iso.deprecated == datetime(
-            2023, 11, 5, 8, 27, 1, tzinfo=timezone.utc
-        )
+        with pytest.deprecated_call():
+            assert deprecated_iso.deprecated == datetime(
+                2023, 11, 5, 8, 27, 1, tzinfo=timezone.utc
+            )
         assert deprecated_iso.deprecation is not None
         assert deprecated_iso.deprecation.announced == datetime(
             2023, 10, 5, 8, 27, 1, tzinfo=timezone.utc

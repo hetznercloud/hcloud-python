@@ -13,6 +13,10 @@ def iso_response():
             "type": "public",
             "architecture": "x86",
             "deprecated": "2018-02-28T00:00:00+00:00",
+            "deprecation": {
+                "announced": "2018-01-28T00:00:00+00:00",
+                "unavailable_after": "2018-02-28T00:00:00+00:00",
+            },
         }
     }
 
@@ -28,6 +32,10 @@ def two_isos_response():
                 "type": "public",
                 "architecture": "x86",
                 "deprecated": "2018-02-28T00:00:00+00:00",
+                "deprecation": {
+                    "announced": "2018-01-28T00:00:00+00:00",
+                    "unavailable_after": "2018-02-28T00:00:00+00:00",
+                },
             },
             {
                 "id": 4712,
@@ -35,7 +43,7 @@ def two_isos_response():
                 "description": "FreeBSD 11.0 x64",
                 "type": "public",
                 "architecture": "x86",
-                "deprecated": "2018-02-28T00:00:00+00:00",
+                "deprecated": None,
             },
         ]
     }
@@ -52,6 +60,10 @@ def one_isos_response():
                 "type": "public",
                 "architecture": "x86",
                 "deprecated": "2018-02-28T00:00:00+00:00",
+                "deprecation": {
+                    "announced": "2018-01-28T00:00:00+00:00",
+                    "unavailable_after": "2018-02-28T00:00:00+00:00",
+                },
             }
         ]
     }
