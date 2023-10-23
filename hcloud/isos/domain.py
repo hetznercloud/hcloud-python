@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from dateutil.parser import isoparse
+from datetime import datetime
+from warnings import warn
 
 from ..core import BaseDomain, DomainIdentityMixin
 from ..deprecation import DeprecationInfo
@@ -32,7 +33,6 @@ class Iso(BaseDomain, DomainIdentityMixin):
         "type",
         "architecture",
         "description",
-        "deprecated",
         "deprecation",
     )
 
@@ -43,7 +43,7 @@ class Iso(BaseDomain, DomainIdentityMixin):
         type: str | None = None,
         architecture: str | None = None,
         description: str | None = None,
-        deprecated: str | None = None,
+        deprecated: str | None = None,  # pylint: disable=unused-argument
         deprecation: dict | None = None,
     ):
         self.id = id
@@ -51,7 +51,19 @@ class Iso(BaseDomain, DomainIdentityMixin):
         self.type = type
         self.architecture = architecture
         self.description = description
-        self.deprecated = isoparse(deprecated) if deprecated else None
         self.deprecation = (
             DeprecationInfo.from_dict(deprecation) if deprecation is not None else None
         )
+
+    @property
+    def deprecated(self) -> datetime | None:
+        """
+        ISO 8601 timestamp of deprecation, None if ISO is still available.
+        """
+        warn(
+            "The `deprecated` field is deprecated, please use the `deprecation` field instead.",
+            DeprecationWarning,
+        )
+        if self.deprecation is None:
+            return None
+        return self.deprecation.unavailable_after
