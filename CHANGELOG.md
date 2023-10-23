@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.31.0](https://github.com/hetznercloud/hcloud-python/compare/v1.30.0...v1.31.0) (2023-10-23)
+
+
+### Features
+
+* prepare for iso deprecated field removal ([#320](https://github.com/hetznercloud/hcloud-python/issues/320)) ([beae328](https://github.com/hetznercloud/hcloud-python/commit/beae328dd6b9afb8c0db9fa9b44340270db7dd09))
+
+
+### Dependencies
+
+* update pre-commit hook psf/black-pre-commit-mirror to v23.10.0 ([#319](https://github.com/hetznercloud/hcloud-python/issues/319)) ([184bbe6](https://github.com/hetznercloud/hcloud-python/commit/184bbe65a736a42d13774b6c29fa7dd8a13ec645))
+
 ## [1.30.0](https://github.com/hetznercloud/hcloud-python/compare/v1.29.1...v1.30.0) (2023-10-13)
 
 
