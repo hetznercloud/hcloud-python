@@ -244,6 +244,24 @@ class RequestConsoleResponse(BaseDomain):
         self.password = password
 
 
+class RebuildResponse(BaseDomain):
+    """Rebuild Response Domain
+
+    :param action: Shows the progress of the server rebuild action
+    :param root_password: The root password of the server when not using SSH keys
+    """
+
+    __slots__ = ("action", "root_password")
+
+    def __init__(
+        self,
+        action: BoundAction,
+        root_password: str | None,
+    ):
+        self.action = action
+        self.root_password = root_password
+
+
 class PublicNetwork(BaseDomain):
     """Public Network Domain
 
