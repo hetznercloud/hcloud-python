@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.32.0](https://github.com/hetznercloud/hcloud-python/compare/v1.31.0...v1.32.0) (2023-11-17)
+
+
+### Features
+
+* allow returning root_password in servers rebuild ([#276](https://github.com/hetznercloud/hcloud-python/issues/276)) ([38e098a](https://github.com/hetznercloud/hcloud-python/commit/38e098a41154e6561578cd723608fcd7577c3d01))
+
+
+### Dependencies
+
+* update dependency mypy to &gt;=1.7,&lt;1.8 ([#325](https://github.com/hetznercloud/hcloud-python/issues/325)) ([7b59a2d](https://github.com/hetznercloud/hcloud-python/commit/7b59a2decc9bb5152dc9de435bfe12ce1f34ac1c))
+* update pre-commit hook pre-commit/mirrors-prettier to v3.1.0 ([#326](https://github.com/hetznercloud/hcloud-python/issues/326)) ([213b661](https://github.com/hetznercloud/hcloud-python/commit/213b661d897cdd327f478b52aeb79844826694d8))
+* update pre-commit hook psf/black-pre-commit-mirror to v23.10.1 ([#322](https://github.com/hetznercloud/hcloud-python/issues/322)) ([999afe3](https://github.com/hetznercloud/hcloud-python/commit/999afe37e02a113639930aff6879f50918ac0e89))
+* update pre-commit hook psf/black-pre-commit-mirror to v23.11.0 ([#324](https://github.com/hetznercloud/hcloud-python/issues/324)) ([7b2a24e](https://github.com/hetznercloud/hcloud-python/commit/7b2a24ecf69c0bead7f9113053fda37a0cc31d1b))
+
 ## [1.31.0](https://github.com/hetznercloud/hcloud-python/compare/v1.30.0...v1.31.0) (2023-10-23)
 
 
