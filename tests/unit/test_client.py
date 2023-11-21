@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import json
+from io import BytesIO
 from unittest.mock import MagicMock
 
 import pytest
 import requests
 
 from hcloud import APIException, Client
+from hcloud._client import CachedSession
 
 
 class TestHetznerClient:
@@ -182,3 +184,25 @@ class TestHetznerClient:
             "POST", "http://url.com", params={"argument": "value"}, timeout=2
         )
         assert client._requests_session.request.call_count == 2
+
+
+class TestCachedSession:
+    def test_cache(self):
+        response = requests.Response()
+        response.status_code = 200
+        response.raw = BytesIO(json.dumps({"result": "data"}).encode("utf-8"))
+
+        adapter = MagicMock()
+        adapter.send.return_value = response
+
+        session = CachedSession()
+        session.get_adapter = MagicMock(return_value=adapter)
+
+        resp1 = session.request("GET", "https://url.com", params={"argument": "value"})
+        resp2 = session.request("GET", "https://url.com", params={"argument": "value"})
+
+        assert adapter.send.call_count == 1
+        assert resp1 is session.cache["https://url.com/?argument=value"]
+        assert resp2 is session.cache["https://url.com/?argument=value"]
+        assert resp1.json() == {"result": "data"}
+        assert resp2.json() == {"result": "data"}

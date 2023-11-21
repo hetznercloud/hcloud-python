@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import copy
 import time
-from typing import NoReturn
+from contextlib import contextmanager
+from typing import Generator, NoReturn
 
 import requests
 
@@ -231,3 +233,44 @@ class Client:
 
         # TODO: return an empty dict instead of an empty string when content == "".
         return content  # type: ignore[return-value]
+
+    def session(self, session: requests.Session) -> None:
+        """
+        Configure a custom :class:`Session <requests.Session>` to use when calling the API.
+
+        :param session: The session to use when making API requests.
+        """
+        self._requests_session = session
+
+    @contextmanager
+    def cached_session(self) -> Generator[Client, None, None]:
+        """
+        Provide a copy of the :class:`Client <hcloud.Client>` as context manager that
+        will cache all GET requests.
+
+        Cached response will not expire automatically, therefor the cached client must
+        not be used for long living scopes.
+        """
+        client = copy.deepcopy(self)
+        client.session(CachedSession())
+        yield client
+
+
+class CachedSession(requests.Session):
+    cache: dict[str, requests.Response] = {}
+
+    def send(self, request: requests.PreparedRequest, **kwargs) -> requests.Response:  # type: ignore[no-untyped-def]
+        """
+        Send a given PreparedRequest.
+        """
+        if request.method != "GET" or request.url is None:
+            return super().send(request, **kwargs)
+
+        if request.url in self.cache:
+            return self.cache[request.url]
+
+        response = super().send(request, **kwargs)
+        if response.ok:
+            self.cache[request.url] = response
+
+        return response
