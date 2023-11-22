@@ -248,7 +248,7 @@ class Client:
         Provide a copy of the :class:`Client <hcloud.Client>` as context manager that
         will cache all GET requests.
 
-        Cached response will not expire automatically, therefor the cached client must
+        Cached response will not expire automatically, therefore the cached client must
         not be used for long living scopes.
         """
         client = copy.deepcopy(self)
