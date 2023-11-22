@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import copy
 import time
 from contextlib import contextmanager
 from typing import Generator, NoReturn
@@ -251,9 +250,9 @@ class Client:
         Cached response will not expire, therefore the cached client must not be used
         for long living scopes.
         """
-        client = copy.deepcopy(self)
-        client.session(CachedSession())
-        yield client
+        self.session(CachedSession())
+        yield self
+        self.session(requests.Session())
 
 
 class CachedSession(requests.Session):
