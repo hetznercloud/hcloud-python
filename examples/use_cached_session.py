@@ -14,6 +14,6 @@ client = Client(token=token)
 with client.cached_session() as session:
     # This will query the API only once
     for i in range(100):
-        servers = session.locations.get_all()
+        locations = session.locations.get_all()
 
-print(servers)
+print(locations)
