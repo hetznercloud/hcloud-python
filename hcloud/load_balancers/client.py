@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+from datetime import datetime
 from typing import TYPE_CHECKING, Any, NamedTuple
+
+from dateutil.parser import isoparse
 
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
 from ..certificates import BoundCertificate
@@ -11,6 +14,7 @@ from ..networks import BoundNetwork
 from ..servers import BoundServer
 from .domain import (
     CreateLoadBalancerResponse,
+    GetMetricsResponse,
     IPv4Address,
     IPv6Network,
     LoadBalancer,
@@ -23,6 +27,7 @@ from .domain import (
     LoadBalancerTargetHealthStatus,
     LoadBalancerTargetIP,
     LoadBalancerTargetLabelSelector,
+    MetricsType,
     PrivateNet,
     PublicNetwork,
 )
@@ -176,6 +181,28 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
         :return: boolean
         """
         return self._client.delete(self)
+
+    def get_metrics(
+        self,
+        type: MetricsType,
+        start: datetime | str,
+        end: datetime | str,
+        step: float | None = None,
+    ) -> GetMetricsResponse:
+        """Get Metrics for a LoadBalancer.
+
+        :param type: Type of metrics to get.
+        :param start: Start of period to get Metrics for (in ISO-8601 format).
+        :param end: End of period to get Metrics for (in ISO-8601 format).
+        :param step: Resolution of results in seconds.
+        """
+        return self._client.get_metrics(
+            self,
+            type=type,
+            start=start,
+            end=end,
+            step=step,
+        )
 
     def get_actions_list(
         self,
@@ -532,6 +559,46 @@ class LoadBalancersClient(ClientEntityBase):
             method="DELETE",
         )
         return True
+
+    def get_metrics(
+        self,
+        load_balancer: LoadBalancer | BoundLoadBalancer,
+        type: MetricsType | list[MetricsType],
+        start: datetime | str,
+        end: datetime | str,
+        step: float | None = None,
+    ) -> GetMetricsResponse:
+        """Get Metrics for a LoadBalancer.
+
+        :param load_balancer: The Load Balancer to get the metrics for.
+        :param type: Type of metrics to get.
+        :param start: Start of period to get Metrics for (in ISO-8601 format).
+        :param end: End of period to get Metrics for (in ISO-8601 format).
+        :param step: Resolution of results in seconds.
+        """
+        if not isinstance(type, list):
+            type = [type]
+        if isinstance(start, str):
+            start = isoparse(start)
+        if isinstance(end, str):
+            end = isoparse(end)
+
+        params: dict[str, Any] = {
+            "type": ",".join(type),
+            "start": start.isoformat(),
+            "end": end.isoformat(),
+        }
+        if step is not None:
+            params["step"] = step
+
+        response = self._client.request(
+            url=f"/load_balancers/{load_balancer.id}/metrics",
+            method="GET",
+            params=params,
+        )
+        return GetMetricsResponse(
+            metrics=response["metrics"],
+        )
 
     def get_actions_list(
         self,
