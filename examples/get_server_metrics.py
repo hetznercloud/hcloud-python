@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timedelta
 from os import environ
 
 from hcloud import Client
@@ -23,10 +24,13 @@ if server is None:
     )
     server = response.server
 
+end = datetime.now()
+start = end - timedelta(hours=1)
+
 response = server.get_metrics(
     type=["cpu", "network"],
-    start="2023-12-01T12:00:00+01:00",
-    end="2023-12-01T14:00:00+01:00",
+    start=start,
+    end=end,
 )
 
 print(json.dumps(response.metrics))
