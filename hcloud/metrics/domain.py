@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Literal
+from typing import Dict, List, Literal, Tuple
 
 from dateutil.parser import isoparse
 
 from ..core import BaseDomain
 
-TimeSeries = dict[str, dict[Literal["values"], list[tuple[float, str]]]]
+TimeSeries = Dict[str, Dict[Literal["values"], List[Tuple[float, str]]]]
 
 
 class Metrics(BaseDomain):
