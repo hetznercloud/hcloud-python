@@ -445,6 +445,26 @@ def response_simple_load_balancers():
 
 
 @pytest.fixture()
+def response_get_metrics():
+    return {
+        "metrics": {
+            "start": "2023-12-14T16:55:32+01:00",
+            "end": "2023-12-14T17:25:32+01:00",
+            "step": 9.0,
+            "time_series": {
+                "requests_per_second": {
+                    "values": [
+                        [1702571114, "0.000000"],
+                        [1702571123, "0.000000"],
+                        [1702571132, "0.000000"],
+                    ]
+                }
+            },
+        }
+    }
+
+
+@pytest.fixture()
 def response_add_service():
     return {
         "action": {
