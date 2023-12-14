@@ -13,6 +13,7 @@ from ..firewalls import BoundFirewall
 from ..floating_ips import BoundFloatingIP
 from ..images import BoundImage, CreateImageResponse
 from ..isos import BoundIso
+from ..metrics import Metrics
 from ..placement_groups import BoundPlacementGroup
 from ..primary_ips import BoundPrimaryIP
 from ..server_types import BoundServerType
@@ -807,7 +808,7 @@ class ServersClient(ClientEntityBase):
             params=params,
         )
         return GetMetricsResponse(
-            metrics=response["metrics"],
+            metrics=Metrics(**response["metrics"]),
         )
 
     def delete(self, server: Server | BoundServer) -> BoundAction:

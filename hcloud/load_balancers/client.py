@@ -10,6 +10,7 @@ from ..certificates import BoundCertificate
 from ..core import BoundModelBase, ClientEntityBase, Meta
 from ..load_balancer_types import BoundLoadBalancerType
 from ..locations import BoundLocation
+from ..metrics import Metrics
 from ..networks import BoundNetwork
 from ..servers import BoundServer
 from .domain import (
@@ -597,7 +598,7 @@ class LoadBalancersClient(ClientEntityBase):
             params=params,
         )
         return GetMetricsResponse(
-            metrics=response["metrics"],
+            metrics=Metrics(**response["metrics"]),
         )
 
     def get_actions_list(
