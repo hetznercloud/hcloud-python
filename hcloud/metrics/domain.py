@@ -16,7 +16,9 @@ class Metrics(BaseDomain):
     :param start: Start of period of metrics reported.
     :param end: End of period of metrics reported.
     :param step: Resolution of results in seconds.
-    :param time_series: Dict with time series data, using the name of time series as key.
+    :param time_series: Dict with time series data, using the name of the time series as
+        key. The metrics timestamps and values are stored in a list of tuples
+        ``[(timestamp, value), ...]``.
     """
 
     start: datetime
