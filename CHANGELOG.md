@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.33.0](https://github.com/hetznercloud/hcloud-python/compare/v1.32.0...v1.33.0) (2023-12-19)
+
+
+### Features
+
+* add metrics endpoint for load balancers and servers ([#331](https://github.com/hetznercloud/hcloud-python/issues/331)) ([ee3c54f](https://github.com/hetznercloud/hcloud-python/commit/ee3c54fd1b6963533bc9d1e1f9ff57f6c5872cd5))
+
+
+### Bug Fixes
+
+* fallback to error code when message is unset ([#328](https://github.com/hetznercloud/hcloud-python/issues/328)) ([1c94153](https://github.com/hetznercloud/hcloud-python/commit/1c94153d93acd567548604b08b5fabeabd8d33d9))
+
+
+### Dependencies
+
+* update actions/setup-python action to v5 ([#335](https://github.com/hetznercloud/hcloud-python/issues/335)) ([2ac252d](https://github.com/hetznercloud/hcloud-python/commit/2ac252d18ba6079d5372c6ab9e3f67b4740db465))
+* update dependency sphinx-rtd-theme to v2 ([#330](https://github.com/hetznercloud/hcloud-python/issues/330)) ([7cc4335](https://github.com/hetznercloud/hcloud-python/commit/7cc4335cacab6073cf39a0ecbecf8890903d5bca))
+* update pre-commit hook psf/black-pre-commit-mirror to v23.12.0 ([#338](https://github.com/hetznercloud/hcloud-python/issues/338)) ([38e4748](https://github.com/hetznercloud/hcloud-python/commit/38e4748d3d194d37ea3d0c63683609f5db432e0d))
+* update pre-commit hook pycqa/isort to v5.13.0 ([#336](https://github.com/hetznercloud/hcloud-python/issues/336)) ([3244cfe](https://github.com/hetznercloud/hcloud-python/commit/3244cfef2f90ef52d0fb791d514d6afe481aa4d7))
+* update pre-commit hook pycqa/isort to v5.13.1 ([#337](https://github.com/hetznercloud/hcloud-python/issues/337)) ([020a0ef](https://github.com/hetznercloud/hcloud-python/commit/020a0eff6bc2b63d16b339fd5d4c3ea3610c0509))
+* update pre-commit hook pycqa/isort to v5.13.2 ([#339](https://github.com/hetznercloud/hcloud-python/issues/339)) ([b46df8c](https://github.com/hetznercloud/hcloud-python/commit/b46df8cbb263945c59ce4408e0a7189d19d9c597))
+
 ## [1.32.0](https://github.com/hetznercloud/hcloud-python/compare/v1.31.0...v1.32.0) (2023-11-17)
 
 
