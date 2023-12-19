@@ -96,6 +96,30 @@ class TestBoundLoadBalancer:
 
         assert delete_success is True
 
+    def test_get_metrics(
+        self,
+        hetzner_client,
+        response_get_metrics,
+        bound_load_balancer: BoundLoadBalancer,
+    ):
+        hetzner_client.request.return_value = response_get_metrics
+        response = bound_load_balancer.get_metrics(
+            type=["requests_per_second"],
+            start="2023-12-14T16:55:32+01:00",
+            end="2023-12-14T16:55:32+01:00",
+        )
+        hetzner_client.request.assert_called_with(
+            url="/load_balancers/14/metrics",
+            method="GET",
+            params={
+                "type": "requests_per_second",
+                "start": "2023-12-14T16:55:32+01:00",
+                "end": "2023-12-14T16:55:32+01:00",
+            },
+        )
+        assert "requests_per_second" in response.metrics.time_series
+        assert len(response.metrics.time_series["requests_per_second"]["values"]) == 3
+
     def test_add_service(
         self, hetzner_client, response_add_service, bound_load_balancer
     ):

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from dateutil.parser import isoparse
 
@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from ..floating_ips import BoundFloatingIP
     from ..images import BoundImage
     from ..isos import BoundIso
+    from ..metrics import Metrics
     from ..networks import BoundNetwork
     from ..placement_groups import BoundPlacementGroup
     from ..primary_ips import BoundPrimaryIP, PrimaryIP
@@ -427,3 +428,25 @@ class ServerCreatePublicNetwork(BaseDomain):
         self.ipv6 = ipv6
         self.enable_ipv4 = enable_ipv4
         self.enable_ipv6 = enable_ipv6
+
+
+MetricsType = Literal[
+    "cpu",
+    "disk",
+    "network",
+]
+
+
+class GetMetricsResponse(BaseDomain):
+    """Get a Server Metrics Response Domain
+
+    :param metrics: The Server metrics
+    """
+
+    __slots__ = ("metrics",)
+
+    def __init__(
+        self,
+        metrics: Metrics,
+    ):
+        self.metrics = metrics

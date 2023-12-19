@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import warnings
+from datetime import datetime
 from typing import TYPE_CHECKING, Any, NamedTuple
+
+from dateutil.parser import isoparse
 
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
 from ..core import BoundModelBase, ClientEntityBase, Meta
@@ -10,6 +13,7 @@ from ..firewalls import BoundFirewall
 from ..floating_ips import BoundFloatingIP
 from ..images import BoundImage, CreateImageResponse
 from ..isos import BoundIso
+from ..metrics import Metrics
 from ..placement_groups import BoundPlacementGroup
 from ..primary_ips import BoundPrimaryIP
 from ..server_types import BoundServerType
@@ -17,8 +21,10 @@ from ..volumes import BoundVolume
 from .domain import (
     CreateServerResponse,
     EnableRescueResponse,
+    GetMetricsResponse,
     IPv4Address,
     IPv6Network,
+    MetricsType,
     PrivateNet,
     PublicNetwork,
     PublicNetworkFirewall,
@@ -209,6 +215,29 @@ class BoundServer(BoundModelBase, Server):
         :return: :class:`BoundServer <hcloud.servers.client.BoundServer>`
         """
         return self._client.update(self, name, labels)
+
+    def get_metrics(
+        self,
+        type: MetricsType | list[MetricsType],
+        start: datetime | str,
+        end: datetime | str,
+        step: float | None = None,
+    ) -> GetMetricsResponse:
+        """Get Metrics for a Server.
+
+        :param server: The Server to get the metrics for.
+        :param type: Type of metrics to get.
+        :param start: Start of period to get Metrics for (in ISO-8601 format).
+        :param end: End of period to get Metrics for (in ISO-8601 format).
+        :param step: Resolution of results in seconds.
+        """
+        return self._client.get_metrics(
+            self,
+            type=type,
+            start=start,
+            end=end,
+            step=step,
+        )
 
     def delete(self) -> BoundAction:
         """Deletes a server. This immediately removes the server from your account, and it is no longer accessible.
@@ -741,6 +770,46 @@ class ServersClient(ClientEntityBase):
             json=data,
         )
         return BoundServer(self, response["server"])
+
+    def get_metrics(
+        self,
+        server: Server | BoundServer,
+        type: MetricsType | list[MetricsType],
+        start: datetime | str,
+        end: datetime | str,
+        step: float | None = None,
+    ) -> GetMetricsResponse:
+        """Get Metrics for a Server.
+
+        :param server: The Server to get the metrics for.
+        :param type: Type of metrics to get.
+        :param start: Start of period to get Metrics for (in ISO-8601 format).
+        :param end: End of period to get Metrics for (in ISO-8601 format).
+        :param step: Resolution of results in seconds.
+        """
+        if not isinstance(type, list):
+            type = [type]
+        if isinstance(start, str):
+            start = isoparse(start)
+        if isinstance(end, str):
+            end = isoparse(end)
+
+        params: dict[str, Any] = {
+            "type": ",".join(type),
+            "start": start.isoformat(),
+            "end": end.isoformat(),
+        }
+        if step is not None:
+            params["step"] = step
+
+        response = self._client.request(
+            url=f"/servers/{server.id}/metrics",
+            method="GET",
+            params=params,
+        )
+        return GetMetricsResponse(
+            metrics=Metrics(**response["metrics"]),
+        )
 
     def delete(self, server: Server | BoundServer) -> BoundAction:
         """Deletes a server. This immediately removes the server from your account, and it is no longer accessible.

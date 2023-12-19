@@ -7,6 +7,7 @@ from .client import (  # noqa: F401
 )
 from .domain import (  # noqa: F401
     CreateLoadBalancerResponse,
+    GetMetricsResponse,
     IPv4Address,
     IPv6Network,
     LoadBalancer,

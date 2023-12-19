@@ -190,6 +190,32 @@ class TestBoundServer:
         assert action.id == 1
         assert action.progress == 0
 
+    def test_get_metrics(
+        self,
+        hetzner_client,
+        bound_server: BoundServer,
+        response_get_metrics,
+    ):
+        hetzner_client.request.return_value = response_get_metrics
+        response = bound_server.get_metrics(
+            type=["cpu", "disk"],
+            start="2023-12-14T17:40:00+01:00",
+            end="2023-12-14T17:50:00+01:00",
+        )
+        hetzner_client.request.assert_called_with(
+            url="/servers/14/metrics",
+            method="GET",
+            params={
+                "type": "cpu,disk",
+                "start": "2023-12-14T17:40:00+01:00",
+                "end": "2023-12-14T17:50:00+01:00",
+            },
+        )
+
+        assert "cpu" in response.metrics.time_series
+        assert "disk.0.iops.read" in response.metrics.time_series
+        assert len(response.metrics.time_series["disk.0.iops.read"]["values"]) == 3
+
     def test_power_off(self, hetzner_client, bound_server, generic_action):
         hetzner_client.request.return_value = generic_action
         action = bound_server.power_off()
