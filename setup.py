@@ -54,7 +54,7 @@ setup(
             "coverage>=7.3,<7.4",
             "pylint>=3,<3.1",
             "pytest>=7.4,<7.5",
-            "mypy>=1.7,<1.8",
+            "mypy>=1.8,<1.9",
             "types-python-dateutil",
             "types-requests",
         ],
