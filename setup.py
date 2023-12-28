@@ -51,7 +51,7 @@ setup(
             "watchdog>=3.0.0,<3.1",
         ],
         "test": [
-            "coverage>=7.3,<7.4",
+            "coverage>=7.4,<7.5",
             "pylint>=3,<3.1",
             "pytest>=7.4,<7.5",
             "mypy>=1.8,<1.9",
