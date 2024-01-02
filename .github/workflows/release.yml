@@ -25,11 +25,32 @@ jobs:
         run: python3 -m build
 
       - name: Check
-        run: twine check dist/*
+        run: twine check --strict dist/*
 
-      - name: Publish
+      - name: Upload packages artifact
         if: github.event_name == 'release'
-        env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: twine upload dist/*
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-packages
+          path: dist/
+
+  publish:
+    if: github.event_name == 'release'
+    needs: [build]
+
+    environment:
+      name: pypi
+      url: https://pypi.org/p/hcloud
+    permissions:
+      id-token: write
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download packages artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: python-packages
+          path: dist/
+
+      - name: Publish packages to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.8.11
