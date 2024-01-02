@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.33.1](https://github.com/hetznercloud/hcloud-python/compare/v1.33.0...v1.33.1) (2024-01-02)
+
+
+### Bug Fixes
+
+* private object not exported in top level module ([#346](https://github.com/hetznercloud/hcloud-python/issues/346)) ([5281b05](https://github.com/hetznercloud/hcloud-python/commit/5281b0583541b6e0e9b8c7ad75faa42c5d379735))
+
+
+### Dependencies
+
+* update dependency coverage to &gt;=7.4,&lt;7.5 ([#348](https://github.com/hetznercloud/hcloud-python/issues/348)) ([3ac5711](https://github.com/hetznercloud/hcloud-python/commit/3ac57117e8a68a02cba19c56f850f037c4aca462))
+* update dependency mypy to &gt;=1.8,&lt;1.9 ([#343](https://github.com/hetznercloud/hcloud-python/issues/343)) ([984022f](https://github.com/hetznercloud/hcloud-python/commit/984022fd3888ef856be83de82554d55a8af18dba))
+* update pre-commit hook psf/black-pre-commit-mirror to v23.12.1 ([#347](https://github.com/hetznercloud/hcloud-python/issues/347)) ([2c24efe](https://github.com/hetznercloud/hcloud-python/commit/2c24efe93bc221846f8dcc91abcf1aad61547875))
+
 ## [1.33.0](https://github.com/hetznercloud/hcloud-python/compare/v1.32.0...v1.33.0) (2023-12-19)
 
 
