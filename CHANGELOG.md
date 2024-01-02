@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.33.2](https://github.com/hetznercloud/hcloud-python/compare/v1.33.1...v1.33.2) (2024-01-02)
+
+
+### Bug Fixes
+
+* publish package to PyPI using OIDC auth ([1a0e93b](https://github.com/hetznercloud/hcloud-python/commit/1a0e93bbf1ae6cc747e6c4d8305dafd3e49dbbdc))
+
 ## [1.33.1](https://github.com/hetznercloud/hcloud-python/compare/v1.33.0...v1.33.1) (2024-01-02)
 
 
