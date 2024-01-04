@@ -23,7 +23,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: pip install tox tox-gh-actions
+        run: pip install tox tox-gh-actions pytest-cov
 
       - name: Run tox
-        run: tox
+        run: tox --cov --cov-report=xml
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
