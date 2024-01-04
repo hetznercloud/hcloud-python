@@ -2,6 +2,7 @@
 
 [![](https://github.com/hetznercloud/hcloud-python/actions/workflows/test.yml/badge.svg)](https://github.com/hetznercloud/hcloud-python/actions/workflows/test.yml)
 [![](https://github.com/hetznercloud/hcloud-python/actions/workflows/lint.yml/badge.svg)](https://github.com/hetznercloud/hcloud-python/actions/workflows/lint.yml)
+[![](https://codecov.io/github/hetznercloud/hcloud-python/graph/badge.svg?token=3YGRqB5t1L)](https://codecov.io/github/hetznercloud/hcloud-python/tree/main)
 [![](https://readthedocs.org/projects/hcloud-python/badge/?version=latest)](https://hcloud-python.readthedocs.io)
 [![](https://img.shields.io/pypi/pyversions/hcloud.svg)](https://pypi.org/project/hcloud/)
 
