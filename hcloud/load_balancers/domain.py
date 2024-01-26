@@ -200,9 +200,9 @@ class LoadBalancerService(BaseDomain):
                 if self.health_check.http.response is not None:
                     health_check_http["response"] = self.health_check.http.response
                 if self.health_check.http.status_codes is not None:
-                    health_check_http[
-                        "status_codes"
-                    ] = self.health_check.http.status_codes
+                    health_check_http["status_codes"] = (
+                        self.health_check.http.status_codes
+                    )
                 if self.health_check.http.tls is not None:
                     health_check_http["tls"] = self.health_check.http.tls
 
