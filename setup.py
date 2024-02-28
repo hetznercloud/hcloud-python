@@ -52,7 +52,7 @@ setup(
         ],
         "test": [
             "coverage>=7.4,<7.5",
-            "pylint>=3,<3.1",
+            "pylint>=3,<3.2",
             "pytest>=8,<8.1",
             "pytest-cov>=4.1.0,<4.2",
             "mypy>=1.8,<1.9",
