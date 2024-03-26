@@ -76,7 +76,7 @@ class LoadBalancer(BaseDomain):
         id: int,
         name: str | None = None,
         public_net: PublicNetwork | None = None,
-        private_net: PrivateNet | None = None,
+        private_net: list[PrivateNet] | None = None,
         location: BoundLocation | None = None,
         algorithm: LoadBalancerAlgorithm | None = None,
         services: list[LoadBalancerService] | None = None,
