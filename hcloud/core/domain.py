@@ -34,6 +34,24 @@ class DomainIdentityMixin:
             return self.name
         raise ValueError("id or name must be set")
 
+    def has_id_or_name(self, id_or_name: int | str) -> bool:
+        """
+        Return whether this domain has the same id or same name as the other.
+
+        The domain calling this method MUST be a bound domain or be populated, otherwise
+        the comparison will not work as expected (e.g. the domains are the same but
+        cannot be equal, if one provides an id and the other the name).
+        """
+        values: list[int | str] = []
+        if self.id is not None:
+            values.append(self.id)
+        if self.name is not None:
+            values.append(self.name)
+        if not values:
+            raise ValueError("id or name must be set")
+
+        return id_or_name in values
+
 
 class Pagination(BaseDomain):
     __slots__ = (

@@ -65,9 +65,24 @@ class TestDomainIdentityMixin:
         domain = SomeDomain()
 
         with pytest.raises(ValueError) as exception_info:
-            domain.id_or_name
+            _ = domain.id_or_name
         error = exception_info.value
         assert str(error) == "id or name must be set"
+
+    @pytest.mark.parametrize(
+        "other, expected",
+        [
+            (SomeDomain(id=1), True),
+            (SomeDomain(name="name1"), True),
+            (SomeDomain(id=1, name="name1"), True),
+            (SomeDomain(id=2), False),
+            (SomeDomain(name="name2"), False),
+            (SomeDomain(id=2, name="name2"), False),
+        ],
+    )
+    def test_has_id_or_name_exception(self, other, expected):
+        domain = SomeDomain(id=1, name="name1")
+        assert domain.has_id_or_name(other.id_or_name) == expected
 
 
 class ActionDomain(BaseDomain, DomainIdentityMixin):
