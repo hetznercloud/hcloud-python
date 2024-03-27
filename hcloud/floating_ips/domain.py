@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from dateutil.parser import isoparse
 
-from ..core import BaseDomain
+from ..core import BaseDomain, DomainIdentityMixin
 
 if TYPE_CHECKING:
     from ..actions import BoundAction
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from .client import BoundFloatingIP
 
 
-class FloatingIP(BaseDomain):
+class FloatingIP(BaseDomain, DomainIdentityMixin):
     """Floating IP Domain
 
     :param id: int

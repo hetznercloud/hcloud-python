@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Literal
 
 from dateutil.parser import isoparse
 
-from ..core import BaseDomain
+from ..core import BaseDomain, DomainIdentityMixin
 
 if TYPE_CHECKING:
     from ..actions import BoundAction
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from .client import BoundServer
 
 
-class Server(BaseDomain):
+class Server(BaseDomain, DomainIdentityMixin):
     """Server Domain
 
     :param id: int
