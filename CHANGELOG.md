@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.33.3](https://github.com/hetznercloud/hcloud-python/compare/v1.33.2...v1.33.3) (2024-03-27)
+
+
+### Bug Fixes
+
+* invalid type for load balancer private network property ([#372](https://github.com/hetznercloud/hcloud-python/issues/372)) ([903e92f](https://github.com/hetznercloud/hcloud-python/commit/903e92faab745b7f8270f6195da67f4d9f8b1ba7))
+
+
+### Dependencies
+
+* update codecov/codecov-action action to v4 ([#359](https://github.com/hetznercloud/hcloud-python/issues/359)) ([a798979](https://github.com/hetznercloud/hcloud-python/commit/a79897977abe970181d19584e51448ff5976b5e2))
+* update dependency mypy to &gt;=1.9,&lt;1.10 ([#368](https://github.com/hetznercloud/hcloud-python/issues/368)) ([4b9328c](https://github.com/hetznercloud/hcloud-python/commit/4b9328ceae1e393ff55b3ca6f030cb5ac565be00))
+* update dependency pylint to &gt;=3,&lt;3.2 ([#364](https://github.com/hetznercloud/hcloud-python/issues/364)) ([d71d17f](https://github.com/hetznercloud/hcloud-python/commit/d71d17fd6f2968a8c19052753265ef7f514a8955))
+* update dependency pytest to &gt;=8,&lt;8.2 ([#366](https://github.com/hetznercloud/hcloud-python/issues/366)) ([8665dcf](https://github.com/hetznercloud/hcloud-python/commit/8665dcff335c755c1ff4d95621334a3f5e196d34))
+* update dependency pytest to v8 ([#357](https://github.com/hetznercloud/hcloud-python/issues/357)) ([f8f756f](https://github.com/hetznercloud/hcloud-python/commit/f8f756fe0a492e284bd2a700514c0ba38358b4a8))
+* update dependency pytest-cov to v5 ([#371](https://github.com/hetznercloud/hcloud-python/issues/371)) ([04a6a42](https://github.com/hetznercloud/hcloud-python/commit/04a6a42028606ed66657605d98b1f21545eb2e0d))
+* update dependency watchdog to v4 ([#360](https://github.com/hetznercloud/hcloud-python/issues/360)) ([cb8d383](https://github.com/hetznercloud/hcloud-python/commit/cb8d38396a8665506e3be64a09450343d7671586))
+* update pre-commit hook asottile/pyupgrade to v3.15.1 ([#362](https://github.com/hetznercloud/hcloud-python/issues/362)) ([dd2a521](https://github.com/hetznercloud/hcloud-python/commit/dd2a521eccec8e15b6d1d7fd843d866bf6ea5bcf))
+* update pre-commit hook asottile/pyupgrade to v3.15.2 ([3d02ad7](https://github.com/hetznercloud/hcloud-python/commit/3d02ad71e9200f5cc94b2d33eea62035edc1e33a))
+* update pre-commit hook psf/black-pre-commit-mirror to v24 ([#356](https://github.com/hetznercloud/hcloud-python/issues/356)) ([b46397d](https://github.com/hetznercloud/hcloud-python/commit/b46397d761caa60014bd32f7142b79bef9a92e18))
+* update pre-commit hook psf/black-pre-commit-mirror to v24.1.1 ([#358](https://github.com/hetznercloud/hcloud-python/issues/358)) ([7e4645e](https://github.com/hetznercloud/hcloud-python/commit/7e4645e3e38a106f38a7f63810d71a628fead939))
+* update pre-commit hook psf/black-pre-commit-mirror to v24.2.0 ([#361](https://github.com/hetznercloud/hcloud-python/issues/361)) ([5b56ace](https://github.com/hetznercloud/hcloud-python/commit/5b56ace93b8b4fddddbf5610c11fd20bf6f9a561))
+* update pre-commit hook psf/black-pre-commit-mirror to v24.3.0 ([3bbac5d](https://github.com/hetznercloud/hcloud-python/commit/3bbac5dc41ca509d6679fd6b06ae99ca33fd62ee))
+* update pre-commit hook pycqa/flake8 to v7 ([#354](https://github.com/hetznercloud/hcloud-python/issues/354)) ([66a582f](https://github.com/hetznercloud/hcloud-python/commit/66a582f3ce728d92045625885d0634fc96fbc6a0))
+* update pypa/gh-action-pypi-publish action to v1.8.12 ([#365](https://github.com/hetznercloud/hcloud-python/issues/365)) ([55db255](https://github.com/hetznercloud/hcloud-python/commit/55db2551dd0f0ea6a29da4e7a6dce2af8de86eaf))
+* update pypa/gh-action-pypi-publish action to v1.8.14 ([#367](https://github.com/hetznercloud/hcloud-python/issues/367)) ([0cb615f](https://github.com/hetznercloud/hcloud-python/commit/0cb615fe0d852cddbf636c1fdb8538ad60f5a3d9))
+
 ## [1.33.2](https://github.com/hetznercloud/hcloud-python/compare/v1.33.1...v1.33.2) (2024-01-02)
 
 
