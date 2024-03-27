@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.34.0](https://github.com/hetznercloud/hcloud-python/compare/v1.33.3...v1.34.0) (2024-03-27)
+
+
+### Features
+
+* add `has_id_or_name` to `DomainIdentityMixin` ([#373](https://github.com/hetznercloud/hcloud-python/issues/373)) ([8facaf6](https://github.com/hetznercloud/hcloud-python/commit/8facaf6d4dd2bbfb4137e7066b49c5f4c1db773c))
+
 ## [1.33.3](https://github.com/hetznercloud/hcloud-python/compare/v1.33.2...v1.33.3) (2024-03-27)
 
 
