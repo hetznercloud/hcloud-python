@@ -39,8 +39,8 @@ class DomainIdentityMixin:
         Return whether this domain has the same id or same name as the other.
 
         The domain calling this method MUST be a bound domain or be populated, otherwise
-        the the comparison will not work as expected (e.g. the domains are the same but
-        cannot be compared, if one provides only an id and the other only the name).
+        the comparison will not work as expected (e.g. the domains are the same but
+        cannot be equal, if one provides an id and the other the name).
         """
         values: list[int | str] = []
         if self.id is not None:
