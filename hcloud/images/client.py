@@ -317,6 +317,7 @@ class ImagesClient(ClientEntityBase):
         self,
         name: str,
         architecture: str,
+        *,
         include_deprecated: bool | None = None,
     ) -> BoundImage | None:
         """Get image by name
