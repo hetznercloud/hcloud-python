@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.35.0](https://github.com/hetznercloud/hcloud-python/compare/v1.34.0...v1.35.0) (2024-04-02)
+
+
+### Features
+
+* add `include_deprecated` option when fetching images by name ([#375](https://github.com/hetznercloud/hcloud-python/issues/375)) ([6d86f86](https://github.com/hetznercloud/hcloud-python/commit/6d86f86677fec23e6fd8a69d20d787e234e0fb53))
+
+
+### Bug Fixes
+
+* raise warnings for the `ImagesClient.get_by_name` deprecation ([#376](https://github.com/hetznercloud/hcloud-python/issues/376)) ([b24de80](https://github.com/hetznercloud/hcloud-python/commit/b24de80684db142ebbe11b62a38d9c61f248e216))
+
 ## [1.34.0](https://github.com/hetznercloud/hcloud-python/compare/v1.33.3...v1.34.0) (2024-03-27)
 
 
