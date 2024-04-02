@@ -325,6 +325,8 @@ class ImagesClient(ClientEntityBase):
         self,
         name: str,
         architecture: str,
+        *,
+        include_deprecated: bool | None = None,
     ) -> BoundImage | None:
         """Get image by name
 
@@ -332,9 +334,15 @@ class ImagesClient(ClientEntityBase):
                Used to identify the image.
         :param architecture: str
                Used to identify the image.
+        :param include_deprecated: bool (optional)
+               Include deprecated images. Default: False
         :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
         """
-        return self._get_first_by(name=name, architecture=[architecture])
+        return self._get_first_by(
+            name=name,
+            architecture=[architecture],
+            include_deprecated=include_deprecated,
+        )
 
     def update(
         self,
