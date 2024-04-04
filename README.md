@@ -94,6 +94,31 @@ You may also run the tests for multiple `python3` versions using `tox`:
 tox .
 ```
 
+### Deprecations implementation
+
+When deprecating a module or a function, you must:
+
+- Update the docstring with a `deprecated` notice:
+
+```py
+"""Get image by name
+
+.. deprecated:: 1.19
+    Use :func:`hcloud.images.client.ImagesClient.get_by_name_and_architecture` instead.
+"""
+```
+
+- Raise a warning when the deprecated module or function is being used:
+
+```py
+warnings.warn(
+    "The 'hcloud.images.client.ImagesClient.get_by_name' method is deprecated, please use the "
+    "'hcloud.images.client.ImagesClient.get_by_name_and_architecture' method instead.",
+    DeprecationWarning,
+    stacklevel=2,
+)
+```
+
 ## License
 
 The MIT License (MIT). Please see [`License File`](https://github.com/hetznercloud/hcloud-python/blob/main/LICENSE) for more information.
