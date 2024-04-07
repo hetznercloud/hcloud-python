@@ -15,7 +15,7 @@ client = Client(token=token)
 
 response = client.servers.create(
     name="my-server",
-    server_type=ServerType("cx11"),
+    server_type=ServerType(name="cx11"),
     image=Image(name="ubuntu-20.04"),
 )
 server = response.server
