@@ -55,7 +55,7 @@ setup(
             "pylint>=3,<3.2",
             "pytest>=8,<8.2",
             "pytest-cov>=5,<5.1",
-            "mypy>=1.9,<1.10",
+            "mypy>=1.10,<1.11",
             "types-python-dateutil",
             "types-requests",
         ],
