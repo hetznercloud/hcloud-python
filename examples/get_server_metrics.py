@@ -19,8 +19,8 @@ server = client.servers.get_by_name("my-server")
 if server is None:
     response = client.servers.create(
         name="my-server",
-        server_type=ServerType("cx11"),
-        image=Image(name="ubuntu-22.04"),
+        server_type=ServerType(name="cx22"),
+        image=Image(name="ubuntu-24.04"),
     )
     server = response.server
 

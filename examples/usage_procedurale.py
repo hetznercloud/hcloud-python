@@ -17,11 +17,11 @@ client = Client(token=token)
 
 # Create 2 servers
 response1 = client.servers.create(
-    name="Server1", server_type=ServerType(name="cx11"), image=Image(id=4711)
+    name="Server1", server_type=ServerType(name="cx22"), image=Image(id=4711)
 )
 
 response2 = client.servers.create(
-    "Server2", server_type=ServerType(name="cx11"), image=Image(id=4711)
+    "Server2", server_type=ServerType(name="cx22"), image=Image(id=4711)
 )
 
 server1 = response1.server
@@ -64,7 +64,7 @@ print(response.action.status)
 # Create one more server and attach 2 volumes to it
 client.servers.create(
     "Server3",
-    server_type=ServerType(name="cx11"),
+    server_type=ServerType(name="cx22"),
     image=Image(id=4711),
     volumes=[Volume(id=221), Volume(id=222)],
 )

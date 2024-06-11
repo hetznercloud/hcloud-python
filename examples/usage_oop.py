@@ -17,11 +17,11 @@ client = Client(token=token)
 # Create 2 servers
 # Create 2 servers
 response1 = client.servers.create(
-    "Server1", server_type=ServerType(name="cx11"), image=Image(id=4711)
+    "Server1", server_type=ServerType(name="cx22"), image=Image(id=4711)
 )
 
 response2 = client.servers.create(
-    "Server2", server_type=ServerType(name="cx11"), image=Image(id=4711)
+    "Server2", server_type=ServerType(name="cx22"), image=Image(id=4711)
 )
 # Get all servers
 server1 = response1.server
