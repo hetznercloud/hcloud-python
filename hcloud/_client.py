@@ -57,7 +57,7 @@ class Client:
         self._application_version = application_version
         self._requests_session = requests.Session()
         self._requests_timeout = timeout
-        self.poll_interval = poll_interval
+        self._poll_interval = poll_interval
 
         self.datacenters = DatacentersClient(self)
         """DatacentersClient Instance
