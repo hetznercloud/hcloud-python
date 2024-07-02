@@ -5,13 +5,9 @@ from setuptools import find_packages, setup
 with open("README.md", encoding="utf-8") as readme_file:
     readme = readme_file.read()
 
-version = {}
-with open("hcloud/__version__.py", encoding="utf-8") as fp:
-    exec(fp.read(), version)
-
 setup(
     name="hcloud",
-    version=version["VERSION"],
+    version="1.35.0",
     keywords="hcloud hetzner cloud",
     description="Official Hetzner Cloud python library",
     long_description=readme,

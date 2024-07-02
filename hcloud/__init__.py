@@ -5,3 +5,4 @@ from ._exceptions import (  # noqa pylint: disable=C0414
     APIException as APIException,
     HCloudException as HCloudException,
 )
+from ._version import __version__  # noqa

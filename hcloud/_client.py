@@ -5,8 +5,8 @@ from typing import NoReturn
 
 import requests
 
-from .__version__ import VERSION
 from ._exceptions import APIException
+from ._version import __version__
 from .actions import ActionsClient
 from .certificates import CertificatesClient
 from .datacenters import DatacentersClient
@@ -29,7 +29,7 @@ from .volumes import VolumesClient
 class Client:
     """Base Client for accessing the Hetzner Cloud API"""
 
-    _version = VERSION
+    _version = __version__
     _retry_wait_time = 0.5
     __user_agent_prefix = "hcloud-python"
 

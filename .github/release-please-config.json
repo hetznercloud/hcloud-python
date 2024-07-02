@@ -7,7 +7,7 @@
     ".": {
       "release-type": "python",
       "package-name": "hcloud",
-      "extra-files": ["hcloud/__version__.py"]
+      "extra-files": ["hcloud/_version.py"]
     }
   }
 }
