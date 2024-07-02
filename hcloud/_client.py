@@ -189,14 +189,14 @@ class Client:
         self,
         method: str,
         url: str,
-        tries: int = 1,
+        *,
+        _tries: int = 1,
         **kwargs,
     ) -> dict:
         """Perform a request to the Hetzner Cloud API, wrapper around requests.request
 
         :param method: HTTP Method to perform the Request
         :param url: URL of the Endpoint
-        :param tries: Tries of the request (used internally, should not be set by the user)
         :param timeout: Requests timeout in seconds
         :return: Response
         """
@@ -220,10 +220,10 @@ class Client:
         if not response.ok:
             if content:
                 assert isinstance(content, dict)
-                if content["error"]["code"] == "rate_limit_exceeded" and tries < 5:
-                    time.sleep(tries * self._retry_wait_time)
-                    tries = tries + 1
-                    return self.request(method, url, tries, **kwargs)
+                if content["error"]["code"] == "rate_limit_exceeded" and _tries < 5:
+                    time.sleep(_tries * self._retry_wait_time)
+                    _tries = _tries + 1
+                    return self.request(method, url, _tries=_tries, **kwargs)
 
                 self._raise_exception_from_content(content)
             else:
