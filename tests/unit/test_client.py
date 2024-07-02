@@ -74,10 +74,6 @@ class TestHetznerClient:
             "Authorization": "Bearer project_token",
         }
 
-    def test_request_library_mocked(self, client):
-        response = client.request("POST", "url", params={"1": 2})
-        assert response.__class__.__name__ == "MagicMock"
-
     def test_request_ok(self, client, response):
         client._requests_session.request.return_value = response
         response = client.request(
@@ -142,7 +138,7 @@ class TestHetznerClient:
         response = client.request(
             "POST", "http://url.com", params={"argument": "value"}, timeout=2
         )
-        assert response == ""
+        assert response == {}
 
     def test_request_500_empty_content(self, client, fail_response):
         fail_response.status_code = 500

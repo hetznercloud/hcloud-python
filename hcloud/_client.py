@@ -210,9 +210,9 @@ class Client:
             **kwargs,
         )
 
-        content = response.content
+        content = {}
         try:
-            if len(content) > 0:
+            if len(response.content) > 0:
                 content = response.json()
         except (TypeError, ValueError):
             self._raise_exception_from_response(response)
@@ -229,5 +229,4 @@ class Client:
             else:
                 self._raise_exception_from_response(response)
 
-        # TODO: return an empty dict instead of an empty string when content == "".
-        return content  # type: ignore[return-value]
+        return content
