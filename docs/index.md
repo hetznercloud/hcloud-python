@@ -7,6 +7,7 @@ installation.rst
 api.rst
 Hetzner Cloud API Documentation <https://docs.hetzner.cloud>
 contributing.rst
+upgrading.md
 changelog.md
 
 :::
