@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from typing import NoReturn
+from typing import NoReturn, Protocol
 
 import requests
 
@@ -26,6 +26,15 @@ from .ssh_keys import SSHKeysClient
 from .volumes import VolumesClient
 
 
+class PollIntervalFunction(Protocol):
+    def __call__(self, retries: int) -> float:
+        """
+        Return a interval in seconds to wait between each API call.
+
+        :param retries: Number of calls already made.
+        """
+
+
 class Client:
     """Base Client for accessing the Hetzner Cloud API"""
 
@@ -39,7 +48,8 @@ class Client:
         api_endpoint: str = "https://api.hetzner.cloud/v1",
         application_name: str | None = None,
         application_version: str | None = None,
-        poll_interval: int = 1,
+        poll_interval: int | float | PollIntervalFunction = 1.0,
+        poll_max_retries: int = 120,
         timeout: float | tuple[float, float] | None = None,
     ):
         """Create a new Client instance
@@ -48,7 +58,11 @@ class Client:
         :param api_endpoint: Hetzner Cloud API endpoint
         :param application_name: Your application name
         :param application_version: Your application _version
-        :param poll_interval: Interval for polling information from Hetzner Cloud API in seconds
+        :param poll_interval:
+            Interval in seconds to use when polling actions from the API.
+            You may pass a function to compute a custom poll interval.
+        :param poll_max_retries:
+            Max retries before timeout when polling actions from the API.
         :param timeout: Requests timeout in seconds
         """
         self.token = token
@@ -57,7 +71,12 @@ class Client:
         self._application_version = application_version
         self._requests_session = requests.Session()
         self._requests_timeout = timeout
-        self._poll_interval = poll_interval
+
+        if isinstance(poll_interval, (int, float)):
+            self._poll_interval_func = lambda _: poll_interval  # Constant poll interval
+        else:
+            self._poll_interval_func = poll_interval
+        self._poll_max_retries = poll_max_retries
 
         self.datacenters = DatacentersClient(self)
         """DatacentersClient Instance
