@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from typing import NoReturn, Protocol
+from typing import Protocol
 
 import requests
 
@@ -190,20 +190,6 @@ class Client:
         }
         return headers
 
-    def _raise_exception_from_response(self, response: requests.Response) -> NoReturn:
-        raise APIException(
-            code=response.status_code,
-            message=response.reason,
-            details={"content": response.content},
-        )
-
-    def _raise_exception_from_content(self, content: dict) -> NoReturn:
-        raise APIException(
-            code=content["error"]["code"],
-            message=content["error"]["message"],
-            details=content["error"]["details"],
-        )
-
     def request(  # type: ignore[no-untyped-def]
         self,
         method: str,
@@ -229,23 +215,40 @@ class Client:
             **kwargs,
         )
 
-        content = {}
+        trace_id = response.headers.get("X-Correlation-Id")
+        payload = {}
         try:
             if len(response.content) > 0:
-                content = response.json()
-        except (TypeError, ValueError):
-            self._raise_exception_from_response(response)
+                payload = response.json()
+        except (TypeError, ValueError) as exc:
+            raise APIException(
+                code=response.status_code,
+                message=response.reason,
+                details={"content": response.content},
+                trace_id=trace_id,
+            ) from exc
 
         if not response.ok:
-            if content:
-                assert isinstance(content, dict)
-                if content["error"]["code"] == "rate_limit_exceeded" and _tries < 5:
-                    time.sleep(_tries * self._retry_wait_time)
-                    _tries = _tries + 1
-                    return self.request(method, url, _tries=_tries, **kwargs)
+            if not payload or "error" not in payload:
+                raise APIException(
+                    code=response.status_code,
+                    message=response.reason,
+                    details={"content": response.content},
+                    trace_id=trace_id,
+                )
 
-                self._raise_exception_from_content(content)
-            else:
-                self._raise_exception_from_response(response)
+            error: dict = payload["error"]
 
-        return content
+            if error["code"] == "rate_limit_exceeded" and _tries < 5:
+                time.sleep(_tries * self._retry_wait_time)
+                _tries = _tries + 1
+                return self.request(method, url, _tries=_tries, **kwargs)
+
+            raise APIException(
+                code=error["code"],
+                message=error["message"],
+                details=error["details"],
+                trace_id=trace_id,
+            )
+
+        return payload
