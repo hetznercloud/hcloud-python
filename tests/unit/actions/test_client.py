@@ -19,7 +19,8 @@ class TestBoundAction:
     def bound_running_action(self, mocked_requests):
         action_client = ActionsClient(client=mocked_requests)
         # Speed up tests that run `wait_until_finished`
-        action_client._client._poll_interval = 0.1
+        action_client._client._poll_interval_func = lambda _: 0.0
+        action_client._client._poll_max_retries = 3
 
         return BoundAction(
             client=action_client,
