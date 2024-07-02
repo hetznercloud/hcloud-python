@@ -102,6 +102,31 @@ class TestHetznerClient:
         assert error.message == "invalid input in field 'broken_field': is too long"
         assert error.details["fields"][0]["name"] == "broken_field"
 
+    def test_request_fails_trace_id(self, client, response):
+        response.headers["X-Correlation-Id"] = "67ed842dc8bc8673"
+        response.status_code = 409
+        response._content = json.dumps(
+            {
+                "error": {
+                    "code": "conflict",
+                    "message": "some conflict",
+                    "details": None,
+                }
+            }
+        ).encode("utf-8")
+
+        client._requests_session.request.return_value = response
+        with pytest.raises(APIException) as exception_info:
+            client.request(
+                "POST", "http://url.com", params={"argument": "value"}, timeout=2
+            )
+        error = exception_info.value
+        assert error.code == "conflict"
+        assert error.message == "some conflict"
+        assert error.details is None
+        assert error.trace_id == "67ed842dc8bc8673"
+        assert str(error) == "some conflict (conflict, 67ed842dc8bc8673)"
+
     def test_request_500(self, client, fail_response):
         fail_response.status_code = 500
         fail_response.reason = "Internal Server Error"
@@ -153,7 +178,7 @@ class TestHetznerClient:
         assert error.code == 500
         assert error.message == "Internal Server Error"
         assert error.details["content"] == ""
-        assert str(error) == "Internal Server Error"
+        assert str(error) == "Internal Server Error (500)"
 
     def test_request_limit(self, client, rate_limit_response):
         client._retry_wait_time = 0
