@@ -215,28 +215,29 @@ class Client:
             **kwargs,
         )
 
-        content = {}
+        trace_id = response.headers.get("X-Correlation-Id")
+        payload = {}
         try:
             if len(response.content) > 0:
-                content = response.json()
+                payload = response.json()
         except (TypeError, ValueError) as exc:
             raise APIException(
                 code=response.status_code,
                 message=response.reason,
                 details={"content": response.content},
-                trace_id=response.headers.get("X-Correlation-Id"),
+                trace_id=trace_id,
             ) from exc
 
         if not response.ok:
-            if not content or "error" not in content:
+            if not payload or "error" not in payload:
                 raise APIException(
                     code=response.status_code,
                     message=response.reason,
                     details={"content": response.content},
-                    trace_id=response.headers.get("X-Correlation-Id"),
+                    trace_id=trace_id,
                 )
 
-            error: dict = content["error"]
+            error: dict = payload["error"]
 
             if error["code"] == "rate_limit_exceeded" and _tries < 5:
                 time.sleep(_tries * self._retry_wait_time)
@@ -247,7 +248,7 @@ class Client:
                 code=error["code"],
                 message=error["message"],
                 details=error["details"],
-                trace_id=response.headers.get("X-Correlation-Id"),
+                trace_id=trace_id,
             )
 
-        return content
+        return payload
