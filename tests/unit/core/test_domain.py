@@ -139,6 +139,44 @@ class TestBaseDomain:
         [
             (
                 SomeOtherDomain(id=1, name="name1"),
+                {"id": 1, "name": "name1", "child": None},
+            ),
+            (
+                SomeOtherDomain(
+                    id=2, name="name2", child=SomeOtherDomain(id=3, name="name3")
+                ),
+                {
+                    "id": 2,
+                    "name": "name2",
+                    "child": {"id": 3, "name": "name3", "child": None},
+                },
+            ),
+            (
+                SomeOtherDomain(
+                    id=2, name="name2", child=[SomeOtherDomain(id=3, name="name3")]
+                ),
+                {
+                    "id": 2,
+                    "name": "name2",
+                    "child": [{"id": 3, "name": "name3", "child": None}],
+                },
+            ),
+        ],
+    )
+    def test_to_dict_ok(self, data, expected):
+        assert data.to_dict() == expected
+
+    def test_from_dict_and_to_dict_ok(self, server_dict: dict):
+        from hcloud.servers import Server
+
+        server = Server.from_dict(server_dict)
+        assert server.to_dict() == server_dict
+
+    @pytest.mark.parametrize(
+        "data,expected",
+        [
+            (
+                SomeOtherDomain(id=1, name="name1"),
                 "SomeOtherDomain(id=1, name='name1', child=None)",
             ),
             (
