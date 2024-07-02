@@ -160,7 +160,6 @@ class TestPrimaryIPsClient:
                 "type": "ipv6",
                 "datacenter": "datacenter",
                 "auto_delete": False,
-                "assignee_type": "server",
             },
         )
 
@@ -179,20 +178,18 @@ class TestPrimaryIPsClient:
         response = primary_ips_client.create(
             type="ipv6",
             name="my-ip",
-            assignee_id=1,
+            assignee_id=17,
             assignee_type="server",
-            datacenter=Datacenter(name="datacenter"),
         )
         primary_ips_client._client.request.assert_called_with(
             url="/primary_ips",
             method="POST",
             json={
-                "type": "ipv6",
-                "assignee_id": 1,
-                "assignee_type": "server",
                 "name": "my-ip",
+                "type": "ipv6",
+                "assignee_id": 17,
+                "assignee_type": "server",
                 "auto_delete": False,
-                "datacenter": "datacenter",
             },
         )
         bound_primary_ip = response.primary_ip

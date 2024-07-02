@@ -189,9 +189,8 @@ class PrimaryIPsClient(ClientEntityBase):
     def create(
         self,
         type: str,
-        # TODO: Make the datacenter argument optional
-        datacenter: Datacenter | BoundDatacenter | None,
         name: str,
+        datacenter: Datacenter | BoundDatacenter | None = None,
         assignee_type: str | None = "server",
         assignee_id: int | None = None,
         auto_delete: bool | None = False,
@@ -199,27 +198,25 @@ class PrimaryIPsClient(ClientEntityBase):
     ) -> CreatePrimaryIPResponse:
         """Creates a new Primary IP assigned to a server.
 
-        :param type: str
-               Primary IP type Choices: ipv4, ipv6
-        :param assignee_type: str
-        :param assignee_id: int (optional)
-        :param datacenter: Datacenter
-        :param labels: Dict[str, str] (optional)
-               User-defined labels (key-value pairs)
+        :param type: str Primary IP type Choices: ipv4, ipv6
         :param name: str
+        :param datacenter: Datacenter (optional)
+        :param assignee_type: str (optional)
+        :param assignee_id: int (optional)
         :param auto_delete: bool (optional)
+        :param labels: Dict[str, str] (optional) User-defined labels (key-value pairs)
         :return: :class:`CreatePrimaryIPResponse <hcloud.primary_ips.domain.CreatePrimaryIPResponse>`
         """
 
         data: dict[str, Any] = {
-            "type": type,
-            "assignee_type": assignee_type,
-            "auto_delete": auto_delete,
             "name": name,
+            "type": type,
+            "auto_delete": auto_delete,
         }
         if datacenter is not None:
             data["datacenter"] = datacenter.id_or_name
         if assignee_id is not None:
+            data["assignee_type"] = assignee_type
             data["assignee_id"] = assignee_id
         if labels is not None:
             data["labels"] = labels
