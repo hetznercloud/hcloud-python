@@ -20,7 +20,7 @@ Before upgrading, make sure to resolve any deprecation warnings.
 +from hcloud import Client
 ```
 
-- [#398](https://github.com/hetznercloud/hcloud-python/pull/398): The [`Client.poll_interval`](#hcloud.Client) property is now private, make sure to configure it when creating the [`Client`](#hcloud.Client):
+- [#398](https://github.com/hetznercloud/hcloud-python/pull/398): The [`Client.poll_interval`](#hcloud.Client) property is now private, make sure to configure it while creating the [`Client`](#hcloud.Client):
 
 ```diff
 -client = Client(token=token)
