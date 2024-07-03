@@ -215,7 +215,7 @@ class Client:
             **kwargs,
         )
 
-        trace_id = response.headers.get("X-Correlation-Id")
+        correlation_id = response.headers.get("X-Correlation-Id")
         payload = {}
         try:
             if len(response.content) > 0:
@@ -225,7 +225,7 @@ class Client:
                 code=response.status_code,
                 message=response.reason,
                 details={"content": response.content},
-                trace_id=trace_id,
+                correlation_id=correlation_id,
             ) from exc
 
         if not response.ok:
@@ -234,7 +234,7 @@ class Client:
                     code=response.status_code,
                     message=response.reason,
                     details={"content": response.content},
-                    trace_id=trace_id,
+                    correlation_id=correlation_id,
                 )
 
             error: dict = payload["error"]
@@ -248,7 +248,7 @@ class Client:
                 code=error["code"],
                 message=error["message"],
                 details=error["details"],
-                trace_id=trace_id,
+                correlation_id=correlation_id,
             )
 
         return payload
