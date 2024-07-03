@@ -110,7 +110,6 @@ class TestHetznerClient:
                 "error": {
                     "code": "conflict",
                     "message": "some conflict",
-                    "details": None,
                 }
             }
         ).encode("utf-8")
