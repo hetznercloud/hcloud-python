@@ -45,9 +45,9 @@ for server in servers:
     print(f"{server.id=} {server.name=} {server.status=}")
 ```
 
-For more details, please see the [API reference](https://hcloud-python.readthedocs.io/en/stable/api.html).
-
-You can find some more examples under the [`examples/`](https://github.com/hetznercloud/hcloud-python/tree/main/examples) directory.
+- To upgrade the package, please read the [instructions available in the documentation](https://hcloud-python.readthedocs.io/en/stable/upgrading.html).
+- For more details on the API, please see the [API reference](https://hcloud-python.readthedocs.io/en/stable/api.html).
+- You can find some more examples under the [`examples/`](https://github.com/hetznercloud/hcloud-python/tree/main/examples) directory.
 
 ## Supported Python versions
 
