@@ -16,11 +16,11 @@ class APIException(HCloudException):
         message: str,
         details: Any,
         *,
-        trace_id: str | None = None,
+        correlation_id: str | None = None,
     ):
         extras = [str(code)]
-        if trace_id is not None:
-            extras.append(trace_id)
+        if correlation_id is not None:
+            extras.append(correlation_id)
 
         error = f"{message} ({', '.join(extras)})"
 
@@ -28,4 +28,4 @@ class APIException(HCloudException):
         self.code = code
         self.message = message
         self.details = details
-        self.trace_id = trace_id
+        self.correlation_id = correlation_id

@@ -102,7 +102,7 @@ class TestHetznerClient:
         assert error.message == "invalid input in field 'broken_field': is too long"
         assert error.details["fields"][0]["name"] == "broken_field"
 
-    def test_request_fails_trace_id(self, client, response):
+    def test_request_fails_correlation_id(self, client, response):
         response.headers["X-Correlation-Id"] = "67ed842dc8bc8673"
         response.status_code = 409
         response._content = json.dumps(
@@ -124,7 +124,7 @@ class TestHetznerClient:
         assert error.code == "conflict"
         assert error.message == "some conflict"
         assert error.details is None
-        assert error.trace_id == "67ed842dc8bc8673"
+        assert error.correlation_id == "67ed842dc8bc8673"
         assert str(error) == "some conflict (conflict, 67ed842dc8bc8673)"
 
     def test_request_500(self, client, fail_response):
