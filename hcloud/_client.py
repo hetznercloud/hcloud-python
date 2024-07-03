@@ -247,7 +247,7 @@ class Client:
             raise APIException(
                 code=error["code"],
                 message=error["message"],
-                details=error["details"],
+                details=error.get("details"),
                 correlation_id=correlation_id,
             )
 
