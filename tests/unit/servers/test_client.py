@@ -1085,11 +1085,6 @@ class TestServersClient:
         assert response.action.progress == 0
         assert response.root_password is None or isinstance(response.root_password, str)
 
-    def test_rebuild_return_response_deprecation(self, servers_client, generic_action):
-        servers_client._client.request.return_value = generic_action
-        with pytest.deprecated_call():
-            servers_client.rebuild(Server(id=1), Image(name="ubuntu-20.04"))
-
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )

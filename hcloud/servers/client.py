@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import warnings
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, NamedTuple
 
@@ -1006,9 +1005,9 @@ class ServersClient(ClientEntityBase):
         self,
         server: Server | BoundServer,
         image: Image | BoundImage,
-        *,
-        return_response: bool = False,
-    ) -> RebuildResponse | BoundAction:
+        # pylint: disable=unused-argument
+        **kwargs: Any,
+    ) -> RebuildResponse:
         """Rebuilds a server overwriting its disk with the content of an image, thereby destroying all data on the target server.
 
         :param server: Server to rebuild
@@ -1022,21 +1021,10 @@ class ServersClient(ClientEntityBase):
             json=data,
         )
 
-        rebuild_response = RebuildResponse(
+        return RebuildResponse(
             action=BoundAction(self._client.actions, response["action"]),
             root_password=response.get("root_password"),
         )
-
-        if not return_response:
-            warnings.warn(
-                "Returning only the 'action' is deprecated, please set the "
-                "'return_response' keyword argument to 'True' to return the full "
-                "rebuild response and update your code accordingly.",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-            return rebuild_response.action
-        return rebuild_response
 
     def enable_backup(self, server: Server | BoundServer) -> BoundAction:
         """Enables and configures the automatic daily backup option for the server. Enabling automatic backups will increase the price of the server by 20%.
