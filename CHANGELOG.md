@@ -1,5 +1,58 @@
 # Changelog
 
+## [2.0.0](https://github.com/hetznercloud/hcloud-python/compare/v1.35.0...v2.0.0) (2024-07-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* return full rebuild response in `Client.servers.rebuild` ([#406](https://github.com/hetznercloud/hcloud-python/issues/406))
+* make `datacenter` argument optional when creating a primary ip ([#363](https://github.com/hetznercloud/hcloud-python/issues/363))
+* remove deprecated `include_wildcard_architecture` argument in `IsosClient.get_list` and `IsosClient.get_all` ([#402](https://github.com/hetznercloud/hcloud-python/issues/402))
+* make `Client.request` `tries` a private argument ([#399](https://github.com/hetznercloud/hcloud-python/issues/399))
+* make `Client.poll_interval` a private property ([#398](https://github.com/hetznercloud/hcloud-python/issues/398))
+* return empty dict on empty responses in `Client.request` ([#400](https://github.com/hetznercloud/hcloud-python/issues/400))
+* remove deprecated `hcloud.hcloud` module ([#401](https://github.com/hetznercloud/hcloud-python/issues/401))
+* move `hcloud.__version__.VERSION` to `hcloud.__version__` ([#397](https://github.com/hetznercloud/hcloud-python/issues/397))
+
+### Features
+
+* add `trace_id` to API exceptions ([#404](https://github.com/hetznercloud/hcloud-python/issues/404)) ([8375261](https://github.com/hetznercloud/hcloud-python/commit/8375261da3b84d6fece97263c7bea40ad2a6cfcf))
+* allow using a custom poll_interval function ([#403](https://github.com/hetznercloud/hcloud-python/issues/403)) ([93eb56b](https://github.com/hetznercloud/hcloud-python/commit/93eb56ba4d1a69e175398bca42e723a7e8e46371))
+* make `Client.poll_interval` a private property ([#398](https://github.com/hetznercloud/hcloud-python/issues/398)) ([d5f24db](https://github.com/hetznercloud/hcloud-python/commit/d5f24db2816a0d00b8c7936e2a0290d2c4bb1e92))
+* make `Client.request` `tries` a private argument ([#399](https://github.com/hetznercloud/hcloud-python/issues/399)) ([428ea7e](https://github.com/hetznercloud/hcloud-python/commit/428ea7e3be03a16114f875146971db59aabaac2c))
+* move `hcloud.__version__.VERSION` to `hcloud.__version__` ([#397](https://github.com/hetznercloud/hcloud-python/issues/397)) ([4e3f638](https://github.com/hetznercloud/hcloud-python/commit/4e3f638862c9d260df98182c3f7858282049c26c)), closes [#234](https://github.com/hetznercloud/hcloud-python/issues/234)
+* remove deprecated `hcloud.hcloud` module ([#401](https://github.com/hetznercloud/hcloud-python/issues/401)) ([db37e63](https://github.com/hetznercloud/hcloud-python/commit/db37e633ebbf73354d3b2f4858cf3eebf173bfbc))
+* remove deprecated `include_wildcard_architecture` argument in `IsosClient.get_list` and `IsosClient.get_all` ([#402](https://github.com/hetznercloud/hcloud-python/issues/402)) ([6b977e2](https://github.com/hetznercloud/hcloud-python/commit/6b977e2da5cec30110c32a91d572003e5b5c400a))
+* return empty dict on empty responses in `Client.request` ([#400](https://github.com/hetznercloud/hcloud-python/issues/400)) ([9f46adb](https://github.com/hetznercloud/hcloud-python/commit/9f46adb946eb2770ee4f3a4e87cfc1c8b9b33c28))
+* return full rebuild response in `Client.servers.rebuild` ([#406](https://github.com/hetznercloud/hcloud-python/issues/406)) ([1970d84](https://github.com/hetznercloud/hcloud-python/commit/1970d84bec2106c8c53d8e611b74d41eb5286e9b))
+
+
+### Bug Fixes
+
+* make `datacenter` argument optional when creating a primary ip ([#363](https://github.com/hetznercloud/hcloud-python/issues/363)) ([ebef774](https://github.com/hetznercloud/hcloud-python/commit/ebef77464c4c3b0ce33460cad2747e89d35047c7))
+
+
+### Dependencies
+
+* update dependency coverage to &gt;=7.5,&lt;7.6 ([#386](https://github.com/hetznercloud/hcloud-python/issues/386)) ([5660691](https://github.com/hetznercloud/hcloud-python/commit/5660691ebd6122fa7ebec56a24bce9fce0577573))
+* update dependency mypy to &gt;=1.10,&lt;1.11 ([#387](https://github.com/hetznercloud/hcloud-python/issues/387)) ([35c933b](https://github.com/hetznercloud/hcloud-python/commit/35c933bd2108d42e74b74b01d6db74e159ec9142))
+* update dependency myst-parser to v3 ([#385](https://github.com/hetznercloud/hcloud-python/issues/385)) ([9f18270](https://github.com/hetznercloud/hcloud-python/commit/9f182704898cb96f1ea162511605906f87cff50c))
+* update dependency pylint to &gt;=3,&lt;3.3 ([#391](https://github.com/hetznercloud/hcloud-python/issues/391)) ([4a6f005](https://github.com/hetznercloud/hcloud-python/commit/4a6f005cb0488291ae91390a612bab6afc6d80b6))
+* update dependency pytest to &gt;=8,&lt;8.3 ([#390](https://github.com/hetznercloud/hcloud-python/issues/390)) ([584a36b](https://github.com/hetznercloud/hcloud-python/commit/584a36b658670297ffffa9afa70835d29d27fbca))
+* update dependency sphinx to &gt;=7.3.4,&lt;7.4 ([#383](https://github.com/hetznercloud/hcloud-python/issues/383)) ([69c2e16](https://github.com/hetznercloud/hcloud-python/commit/69c2e16073df9ef8520e3a635b3866403eba030e))
+* update pre-commit hook asottile/pyupgrade to v3.16.0 ([0ce5fbc](https://github.com/hetznercloud/hcloud-python/commit/0ce5fbccba4a4255e08a37abf1f21ab9cc85f287))
+* update pre-commit hook pre-commit/pre-commit-hooks to v4.6.0 ([5ef25ab](https://github.com/hetznercloud/hcloud-python/commit/5ef25ab3966d731c4c36ea3e785c2b5f20c69489))
+* update pre-commit hook psf/black-pre-commit-mirror to v24.4.0 ([0941fbf](https://github.com/hetznercloud/hcloud-python/commit/0941fbfab20ca8a59e768c4a5e6fc101393c97f0))
+* update pre-commit hook psf/black-pre-commit-mirror to v24.4.1 ([fec08c5](https://github.com/hetznercloud/hcloud-python/commit/fec08c5323359d0a4f0771123f483ff975aa68b0))
+* update pre-commit hook psf/black-pre-commit-mirror to v24.4.2 ([#389](https://github.com/hetznercloud/hcloud-python/issues/389)) ([2b2e21f](https://github.com/hetznercloud/hcloud-python/commit/2b2e21f61366b5ec0f2ff5558f652d2bfed9d138))
+* update pre-commit hook pycqa/flake8 to v7.1.0 ([3bc651d](https://github.com/hetznercloud/hcloud-python/commit/3bc651d50d85aa92ba76dbfeef1d604cabaa4628))
+
+
+### Documentation
+
+* add v2 upgrade notes ([#405](https://github.com/hetznercloud/hcloud-python/issues/405)) ([c77f771](https://github.com/hetznercloud/hcloud-python/commit/c77f771e2bed176acd6aa5011be006c800181809))
+* cx11 is name, not an id ([#381](https://github.com/hetznercloud/hcloud-python/issues/381)) ([b745d40](https://github.com/hetznercloud/hcloud-python/commit/b745d4049f720b93d840a9204a99d246ecb499e5))
+
 ## [1.35.0](https://github.com/hetznercloud/hcloud-python/compare/v1.34.0...v1.35.0) (2024-04-02)
 
 
