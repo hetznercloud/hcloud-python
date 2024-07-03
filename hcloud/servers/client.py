@@ -332,15 +332,14 @@ class BoundServer(BoundModelBase, Server):
     def rebuild(
         self,
         image: Image | BoundImage,
-        *,
-        return_response: bool = False,
-    ) -> RebuildResponse | BoundAction:
+        # pylint: disable=unused-argument
+        **kwargs: Any,
+    ) -> RebuildResponse:
         """Rebuilds a server overwriting its disk with the content of an image, thereby destroying all data on the target server.
 
         :param image: Image to use for the rebuilt server
-        :param return_response: Whether to return the full response or only the action.
         """
-        return self._client.rebuild(self, image, return_response=return_response)
+        return self._client.rebuild(self, image)
 
     def change_type(
         self,
@@ -1012,7 +1011,6 @@ class ServersClient(ClientEntityBase):
 
         :param server: Server to rebuild
         :param image: Image to use for the rebuilt server
-        :param return_response: Whether to return the full response or only the action.
         """
         data: dict[str, Any] = {"image": image.id_or_name}
         response = self._client.request(
