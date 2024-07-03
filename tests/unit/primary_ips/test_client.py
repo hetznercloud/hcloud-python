@@ -158,6 +158,7 @@ class TestPrimaryIPsClient:
             json={
                 "name": "my-resource",
                 "type": "ipv6",
+                "assignee_type": "server",
                 "datacenter": "datacenter",
                 "auto_delete": False,
             },

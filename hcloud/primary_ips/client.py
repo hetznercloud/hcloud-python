@@ -211,12 +211,12 @@ class PrimaryIPsClient(ClientEntityBase):
         data: dict[str, Any] = {
             "name": name,
             "type": type,
+            "assignee_type": assignee_type,
             "auto_delete": auto_delete,
         }
         if datacenter is not None:
             data["datacenter"] = datacenter.id_or_name
         if assignee_id is not None:
-            data["assignee_type"] = assignee_type
             data["assignee_id"] = assignee_id
         if labels is not None:
             data["labels"] = labels
