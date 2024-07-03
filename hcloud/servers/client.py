@@ -334,7 +334,7 @@ class BoundServer(BoundModelBase, Server):
         image: Image | BoundImage,
         # pylint: disable=unused-argument
         **kwargs: Any,
-    ) -> RebuildResponse | BoundAction:
+    ) -> RebuildResponse:
         """Rebuilds a server overwriting its disk with the content of an image, thereby destroying all data on the target server.
 
         :param image: Image to use for the rebuilt server
