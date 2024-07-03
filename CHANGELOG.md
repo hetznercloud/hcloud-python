@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.0.1](https://github.com/hetznercloud/hcloud-python/compare/v2.0.0...v2.0.1) (2024-07-03)
+
+
+### Bug Fixes
+
+* `assignee_type` is required when creating a primary ip ([#409](https://github.com/hetznercloud/hcloud-python/issues/409)) ([bce5e94](https://github.com/hetznercloud/hcloud-python/commit/bce5e940e27f2c6d9d50016b5828c79aadfc4401))
+* clean unused arguments in the `Client.servers.rebuild` method ([#407](https://github.com/hetznercloud/hcloud-python/issues/407)) ([6d33c3c](https://github.com/hetznercloud/hcloud-python/commit/6d33c3cff5443686c7ed37eb8635e0461bb3b928))
+* details are optional in API errors ([#411](https://github.com/hetznercloud/hcloud-python/issues/411)) ([f1c6594](https://github.com/hetznercloud/hcloud-python/commit/f1c6594dee7088872f2375359ee259e4e93b31d2))
+* rename `trace_id` variable to `correlation_id`  ([#408](https://github.com/hetznercloud/hcloud-python/issues/408)) ([66a0f54](https://github.com/hetznercloud/hcloud-python/commit/66a0f546998193f9078f70a4a2fb1fc11937c086))
+
 ## [2.0.0](https://github.com/hetznercloud/hcloud-python/compare/v1.35.0...v2.0.0) (2024-07-03)
 
 
