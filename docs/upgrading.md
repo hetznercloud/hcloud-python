@@ -67,3 +67,12 @@ Before upgrading, make sure to resolve any deprecation warnings.
 +   datacenter=Datacenter(name="fsn1-dc14"),
  )
 ```
+
+- [#406](https://github.com/hetznercloud/hcloud-python/pull/406): In the [`Client.servers.rebuild`](#hcloud.servers.client.ServersClient.rebuild) method, the single action return value was deprecated and is now removed. The method now returns a full response wrapping the action and an optional root password:
+
+```diff
+-action = client.servers.rebuild(server, image)
++resp = client.servers.rebuild(server, image)
++action = resp.action
++root_password = resp.root_password
+```
