@@ -3,6 +3,7 @@ include:
     file:
       - default.yml
       - pre-commit.yml
+      - workflows/feature-branches.yml
 
 stages:
   - test
