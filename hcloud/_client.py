@@ -81,8 +81,10 @@ class Client:
     """Base Client for accessing the Hetzner Cloud API"""
 
     _version = __version__
-    _retry_wait_time = 0.5
     __user_agent_prefix = "hcloud-python"
+
+    _retry_interval = 0.5
+    _retry_max_retries = 5
 
     def __init__(
         self,
@@ -236,8 +238,6 @@ class Client:
         self,
         method: str,
         url: str,
-        *,
-        _tries: int = 1,
         **kwargs,
     ) -> dict:
         """Perform a request to the Hetzner Cloud API, wrapper around requests.request
@@ -247,50 +247,57 @@ class Client:
         :param timeout: Requests timeout in seconds
         :return: Response
         """
-        timeout = kwargs.pop("timeout", self._requests_timeout)
+        kwargs.setdefault("timeout", self._requests_timeout)
 
-        response = self._requests_session.request(
-            method=method,
-            url=self._api_endpoint + url,
-            headers=self._get_headers(),
-            timeout=timeout,
-            **kwargs,
-        )
+        url = self._api_endpoint + url
+        headers = self._get_headers()
 
-        correlation_id = response.headers.get("X-Correlation-Id")
-        payload = {}
-        try:
-            if len(response.content) > 0:
-                payload = response.json()
-        except (TypeError, ValueError) as exc:
-            raise APIException(
-                code=response.status_code,
-                message=response.reason,
-                details={"content": response.content},
-                correlation_id=correlation_id,
-            ) from exc
+        retries = 0
+        while True:
+            response = self._requests_session.request(
+                method=method,
+                url=url,
+                headers=headers,
+                **kwargs,
+            )
 
-        if not response.ok:
-            if not payload or "error" not in payload:
+            correlation_id = response.headers.get("X-Correlation-Id")
+            payload = {}
+            try:
+                if len(response.content) > 0:
+                    payload = response.json()
+            except (TypeError, ValueError) as exc:
                 raise APIException(
                     code=response.status_code,
                     message=response.reason,
                     details={"content": response.content},
                     correlation_id=correlation_id,
+                ) from exc
+
+            if not response.ok:
+                if not payload or "error" not in payload:
+                    raise APIException(
+                        code=response.status_code,
+                        message=response.reason,
+                        details={"content": response.content},
+                        correlation_id=correlation_id,
+                    )
+
+                error: dict = payload["error"]
+
+                if (
+                    error["code"] == "rate_limit_exceeded"
+                    and retries < self._retry_max_retries
+                ):
+                    time.sleep(retries * self._retry_interval)
+                    retries += 1
+                    continue
+
+                raise APIException(
+                    code=error["code"],
+                    message=error["message"],
+                    details=error.get("details"),
+                    correlation_id=correlation_id,
                 )
 
-            error: dict = payload["error"]
-
-            if error["code"] == "rate_limit_exceeded" and _tries < 5:
-                time.sleep(_tries * self._retry_wait_time)
-                _tries = _tries + 1
-                return self.request(method, url, _tries=_tries, **kwargs)
-
-            raise APIException(
-                code=error["code"],
-                message=error["message"],
-                details=error.get("details"),
-                correlation_id=correlation_id,
-            )
-
-        return payload
+            return payload
