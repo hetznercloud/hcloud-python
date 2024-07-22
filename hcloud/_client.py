@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+from random import uniform
 from typing import Protocol
 
 import requests
@@ -26,13 +27,54 @@ from .ssh_keys import SSHKeysClient
 from .volumes import VolumesClient
 
 
-class PollIntervalFunction(Protocol):
+class BackoffFunction(Protocol):
     def __call__(self, retries: int) -> float:
         """
         Return a interval in seconds to wait between each API call.
 
         :param retries: Number of calls already made.
         """
+
+
+def constant_backoff_function(interval: float) -> BackoffFunction:
+    """
+    Return a backoff function, implementing a constant backoff.
+
+    :param interval: Constant interval to return.
+    """
+
+    # pylint: disable=unused-argument
+    def func(retries: int) -> float:
+        return interval
+
+    return func
+
+
+def exponential_backoff_function(
+    *,
+    base: float,
+    multiplier: int,
+    cap: float,
+    jitter: bool = False,
+) -> BackoffFunction:
+    """
+    Return a backoff function, implementing a truncated exponential backoff with
+    optional full jitter.
+
+    :param base: Base for the exponential backoff algorithm.
+    :param multiplier: Multiplier for the exponential backoff algorithm.
+    :param cap: Value at which the interval is truncated.
+    :param jitter: Whether to add jitter.
+    """
+
+    def func(retries: int) -> float:
+        interval = base * multiplier**retries  # Exponential backoff
+        interval = min(cap, interval)  # Cap backoff
+        if jitter:
+            interval = uniform(base, interval)  # Add jitter
+        return interval
+
+    return func
 
 
 class Client:
@@ -48,7 +90,7 @@ class Client:
         api_endpoint: str = "https://api.hetzner.cloud/v1",
         application_name: str | None = None,
         application_version: str | None = None,
-        poll_interval: int | float | PollIntervalFunction = 1.0,
+        poll_interval: int | float | BackoffFunction = 1.0,
         poll_max_retries: int = 120,
         timeout: float | tuple[float, float] | None = None,
     ):
@@ -73,7 +115,7 @@ class Client:
         self._requests_timeout = timeout
 
         if isinstance(poll_interval, (int, float)):
-            self._poll_interval_func = lambda _: poll_interval  # Constant poll interval
+            self._poll_interval_func = constant_backoff_function(poll_interval)
         else:
             self._poll_interval_func = poll_interval
         self._poll_max_retries = poll_max_retries

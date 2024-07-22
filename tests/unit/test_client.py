@@ -6,7 +6,12 @@ from unittest.mock import MagicMock
 import pytest
 import requests
 
-from hcloud import APIException, Client
+from hcloud import (
+    APIException,
+    Client,
+    constant_backoff_function,
+    exponential_backoff_function,
+)
 
 
 class TestHetznerClient:
@@ -202,3 +207,24 @@ class TestHetznerClient:
             "POST", "http://url.com", params={"argument": "value"}, timeout=2
         )
         assert client._requests_session.request.call_count == 2
+
+
+def test_constant_backoff_function():
+    backoff = constant_backoff_function(interval=1.0)
+    max_retries = 5
+
+    for i in range(max_retries):
+        assert backoff(i) == 1.0
+
+
+def test_exponential_backoff_function():
+    backoff = exponential_backoff_function(
+        base=1.0,
+        multiplier=2,
+        cap=60.0,
+    )
+    max_retries = 5
+
+    results = [backoff(i) for i in range(max_retries)]
+    assert sum(results) == 31.0
+    assert results == [1.0, 2.0, 4.0, 8.0, 16.0]
