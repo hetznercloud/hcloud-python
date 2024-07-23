@@ -35,7 +35,7 @@ class Network(BaseDomain, DomainIdentityMixin):
            User-defined labels (key-value pairs)
     """
 
-    __slots__ = (
+    __fields__ = (
         "id",
         "name",
         "ip_range",
@@ -47,6 +47,7 @@ class Network(BaseDomain, DomainIdentityMixin):
         "labels",
         "created",
     )
+    __slots__ = __fields__
 
     def __init__(
         self,
@@ -94,7 +95,9 @@ class NetworkSubnet(BaseDomain):
     """Subnet Type cloud"""
     TYPE_VSWITCH = "vswitch"
     """Subnet Type vSwitch"""
-    __slots__ = ("type", "ip_range", "network_zone", "gateway", "vswitch_id")
+
+    __fields__ = ("type", "ip_range", "network_zone", "gateway", "vswitch_id")
+    __slots__ = __fields__
 
     def __init__(
         self,
@@ -120,7 +123,8 @@ class NetworkRoute(BaseDomain):
            Gateway for the route.
     """
 
-    __slots__ = ("destination", "gateway")
+    __fields__ = ("destination", "gateway")
+    __slots__ = __fields__
 
     def __init__(self, destination: str, gateway: str):
         self.destination = destination
@@ -136,7 +140,8 @@ class CreateNetworkResponse(BaseDomain):
            The Action which shows the progress of the network Creation
     """
 
-    __slots__ = ("network", "action")
+    __fields__ = ("network", "action")
+    __slots__ = __fields__
 
     def __init__(
         self,

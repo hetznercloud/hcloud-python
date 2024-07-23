@@ -17,10 +17,11 @@ class DeprecationInfo(BaseDomain):
            new servers with this image after the mentioned date.
     """
 
-    __slots__ = (
+    __fields__ = (
         "announced",
         "unavailable_after",
     )
+    __slots__ = __fields__
 
     def __init__(
         self,

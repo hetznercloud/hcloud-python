@@ -24,7 +24,7 @@ class Location(BaseDomain, DomainIdentityMixin):
            Name of network zone this location resides in
     """
 
-    __slots__ = (
+    __fields__ = (
         "id",
         "name",
         "description",
@@ -34,6 +34,7 @@ class Location(BaseDomain, DomainIdentityMixin):
         "longitude",
         "network_zone",
     )
+    __slots__ = __fields__
 
     def __init__(
         self,

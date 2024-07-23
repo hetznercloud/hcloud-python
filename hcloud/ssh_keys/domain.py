@@ -22,7 +22,8 @@ class SSHKey(BaseDomain, DomainIdentityMixin):
            Point in time when the SSH Key was created
     """
 
-    __slots__ = ("id", "name", "fingerprint", "public_key", "labels", "created")
+    __fields__ = ("id", "name", "fingerprint", "public_key", "labels", "created")
+    __slots__ = __fields__
 
     def __init__(
         self,

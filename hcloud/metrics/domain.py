@@ -26,12 +26,13 @@ class Metrics(BaseDomain):
     step: float
     time_series: TimeSeries
 
-    __slots__ = (
+    __fields__ = (
         "start",
         "end",
         "step",
         "time_series",
     )
+    __slots__ = __fields__
 
     def __init__(
         self,

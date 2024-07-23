@@ -27,7 +27,7 @@ class Iso(BaseDomain, DomainIdentityMixin):
         deprecated. If it has a value, it is considered deprecated.
     """
 
-    __slots__ = (
+    __fields__ = (
         "id",
         "name",
         "type",
@@ -35,6 +35,7 @@ class Iso(BaseDomain, DomainIdentityMixin):
         "description",
         "deprecation",
     )
+    __slots__ = __fields__
 
     def __init__(
         self,
