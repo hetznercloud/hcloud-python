@@ -2,23 +2,22 @@ from __future__ import annotations
 
 
 class BaseDomain:
-    __slots__ = ()
+    __api_properties__: tuple
 
     @classmethod
     def from_dict(cls, data: dict):  # type: ignore[no-untyped-def]
         """
         Build the domain object from the data dict.
         """
-        supported_data = {k: v for k, v in data.items() if k in cls.__slots__}
+        supported_data = {k: v for k, v in data.items() if k in cls.__api_properties__}
         return cls(**supported_data)
 
     def __repr__(self) -> str:
-        kwargs = [f"{key}={getattr(self, key)!r}" for key in self.__slots__]  # type: ignore[var-annotated]
+        kwargs = [f"{key}={getattr(self, key)!r}" for key in self.__api_properties__]  # type: ignore[var-annotated]
         return f"{self.__class__.__qualname__}({', '.join(kwargs)})"
 
 
 class DomainIdentityMixin:
-    __slots__ = ()
 
     id: int | None
     name: str | None
@@ -54,7 +53,7 @@ class DomainIdentityMixin:
 
 
 class Pagination(BaseDomain):
-    __slots__ = (
+    __api_properties__ = (
         "page",
         "per_page",
         "previous_page",
@@ -62,6 +61,7 @@ class Pagination(BaseDomain):
         "last_page",
         "total_entries",
     )
+    __slots__ = __api_properties__
 
     def __init__(
         self,
@@ -81,7 +81,8 @@ class Pagination(BaseDomain):
 
 
 class Meta(BaseDomain):
-    __slots__ = ("pagination",)
+    __api_properties__ = ("pagination",)
+    __slots__ = __api_properties__
 
     def __init__(self, pagination: Pagination | None = None):
         self.pagination = pagination
