@@ -185,7 +185,7 @@ class TestHetznerClient:
         assert str(error) == "Internal Server Error (500)"
 
     def test_request_limit(self, client, rate_limit_response):
-        client._retry_interval = 0
+        client._retry_interval = constant_backoff_function(0.0)
         client._requests_session.request.return_value = rate_limit_response
         with pytest.raises(APIException) as exception_info:
             client.request(
@@ -197,7 +197,7 @@ class TestHetznerClient:
         assert error.message == "limit of 10 requests per hour reached"
 
     def test_request_limit_then_success(self, client, rate_limit_response):
-        client._retry_interval = 0
+        client._retry_interval = constant_backoff_function(0.0)
         response = requests.Response()
         response.status_code = 200
         response._content = json.dumps({"result": "data"}).encode("utf-8")
