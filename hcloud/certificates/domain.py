@@ -31,7 +31,7 @@ class Certificate(BaseDomain, DomainIdentityMixin):
     :param status: ManagedCertificateStatus Current status of a type managed Certificate, always none for type uploaded Certificates
     """
 
-    __fields__ = (
+    __api_properties__ = (
         "id",
         "name",
         "certificate",
@@ -44,7 +44,7 @@ class Certificate(BaseDomain, DomainIdentityMixin):
         "type",
         "status",
     )
-    __slots__ = __fields__
+    __slots__ = __api_properties__
 
     TYPE_UPLOADED = "uploaded"
     TYPE_MANAGED = "managed"
@@ -121,8 +121,8 @@ class CreateManagedCertificateResponse(BaseDomain):
            Shows the progress of the certificate creation
     """
 
-    __fields__ = ("certificate", "action")
-    __slots__ = __fields__
+    __api_properties__ = ("certificate", "action")
+    __slots__ = __api_properties__
 
     def __init__(
         self,

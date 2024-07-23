@@ -36,7 +36,7 @@ class ServerType(BaseDomain, DomainIdentityMixin):
            Free traffic per month in bytes
     """
 
-    __fields__ = (
+    __api_properties__ = (
         "id",
         "name",
         "description",
@@ -51,7 +51,7 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         "deprecation",
         "included_traffic",
     )
-    __slots__ = __fields__
+    __slots__ = __api_properties__
 
     def __init__(
         self,

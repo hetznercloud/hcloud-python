@@ -52,7 +52,7 @@ class LoadBalancer(BaseDomain, DomainIdentityMixin):
            Free Traffic for the current billing period in bytes
     """
 
-    __fields__ = (
+    __api_properties__ = (
         "id",
         "name",
         "public_net",
@@ -69,7 +69,7 @@ class LoadBalancer(BaseDomain, DomainIdentityMixin):
         "ingoing_traffic",
         "included_traffic",
     )
-    __slots__ = __fields__
+    __slots__ = __api_properties__
 
     # pylint: disable=too-many-locals
     def __init__(
@@ -423,8 +423,8 @@ class PublicNetwork(BaseDomain):
     :param enabled:  boolean
     """
 
-    __fields__ = ("ipv4", "ipv6", "enabled")
-    __slots__ = __fields__
+    __api_properties__ = ("ipv4", "ipv6", "enabled")
+    __slots__ = __api_properties__
 
     def __init__(
         self,
@@ -444,8 +444,8 @@ class IPv4Address(BaseDomain):
            The IPv4 Address
     """
 
-    __fields__ = ("ip", "dns_ptr")
-    __slots__ = __fields__
+    __api_properties__ = ("ip", "dns_ptr")
+    __slots__ = __api_properties__
 
     def __init__(
         self,
@@ -463,8 +463,8 @@ class IPv6Network(BaseDomain):
            The IPv6 Network as CIDR Notation
     """
 
-    __fields__ = ("ip", "dns_ptr")
-    __slots__ = __fields__
+    __api_properties__ = ("ip", "dns_ptr")
+    __slots__ = __api_properties__
 
     def __init__(
         self,
@@ -484,8 +484,8 @@ class PrivateNet(BaseDomain):
            The main IP Address of the LoadBalancer in the Network
     """
 
-    __fields__ = ("network", "ip")
-    __slots__ = __fields__
+    __api_properties__ = ("network", "ip")
+    __slots__ = __api_properties__
 
     def __init__(
         self,
@@ -505,8 +505,8 @@ class CreateLoadBalancerResponse(BaseDomain):
            Shows the progress of the Load Balancer creation
     """
 
-    __fields__ = ("load_balancer", "action")
-    __slots__ = __fields__
+    __api_properties__ = ("load_balancer", "action")
+    __slots__ = __api_properties__
 
     def __init__(
         self,
@@ -531,8 +531,8 @@ class GetMetricsResponse(BaseDomain):
     :param metrics: The Load Balancer metrics
     """
 
-    __fields__ = ("metrics",)
-    __slots__ = __fields__
+    __api_properties__ = ("metrics",)
+    __slots__ = __api_properties__
 
     def __init__(
         self,

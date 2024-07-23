@@ -28,8 +28,8 @@ class PlacementGroup(BaseDomain, DomainIdentityMixin):
            Point in time when the image was created
     """
 
-    __fields__ = ("id", "name", "labels", "servers", "type", "created")
-    __slots__ = __fields__
+    __api_properties__ = ("id", "name", "labels", "servers", "type", "created")
+    __slots__ = __api_properties__
 
     """Placement Group type spread
        spreads all servers in the group on different vhosts
@@ -62,8 +62,8 @@ class CreatePlacementGroupResponse(BaseDomain):
            The Action which shows the progress of the Placement Group Creation
     """
 
-    __fields__ = ("placement_group", "action")
-    __slots__ = __fields__
+    __api_properties__ = ("placement_group", "action")
+    __slots__ = __api_properties__
 
     def __init__(
         self,

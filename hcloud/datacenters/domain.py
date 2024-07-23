@@ -19,8 +19,8 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
     :param server_types: :class:`DatacenterServerTypes <hcloud.datacenters.domain.DatacenterServerTypes>`
     """
 
-    __fields__ = ("id", "name", "description", "location", "server_types")
-    __slots__ = __fields__
+    __api_properties__ = ("id", "name", "description", "location", "server_types")
+    __slots__ = __api_properties__
 
     def __init__(
         self,
@@ -48,8 +48,8 @@ class DatacenterServerTypes(BaseDomain):
            All available for migration (change type) server types for this datacenter
     """
 
-    __fields__ = ("available", "supported", "available_for_migration")
-    __slots__ = __fields__
+    __api_properties__ = ("available", "supported", "available_for_migration")
+    __slots__ = __api_properties__
 
     def __init__(
         self,

@@ -2,18 +2,18 @@ from __future__ import annotations
 
 
 class BaseDomain:
-    __fields__: tuple
+    __api_properties__: tuple
 
     @classmethod
     def from_dict(cls, data: dict):  # type: ignore[no-untyped-def]
         """
         Build the domain object from the data dict.
         """
-        supported_data = {k: v for k, v in data.items() if k in cls.__fields__}
+        supported_data = {k: v for k, v in data.items() if k in cls.__api_properties__}
         return cls(**supported_data)
 
     def __repr__(self) -> str:
-        kwargs = [f"{key}={getattr(self, key)!r}" for key in self.__fields__]  # type: ignore[var-annotated]
+        kwargs = [f"{key}={getattr(self, key)!r}" for key in self.__api_properties__]  # type: ignore[var-annotated]
         return f"{self.__class__.__qualname__}({', '.join(kwargs)})"
 
 
@@ -53,7 +53,7 @@ class DomainIdentityMixin:
 
 
 class Pagination(BaseDomain):
-    __fields__ = (
+    __api_properties__ = (
         "page",
         "per_page",
         "previous_page",
@@ -61,7 +61,7 @@ class Pagination(BaseDomain):
         "last_page",
         "total_entries",
     )
-    __slots__ = __fields__
+    __slots__ = __api_properties__
 
     def __init__(
         self,
@@ -81,8 +81,8 @@ class Pagination(BaseDomain):
 
 
 class Meta(BaseDomain):
-    __fields__ = ("pagination",)
-    __slots__ = __fields__
+    __api_properties__ = ("pagination",)
+    __slots__ = __api_properties__
 
     def __init__(self, pagination: Pagination | None = None):
         self.pagination = pagination

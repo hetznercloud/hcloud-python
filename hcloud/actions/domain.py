@@ -31,7 +31,7 @@ class Action(BaseDomain):
     STATUS_ERROR = "error"
     """Action Status error"""
 
-    __fields__ = (
+    __api_properties__ = (
         "id",
         "command",
         "status",
@@ -41,7 +41,7 @@ class Action(BaseDomain):
         "started",
         "finished",
     )
-    __slots__ = __fields__
+    __slots__ = __api_properties__
 
     def __init__(
         self,

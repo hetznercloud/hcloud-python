@@ -42,8 +42,8 @@ class TestMeta:
 
 
 class SomeDomain(BaseDomain, DomainIdentityMixin):
-    __fields__ = ("id", "name")
-    __slots__ = __fields__
+    __api_properties__ = ("id", "name")
+    __slots__ = __api_properties__
 
     def __init__(self, id=None, name=None):
         self.id = id
@@ -87,8 +87,8 @@ class TestDomainIdentityMixin:
 
 
 class ActionDomain(BaseDomain, DomainIdentityMixin):
-    __fields__ = ("id", "name", "started")
-    __slots__ = __fields__
+    __api_properties__ = ("id", "name", "started")
+    __slots__ = __api_properties__
 
     def __init__(self, id, name="name1", started=None):
         self.id = id
@@ -97,8 +97,8 @@ class ActionDomain(BaseDomain, DomainIdentityMixin):
 
 
 class SomeOtherDomain(BaseDomain):
-    __fields__ = ("id", "name", "child")
-    __slots__ = __fields__
+    __api_properties__ = ("id", "name", "child")
+    __slots__ = __api_properties__
 
     def __init__(self, id=None, name=None, child=None):
         self.id = id

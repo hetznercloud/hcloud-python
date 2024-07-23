@@ -13,8 +13,8 @@ class TestBoundModelBase:
     @pytest.fixture()
     def bound_model_class(self):
         class Model(BaseDomain):
-            __fields__ = ("id", "name", "description")
-            __slots__ = __fields__
+            __api_properties__ = ("id", "name", "description")
+            __slots__ = __api_properties__
 
             def __init__(self, id, name="", description=""):
                 self.id = id

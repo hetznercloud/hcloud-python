@@ -25,7 +25,7 @@ class LoadBalancerType(BaseDomain, DomainIdentityMixin):
 
     """
 
-    __fields__ = (
+    __api_properties__ = (
         "id",
         "name",
         "description",
@@ -35,7 +35,7 @@ class LoadBalancerType(BaseDomain, DomainIdentityMixin):
         "max_assigned_certificates",
         "prices",
     )
-    __slots__ = __fields__
+    __slots__ = __api_properties__
 
     def __init__(
         self,
