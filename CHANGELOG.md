@@ -2,6 +2,11 @@
 
 ## [2.1.0](https://github.com/hetznercloud/hcloud-python/compare/v2.0.1...v2.1.0) (2024-07-25)
 
+### API Changes for Traffic Prices and Server Type Included Traffic
+
+There will be a breaking change in the API regarding Traffic Prices and Server Type Included Traffic on 2024-08-05. This release marks the affected fields as `Deprecated`. Please check if this affects any of your code and switch to the replacement fields where necessary.
+
+You can learn more about this change in [our changelog](https://docs.hetzner.cloud/changelog#2024-07-25-cloud-api-returns-traffic-information-in-different-format).
 
 ### Features
 
