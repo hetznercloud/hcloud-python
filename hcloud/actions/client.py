@@ -28,14 +28,18 @@ class BoundAction(BoundModelBase, Action):
             max_retries = self._client._client._poll_max_retries
 
         retries = 0
-        while self.status == Action.STATUS_RUNNING:
+        while True:
+            self.reload()
+            if self.status != Action.STATUS_RUNNING:
+                break
+
+            retries += 1
             if retries < max_retries:
-                self.reload()
-                retries += 1
                 # pylint: disable=protected-access
                 time.sleep(self._client._client._poll_interval_func(retries))
-            else:
-                raise ActionTimeoutException(action=self)
+                continue
+
+            raise ActionTimeoutException(action=self)
 
         if self.status == Action.STATUS_ERROR:
             raise ActionFailedException(action=self)
