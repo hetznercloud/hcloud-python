@@ -99,12 +99,13 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         .. deprecated:: 2.1.0
             The 'included_traffic' property is deprecated and will be set to 'None' on 5 August 2024.
             Please refer to the 'prices' property instead.
-            See $LINK.
+
+            See https://docs.hetzner.cloud/changelog#2024-07-25-cloud-api-returns-traffic-information-in-different-format.
         """
         warnings.warn(
             "The 'included_traffic' property is deprecated and will be set to 'None' on 5 August 2024. "
             "Please refer to the 'prices' property instead. "
-            "See $LINK.",
+            "See https://docs.hetzner.cloud/changelog#2024-07-25-cloud-api-returns-traffic-information-in-different-format",
             DeprecationWarning,
             stacklevel=2,
         )
