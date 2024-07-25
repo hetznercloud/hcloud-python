@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import warnings
+
 from ..core import BaseDomain, DomainIdentityMixin
 from ..deprecation import DeprecationInfo
 
@@ -36,7 +38,7 @@ class ServerType(BaseDomain, DomainIdentityMixin):
            Free traffic per month in bytes
     """
 
-    __api_properties__ = (
+    __properties__ = (
         "id",
         "name",
         "description",
@@ -49,9 +51,15 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         "architecture",
         "deprecated",
         "deprecation",
+    )
+    __api_properties__ = (
+        *__properties__,
         "included_traffic",
     )
-    __slots__ = __api_properties__
+    __slots__ = (
+        *__properties__,
+        "_included_traffic",
+    )
 
     def __init__(
         self,
@@ -84,3 +92,25 @@ class ServerType(BaseDomain, DomainIdentityMixin):
             DeprecationInfo.from_dict(deprecation) if deprecation is not None else None
         )
         self.included_traffic = included_traffic
+
+    @property
+    def included_traffic(self) -> int | None:
+        """
+        .. deprecated:: 2.1.0
+            The 'included_traffic' property is deprecated and will be set to 'None' on 5 August 2024.
+            Please refer to the 'prices' property instead.
+
+            See https://docs.hetzner.cloud/changelog#2024-07-25-cloud-api-returns-traffic-information-in-different-format.
+        """
+        warnings.warn(
+            "The 'included_traffic' property is deprecated and will be set to 'None' on 5 August 2024. "
+            "Please refer to the 'prices' property instead. "
+            "See https://docs.hetzner.cloud/changelog#2024-07-25-cloud-api-returns-traffic-information-in-different-format",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self._included_traffic
+
+    @included_traffic.setter
+    def included_traffic(self, value: int | None) -> None:
+        self._included_traffic = value
