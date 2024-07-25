@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.0](https://github.com/hetznercloud/hcloud-python/compare/v2.0.1...v2.1.0) (2024-07-25)
+
+
+### Features
+
+* add exponential and constant backoff function ([#416](https://github.com/hetznercloud/hcloud-python/issues/416)) ([fe7ddf6](https://github.com/hetznercloud/hcloud-python/commit/fe7ddf6da78f8dbbc395eb98ff1200b8117f0cc0))
+* deprecate `ServerType` `included_traffic` property ([#423](https://github.com/hetznercloud/hcloud-python/issues/423)) ([3d56ac5](https://github.com/hetznercloud/hcloud-python/commit/3d56ac57d092bb30543fac9249c04393d0864c3b))
+* use exponential backoff when retrying requests ([#417](https://github.com/hetznercloud/hcloud-python/issues/417)) ([f306073](https://github.com/hetznercloud/hcloud-python/commit/f3060737d0e2991a0abf69e4953a3967ac8f84ed))
+
 ## [2.0.1](https://github.com/hetznercloud/hcloud-python/compare/v2.0.0...v2.0.1) (2024-07-03)
 
 
