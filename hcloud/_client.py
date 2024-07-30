@@ -83,8 +83,8 @@ class Client:
     _version = __version__
     __user_agent_prefix = "hcloud-python"
 
-    _retry_interval = exponential_backoff_function(
-        base=1.0, multiplier=2, cap=60.0, jitter=True
+    _retry_interval = staticmethod(
+        exponential_backoff_function(base=1.0, multiplier=2, cap=60.0, jitter=True)
     )
     _retry_max_retries = 5
 
@@ -291,7 +291,6 @@ class Client:
                     error["code"] == "rate_limit_exceeded"
                     and retries < self._retry_max_retries
                 ):
-                    # pylint: disable=too-many-function-args
                     time.sleep(self._retry_interval(retries))
                     retries += 1
                     continue
