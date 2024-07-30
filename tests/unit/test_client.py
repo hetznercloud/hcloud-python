@@ -109,12 +109,12 @@ class TestHetznerClient:
 
     def test_request_fails_correlation_id(self, client, response):
         response.headers["X-Correlation-Id"] = "67ed842dc8bc8673"
-        response.status_code = 409
+        response.status_code = 422
         response._content = json.dumps(
             {
                 "error": {
-                    "code": "conflict",
-                    "message": "some conflict",
+                    "code": "service_error",
+                    "message": "Something crashed",
                 }
             }
         ).encode("utf-8")
@@ -125,11 +125,11 @@ class TestHetznerClient:
                 "POST", "http://url.com", params={"argument": "value"}, timeout=2
             )
         error = exception_info.value
-        assert error.code == "conflict"
-        assert error.message == "some conflict"
+        assert error.code == "service_error"
+        assert error.message == "Something crashed"
         assert error.details is None
         assert error.correlation_id == "67ed842dc8bc8673"
-        assert str(error) == "some conflict (conflict, 67ed842dc8bc8673)"
+        assert str(error) == "Something crashed (service_error, 67ed842dc8bc8673)"
 
     def test_request_500(self, client, fail_response):
         fail_response.status_code = 500
@@ -207,6 +207,42 @@ class TestHetznerClient:
             "POST", "http://url.com", params={"argument": "value"}, timeout=2
         )
         assert client._requests_session.request.call_count == 2
+
+    @pytest.mark.parametrize(
+        ("exception", "expected"),
+        [
+            (
+                APIException(code="rate_limit_exceeded", message="Error", details=None),
+                True,
+            ),
+            (
+                APIException(code="conflict", message="Error", details=None),
+                True,
+            ),
+            (
+                APIException(code=409, message="Conflict", details=None),
+                False,
+            ),
+            (
+                APIException(code=429, message="Too Many Requests", details=None),
+                False,
+            ),
+            (
+                APIException(code=502, message="Bad Gateway", details=None),
+                True,
+            ),
+            (
+                APIException(code=503, message="Service Unavailable", details=None),
+                False,
+            ),
+            (
+                APIException(code=504, message="Gateway Timeout", details=None),
+                True,
+            ),
+        ],
+    )
+    def test_retry_policy(self, client, exception, expected):
+        assert client._retry_policy(exception) == expected
 
 
 def test_constant_backoff_function():
