@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.1.1](https://github.com/hetznercloud/hcloud-python/compare/v2.1.0...v2.1.1) (2024-07-30)
+
+
+### Bug Fixes
+
+* do not sleep before checking for the reloaded action status ([#426](https://github.com/hetznercloud/hcloud-python/issues/426)) ([3e0a85b](https://github.com/hetznercloud/hcloud-python/commit/3e0a85b487fc15941008e4d610243de3cb0396cb))
+* mark client retry backoff function as static ([#429](https://github.com/hetznercloud/hcloud-python/issues/429)) ([14ed130](https://github.com/hetznercloud/hcloud-python/commit/14ed130e989c68eacce2634c7983b200570de9c2))
+
+
+### Documentation
+
+* add api changes note in changelog ([#424](https://github.com/hetznercloud/hcloud-python/issues/424)) ([5cbe188](https://github.com/hetznercloud/hcloud-python/commit/5cbe1889a21c686588d91ab90306d345ba5b84dd))
+
 ## [2.1.0](https://github.com/hetznercloud/hcloud-python/compare/v2.0.1...v2.1.0) (2024-07-25)
 
 ### API Changes for Traffic Prices and Server Type Included Traffic
