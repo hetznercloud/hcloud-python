@@ -43,7 +43,7 @@ setup(
         "docs": [
             "sphinx>=7.4,<7.5",
             "sphinx-rtd-theme>=2,<2.1",
-            "myst-parser>=3,<3.1",
+            "myst-parser>=4,<4.1",
             "watchdog>=4,<4.1",
         ],
         "test": [
