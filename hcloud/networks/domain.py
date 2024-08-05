@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from typing import TYPE_CHECKING
 
 from dateutil.parser import isoparse
@@ -89,12 +90,31 @@ class NetworkSubnet(BaseDomain):
               ID of the vSwitch.
     """
 
-    TYPE_SERVER = "server"
-    """Subnet Type server, deprecated, use TYPE_CLOUD instead"""
+    @property
+    def TYPE_SERVER(self) -> str:  # pylint: disable=invalid-name
+        """
+        Used to connect cloud servers and load balancers.
+
+        .. deprecated:: 2.2.0
+            Use :attr:`NetworkSubnet.TYPE_CLOUD` instead.
+        """
+        warnings.warn(
+            "The 'NetworkSubnet.TYPE_SERVER' property is deprecated, please use the `NetworkSubnet.TYPE_CLOUD` property instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return "server"
+
     TYPE_CLOUD = "cloud"
-    """Subnet Type cloud"""
+    """
+    Used to connect cloud servers and load balancers.
+    """
     TYPE_VSWITCH = "vswitch"
-    """Subnet Type vSwitch"""
+    """
+    Used to connect cloud servers and load balancers with dedicated servers.
+
+    See https://docs.hetzner.com/cloud/networks/connect-dedi-vswitch/
+    """
 
     __api_properties__ = ("type", "ip_range", "network_zone", "gateway", "vswitch_id")
     __slots__ = __api_properties__
