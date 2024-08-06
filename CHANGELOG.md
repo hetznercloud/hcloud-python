@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.2.0](https://github.com/hetznercloud/hcloud-python/compare/v2.1.1...v2.2.0) (2024-08-06)
+
+
+### Features
+
+* retry requests when the api gateway errors ([#430](https://github.com/hetznercloud/hcloud-python/issues/430)) ([f63ac8b](https://github.com/hetznercloud/hcloud-python/commit/f63ac8b4d08d84804b5431295ba689275c9203f7))
+* retry requests when the api returns a conflict error ([#430](https://github.com/hetznercloud/hcloud-python/issues/430)) ([f63ac8b](https://github.com/hetznercloud/hcloud-python/commit/f63ac8b4d08d84804b5431295ba689275c9203f7))
+* retry requests when the network timed outs ([#430](https://github.com/hetznercloud/hcloud-python/issues/430)) ([f63ac8b](https://github.com/hetznercloud/hcloud-python/commit/f63ac8b4d08d84804b5431295ba689275c9203f7))
+* retry requests when the rate limit was reached ([#430](https://github.com/hetznercloud/hcloud-python/issues/430)) ([f63ac8b](https://github.com/hetznercloud/hcloud-python/commit/f63ac8b4d08d84804b5431295ba689275c9203f7))
+
+
+### Bug Fixes
+
+* update network subnet types ([#431](https://github.com/hetznercloud/hcloud-python/issues/431)) ([c32a615](https://github.com/hetznercloud/hcloud-python/commit/c32a615db778d57324632d8df99356bb04a91efa))
+
 ## [2.1.1](https://github.com/hetznercloud/hcloud-python/compare/v2.1.0...v2.1.1) (2024-07-30)
 
 
