@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+from http import HTTPStatus
 from random import uniform
 from typing import Protocol
 
@@ -78,7 +79,33 @@ def exponential_backoff_function(
 
 
 class Client:
-    """Base Client for accessing the Hetzner Cloud API"""
+    """
+    Client for the Hetzner Cloud API.
+
+    The Hetzner Cloud API reference is available at https://docs.hetzner.cloud.
+
+    **Retry mechanism**
+
+    The :attr:`Client.request` method will retry failed requests that match certain criteria. The
+    default retry interval is defined by an exponential backoff algorithm truncated to 60s
+    with jitter. The default maximal number of retries is 5.
+
+    The following rules define when a request can be retried:
+
+    - When the client returned a network timeout error.
+    - When the API returned an HTTP error, with the status code:
+
+        - ``502`` Bad Gateway
+        - ``504`` Gateway Timeout
+
+    - When the API returned an application error, with the code:
+
+        - ``conflict``
+        - ``rate_limit_exceeded``
+
+    Changes to the retry policy might occur between releases, and will not be considered
+    breaking changes.
+    """
 
     _version = __version__
     __user_agent_prefix = "hcloud-python"
@@ -256,50 +283,71 @@ class Client:
 
         retries = 0
         while True:
-            response = self._requests_session.request(
-                method=method,
-                url=url,
-                headers=headers,
-                **kwargs,
-            )
-
-            correlation_id = response.headers.get("X-Correlation-Id")
-            payload = {}
             try:
-                if len(response.content) > 0:
-                    payload = response.json()
-            except (TypeError, ValueError) as exc:
+                response = self._requests_session.request(
+                    method=method,
+                    url=url,
+                    headers=headers,
+                    **kwargs,
+                )
+                return self._read_response(response)
+            except APIException as exception:
+                if retries < self._retry_max_retries and self._retry_policy(exception):
+                    time.sleep(self._retry_interval(retries))
+                    retries += 1
+                    continue
+                raise
+            except requests.exceptions.Timeout:
+                if retries < self._retry_max_retries:
+                    time.sleep(self._retry_interval(retries))
+                    retries += 1
+                    continue
+                raise
+
+    def _read_response(self, response: requests.Response) -> dict:
+        correlation_id = response.headers.get("X-Correlation-Id")
+        payload = {}
+        try:
+            if len(response.content) > 0:
+                payload = response.json()
+        except (TypeError, ValueError) as exc:
+            raise APIException(
+                code=response.status_code,
+                message=response.reason,
+                details={"content": response.content},
+                correlation_id=correlation_id,
+            ) from exc
+
+        if not response.ok:
+            if not payload or "error" not in payload:
                 raise APIException(
                     code=response.status_code,
                     message=response.reason,
                     details={"content": response.content},
                     correlation_id=correlation_id,
-                ) from exc
-
-            if not response.ok:
-                if not payload or "error" not in payload:
-                    raise APIException(
-                        code=response.status_code,
-                        message=response.reason,
-                        details={"content": response.content},
-                        correlation_id=correlation_id,
-                    )
-
-                error: dict = payload["error"]
-
-                if (
-                    error["code"] == "rate_limit_exceeded"
-                    and retries < self._retry_max_retries
-                ):
-                    time.sleep(self._retry_interval(retries))
-                    retries += 1
-                    continue
-
-                raise APIException(
-                    code=error["code"],
-                    message=error["message"],
-                    details=error.get("details"),
-                    correlation_id=correlation_id,
                 )
 
-            return payload
+            error: dict = payload["error"]
+            raise APIException(
+                code=error["code"],
+                message=error["message"],
+                details=error.get("details"),
+                correlation_id=correlation_id,
+            )
+
+        return payload
+
+    def _retry_policy(self, exception: APIException) -> bool:
+        if isinstance(exception.code, str):
+            return exception.code in (
+                "rate_limit_exceeded",
+                "conflict",
+            )
+
+        if isinstance(exception.code, int):
+            return exception.code in (
+                HTTPStatus.BAD_GATEWAY,
+                HTTPStatus.GATEWAY_TIMEOUT,
+            )
+
+        return False
