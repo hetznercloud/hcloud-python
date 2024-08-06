@@ -79,7 +79,33 @@ def exponential_backoff_function(
 
 
 class Client:
-    """Base Client for accessing the Hetzner Cloud API"""
+    """
+    Client for the Hetzner Cloud API.
+
+    The Hetzner Cloud API reference is available at https://docs.hetzner.cloud.
+
+    **Retry mechanism**
+
+    The :attr:`Client.request` method will retry failed requests that match certain criteria. The
+    default retry interval is defined by an exponential backoff algorithm truncated to 60s
+    with jitter. The default maximal number of retries is 5.
+
+    The following rules defines when a request can be retried:
+
+    - When the client returned a network timeout error.
+    - When the API returned an HTTP error, with the status code:
+
+        - ``502`` Bad Gateway
+        - ``504`` Gateway Timeout
+
+    - When the API returned an application error, with the code:
+
+        - ``conflict``
+        - ``rate_limit_exceeded``
+
+    Changes to the retry policy might occur between releases, and will not be considered
+    breaking changes.
+    """
 
     _version = __version__
     __user_agent_prefix = "hcloud-python"
