@@ -90,7 +90,7 @@ class Client:
     default retry interval is defined by an exponential backoff algorithm truncated to 60s
     with jitter. The default maximal number of retries is 5.
 
-    The following rules defines when a request can be retried:
+    The following rules define when a request can be retried:
 
     - When the client returned a network timeout error.
     - When the API returned an HTTP error, with the status code:
