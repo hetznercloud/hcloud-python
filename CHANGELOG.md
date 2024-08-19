@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/hetznercloud/hcloud-python/compare/v2.2.0...v2.2.1) (2024-08-19)
+
+
+### Bug Fixes
+
+* prices properties are list of dict ([#438](https://github.com/hetznercloud/hcloud-python/issues/438)) ([9621604](https://github.com/hetznercloud/hcloud-python/commit/96216048c9ba13b6286d584c2dd0ec440f484105)), closes [#437](https://github.com/hetznercloud/hcloud-python/issues/437)
+
 ## [2.2.0](https://github.com/hetznercloud/hcloud-python/compare/v2.1.1...v2.2.0) (2024-08-06)
 
 
