@@ -20,7 +20,7 @@ class LoadBalancerType(BaseDomain, DomainIdentityMixin):
            Max amount of targets the Load Balancer can handle
     :param max_assigned_certificates: int
            Max amount of certificates the Load Balancer can serve
-    :param prices: Dict
+    :param prices: List of dict
            Prices in different locations
 
     """
@@ -46,7 +46,7 @@ class LoadBalancerType(BaseDomain, DomainIdentityMixin):
         max_services: int | None = None,
         max_targets: int | None = None,
         max_assigned_certificates: int | None = None,
-        prices: dict | None = None,
+        prices: list[dict] | None = None,
     ):
         self.id = id
         self.name = name

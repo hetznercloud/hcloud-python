@@ -21,7 +21,7 @@ class ServerType(BaseDomain, DomainIdentityMixin):
            Memory a server of this type will have in GB
     :param disk: int
            Disk size a server of this type will have in GB
-    :param prices: Dict
+    :param prices: List of dict
            Prices in different locations
     :param storage_type: str
            Type of server boot drive. Local has higher speed. Network has better availability. Choices: `local`, `network`
@@ -69,7 +69,7 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         cores: int | None = None,
         memory: int | None = None,
         disk: int | None = None,
-        prices: dict | None = None,
+        prices: list[dict] | None = None,
         storage_type: str | None = None,
         cpu_type: str | None = None,
         architecture: str | None = None,
