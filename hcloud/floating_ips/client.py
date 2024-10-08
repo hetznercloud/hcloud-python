@@ -293,7 +293,7 @@ class FloatingIPsClient(ClientEntityBase):
         self,
         type: str,
         description: str | None = None,
-        labels: str | None = None,
+        labels: dict[str, str] | None = None,
         home_location: Location | BoundLocation | None = None,
         server: Server | BoundServer | None = None,
         name: str | None = None,
