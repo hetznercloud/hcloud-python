@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.3.0](https://github.com/hetznercloud/hcloud-python/compare/v2.2.1...v2.3.0) (2024-10-09)
+
+
+### Features
+
+* support python 3.13 ([#451](https://github.com/hetznercloud/hcloud-python/issues/451)) ([4a514c7](https://github.com/hetznercloud/hcloud-python/commit/4a514c7a1136a4a8c592c77120c5be36cd221b33))
+
+
+### Bug Fixes
+
+* change floating ip labels type to `dict[str, str]` ([#444](https://github.com/hetznercloud/hcloud-python/issues/444)) ([1f6da4e](https://github.com/hetznercloud/hcloud-python/commit/1f6da4ef243321d3c6850b876f3c11fb1195edcf))
+
 ## [2.2.1](https://github.com/hetznercloud/hcloud-python/compare/v2.2.0...v2.2.1) (2024-08-19)
 
 
