@@ -293,8 +293,8 @@ class PublicNetwork(BaseDomain):
 
     def __init__(
         self,
-        ipv4: IPv4Address,
-        ipv6: IPv6Network,
+        ipv4: IPv4Address | None,
+        ipv6: IPv6Network | None,
         floating_ips: list[BoundFloatingIP],
         primary_ipv4: BoundPrimaryIP | None,
         primary_ipv6: BoundPrimaryIP | None,
