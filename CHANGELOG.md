@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/hetznercloud/hcloud-python/compare/v2.3.0...v2.3.1) (2024-10-23)
+
+
+### Bug Fixes
+
+* server public ipv4 and ipv6 properties are nullable ([#455](https://github.com/hetznercloud/hcloud-python/issues/455)) ([d2cfee6](https://github.com/hetznercloud/hcloud-python/commit/d2cfee61167857bfe3ff88a441622da2c913810c))
+
 ## [2.3.0](https://github.com/hetznercloud/hcloud-python/compare/v2.2.1...v2.3.0) (2024-10-09)
 
 
