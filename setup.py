@@ -45,7 +45,7 @@ setup(
             "sphinx>=8,<8.2",
             "sphinx-rtd-theme>=3,<3.1",
             "myst-parser>=4,<4.1",
-            "watchdog>=5,<5.1",
+            "watchdog>=6,<6.1",
         ],
         "test": [
             "coverage>=7.6,<7.7",
