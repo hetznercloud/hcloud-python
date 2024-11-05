@@ -50,7 +50,7 @@ setup(
             "coverage>=7.6,<7.7",
             "pylint>=3,<3.4",
             "pytest>=8,<8.4",
-            "pytest-cov>=5,<5.1",
+            "pytest-cov>=6,<6.1",
             "mypy>=1.13,<1.14",
             "types-python-dateutil",
             "types-requests",
