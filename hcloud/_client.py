@@ -84,6 +84,11 @@ class Client:
 
     The Hetzner Cloud API reference is available at https://docs.hetzner.cloud.
 
+    Make sure to follow our API changelog available at
+    https://docs.hetzner.cloud/changelog (or the RRS feed available at
+    https://docs.hetzner.cloud/changelog/feed.rss) to be notified about additions,
+    deprecations and removals.
+
     **Retry mechanism**
 
     The :attr:`Client.request` method will retry failed requests that match certain criteria. The
