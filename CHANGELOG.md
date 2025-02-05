@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.4.0](https://github.com/hetznercloud/hcloud-python/compare/v2.3.0...v2.4.0) (2025-02-05)
+
+
+### Features
+
+* drop support for python 3.8 ([#458](https://github.com/hetznercloud/hcloud-python/issues/458)) ([e74e319](https://github.com/hetznercloud/hcloud-python/commit/e74e3195f74cb5541b2d664c7d1812e05f4ac229))
+
+
+### Bug Fixes
+
+* server public ipv4 and ipv6 properties are nullable ([#455](https://github.com/hetznercloud/hcloud-python/issues/455)) ([d2cfee6](https://github.com/hetznercloud/hcloud-python/commit/d2cfee61167857bfe3ff88a441622da2c913810c))
+
+
+### Documentation
+
+* add links to api changelog ([#473](https://github.com/hetznercloud/hcloud-python/issues/473)) ([55d6064](https://github.com/hetznercloud/hcloud-python/commit/55d6064a8e1e6c690644d10cb70261651c78fefc))
+
 ## [2.3.0](https://github.com/hetznercloud/hcloud-python/compare/v2.2.1...v2.3.0) (2024-10-09)
 
 
