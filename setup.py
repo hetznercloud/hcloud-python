@@ -41,7 +41,7 @@ setup(
     ],
     extras_require={
         "docs": [
-            "sphinx>=8,<8.2",
+            "sphinx>=8,<8.3",
             "sphinx-rtd-theme>=3,<3.1",
             "myst-parser>=4,<4.1",
             "watchdog>=6,<6.1",
