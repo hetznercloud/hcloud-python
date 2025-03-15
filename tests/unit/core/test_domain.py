@@ -156,3 +156,10 @@ class TestBaseDomain:
     )
     def test_repr_ok(self, data, expected):
         assert data.__repr__() == expected
+
+    def test__eq__(self):
+        a1 = ActionDomain(id=1, name="action")
+        assert a1 == ActionDomain(id=1, name="action")
+        assert a1 != ActionDomain(id=2, name="action")
+        assert a1 != ActionDomain(id=1, name="something")
+        assert a1 != SomeOtherDomain(id=1, name="action")
