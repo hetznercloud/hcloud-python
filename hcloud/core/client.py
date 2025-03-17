@@ -96,3 +96,9 @@ class BoundModelBase:
         # models, as they will generate a lot of API call trying to print all the fields
         # of the model.
         return object.__repr__(self)
+
+    def __eq__(self, other: Any) -> bool:
+        """Compare a bound model object with another of the same type."""
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+        return self.data_model == other.data_model
