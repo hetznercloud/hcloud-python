@@ -1,3 +1,8 @@
 from __future__ import annotations
 
-from .domain import Metrics, TimeSeries  # noqa: F401
+from .domain import Metrics, TimeSeries
+
+__all__ = [
+    "Metrics",
+    "TimeSeries",
+]

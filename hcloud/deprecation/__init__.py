@@ -1,3 +1,5 @@
 from __future__ import annotations
 
-from .domain import DeprecationInfo  # noqa: F401
+from .domain import DeprecationInfo
+
+__all__ = ["DeprecationInfo"]
