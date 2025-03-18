@@ -174,3 +174,14 @@ class TestBaseDomain:
         d2.child = ActionDomain(id=2, name="child2")
 
         assert d1 != d2
+
+    def test_nested_list__eq__(self):
+        child1 = ActionDomain(id=1, name="child")
+        d1 = SomeOtherDomain(id=1, name="parent", child=[child1])
+        d2 = SomeOtherDomain(id=1, name="parent", child=[child1])
+
+        assert d1 == d2
+
+        d2.child = [ActionDomain(id=2, name="child2")]
+
+        assert d1 != d2
