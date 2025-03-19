@@ -1,5 +1,16 @@
 # Changelog
 
+## [v2.4.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.4.0)
+
+### Features
+
+- drop support for python 3.8 (#458)
+- add equality checks to domains (#481)
+
+### Bug Fixes
+
+- server public ipv4 and ipv6 properties are nullable (#455)
+
 ## [2.3.0](https://github.com/hetznercloud/hcloud-python/compare/v2.2.1...v2.3.0) (2024-10-09)
 
 
