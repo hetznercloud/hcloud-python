@@ -81,6 +81,23 @@ class TestBoundModelBase:
         client.get_by_id.assert_not_called()
         assert bound_model.complete is False
 
+    def test_equality(self, bound_model_class, client):
+        data = {"id": 1, "name": "name", "description": "my_description"}
+        bound_model_a = bound_model_class(client=client, data=data)
+        bound_model_b = bound_model_class(client=client, data=data)
+
+        # Comparing a bound model with a base domain
+        assert bound_model_a == bound_model_a.data_model
+
+        # Identical bound models
+        assert bound_model_a == bound_model_b
+        assert bound_model_a == bound_model_b.data_model
+
+        # Differing bound models
+        bound_model_b.data_model.name = "changed_name"
+        assert bound_model_a != bound_model_b
+        assert bound_model_a != bound_model_b.data_model
+
 
 class TestClientEntityBase:
     @pytest.fixture()

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 
 class BaseDomain:
     __api_properties__: tuple
@@ -15,6 +17,15 @@ class BaseDomain:
     def __repr__(self) -> str:
         kwargs = [f"{key}={getattr(self, key)!r}" for key in self.__api_properties__]  # type: ignore[var-annotated]
         return f"{self.__class__.__qualname__}({', '.join(kwargs)})"
+
+    def __eq__(self, other: Any) -> bool:
+        """Compare a domain object with another of the same type."""
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+        for key in self.__api_properties__:
+            if getattr(self, key) != getattr(other, key):
+                return False
+        return True
 
 
 class DomainIdentityMixin:
