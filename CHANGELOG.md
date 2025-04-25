@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.5.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.5.0)
+
+### Features
+
+- improve exception messages (#488)
+
 ## [v2.4.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.4.0)
 
 ### Features
