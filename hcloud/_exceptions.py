@@ -4,11 +4,15 @@ from typing import Any
 
 
 class HCloudException(Exception):
-    """There was an error while using the hcloud library"""
+    """There was an error while using the hcloud library.
+
+    All exceptions in the hcloud library inherit from this exception. It may be used as
+    catch-all exception.
+    """
 
 
 class APIException(HCloudException):
-    """There was an error while performing an API Request"""
+    """There was an error while performing an API Request."""
 
     def __init__(
         self,

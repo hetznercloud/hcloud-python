@@ -71,8 +71,21 @@ class ActionException(HCloudException):
     def __init__(self, action: Action | BoundAction):
         assert self.__doc__ is not None
         message = self.__doc__
-        if action.error is not None and "message" in action.error:
+
+        extras = []
+        if (
+            action.error is not None
+            and "code" in action.error
+            and "message" in action.error
+        ):
             message += f": {action.error['message']}"
+
+            extras.append(action.error["code"])
+        else:
+            extras.append(action.command)
+
+        extras.append(str(action.id))
+        message += f" ({', '.join(extras)})"
 
         super().__init__(message)
         self.message = message
