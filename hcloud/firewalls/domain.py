@@ -198,6 +198,9 @@ class FirewallResourceLabelSelector(BaseDomain):
     :param selector: str Target label selector
     """
 
+    __api_properties__ = ("selector",)
+    __slots__ = __api_properties__
+
     def __init__(self, selector: str | None = None):
         self.selector = selector
 
