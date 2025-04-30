@@ -15,8 +15,7 @@ test: venv
 coverage: venv
 	venv/bin/coverage run -m pytest -v
 	venv/bin/coverage report --show-missing
-	venv/bin/coverage html
-	xdg-open htmlcov/index.html
+	venv/bin/coverage xml
 
 export SPHINXBUILD=../venv/bin/sphinx-build
 docs: venv
