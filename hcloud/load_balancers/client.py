@@ -366,7 +366,7 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
 
 class LoadBalancersPageResult(NamedTuple):
     load_balancers: list[BoundLoadBalancer]
-    meta: Meta | None
+    meta: Meta
 
 
 class LoadBalancersClient(ClientEntityBase):

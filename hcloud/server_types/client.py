@@ -17,7 +17,7 @@ class BoundServerType(BoundModelBase, ServerType):
 
 class ServerTypesPageResult(NamedTuple):
     server_types: list[BoundServerType]
-    meta: Meta | None
+    meta: Meta
 
 
 class ServerTypesClient(ClientEntityBase):

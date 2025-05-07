@@ -143,7 +143,7 @@ class TestBoundServer:
         )
 
         actions = result.actions
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
@@ -558,7 +558,7 @@ class TestServersClient:
         )
 
         bound_servers = result.servers
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(bound_servers) == 2
 
@@ -853,7 +853,7 @@ class TestServersClient:
         )
 
         actions = result.actions
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
@@ -1288,7 +1288,7 @@ class TestServersClient:
         )
 
         actions = result.actions
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)

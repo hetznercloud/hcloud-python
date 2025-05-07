@@ -132,7 +132,7 @@ class BoundVolume(BoundModelBase, Volume):
 
 class VolumesPageResult(NamedTuple):
     volumes: list[BoundVolume]
-    meta: Meta | None
+    meta: Meta
 
 
 class VolumesClient(ClientEntityBase):

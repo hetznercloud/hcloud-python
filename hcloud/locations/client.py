@@ -17,7 +17,7 @@ class BoundLocation(BoundModelBase, Location):
 
 class LocationsPageResult(NamedTuple):
     locations: list[BoundLocation]
-    meta: Meta | None
+    meta: Meta
 
 
 class LocationsClient(ClientEntityBase):

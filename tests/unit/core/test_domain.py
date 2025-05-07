@@ -10,7 +10,7 @@ class TestMeta:
     @pytest.mark.parametrize("json_content", [None, "", {}])
     def test_parse_meta_empty_json(self, json_content):
         result = Meta.parse_meta(json_content)
-        assert result is None
+        assert result is not None
 
     def test_parse_meta_json_no_paginaton(self):
         json_content = {"meta": {}}

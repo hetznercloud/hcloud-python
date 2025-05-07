@@ -136,7 +136,7 @@ class BoundFloatingIP(BoundModelBase, FloatingIP):
 
 class FloatingIPsPageResult(NamedTuple):
     floating_ips: list[BoundFloatingIP]
-    meta: Meta | None
+    meta: Meta
 
 
 class FloatingIPsClient(ClientEntityBase):

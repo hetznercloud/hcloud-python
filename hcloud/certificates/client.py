@@ -100,7 +100,7 @@ class BoundCertificate(BoundModelBase, Certificate):
 
 class CertificatesPageResult(NamedTuple):
     certificates: list[BoundCertificate]
-    meta: Meta | None
+    meta: Meta
 
 
 class CertificatesClient(ClientEntityBase):

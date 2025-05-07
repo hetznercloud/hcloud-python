@@ -479,7 +479,7 @@ class BoundServer(BoundModelBase, Server):
 
 class ServersPageResult(NamedTuple):
     servers: list[BoundServer]
-    meta: Meta | None
+    meta: Meta
 
 
 class ServersClient(ClientEntityBase):

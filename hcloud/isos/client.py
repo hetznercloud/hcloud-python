@@ -17,7 +17,7 @@ class BoundIso(BoundModelBase, Iso):
 
 class IsosPageResult(NamedTuple):
     isos: list[BoundIso]
-    meta: Meta | None
+    meta: Meta
 
 
 class IsosClient(ClientEntityBase):

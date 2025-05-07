@@ -59,7 +59,7 @@ class TestBoundImage:
         )
 
         actions = result.actions
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
@@ -162,7 +162,7 @@ class TestImagesClient:
         )
 
         images = result.images
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(images) == 2
 
@@ -254,7 +254,7 @@ class TestImagesClient:
         )
 
         actions = result.actions
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
@@ -337,7 +337,7 @@ class TestImagesClient:
         )
 
         actions = result.actions
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)

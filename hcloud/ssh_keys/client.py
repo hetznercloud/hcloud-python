@@ -38,7 +38,7 @@ class BoundSSHKey(BoundModelBase, SSHKey):
 
 class SSHKeysPageResult(NamedTuple):
     ssh_keys: list[BoundSSHKey]
-    meta: Meta | None
+    meta: Meta
 
 
 class SSHKeysClient(ClientEntityBase):

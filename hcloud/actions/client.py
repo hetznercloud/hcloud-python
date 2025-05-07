@@ -47,7 +47,7 @@ class BoundAction(BoundModelBase, Action):
 
 class ActionsPageResult(NamedTuple):
     actions: list[BoundAction]
-    meta: Meta | None
+    meta: Meta
 
 
 class ResourceActionsClient(ClientEntityBase):

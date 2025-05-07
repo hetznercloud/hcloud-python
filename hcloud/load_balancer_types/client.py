@@ -17,7 +17,7 @@ class BoundLoadBalancerType(BoundModelBase, LoadBalancerType):
 
 class LoadBalancerTypesPageResult(NamedTuple):
     load_balancer_types: list[BoundLoadBalancerType]
-    meta: Meta | None
+    meta: Meta
 
 
 class LoadBalancerTypesClient(ClientEntityBase):

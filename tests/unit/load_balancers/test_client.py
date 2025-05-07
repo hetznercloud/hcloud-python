@@ -46,7 +46,7 @@ class TestBoundLoadBalancer:
         )
 
         actions = result.actions
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
@@ -421,7 +421,7 @@ class TestLoadBalancerslient:
         )
 
         bound_load_balancers = result.load_balancers
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(bound_load_balancers) == 2
 
@@ -569,7 +569,7 @@ class TestLoadBalancerslient:
         )
 
         actions = result.actions
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)

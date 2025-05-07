@@ -94,7 +94,7 @@ class BoundPrimaryIP(BoundModelBase, PrimaryIP):
 
 class PrimaryIPsPageResult(NamedTuple):
     primary_ips: list[BoundPrimaryIP]
-    meta: Meta | None
+    meta: Meta
 
 
 class PrimaryIPsClient(ClientEntityBase):
