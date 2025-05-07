@@ -39,7 +39,7 @@ class TestLoadBalancerTypesClient:
         )
 
         load_balancer_types = result.load_balancer_types
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(load_balancer_types) == 2
 

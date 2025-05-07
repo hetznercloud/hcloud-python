@@ -64,7 +64,7 @@ class TestServerTypesClient:
         )
 
         server_types = result.server_types
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(server_types) == 2
 

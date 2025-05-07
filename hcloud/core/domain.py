@@ -99,13 +99,12 @@ class Meta(BaseDomain):
         self.pagination = pagination
 
     @classmethod
-    def parse_meta(cls, response: dict) -> Meta | None:
+    def parse_meta(cls, response: dict) -> Meta:
         """
         If present, extract the meta details from the response and return a meta object.
         """
-        meta = None
+        meta = cls()
         if response and "meta" in response:
-            meta = cls()
             try:
                 meta.pagination = Pagination(**response["meta"]["pagination"])
             except KeyError:

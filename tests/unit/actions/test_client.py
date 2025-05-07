@@ -89,7 +89,7 @@ class TestResourceActionsClient:
             url="/resource/actions", method="GET", params=params
         )
 
-        assert result.meta is None
+        assert result.meta is not None
 
         actions = result.actions
         assert len(actions) == 2
@@ -157,7 +157,7 @@ class TestActionsClient:
             url="/actions", method="GET", params=params
         )
 
-        assert result.meta is None
+        assert result.meta is not None
 
         actions = result.actions
         assert len(actions) == 2

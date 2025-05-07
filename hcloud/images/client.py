@@ -109,7 +109,7 @@ class BoundImage(BoundModelBase, Image):
 
 class ImagesPageResult(NamedTuple):
     images: list[BoundImage]
-    meta: Meta | None
+    meta: Meta
 
 
 class ImagesClient(ClientEntityBase):

@@ -108,7 +108,7 @@ class TestPlacementGroupsClient:
         )
 
         placement_groups = result.placement_groups
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(placement_groups) == len(
             two_placement_groups_response["placement_groups"]

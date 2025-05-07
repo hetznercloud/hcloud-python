@@ -40,7 +40,7 @@ class BoundPlacementGroup(BoundModelBase, PlacementGroup):
 
 class PlacementGroupsPageResult(NamedTuple):
     placement_groups: list[BoundPlacementGroup]
-    meta: Meta | None
+    meta: Meta
 
 
 class PlacementGroupsClient(ClientEntityBase):

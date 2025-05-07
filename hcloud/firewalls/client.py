@@ -180,7 +180,7 @@ class BoundFirewall(BoundModelBase, Firewall):
 
 class FirewallsPageResult(NamedTuple):
     firewalls: list[BoundFirewall]
-    meta: Meta | None
+    meta: Meta
 
 
 class FirewallsClient(ClientEntityBase):

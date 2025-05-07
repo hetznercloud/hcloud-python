@@ -163,7 +163,7 @@ class BoundNetwork(BoundModelBase, Network):
 
 class NetworksPageResult(NamedTuple):
     networks: list[BoundNetwork]
-    meta: Meta | None
+    meta: Meta
 
 
 class NetworksClient(ClientEntityBase):

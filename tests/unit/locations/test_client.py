@@ -34,7 +34,7 @@ class TestLocationsClient:
         )
 
         locations = result.locations
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(locations) == 2
 

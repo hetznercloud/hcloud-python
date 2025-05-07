@@ -165,7 +165,7 @@ class TestFloatingIPsClient:
         )
 
         bound_floating_ips = result.floating_ips
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(bound_floating_ips) == 2
 
@@ -419,7 +419,7 @@ class TestFloatingIPsClient:
         )
 
         actions = result.actions
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)

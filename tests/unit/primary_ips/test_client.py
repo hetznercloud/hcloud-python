@@ -321,7 +321,7 @@ class TestPrimaryIPsClient:
         )
 
         actions = result.actions
-        assert result.meta is None
+        assert result.meta is not None
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)

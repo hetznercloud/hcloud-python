@@ -52,7 +52,7 @@ class BoundDatacenter(BoundModelBase, Datacenter):
 
 class DatacentersPageResult(NamedTuple):
     datacenters: list[BoundDatacenter]
-    meta: Meta | None
+    meta: Meta
 
 
 class DatacentersClient(ClientEntityBase):
