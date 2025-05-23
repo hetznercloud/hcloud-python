@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.5.2](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.5.2)
+
+### Bug Fixes
+
+- listing page result always provide meta (#496)
+
 ## [v2.5.1](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.5.1)
 
 ### Bug Fixes
