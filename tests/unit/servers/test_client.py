@@ -506,7 +506,7 @@ class TestBoundServer:
         hetzner_client.request.assert_called_with(
             url="/servers/14/actions/add_to_placement_group",
             method="POST",
-            json={"placement_group": "897"},
+            json={"placement_group": 897},
         )
 
         assert action.id == 13

@@ -1227,7 +1227,7 @@ class ServersClient(ClientEntityBase):
         :param placement_group: :class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>` or :class:`Network <hcloud.placement_groups.domain.PlacementGroup>`
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        data: dict[str, Any] = {"placement_group": str(placement_group.id)}
+        data: dict[str, Any] = {"placement_group": placement_group.id}
         response = self._client.request(
             url=f"/servers/{server.id}/actions/add_to_placement_group",
             method="POST",
