@@ -71,19 +71,25 @@ class TestDomainIdentityMixin:
         assert str(error) == "id or name must be set"
 
     @pytest.mark.parametrize(
-        "other, expected",
+        "domain, id_or_name, expected",
         [
-            (SomeDomain(id=1), True),
-            (SomeDomain(name="name1"), True),
-            (SomeDomain(id=1, name="name1"), True),
-            (SomeDomain(id=2), False),
-            (SomeDomain(name="name2"), False),
-            (SomeDomain(id=2, name="name2"), False),
+            (SomeDomain(id=1, name="name1"), 1, True),
+            (SomeDomain(id=1, name="name1"), "1", True),
+            (SomeDomain(id=1, name="name1"), "name1", True),
+            (SomeDomain(id=1, name="name1"), 2, False),
+            (SomeDomain(id=1, name="name1"), "2", False),
+            (SomeDomain(id=1, name="name1"), "name2", False),
+            (SomeDomain(id=1, name="3"), 3, True),
+            (SomeDomain(id=3, name="1"), "3", True),
         ],
     )
-    def test_has_id_or_name_exception(self, other, expected):
-        domain = SomeDomain(id=1, name="name1")
-        assert domain.has_id_or_name(other.id_or_name) == expected
+    def test_has_id_or_name(
+        self,
+        domain: SomeDomain,
+        id_or_name: str | int,
+        expected: bool,
+    ):
+        assert domain.has_id_or_name(id_or_name) == expected
 
 
 class ActionDomain(BaseDomain, DomainIdentityMixin):
