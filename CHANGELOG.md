@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.5.3](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.5.3)
+
+### Bug Fixes
+
+- invalid placement group id casting (#501)
+- handle string id when checking has_id_or_name (#504)
+
 ## [v2.5.2](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.5.2)
 
 ### Bug Fixes
