@@ -1,11 +1,16 @@
 from __future__ import annotations
 
-import time
 import warnings
-from typing import TYPE_CHECKING, Any, NamedTuple
+from typing import TYPE_CHECKING, Any, Callable, NamedTuple
 
+from .._utils import batched, waiter
 from ..core import BoundModelBase, ClientEntityBase, Meta
-from .domain import Action, ActionFailedException, ActionTimeoutException
+from .domain import (
+    Action,
+    ActionFailedException,
+    ActionGroupException,
+    ActionTimeoutException,
+)
 
 if TYPE_CHECKING:
     from .._client import Client
@@ -16,18 +21,24 @@ class BoundAction(BoundModelBase, Action):
 
     model = Action
 
-    def wait_until_finished(self, max_retries: int | None = None) -> None:
+    def wait_until_finished(
+        self,
+        max_retries: int | None = None,
+        *,
+        timeout: float | None = None,
+    ) -> None:
         """Wait until the specific action has status=finished.
 
         :param max_retries: int Specify how many retries will be performed before an ActionTimeoutException will be raised.
         :raises: ActionFailedException when action is finished with status==error
-        :raises: ActionTimeoutException when Action is still in status==running after max_retries is reached.
+        :raises: ActionTimeoutException when Action is still in status==running after max_retries or timeout is reached.
         """
         if max_retries is None:
             # pylint: disable=protected-access
             max_retries = self._client._client._poll_max_retries
 
         retries = 0
+        wait = waiter(timeout)
         while True:
             self.reload()
             if self.status != Action.STATUS_RUNNING:
@@ -36,8 +47,8 @@ class BoundAction(BoundModelBase, Action):
             retries += 1
             if retries < max_retries:
                 # pylint: disable=protected-access
-                time.sleep(self._client._client._poll_interval_func(retries))
-                continue
+                if not wait(self._client._client._poll_interval_func(retries)):
+                    continue
 
             raise ActionTimeoutException(action=self)
 
@@ -128,6 +139,115 @@ class ResourceActionsClient(ClientEntityBase):
 class ActionsClient(ResourceActionsClient):
     def __init__(self, client: Client):
         super().__init__(client, None)
+
+    # TODO: Consider making public?
+    def _get_list_by_ids(self, ids: list[int]) -> list[BoundAction]:
+        """
+        Get a list of Actions by their IDs.
+
+        :param ids: List of Action IDs to get.
+        :raises ValueError: Raise when Action IDs were not found.
+        :return: List of Actions.
+        """
+        actions: list[BoundAction] = []
+
+        for ids_batch in batched(ids, 25):
+            params: dict[str, Any] = {
+                "id": ids_batch,
+            }
+
+            response = self._client.request(
+                method="GET",
+                url="/actions",
+                params=params,
+            )
+
+            actions.extend(
+                BoundAction(self._client.actions, action_data)
+                for action_data in response["actions"]
+            )
+
+        # TODO: Should this be moved to the the wait function?
+        if len(ids) != len(actions):
+            found_ids = [a.id for a in actions]
+            not_found_ids = list(set(ids) - set(found_ids))
+
+            raise ValueError(
+                f"actions not found: {', '.join(str(o) for o in not_found_ids)}"
+            )
+
+        return actions
+
+    def wait_for_function(
+        self,
+        handle_update: Callable[[BoundAction], None],
+        actions: list[Action | BoundAction],
+        *,
+        timeout: float | None = None,
+    ) -> list[BoundAction]:
+        """
+        Waits until all Actions succeed by polling the API at the interval defined by
+        the client's poll interval and function. An Action is considered as complete
+        when its status is either "success" or "error".
+
+        The handle_update callback is called every time an Action is updated.
+
+        :param handle_update: Function called every time an Action is updated.
+        :param actions: List of Actions to wait for.
+        :param timeout: Timeout in seconds.
+        :raises: ActionFailedException when an Action failed.
+        :return: List of succeeded Actions.
+        """
+        running: list[BoundAction] = list(actions)
+        completed: list[BoundAction] = []
+
+        retries = 0
+        wait = waiter(timeout)
+        while len(running) > 0:
+            # pylint: disable=protected-access
+            if wait(self._client._poll_interval_func(retries)):
+                raise ActionGroupException(
+                    [ActionTimeoutException(action=action) for action in running]
+                )
+
+            retries += 1
+
+            running = self._get_list_by_ids([a.id for a in running])
+
+            for update in running:
+                if update.status != Action.STATUS_RUNNING:
+                    running.remove(update)
+                    completed.append(update)
+
+                handle_update(update)
+
+        return completed
+
+    def wait_for(
+        self,
+        actions: list[Action | BoundAction],
+        *,
+        timeout: float | None = None,
+    ) -> list[BoundAction]:
+        """
+        Waits until all Actions succeed by polling the API at the interval defined by
+        the client's poll interval and function. An Action is considered as complete
+        when its status is either "success" or "error".
+
+        If a single Action fails, the function will stop waiting and raise ActionFailedException.
+
+        :param actions: List of Actions to wait for.
+        :param timeout: Timeout in seconds.
+        :raises: ActionFailedException when an Action failed.
+        :raises: TimeoutError when the Actions did not succeed before timeout.
+        :return: List of succeeded Actions.
+        """
+
+        def handle_update(update: BoundAction) -> None:
+            if update.status == Action.STATUS_ERROR:
+                raise ActionFailedException(action=update)
+
+        return self.wait_for_function(handle_update, actions, timeout=timeout)
 
     def get_list(
         self,

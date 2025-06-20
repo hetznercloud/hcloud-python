@@ -10,6 +10,7 @@ from .domain import (
     Action,
     ActionException,
     ActionFailedException,
+    ActionGroupException,
     ActionTimeoutException,
 )
 
@@ -18,6 +19,7 @@ __all__ = [
     "ActionException",
     "ActionFailedException",
     "ActionTimeoutException",
+    "ActionGroupException",
     "ActionsClient",
     "ActionsPageResult",
     "BoundAction",
