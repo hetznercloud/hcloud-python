@@ -98,3 +98,11 @@ class ActionFailedException(ActionException):
 
 class ActionTimeoutException(ActionException):
     """The pending action timed out"""
+
+
+class ActionGroupException(HCloudException):
+    """An exception for a group of actions"""
+
+    def __init__(self, exceptions: list[ActionException]):
+        super().__init__("Multiple pending actions failed")
+        self.exceptions = exceptions
