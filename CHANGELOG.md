@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.5.4](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.5.4)
+
+### Bug Fixes
+
+- typo in `LoadBalancerHealthCheckHttp` class name (#511)
+- equality for some domain classes (#510)
+
 ## [v2.5.3](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.5.3)
 
 ### Bug Fixes
