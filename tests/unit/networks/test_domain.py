@@ -3,7 +3,21 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
-from hcloud.networks import Network
+import pytest
+
+from hcloud.networks import Network, NetworkRoute, NetworkSubnet
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        (Network(id=1),),
+        (NetworkSubnet(ip_range="10.0.1.0/24"),),
+        (NetworkRoute(destination="10.0.1.2", gateway="10.0.1.1"),),
+    ],
+)
+def test_eq(value):
+    assert value == value
 
 
 class TestNetwork:

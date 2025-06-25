@@ -3,7 +3,19 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
+import pytest
+
 from hcloud.floating_ips import FloatingIP
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        (FloatingIP(id=1),),
+    ],
+)
+def test_eq(value):
+    assert value == value
 
 
 class TestFloatingIP:

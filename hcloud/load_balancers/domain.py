@@ -229,6 +229,15 @@ class LoadBalancerServiceHttp(BaseDomain):
            Use sticky sessions. Only available if protocol is "http" or "https".
     """
 
+    __api_properties__ = (
+        "cookie_name",
+        "cookie_lifetime",
+        "certificates",
+        "redirect_http",
+        "sticky_sessions",
+    )
+    __slots__ = __api_properties__
+
     def __init__(
         self,
         cookie_name: str | None = None,
@@ -261,6 +270,16 @@ class LoadBalancerHealthCheck(BaseDomain):
             HTTP Config
     """
 
+    __api_properties__ = (
+        "protocol",
+        "port",
+        "interval",
+        "timeout",
+        "retries",
+        "http",
+    )
+    __slots__ = __api_properties__
+
     def __init__(
         self,
         protocol: str | None = None,
@@ -292,6 +311,15 @@ class LoadBalancerHealthCheckHttp(BaseDomain):
     :param tls: bool
             Type of health check
     """
+
+    __api_properties__ = (
+        "domain",
+        "path",
+        "response",
+        "status_codes",
+        "tls",
+    )
+    __slots__ = __api_properties__
 
     def __init__(
         self,
@@ -350,6 +378,16 @@ class LoadBalancerTarget(BaseDomain):
             List of health statuses of the services on this target. Only present for target types "server" and "ip".
     """
 
+    __api_properties__ = (
+        "type",
+        "server",
+        "label_selector",
+        "ip",
+        "use_private_ip",
+        "health_status",
+    )
+    __slots__ = __api_properties__
+
     def __init__(
         self,
         type: str | None = None,
@@ -401,6 +439,12 @@ class LoadBalancerTargetHealthStatus(BaseDomain):
     :param status: Load Balancer Target status. Choices: healthy, unhealthy, unknown
     """
 
+    __api_properties__ = (
+        "listen_port",
+        "status",
+    )
+    __slots__ = __api_properties__
+
     def __init__(
         self,
         listen_port: int | None = None,
@@ -416,6 +460,9 @@ class LoadBalancerTargetLabelSelector(BaseDomain):
     :param selector: str Target label selector
     """
 
+    __api_properties__ = ("selector",)
+    __slots__ = __api_properties__
+
     def __init__(self, selector: str | None = None):
         self.selector = selector
 
@@ -425,6 +472,9 @@ class LoadBalancerTargetIP(BaseDomain):
 
     :param ip: str Target IP
     """
+
+    __api_properties__ = ("ip",)
+    __slots__ = __api_properties__
 
     def __init__(self, ip: str | None = None):
         self.ip = ip
@@ -436,6 +486,9 @@ class LoadBalancerAlgorithm(BaseDomain):
     :param type: str
             Algorithm of the Load Balancer. Choices: round_robin, least_connections
     """
+
+    __api_properties__ = ("type",)
+    __slots__ = __api_properties__
 
     def __init__(self, type: str | None = None):
         self.type = type

@@ -3,7 +3,25 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
-from hcloud.certificates import Certificate
+import pytest
+
+from hcloud.certificates import (
+    Certificate,
+    ManagedCertificateError,
+    ManagedCertificateStatus,
+)
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        (Certificate(id=1),),
+        (ManagedCertificateError()),
+        (ManagedCertificateStatus()),
+    ],
+)
+def test_eq(value):
+    assert value == value
 
 
 class TestCertificate:

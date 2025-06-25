@@ -3,7 +3,19 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
+import pytest
+
 from hcloud.images import Image
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        (Image(id=1),),
+    ],
+)
+def test_eq(value):
+    assert value == value
 
 
 class TestImage:
