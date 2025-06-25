@@ -20,7 +20,7 @@ LoadBalancerClient
 .. autoclass:: hcloud.load_balancers.domain.LoadBalancerHealthCheck
     :members:
 
-.. autoclass:: hcloud.load_balancers.domain.LoadBalancerHealtCheckHttp
+.. autoclass:: hcloud.load_balancers.domain.LoadBalancerHealthCheckHttp
     :members:
 
 .. autoclass:: hcloud.load_balancers.domain.LoadBalancerTarget
