@@ -13,6 +13,16 @@ from hcloud.actions import (
 )
 
 
+@pytest.mark.parametrize(
+    "value",
+    [
+        (Action(id=1),),
+    ],
+)
+def test_eq(value):
+    assert value == value
+
+
 class TestAction:
     def test_started_finished_is_datetime(self):
         action = Action(
