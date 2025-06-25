@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from typing import TYPE_CHECKING, Any, Literal
 
 from dateutil.parser import isoparse
@@ -256,7 +257,7 @@ class LoadBalancerHealthCheck(BaseDomain):
             Timeout in sec after a try is assumed as timeout
     :param retries: int
             Retries we perform until we assume a target as unhealthy
-    :param http: LoadBalancerHealtCheckHttp
+    :param http: LoadBalancerHealthCheckHttp
             HTTP Config
     """
 
@@ -267,7 +268,7 @@ class LoadBalancerHealthCheck(BaseDomain):
         interval: int | None = None,
         timeout: int | None = None,
         retries: int | None = None,
-        http: LoadBalancerHealtCheckHttp | None = None,
+        http: LoadBalancerHealthCheckHttp | None = None,
     ):
         self.protocol = protocol
         self.port = port
@@ -277,8 +278,8 @@ class LoadBalancerHealthCheck(BaseDomain):
         self.http = http
 
 
-class LoadBalancerHealtCheckHttp(BaseDomain):
-    """LoadBalancerHealtCheckHttp Domain
+class LoadBalancerHealthCheckHttp(BaseDomain):
+    """LoadBalancerHealthCheckHttp Domain
 
     :param domain: str
             Domain name to send in HTTP request. Can be null: In that case we will not send a domain name
@@ -305,6 +306,31 @@ class LoadBalancerHealtCheckHttp(BaseDomain):
         self.response = response
         self.status_codes = status_codes
         self.tls = tls
+
+
+class LoadBalancerHealtCheckHttp(LoadBalancerHealthCheckHttp):
+    """
+    Kept for backward compatibility.
+
+    .. deprecated:: 2.5.4
+        Use :class:``hcloud.load_balancers.domain.LoadBalancerHealthCheckHttp`` instead.
+    """
+
+    def __init__(
+        self,
+        domain: str | None = None,
+        path: str | None = None,
+        response: str | None = None,
+        status_codes: list | None = None,
+        tls: bool | None = None,
+    ):
+        warnings.warn(
+            "The 'hcloud.load_balancers.domain.LoadBalancerHealtCheckHttp' class is deprecated, please use the "
+            "'hcloud.load_balancers.domain.LoadBalancerHealthCheckHttp' class instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(domain, path, response, status_codes, tls)
 
 
 class LoadBalancerTarget(BaseDomain):

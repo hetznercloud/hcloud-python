@@ -20,8 +20,8 @@ from .domain import (
     IPv6Network,
     LoadBalancer,
     LoadBalancerAlgorithm,
-    LoadBalancerHealtCheckHttp,
     LoadBalancerHealthCheck,
+    LoadBalancerHealthCheckHttp,
     LoadBalancerService,
     LoadBalancerServiceHttp,
     LoadBalancerTarget,
@@ -139,7 +139,7 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
                     timeout=service["health_check"]["timeout"],
                 )
                 if tmp_service.health_check.protocol != "tcp":
-                    tmp_service.health_check.http = LoadBalancerHealtCheckHttp(
+                    tmp_service.health_check.http = LoadBalancerHealthCheckHttp(
                         domain=service["health_check"]["http"]["domain"],
                         path=service["health_check"]["http"]["path"],
                         response=service["health_check"]["http"]["response"],
