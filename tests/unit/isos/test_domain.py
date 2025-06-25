@@ -7,6 +7,16 @@ import pytest
 from hcloud.isos import Iso
 
 
+@pytest.mark.parametrize(
+    "value",
+    [
+        (Iso(id=1),),
+    ],
+)
+def test_eq(value):
+    assert value == value
+
+
 class TestIso:
     @pytest.fixture()
     def deprecated_iso(self):

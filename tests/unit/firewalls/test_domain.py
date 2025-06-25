@@ -3,7 +3,29 @@ from __future__ import annotations
 import datetime
 from datetime import timezone
 
-from hcloud.firewalls import Firewall
+import pytest
+
+from hcloud.firewalls import (
+    Firewall,
+    FirewallResource,
+    FirewallResourceAppliedToResources,
+    FirewallResourceLabelSelector,
+    FirewallRule,
+)
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        (Firewall(id=1),),
+        (FirewallRule(direction="in", protocol="icmp", source_ips=[]),),
+        (FirewallResource(type="server"),),
+        (FirewallResourceAppliedToResources(type="server"),),
+        (FirewallResourceLabelSelector(),),
+    ],
+)
+def test_eq(value):
+    assert value == value
 
 
 class TestFirewall:

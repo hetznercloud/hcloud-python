@@ -114,6 +114,12 @@ class ManagedCertificateError(BaseDomain):
         Message detailing the error
     """
 
+    __api_properties__ = (
+        "code",
+        "message",
+    )
+    __slots__ = __api_properties__
+
     def __init__(self, code: str | None = None, message: str | None = None):
         self.code = code
         self.message = message
