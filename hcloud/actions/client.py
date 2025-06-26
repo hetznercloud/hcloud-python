@@ -30,6 +30,7 @@ class BoundAction(BoundModelBase, Action):
         """Wait until the specific action has status=finished.
 
         :param max_retries: int Specify how many retries will be performed before an ActionTimeoutException will be raised.
+        :param timeout: Timeout in seconds before an ActionTimeoutException will be raised.
         :raises: ActionFailedException when action is finished with status==error
         :raises: ActionTimeoutException when Action is still in status==running after max_retries or timeout is reached.
         """
@@ -207,7 +208,8 @@ class ActionsClient(ResourceActionsClient):
             # pylint: disable=protected-access
             if wait(self._client._poll_interval_func(retries)):
                 raise ActionGroupException(
-                    [ActionTimeoutException(action=action) for action in running]
+                    failed=[ActionTimeoutException(action) for action in running],
+                    completed=completed,
                 )
 
             retries += 1
