@@ -7,6 +7,7 @@ import pytest
 from hcloud.actions import (
     Action,
     ActionFailedException,
+    ActionGroupException,
     ActionsClient,
     ActionTimeoutException,
     BoundAction,
@@ -197,3 +198,90 @@ class TestActionsClient:
         assert action2._client == actions_client._client.actions
         assert action2.id == 2
         assert action2.command == "stop_server"
+
+    def test_wait_for(self, actions_client: ActionsClient):
+        actions = [Action(id=1), Action(id=2)]
+
+        # Speed up test by not really waiting
+        actions_client._client._poll_interval_func = mock.MagicMock()
+        actions_client._client._poll_interval_func.return_value = 0.1
+
+        actions_client._client.request.side_effect = [
+            {
+                "actions": [
+                    {"id": 1, "status": "running"},
+                    {"id": 2, "status": "success"},
+                ]
+            },
+            {
+                "actions": [
+                    {"id": 1, "status": "success"},
+                ]
+            },
+        ]
+
+        actions = actions_client.wait_for(actions)
+
+        actions_client._client.request.assert_has_calls(
+            [
+                mock.call(method="GET", url="/actions", params={"id": (1, 2)}),
+                mock.call(method="GET", url="/actions", params={"id": (1,)}),
+            ]
+        )
+
+        assert len(actions) == 2
+
+    def test_wait_for_error(self, actions_client: ActionsClient):
+        actions = [Action(id=1), Action(id=2)]
+
+        # Speed up test by not really waiting
+        actions_client._client._poll_interval_func = mock.MagicMock()
+        actions_client._client._poll_interval_func.return_value = 0.1
+
+        actions_client._client.request.side_effect = [
+            {
+                "actions": [
+                    {"id": 1, "status": "running"},
+                    {
+                        "id": 2,
+                        "status": "error",
+                        "error": {"code": "failed", "message": "Action failed"},
+                    },
+                ]
+            },
+        ]
+
+        with pytest.raises(ActionFailedException):
+            actions_client.wait_for(actions)
+
+        actions_client._client.request.assert_has_calls(
+            [
+                mock.call(method="GET", url="/actions", params={"id": (1, 2)}),
+            ]
+        )
+
+    def test_wait_for_timeout(self, actions_client: ActionsClient):
+        actions = [
+            Action(id=1, status="running", command="create_server"),
+            Action(id=2, status="running", command="start_server"),
+        ]
+
+        # Speed up test by not really waiting
+        actions_client._client._poll_interval_func = mock.MagicMock()
+        actions_client._client._poll_interval_func.return_value = 0.1
+
+        actions_client._client.request.return_value = {
+            "actions": [
+                {"id": 1, "status": "running", "command": "create_server"},
+                {"id": 2, "status": "running", "command": "start_server"},
+            ]
+        }
+
+        with pytest.raises(ActionGroupException):
+            actions_client.wait_for(actions, timeout=0.2)
+
+        actions_client._client.request.assert_has_calls(
+            [
+                mock.call(method="GET", url="/actions", params={"id": (1, 2)}),
+            ]
+        )
