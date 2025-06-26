@@ -141,7 +141,6 @@ class ActionsClient(ResourceActionsClient):
     def __init__(self, client: Client):
         super().__init__(client, None)
 
-    # TODO: Consider making public?
     def _get_list_by_ids(self, ids: list[int]) -> list[BoundAction]:
         """
         Get a list of Actions by their IDs.
@@ -168,7 +167,6 @@ class ActionsClient(ResourceActionsClient):
                 for action_data in response["actions"]
             )
 
-        # TODO: Should this be moved to the the wait function?
         if len(ids) != len(actions):
             found_ids = [a.id for a in actions]
             not_found_ids = list(set(ids) - set(found_ids))
