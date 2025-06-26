@@ -197,7 +197,7 @@ class ActionsClient(ResourceActionsClient):
         :raises: ActionFailedException when an Action failed.
         :return: List of succeeded Actions.
         """
-        running: list[BoundAction] = list(actions)
+        running: list[BoundAction] = actions.copy()  # type: ignore[assignment]
         completed: list[BoundAction] = []
 
         retries = 0
