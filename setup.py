@@ -21,11 +21,10 @@ setup(
         "Changelog": "https://github.com/hetznercloud/hcloud-python/blob/main/CHANGELOG.md",
         "Source Code": "https://github.com/hetznercloud/hcloud-python",
     },
-    license="MIT license",
+    license="MIT",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
-        "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.9",
