@@ -35,7 +35,8 @@ class TestBoundServerType:
         assert bound_server_type.deprecation.unavailable_after == datetime(
             2023, 9, 1, tzinfo=timezone.utc
         )
-        assert bound_server_type.included_traffic == 21990232555520
+        with pytest.deprecated_call():
+            assert bound_server_type.included_traffic == 21990232555520
 
 
 class TestServerTypesClient:
