@@ -216,7 +216,8 @@ class TestImagesClient:
 
     def test_get_by_name(self, images_client, one_images_response):
         images_client._client.request.return_value = one_images_response
-        image = images_client.get_by_name("ubuntu-20.04")
+        with pytest.deprecated_call():
+            image = images_client.get_by_name("ubuntu-20.04")
 
         params = {"name": "ubuntu-20.04"}
 
