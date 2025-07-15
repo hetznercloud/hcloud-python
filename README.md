@@ -60,6 +60,21 @@ for server in servers:
 
 We support python versions until [`end-of-life`](https://devguide.python.org/versions/#status-of-python-versions).
 
+## Experimental features
+
+Experimental features are published as part of our regular releases (e.g. a product
+public beta). During an experimental phase, breaking changes on those features may occur
+within minor releases.
+
+While experimental features will be announced in the release notes, you can also find
+whether a python class or function is experimental in its docstring:
+
+```
+Experimental:
+    $PRODUCT is experimental, breaking changes may occur within minor releases.
+    See https://docs.hetzner.cloud/changelog#$SLUG for more details.
+```
+
 ## Development
 
 First, create a virtual environment and activate it:
@@ -125,6 +140,21 @@ warnings.warn(
     stacklevel=2,
 )
 ```
+
+### Releasing experimental features
+
+To publish experimental features as part of regular releases:
+
+- an announcement, including a link to a changelog entry, must written in the release notes.
+- an `Experimental` notice, including a link to a changelog entry, must be added to the python classes and functions that are experimental:
+
+  ```py
+  """
+  Experimental:
+      $PRODUCT is experimental, breaking changes may occur within minor releases.
+      See https://docs.hetzner.cloud/changelog#$SLUG for more details.
+  """
+  ```
 
 ## License
 
