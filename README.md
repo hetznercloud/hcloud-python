@@ -145,7 +145,7 @@ warnings.warn(
 
 To publish experimental features as part of regular releases:
 
-- an announcement, including a link to a changelog entry, must written in the release notes.
+- an announcement, including a link to a changelog entry, must be added to the release notes.
 - an `Experimental` notice, including a link to a changelog entry, must be added to the python classes and functions that are experimental:
 
   ```py
