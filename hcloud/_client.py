@@ -25,6 +25,7 @@ from .primary_ips import PrimaryIPsClient
 from .server_types import ServerTypesClient
 from .servers import ServersClient
 from .ssh_keys import SSHKeysClient
+from .storage_box_types import StorageBoxTypesClient
 from .volumes import VolumesClient
 
 
@@ -248,6 +249,12 @@ class Client:
         """PlacementGroupsClient Instance
 
         :type: :class:`PlacementGroupsClient <hcloud.placement_groups.client.PlacementGroupsClient>`
+        """
+
+        self.storage_box_types = StorageBoxTypesClient(self)
+        """StorageBoxTypesClient Instance
+
+        :type: :class:`StorageBoxTypesClient <hcloud.storage_box_types.client.StorageBoxTypesClient>`
         """
 
     def _get_user_agent(self) -> str:
