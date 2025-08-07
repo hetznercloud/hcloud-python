@@ -129,11 +129,14 @@ class Client:
         poll_interval: int | float | BackoffFunction = 1.0,
         poll_max_retries: int = 120,
         timeout: float | tuple[float, float] | None = None,
+        *,
+        api_endpoint_hetzner: str = "https://api.hetzner.com/v1",
     ):
         """Create a new Client instance
 
         :param token: Hetzner Cloud API token
         :param api_endpoint: Hetzner Cloud API endpoint
+        :param api_endpoint_hetzner: Hetzner API endpoint.
         :param application_name: Your application name
         :param application_version: Your application _version
         :param poll_interval:
@@ -145,6 +148,7 @@ class Client:
         """
         self.token = token
         self._api_endpoint = api_endpoint
+        self._api_endpoint_hetzner = api_endpoint_hetzner
         self._application_name = application_name
         self._application_version = application_version
         self._requests_session = requests.Session()
@@ -276,14 +280,43 @@ class Client:
     ) -> dict:
         """Perform a request to the Hetzner Cloud API, wrapper around requests.request
 
-        :param method: HTTP Method to perform the Request
-        :param url: URL of the Endpoint
+        :param method: Method to perform the request
+        :param url: URL of the endpoint
+        :param timeout: Requests timeout in seconds
+        :return: Response
+        """
+        return self._request(method, self._api_endpoint + url, **kwargs)
+
+    def _request_hetzner(  # type: ignore[no-untyped-def]
+        self,
+        method: str,
+        url: str,
+        **kwargs,
+    ) -> dict:
+        """Perform a request to the Hetzner API, wrapper around requests.request
+
+        :param method: Method to perform the request
+        :param url: URL of the endpoint
+        :param timeout: Requests timeout in seconds
+        :return: Response
+        """
+        return self._request(method, self._api_endpoint_hetzner + url, **kwargs)
+
+    def _request(  # type: ignore[no-untyped-def]
+        self,
+        method: str,
+        url: str,
+        **kwargs,
+    ) -> dict:
+        """Perform a request to the provided URL, wrapper around requests.request
+
+        :param method: Method to perform the request
+        :param url: URL to perform the request
         :param timeout: Requests timeout in seconds
         :return: Response
         """
         kwargs.setdefault("timeout", self._requests_timeout)
 
-        url = self._api_endpoint + url
         headers = self._get_headers()
 
         retries = 0
