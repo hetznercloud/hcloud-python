@@ -141,11 +141,14 @@ class Client:
         poll_interval: int | float | BackoffFunction = 1.0,
         poll_max_retries: int = 120,
         timeout: float | tuple[float, float] | None = None,
+        *,
+        api_endpoint_hetzner: str = "https://api.hetzner.com/v1",
     ):
         """Create a new Client instance
 
         :param token: Hetzner Cloud API token
         :param api_endpoint: Hetzner Cloud API endpoint
+        :param api_endpoint_hetzner: Hetzner API endpoint.
         :param application_name: Your application name
         :param application_version: Your application _version
         :param poll_interval:
@@ -158,6 +161,15 @@ class Client:
         self._client = ClientBase(
             token=token,
             endpoint=api_endpoint,
+            application_name=application_name,
+            application_version=application_version,
+            poll_interval=poll_interval,
+            poll_max_retries=poll_max_retries,
+            timeout=timeout,
+        )
+        self._client_hetzner = ClientBase(
+            token=token,
+            endpoint=api_endpoint_hetzner,
             application_name=application_name,
             application_version=application_version,
             poll_interval=poll_interval,
