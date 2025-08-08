@@ -25,6 +25,7 @@ from .primary_ips import PrimaryIPsClient
 from .server_types import ServerTypesClient
 from .servers import ServersClient
 from .ssh_keys import SSHKeysClient
+from .storage_box_types import StorageBoxTypesClient
 from .volumes import VolumesClient
 from .zones import ZonesClient
 
@@ -271,6 +272,12 @@ class Client:
         """ZonesClient Instance
 
         :type: :class:`ZonesClient <hcloud.zones.client.ZonesClient>`
+        """
+
+        self.storage_box_types = StorageBoxTypesClient(self)
+        """StorageBoxTypesClient Instance
+
+        :type: :class:`StorageBoxTypesClient <hcloud.storage_box_types.client.StorageBoxTypesClient>`
         """
 
     def request(  # type: ignore[no-untyped-def]
