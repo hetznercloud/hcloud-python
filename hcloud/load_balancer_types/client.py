@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BoundModelBase, ClientEntityBase, Meta
+from ..core import BaseResourceClient, BoundModelBase, Meta
 from .domain import LoadBalancerType
 
 if TYPE_CHECKING:
@@ -20,7 +20,7 @@ class LoadBalancerTypesPageResult(NamedTuple):
     meta: Meta
 
 
-class LoadBalancerTypesClient(ClientEntityBase):
+class LoadBalancerTypesClient(BaseResourceClient):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundLoadBalancerType:

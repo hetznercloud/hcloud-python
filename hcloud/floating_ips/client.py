@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
-from ..core import BoundModelBase, ClientEntityBase, Meta
+from ..core import BaseResourceClient, BoundModelBase, Meta
 from ..locations import BoundLocation
 from .domain import CreateFloatingIPResponse, FloatingIP
 
@@ -139,7 +139,7 @@ class FloatingIPsPageResult(NamedTuple):
     meta: Meta
 
 
-class FloatingIPsClient(ClientEntityBase):
+class FloatingIPsClient(BaseResourceClient):
     _client: Client
 
     actions: ResourceActionsClient

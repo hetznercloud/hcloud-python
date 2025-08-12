@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BoundModelBase, ClientEntityBase, Meta
+from ..core import BaseResourceClient, BoundModelBase, Meta
 from .domain import Location
 
 if TYPE_CHECKING:
@@ -20,7 +20,7 @@ class LocationsPageResult(NamedTuple):
     meta: Meta
 
 
-class LocationsClient(ClientEntityBase):
+class LocationsClient(BaseResourceClient):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundLocation:
