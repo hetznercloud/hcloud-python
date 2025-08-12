@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, NamedTuple
 from dateutil.parser import isoparse
 
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
-from ..core import BoundModelBase, ClientEntityBase, Meta
+from ..core import BaseResourceClient, BoundModelBase, Meta
 from ..datacenters import BoundDatacenter
 from ..firewalls import BoundFirewall
 from ..floating_ips import BoundFloatingIP
@@ -482,7 +482,7 @@ class ServersPageResult(NamedTuple):
     meta: Meta
 
 
-class ServersClient(ClientEntityBase):
+class ServersClient(BaseResourceClient):
     _client: Client
 
     actions: ResourceActionsClient

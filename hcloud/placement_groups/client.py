@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import BoundAction
-from ..core import BoundModelBase, ClientEntityBase, Meta
+from ..core import BaseResourceClient, BoundModelBase, Meta
 from .domain import CreatePlacementGroupResponse, PlacementGroup
 
 if TYPE_CHECKING:
@@ -43,7 +43,7 @@ class PlacementGroupsPageResult(NamedTuple):
     meta: Meta
 
 
-class PlacementGroupsClient(ClientEntityBase):
+class PlacementGroupsClient(BaseResourceClient):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundPlacementGroup:

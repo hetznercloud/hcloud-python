@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
-from ..core import BoundModelBase, ClientEntityBase, Meta
+from ..core import BaseResourceClient, BoundModelBase, Meta
 from .domain import Network, NetworkRoute, NetworkSubnet
 
 if TYPE_CHECKING:
@@ -166,7 +166,7 @@ class NetworksPageResult(NamedTuple):
     meta: Meta
 
 
-class NetworksClient(ClientEntityBase):
+class NetworksClient(BaseResourceClient):
     _client: Client
 
     actions: ResourceActionsClient

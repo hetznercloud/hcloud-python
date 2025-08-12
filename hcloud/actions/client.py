@@ -4,7 +4,7 @@ import time
 import warnings
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BoundModelBase, ClientEntityBase, Meta
+from ..core import BaseResourceClient, BoundModelBase, Meta
 from .domain import Action, ActionFailedException, ActionTimeoutException
 
 if TYPE_CHECKING:
@@ -50,7 +50,7 @@ class ActionsPageResult(NamedTuple):
     meta: Meta
 
 
-class ResourceActionsClient(ClientEntityBase):
+class ResourceActionsClient(BaseResourceClient):
     _resource: str
 
     def __init__(self, client: Client, resource: str | None):

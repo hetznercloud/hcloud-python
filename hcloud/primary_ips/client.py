@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import BoundAction, ResourceActionsClient
-from ..core import BoundModelBase, ClientEntityBase, Meta
+from ..core import BaseResourceClient, BoundModelBase, Meta
 from .domain import CreatePrimaryIPResponse, PrimaryIP
 
 if TYPE_CHECKING:
@@ -97,7 +97,7 @@ class PrimaryIPsPageResult(NamedTuple):
     meta: Meta
 
 
-class PrimaryIPsClient(ClientEntityBase):
+class PrimaryIPsClient(BaseResourceClient):
     _client: Client
 
     actions: ResourceActionsClient

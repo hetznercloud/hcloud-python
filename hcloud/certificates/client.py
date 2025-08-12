@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
-from ..core import BoundModelBase, ClientEntityBase, Meta
+from ..core import BaseResourceClient, BoundModelBase, Meta
 from .domain import (
     Certificate,
     CreateManagedCertificateResponse,
@@ -103,7 +103,7 @@ class CertificatesPageResult(NamedTuple):
     meta: Meta
 
 
-class CertificatesClient(ClientEntityBase):
+class CertificatesClient(BaseResourceClient):
     _client: Client
 
     actions: ResourceActionsClient

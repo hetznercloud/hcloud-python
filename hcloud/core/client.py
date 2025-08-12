@@ -76,7 +76,7 @@ class BoundModelBase:
 
     def __init__(
         self,
-        client: ClientEntityBase,
+        client: BaseResourceClient,
         data: dict,
         complete: bool = True,
     ):
