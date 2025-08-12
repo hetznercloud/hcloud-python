@@ -6,10 +6,10 @@ from unittest import mock
 import pytest
 
 from hcloud.actions import ActionsPageResult
-from hcloud.core import BaseDomain, BaseResourceClient, BoundModelBase, Meta
+from hcloud.core import BaseBoundModel, BaseDomain, BaseResourceClient, Meta
 
 
-class TestBoundModelBase:
+class TestBaseBoundModel:
     @pytest.fixture()
     def bound_model_class(self):
         class Model(BaseDomain):
@@ -21,7 +21,7 @@ class TestBoundModelBase:
                 self.name = name
                 self.description = description
 
-        class BoundModel(BoundModelBase, Model):
+        class BoundModel(BaseBoundModel, Model):
             model = Model
 
         return BoundModel

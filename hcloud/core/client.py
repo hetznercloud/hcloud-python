@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Callable
 
 if TYPE_CHECKING:
     from .._client import Client
+    from .domain import BaseDomain
 
 
 class BaseResourceClient:
@@ -69,10 +70,10 @@ class ClientEntityBase(BaseResourceClient):
         super().__init__(client)
 
 
-class BoundModelBase:
-    """Bound Model Base"""
+class BaseBoundModel:
+    """Base Bound Model"""
 
-    model: Any
+    model: type[BaseDomain]
 
     def __init__(
         self,
@@ -121,3 +122,26 @@ class BoundModelBase:
         if not isinstance(other, self.__class__):
             return NotImplemented
         return self.data_model == other.data_model
+
+
+class BoundModelBase(BaseBoundModel):
+    """
+    Kept for backward compatibility.
+
+    .. deprecated:: 2.6.0
+        Use :class:``hcloud.core.client.BaseBoundModel`` instead.
+    """
+
+    def __init__(
+        self,
+        client: BaseResourceClient,
+        data: dict,
+        complete: bool = True,
+    ):
+        warnings.warn(
+            "The 'hcloud.core.client.BoundModelBase' class is deprecated, please use the "
+            "'hcloud.core.client.BaseBoundModel' class instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(client, data, complete)
