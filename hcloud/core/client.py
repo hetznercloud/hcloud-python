@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Callable
 
 if TYPE_CHECKING:
     from .._client import Client
+    from .domain import BaseDomain
 
 
 class ResourceClientBase:
@@ -72,7 +73,7 @@ class ClientEntityBase(ResourceClientBase):
 class BoundModelBase:
     """Bound Model Base"""
 
-    model: Any
+    model: type[BaseDomain]
 
     def __init__(
         self,
