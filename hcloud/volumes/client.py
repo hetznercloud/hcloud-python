@@ -21,7 +21,7 @@ class BoundVolume(BoundModelBase, Volume):
     def __init__(self, client: VolumesClient, data: dict, complete: bool = True):
         location = data.get("location")
         if location is not None:
-            data["location"] = BoundLocation(client._client.locations, location)
+            data["location"] = BoundLocation(client._parent.locations, location)
 
         # pylint: disable=import-outside-toplevel
         from ..servers import BoundServer
@@ -29,7 +29,7 @@ class BoundVolume(BoundModelBase, Volume):
         server = data.get("server")
         if server is not None:
             data["server"] = BoundServer(
-                client._client.servers, {"id": server}, complete=False
+                client._parent.servers, {"id": server}, complete=False
             )
         super().__init__(client, data, complete)
 

@@ -23,12 +23,12 @@ class BoundImage(BoundModelBase, Image):
         created_from = data.get("created_from")
         if created_from is not None:
             data["created_from"] = BoundServer(
-                client._client.servers, created_from, complete=False
+                client._parent.servers, created_from, complete=False
             )
         bound_to = data.get("bound_to")
         if bound_to is not None:
             data["bound_to"] = BoundServer(
-                client._client.servers, {"id": bound_to}, complete=False
+                client._parent.servers, {"id": bound_to}, complete=False
             )
 
         super().__init__(client, data)

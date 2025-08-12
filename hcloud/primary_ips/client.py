@@ -22,7 +22,7 @@ class BoundPrimaryIP(BoundModelBase, PrimaryIP):
 
         datacenter = data.get("datacenter", {})
         if datacenter:
-            data["datacenter"] = BoundDatacenter(client._client.datacenters, datacenter)
+            data["datacenter"] = BoundDatacenter(client._parent.datacenters, datacenter)
 
         super().__init__(client, data, complete)
 

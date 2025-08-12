@@ -64,7 +64,7 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
             private_nets = [
                 PrivateNet(
                     network=BoundNetwork(
-                        client._client.networks,
+                        client._parent.networks,
                         {"id": private_net["network"]},
                         complete=False,
                     ),
@@ -81,7 +81,7 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
                 tmp_target = LoadBalancerTarget(type=target["type"])
                 if target["type"] == "server":
                     tmp_target.server = BoundServer(
-                        client._client.servers, data=target["server"], complete=False
+                        client._parent.servers, data=target["server"], complete=False
                     )
                     tmp_target.use_private_ip = target["use_private_ip"]
                 elif target["type"] == "label_selector":
@@ -124,7 +124,7 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
                     )
                     tmp_service.http.certificates = [
                         BoundCertificate(
-                            client._client.certificates,
+                            client._parent.certificates,
                             {"id": certificate},
                             complete=False,
                         )
@@ -152,12 +152,12 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
         load_balancer_type = data.get("load_balancer_type")
         if load_balancer_type is not None:
             data["load_balancer_type"] = BoundLoadBalancerType(
-                client._client.load_balancer_types, load_balancer_type
+                client._parent.load_balancer_types, load_balancer_type
             )
 
         location = data.get("location")
         if location is not None:
-            data["location"] = BoundLocation(client._client.locations, location)
+            data["location"] = BoundLocation(client._parent.locations, location)
 
         super().__init__(client, data, complete)
 

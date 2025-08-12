@@ -32,7 +32,7 @@ class BoundNetwork(BoundModelBase, Network):
         servers = data.get("servers", [])
         if servers is not None:
             servers = [
-                BoundServer(client._client.servers, {"id": server}, complete=False)
+                BoundServer(client._parent.servers, {"id": server}, complete=False)
                 for server in servers
             ]
             data["servers"] = servers

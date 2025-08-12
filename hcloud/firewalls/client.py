@@ -52,7 +52,7 @@ class BoundFirewall(BoundModelBase, Firewall):
                             type=resource["type"],
                             server=(
                                 BoundServer(
-                                    client._client.servers,
+                                    client._parent.servers,
                                     resource.get("server"),
                                     complete=False,
                                 )
@@ -68,7 +68,7 @@ class BoundFirewall(BoundModelBase, Firewall):
                         FirewallResource(
                             type=firewall_resource["type"],
                             server=BoundServer(
-                                client._client.servers,
+                                client._parent.servers,
                                 firewall_resource["server"],
                                 complete=False,
                             ),

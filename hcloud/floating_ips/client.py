@@ -25,13 +25,13 @@ class BoundFloatingIP(BoundModelBase, FloatingIP):
         server = data.get("server")
         if server is not None:
             data["server"] = BoundServer(
-                client._client.servers, {"id": server}, complete=False
+                client._parent.servers, {"id": server}, complete=False
             )
 
         home_location = data.get("home_location")
         if home_location is not None:
             data["home_location"] = BoundLocation(
-                client._client.locations, home_location
+                client._parent.locations, home_location
             )
 
         super().__init__(client, data, complete)

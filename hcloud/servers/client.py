@@ -57,28 +57,28 @@ class BoundServer(BoundModelBase, Server):
     def __init__(self, client: ServersClient, data: dict, complete: bool = True):
         datacenter = data.get("datacenter")
         if datacenter is not None:
-            data["datacenter"] = BoundDatacenter(client._client.datacenters, datacenter)
+            data["datacenter"] = BoundDatacenter(client._parent.datacenters, datacenter)
 
         volumes = data.get("volumes", [])
         if volumes:
             volumes = [
-                BoundVolume(client._client.volumes, {"id": volume}, complete=False)
+                BoundVolume(client._parent.volumes, {"id": volume}, complete=False)
                 for volume in volumes
             ]
             data["volumes"] = volumes
 
         image = data.get("image", None)
         if image is not None:
-            data["image"] = BoundImage(client._client.images, image)
+            data["image"] = BoundImage(client._parent.images, image)
 
         iso = data.get("iso", None)
         if iso is not None:
-            data["iso"] = BoundIso(client._client.isos, iso)
+            data["iso"] = BoundIso(client._parent.isos, iso)
 
         server_type = data.get("server_type")
         if server_type is not None:
             data["server_type"] = BoundServerType(
-                client._client.server_types, server_type
+                client._parent.server_types, server_type
             )
 
         public_net = data.get("public_net")
@@ -90,7 +90,7 @@ class BoundServer(BoundModelBase, Server):
             )
             ipv4_primary_ip = (
                 BoundPrimaryIP(
-                    client._client.primary_ips,
+                    client._parent.primary_ips,
                     {"id": public_net["ipv4"]["id"]},
                     complete=False,
                 )
@@ -104,7 +104,7 @@ class BoundServer(BoundModelBase, Server):
             )
             ipv6_primary_ip = (
                 BoundPrimaryIP(
-                    client._client.primary_ips,
+                    client._parent.primary_ips,
                     {"id": public_net["ipv6"]["id"]},
                     complete=False,
                 )
@@ -113,14 +113,14 @@ class BoundServer(BoundModelBase, Server):
             )
             floating_ips = [
                 BoundFloatingIP(
-                    client._client.floating_ips, {"id": floating_ip}, complete=False
+                    client._parent.floating_ips, {"id": floating_ip}, complete=False
                 )
                 for floating_ip in public_net["floating_ips"]
             ]
             firewalls = [
                 PublicNetworkFirewall(
                     BoundFirewall(
-                        client._client.firewalls, {"id": firewall["id"]}, complete=False
+                        client._parent.firewalls, {"id": firewall["id"]}, complete=False
                     ),
                     status=firewall["status"],
                 )
@@ -143,7 +143,7 @@ class BoundServer(BoundModelBase, Server):
             private_nets = [
                 PrivateNet(
                     network=BoundNetwork(
-                        client._client.networks,
+                        client._parent.networks,
                         {"id": private_net["network"]},
                         complete=False,
                     ),
@@ -158,7 +158,7 @@ class BoundServer(BoundModelBase, Server):
         placement_group = data.get("placement_group")
         if placement_group:
             placement_group = BoundPlacementGroup(
-                client._client.placement_groups, placement_group
+                client._parent.placement_groups, placement_group
             )
             data["placement_group"] = placement_group
 
@@ -996,7 +996,7 @@ class ServersClient(ResourceClientBase):
         )
         return CreateImageResponse(
             action=BoundAction(self._parent.actions, response["action"]),
-            image=BoundImage(self._client.images, response["image"]),
+            image=BoundImage(self._parent.images, response["image"]),
         )
 
     def rebuild(

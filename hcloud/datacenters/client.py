@@ -16,25 +16,25 @@ class BoundDatacenter(BoundModelBase, Datacenter):
     def __init__(self, client: DatacentersClient, data: dict):
         location = data.get("location")
         if location is not None:
-            data["location"] = BoundLocation(client._client.locations, location)
+            data["location"] = BoundLocation(client._parent.locations, location)
 
         server_types = data.get("server_types")
         if server_types is not None:
             available = [
                 BoundServerType(
-                    client._client.server_types, {"id": server_type}, complete=False
+                    client._parent.server_types, {"id": server_type}, complete=False
                 )
                 for server_type in server_types["available"]
             ]
             supported = [
                 BoundServerType(
-                    client._client.server_types, {"id": server_type}, complete=False
+                    client._parent.server_types, {"id": server_type}, complete=False
                 )
                 for server_type in server_types["supported"]
             ]
             available_for_migration = [
                 BoundServerType(
-                    client._client.server_types, {"id": server_type}, complete=False
+                    client._parent.server_types, {"id": server_type}, complete=False
                 )
                 for server_type in server_types["available_for_migration"]
             ]
