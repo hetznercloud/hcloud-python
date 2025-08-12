@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import BoundAction, ResourceActionsClient
-from ..core import BaseResourceClient, BoundModelBase, Meta
+from ..core import BaseBoundModel, BaseResourceClient, Meta
 from .domain import CreatePrimaryIPResponse, PrimaryIP
 
 if TYPE_CHECKING:
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from ..datacenters import BoundDatacenter, Datacenter
 
 
-class BoundPrimaryIP(BoundModelBase, PrimaryIP):
+class BoundPrimaryIP(BaseBoundModel, PrimaryIP):
     _client: PrimaryIPsClient
 
     model = PrimaryIP

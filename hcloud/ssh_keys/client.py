@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BaseResourceClient, BoundModelBase, Meta
+from ..core import BaseBoundModel, BaseResourceClient, Meta
 from .domain import SSHKey
 
 if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundSSHKey(BoundModelBase, SSHKey):
+class BoundSSHKey(BaseBoundModel, SSHKey):
     _client: SSHKeysClient
 
     model = SSHKey

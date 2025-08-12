@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BaseResourceClient, BoundModelBase, Meta
+from ..core import BaseBoundModel, BaseResourceClient, Meta
 from .domain import Location
 
 if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundLocation(BoundModelBase, Location):
+class BoundLocation(BaseBoundModel, Location):
     _client: LocationsClient
 
     model = Location

@@ -4,14 +4,14 @@ import warnings
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
-from ..core import BaseResourceClient, BoundModelBase, Meta
+from ..core import BaseBoundModel, BaseResourceClient, Meta
 from .domain import Image
 
 if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundImage(BoundModelBase, Image):
+class BoundImage(BaseBoundModel, Image):
     _client: ImagesClient
 
     model = Image

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, NamedTuple
 from dateutil.parser import isoparse
 
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
-from ..core import BaseResourceClient, BoundModelBase, Meta
+from ..core import BaseBoundModel, BaseResourceClient, Meta
 from ..datacenters import BoundDatacenter
 from ..firewalls import BoundFirewall
 from ..floating_ips import BoundFloatingIP
@@ -48,7 +48,7 @@ if TYPE_CHECKING:
     from .domain import ServerCreatePublicNetwork
 
 
-class BoundServer(BoundModelBase, Server):
+class BoundServer(BaseBoundModel, Server):
     _client: ServersClient
 
     model = Server

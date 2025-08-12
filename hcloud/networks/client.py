@@ -3,14 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
-from ..core import BaseResourceClient, BoundModelBase, Meta
+from ..core import BaseBoundModel, BaseResourceClient, Meta
 from .domain import Network, NetworkRoute, NetworkSubnet
 
 if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundNetwork(BoundModelBase, Network):
+class BoundNetwork(BaseBoundModel, Network):
     _client: NetworksClient
 
     model = Network

@@ -4,14 +4,14 @@ import time
 import warnings
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BaseResourceClient, BoundModelBase, Meta
+from ..core import BaseBoundModel, BaseResourceClient, Meta
 from .domain import Action, ActionFailedException, ActionTimeoutException
 
 if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundAction(BoundModelBase, Action):
+class BoundAction(BaseBoundModel, Action):
     _client: ActionsClient
 
     model = Action

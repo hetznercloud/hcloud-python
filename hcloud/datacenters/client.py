@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BaseResourceClient, BoundModelBase, Meta
+from ..core import BaseBoundModel, BaseResourceClient, Meta
 from ..locations import BoundLocation
 from ..server_types import BoundServerType
 from .domain import Datacenter, DatacenterServerTypes
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundDatacenter(BoundModelBase, Datacenter):
+class BoundDatacenter(BaseBoundModel, Datacenter):
     _client: DatacentersClient
 
     model = Datacenter

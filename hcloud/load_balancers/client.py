@@ -7,7 +7,7 @@ from dateutil.parser import isoparse
 
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
 from ..certificates import BoundCertificate
-from ..core import BaseResourceClient, BoundModelBase, Meta
+from ..core import BaseBoundModel, BaseResourceClient, Meta
 from ..load_balancer_types import BoundLoadBalancerType
 from ..locations import BoundLocation
 from ..metrics import Metrics
@@ -40,7 +40,7 @@ if TYPE_CHECKING:
     from ..networks import Network
 
 
-class BoundLoadBalancer(BoundModelBase, LoadBalancer):
+class BoundLoadBalancer(BaseBoundModel, LoadBalancer):
     _client: LoadBalancersClient
 
     model = LoadBalancer

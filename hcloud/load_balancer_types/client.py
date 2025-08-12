@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BaseResourceClient, BoundModelBase, Meta
+from ..core import BaseBoundModel, BaseResourceClient, Meta
 from .domain import LoadBalancerType
 
 if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundLoadBalancerType(BoundModelBase, LoadBalancerType):
+class BoundLoadBalancerType(BaseBoundModel, LoadBalancerType):
     _client: LoadBalancerTypesClient
 
     model = LoadBalancerType

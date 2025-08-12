@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
-from ..core import BaseResourceClient, BoundModelBase, Meta
+from ..core import BaseBoundModel, BaseResourceClient, Meta
 from ..locations import BoundLocation
 from .domain import CreateFloatingIPResponse, FloatingIP
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from ..servers import BoundServer, Server
 
 
-class BoundFloatingIP(BoundModelBase, FloatingIP):
+class BoundFloatingIP(BaseBoundModel, FloatingIP):
     _client: FloatingIPsClient
 
     model = FloatingIP

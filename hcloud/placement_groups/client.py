@@ -3,14 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import BoundAction
-from ..core import BaseResourceClient, BoundModelBase, Meta
+from ..core import BaseBoundModel, BaseResourceClient, Meta
 from .domain import CreatePlacementGroupResponse, PlacementGroup
 
 if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundPlacementGroup(BoundModelBase, PlacementGroup):
+class BoundPlacementGroup(BaseBoundModel, PlacementGroup):
     _client: PlacementGroupsClient
 
     model = PlacementGroup

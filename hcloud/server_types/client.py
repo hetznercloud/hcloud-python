@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BaseResourceClient, BoundModelBase, Meta
+from ..core import BaseBoundModel, BaseResourceClient, Meta
 from .domain import ServerType
 
 if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundServerType(BoundModelBase, ServerType):
+class BoundServerType(BaseBoundModel, ServerType):
     _client: ServerTypesClient
 
     model = ServerType
