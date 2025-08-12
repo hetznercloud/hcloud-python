@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+import warnings
 from typing import TYPE_CHECKING, Any, Callable
 
 if TYPE_CHECKING:
     from .._client import Client
 
 
-class ClientEntityBase:
+class BaseResourceClient:
     _client: Client
 
     max_per_page: int = 50
@@ -48,6 +49,24 @@ class ClientEntityBase:
         # pylint: disable=no-member
         entities, _ = self.get_list(**kwargs)
         return entities[0] if entities else None
+
+
+class ClientEntityBase(BaseResourceClient):
+    """
+    Kept for backward compatibility.
+
+    .. deprecated:: 2.6.0
+        Use :class:``hcloud.core.client.BaseResourceClient`` instead.
+    """
+
+    def __init__(self, client: Client):
+        warnings.warn(
+            "The 'hcloud.core.client.ClientEntityBase' class is deprecated, please use the "
+            "'hcloud.core.client.BaseResourceClient' class instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(client)
 
 
 class BoundModelBase:
