@@ -6,13 +6,14 @@ from unittest import mock
 
 import pytest
 
+from hcloud import Client
 from hcloud.isos import BoundIso, IsosClient
 
 
 class TestBoundIso:
     @pytest.fixture()
-    def bound_iso(self, hetzner_client):
-        return BoundIso(client=hetzner_client.isos, data=dict(id=14))
+    def bound_iso(self, request_mock: mock.MagicMock, client: Client):
+        return BoundIso(client=client.isos, data=dict(id=14))
 
     def test_bound_iso_init(self, iso_response):
         bound_iso = BoundIso(client=mock.MagicMock(), data=iso_response["iso"])
@@ -36,13 +37,13 @@ class TestBoundIso:
 
 class TestIsosClient:
     @pytest.fixture()
-    def isos_client(self):
-        return IsosClient(client=mock.MagicMock())
+    def isos_client(self, client: Client):
+        return IsosClient(client)
 
-    def test_get_by_id(self, isos_client, iso_response):
-        isos_client._client.request.return_value = iso_response
+    def test_get_by_id(self, request_mock: mock.MagicMock, isos_client, iso_response):
+        request_mock.return_value = iso_response
         iso = isos_client.get_by_id(1)
-        isos_client._client.request.assert_called_with(url="/isos/1", method="GET")
+        request_mock.assert_called_with(url="/isos/1", method="GET")
         assert iso._client is isos_client
         assert iso.id == 4711
         assert iso.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
@@ -55,12 +56,12 @@ class TestIsosClient:
             {"name": "FreeBSD-11.0-RELEASE-amd64-dvd1", "page": 1, "per_page": 2},
         ],
     )
-    def test_get_list(self, isos_client, two_isos_response, params):
-        isos_client._client.request.return_value = two_isos_response
+    def test_get_list(
+        self, request_mock: mock.MagicMock, isos_client, two_isos_response, params
+    ):
+        request_mock.return_value = two_isos_response
         result = isos_client.get_list(**params)
-        isos_client._client.request.assert_called_with(
-            url="/isos", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/isos", method="GET", params=params)
 
         isos = result.isos
         assert result.meta is not None
@@ -81,15 +82,15 @@ class TestIsosClient:
     @pytest.mark.parametrize(
         "params", [{}, {"name": "FreeBSD-11.0-RELEASE-amd64-dvd1"}]
     )
-    def test_get_all(self, isos_client, two_isos_response, params):
-        isos_client._client.request.return_value = two_isos_response
+    def test_get_all(
+        self, request_mock: mock.MagicMock, isos_client, two_isos_response, params
+    ):
+        request_mock.return_value = two_isos_response
         isos = isos_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        isos_client._client.request.assert_called_with(
-            url="/isos", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/isos", method="GET", params=params)
 
         assert len(isos) == 2
 
@@ -104,15 +105,15 @@ class TestIsosClient:
         assert isos2.id == 4712
         assert isos2.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
 
-    def test_get_by_name(self, isos_client, one_isos_response):
-        isos_client._client.request.return_value = one_isos_response
+    def test_get_by_name(
+        self, request_mock: mock.MagicMock, isos_client, one_isos_response
+    ):
+        request_mock.return_value = one_isos_response
         iso = isos_client.get_by_name("FreeBSD-11.0-RELEASE-amd64-dvd1")
 
         params = {"name": "FreeBSD-11.0-RELEASE-amd64-dvd1"}
 
-        isos_client._client.request.assert_called_with(
-            url="/isos", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/isos", method="GET", params=params)
 
         assert iso._client is isos_client
         assert iso.id == 4711

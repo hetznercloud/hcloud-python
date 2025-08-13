@@ -4,6 +4,7 @@ from unittest import mock  # noqa: F401
 
 import pytest  # noqa: F401
 
+from hcloud import Client
 from hcloud.datacenters import BoundDatacenter, DatacentersClient, DatacenterServerTypes
 from hcloud.locations import BoundLocation
 
@@ -58,15 +59,15 @@ class TestBoundDatacenter:
 
 class TestDatacentersClient:
     @pytest.fixture()
-    def datacenters_client(self):
-        return DatacentersClient(client=mock.MagicMock())
+    def datacenters_client(self, client: Client):
+        return DatacentersClient(client)
 
-    def test_get_by_id(self, datacenters_client, datacenter_response):
-        datacenters_client._client.request.return_value = datacenter_response
+    def test_get_by_id(
+        self, request_mock: mock.MagicMock, datacenters_client, datacenter_response
+    ):
+        request_mock.return_value = datacenter_response
         datacenter = datacenters_client.get_by_id(1)
-        datacenters_client._client.request.assert_called_with(
-            url="/datacenters/1", method="GET"
-        )
+        request_mock.assert_called_with(url="/datacenters/1", method="GET")
         assert datacenter._client is datacenters_client
         assert datacenter.id == 1
         assert datacenter.name == "fsn1-dc8"
@@ -74,12 +75,16 @@ class TestDatacentersClient:
     @pytest.mark.parametrize(
         "params", [{"name": "fsn1", "page": 1, "per_page": 10}, {"name": ""}, {}]
     )
-    def test_get_list(self, datacenters_client, two_datacenters_response, params):
-        datacenters_client._client.request.return_value = two_datacenters_response
+    def test_get_list(
+        self,
+        request_mock: mock.MagicMock,
+        datacenters_client,
+        two_datacenters_response,
+        params,
+    ):
+        request_mock.return_value = two_datacenters_response
         result = datacenters_client.get_list(**params)
-        datacenters_client._client.request.assert_called_with(
-            url="/datacenters", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/datacenters", method="GET", params=params)
 
         datacenters = result.datacenters
         assert result.meta is not None
@@ -100,14 +105,18 @@ class TestDatacentersClient:
         assert isinstance(datacenter2.location, BoundLocation)
 
     @pytest.mark.parametrize("params", [{"name": "fsn1"}, {}])
-    def test_get_all(self, datacenters_client, two_datacenters_response, params):
-        datacenters_client._client.request.return_value = two_datacenters_response
+    def test_get_all(
+        self,
+        request_mock: mock.MagicMock,
+        datacenters_client,
+        two_datacenters_response,
+        params,
+    ):
+        request_mock.return_value = two_datacenters_response
         datacenters = datacenters_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
-        datacenters_client._client.request.assert_called_with(
-            url="/datacenters", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/datacenters", method="GET", params=params)
 
         assert len(datacenters) == 2
 
@@ -124,14 +133,14 @@ class TestDatacentersClient:
         assert datacenter2.name == "nbg1-dc3"
         assert isinstance(datacenter2.location, BoundLocation)
 
-    def test_get_by_name(self, datacenters_client, one_datacenters_response):
-        datacenters_client._client.request.return_value = one_datacenters_response
+    def test_get_by_name(
+        self, request_mock: mock.MagicMock, datacenters_client, one_datacenters_response
+    ):
+        request_mock.return_value = one_datacenters_response
         datacenter = datacenters_client.get_by_name("fsn1-dc8")
 
         params = {"name": "fsn1-dc8"}
-        datacenters_client._client.request.assert_called_with(
-            url="/datacenters", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/datacenters", method="GET", params=params)
 
         assert datacenter._client is datacenters_client
         assert datacenter.id == 1
