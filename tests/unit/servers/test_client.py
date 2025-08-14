@@ -643,15 +643,18 @@ class TestBoundServer:
 
 class TestServersClient:
     @pytest.fixture()
-    def servers_client(self):
-        return ServersClient(client=mock.MagicMock())
+    def servers_client(self, client: Client):
+        return ServersClient(client)
 
-    def test_get_by_id(self, servers_client, response_simple_server):
-        servers_client._client.request.return_value = response_simple_server
+    def test_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        response_simple_server,
+    ):
+        request_mock.return_value = response_simple_server
         bound_server = servers_client.get_by_id(1)
-        servers_client._client.request.assert_called_with(
-            url="/servers/1", method="GET"
-        )
+        request_mock.assert_called_with(url="/servers/1", method="GET")
         assert bound_server._client is servers_client
         assert bound_server.id == 1
         assert bound_server.name == "my-server"
@@ -664,12 +667,16 @@ class TestServersClient:
             {},
         ],
     )
-    def test_get_list(self, servers_client, response_simple_servers, params):
-        servers_client._client.request.return_value = response_simple_servers
+    def test_get_list(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        response_simple_servers,
+        params,
+    ):
+        request_mock.return_value = response_simple_servers
         result = servers_client.get_list(**params)
-        servers_client._client.request.assert_called_with(
-            url="/servers", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/servers", method="GET", params=params)
 
         bound_servers = result.servers
         assert result.meta is not None
@@ -690,15 +697,19 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "params", [{"name": "server1", "label_selector": "label1"}, {}]
     )
-    def test_get_all(self, servers_client, response_simple_servers, params):
-        servers_client._client.request.return_value = response_simple_servers
+    def test_get_all(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        response_simple_servers,
+        params,
+    ):
+        request_mock.return_value = response_simple_servers
         bound_servers = servers_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        servers_client._client.request.assert_called_with(
-            url="/servers", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/servers", method="GET", params=params)
 
         assert len(bound_servers) == 2
 
@@ -713,31 +724,37 @@ class TestServersClient:
         assert bound_server2.id == 2
         assert bound_server2.name == "my-server2"
 
-    def test_get_by_name(self, servers_client, response_simple_servers):
-        servers_client._client.request.return_value = response_simple_servers
+    def test_get_by_name(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        response_simple_servers,
+    ):
+        request_mock.return_value = response_simple_servers
         bound_server = servers_client.get_by_name("my-server")
 
         params = {"name": "my-server"}
 
-        servers_client._client.request.assert_called_with(
-            url="/servers", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/servers", method="GET", params=params)
 
         assert bound_server._client is servers_client
         assert bound_server.id == 1
         assert bound_server.name == "my-server"
 
     def test_create_with_datacenter(
-        self, servers_client, response_create_simple_server
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        response_create_simple_server,
     ):
-        servers_client._client.request.return_value = response_create_simple_server
+        request_mock.return_value = response_create_simple_server
         response = servers_client.create(
             "my-server",
             server_type=ServerType(name="cx11"),
             image=Image(id=4711),
             datacenter=Datacenter(id=1),
         )
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers",
             method="POST",
             json={
@@ -761,15 +778,20 @@ class TestServersClient:
         assert bound_action.id == 1
         assert bound_action.command == "create_server"
 
-    def test_create_with_location(self, servers_client, response_create_simple_server):
-        servers_client._client.request.return_value = response_create_simple_server
+    def test_create_with_location(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        response_create_simple_server,
+    ):
+        request_mock.return_value = response_create_simple_server
         response = servers_client.create(
             "my-server",
             server_type=ServerType(name="cx11"),
             image=Image(name="ubuntu-20.04"),
             location=Location(name="fsn1"),
         )
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers",
             method="POST",
             json={
@@ -793,8 +815,13 @@ class TestServersClient:
         assert bound_action.id == 1
         assert bound_action.command == "create_server"
 
-    def test_create_with_volumes(self, servers_client, response_create_simple_server):
-        servers_client._client.request.return_value = response_create_simple_server
+    def test_create_with_volumes(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        response_create_simple_server,
+    ):
+        request_mock.return_value = response_create_simple_server
         volumes = [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=2))]
         response = servers_client.create(
             "my-server",
@@ -803,7 +830,7 @@ class TestServersClient:
             volumes=volumes,
             start_after_create=False,
         )
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers",
             method="POST",
             json={
@@ -833,8 +860,13 @@ class TestServersClient:
 
         assert next_actions[0].id == 13
 
-    def test_create_with_networks(self, servers_client, response_create_simple_server):
-        servers_client._client.request.return_value = response_create_simple_server
+    def test_create_with_networks(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        response_create_simple_server,
+    ):
+        request_mock.return_value = response_create_simple_server
         networks = [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=2))]
         response = servers_client.create(
             "my-server",
@@ -843,7 +875,7 @@ class TestServersClient:
             networks=networks,
             start_after_create=False,
         )
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers",
             method="POST",
             json={
@@ -873,8 +905,13 @@ class TestServersClient:
 
         assert next_actions[0].id == 13
 
-    def test_create_with_firewalls(self, servers_client, response_create_simple_server):
-        servers_client._client.request.return_value = response_create_simple_server
+    def test_create_with_firewalls(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        response_create_simple_server,
+    ):
+        request_mock.return_value = response_create_simple_server
         firewalls = [Firewall(id=1), BoundFirewall(mock.MagicMock(), dict(id=2))]
         response = servers_client.create(
             "my-server",
@@ -883,7 +920,7 @@ class TestServersClient:
             firewalls=firewalls,
             start_after_create=False,
         )
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers",
             method="POST",
             json={
@@ -914,9 +951,12 @@ class TestServersClient:
         assert next_actions[0].id == 13
 
     def test_create_with_placement_group(
-        self, servers_client, response_create_simple_server
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        response_create_simple_server,
     ):
-        servers_client._client.request.return_value = response_create_simple_server
+        request_mock.return_value = response_create_simple_server
         placement_group = PlacementGroup(id=1)
         response = servers_client.create(
             "my-server",
@@ -926,7 +966,7 @@ class TestServersClient:
             placement_group=placement_group,
         )
 
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers",
             method="POST",
             json={
@@ -959,10 +999,16 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_get_actions_list(self, servers_client, server, response_get_actions):
-        servers_client._client.request.return_value = response_get_actions
+    def test_get_actions_list(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         result = servers_client.get_actions_list(server)
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions", method="GET", params={}
         )
 
@@ -979,10 +1025,16 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_update(self, servers_client, server, response_update_server):
-        servers_client._client.request.return_value = response_update_server
+    def test_update(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        response_update_server,
+    ):
+        request_mock.return_value = response_update_server
         server = servers_client.update(server, name="new-name", labels={})
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1", method="PUT", json={"name": "new-name", "labels": {}}
         )
 
@@ -992,12 +1044,16 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_delete(self, servers_client, server, generic_action):
-        servers_client._client.request.return_value = generic_action
+    def test_delete(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = servers_client.delete(server)
-        servers_client._client.request.assert_called_with(
-            url="/servers/1", method="DELETE"
-        )
+        request_mock.assert_called_with(url="/servers/1", method="DELETE")
 
         assert action.id == 1
         assert action.progress == 0
@@ -1005,10 +1061,16 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_power_off(self, servers_client, server, generic_action):
-        servers_client._client.request.return_value = generic_action
+    def test_power_off(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = servers_client.power_off(server)
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/poweroff", method="POST"
         )
 
@@ -1018,12 +1080,16 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_power_on(self, servers_client, server, generic_action):
-        servers_client._client.request.return_value = generic_action
+    def test_power_on(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = servers_client.power_on(server)
-        servers_client._client.request.assert_called_with(
-            url="/servers/1/actions/poweron", method="POST"
-        )
+        request_mock.assert_called_with(url="/servers/1/actions/poweron", method="POST")
 
         assert action.id == 1
         assert action.progress == 0
@@ -1031,12 +1097,16 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_reboot(self, servers_client, server, generic_action):
-        servers_client._client.request.return_value = generic_action
+    def test_reboot(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = servers_client.reboot(server)
-        servers_client._client.request.assert_called_with(
-            url="/servers/1/actions/reboot", method="POST"
-        )
+        request_mock.assert_called_with(url="/servers/1/actions/reboot", method="POST")
 
         assert action.id == 1
         assert action.progress == 0
@@ -1044,12 +1114,16 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_reset(self, servers_client, server, generic_action):
-        servers_client._client.request.return_value = generic_action
+    def test_reset(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = servers_client.reset(server)
-        servers_client._client.request.assert_called_with(
-            url="/servers/1/actions/reset", method="POST"
-        )
+        request_mock.assert_called_with(url="/servers/1/actions/reset", method="POST")
 
         assert action.id == 1
         assert action.progress == 0
@@ -1057,10 +1131,16 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_shutdown(self, servers_client, server, generic_action):
-        servers_client._client.request.return_value = generic_action
+    def test_shutdown(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = servers_client.shutdown(server)
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/shutdown", method="POST"
         )
 
@@ -1071,11 +1151,15 @@ class TestServersClient:
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
     def test_reset_password(
-        self, servers_client, server, response_server_reset_password
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        response_server_reset_password,
     ):
-        servers_client._client.request.return_value = response_server_reset_password
+        request_mock.return_value = response_server_reset_password
         response = servers_client.reset_password(server)
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/reset_password", method="POST"
         )
 
@@ -1087,13 +1171,17 @@ class TestServersClient:
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
     def test_change_type_with_server_type_name(
-        self, servers_client, server, generic_action
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
     ):
-        servers_client._client.request.return_value = generic_action
+        request_mock.return_value = generic_action
         action = servers_client.change_type(
             server, ServerType(name="cx11"), upgrade_disk=True
         )
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/change_type",
             method="POST",
             json={"server_type": "cx11", "upgrade_disk": True},
@@ -1106,11 +1194,15 @@ class TestServersClient:
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
     def test_change_type_with_server_type_id(
-        self, servers_client, server, generic_action
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
     ):
-        servers_client._client.request.return_value = generic_action
+        request_mock.return_value = generic_action
         action = servers_client.change_type(server, ServerType(id=1), upgrade_disk=True)
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/change_type",
             method="POST",
             json={"server_type": 1, "upgrade_disk": True},
@@ -1122,19 +1214,27 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_change_type_with_blank_server_type(self, servers_client, server):
+    def test_change_type_with_blank_server_type(
+        self, request_mock: mock.MagicMock, servers_client: ServersClient, server
+    ):
         with pytest.raises(ValueError) as e:
             servers_client.change_type(server, ServerType(), upgrade_disk=True)
         assert str(e.value) == "id or name must be set"
-        servers_client._client.request.assert_not_called()
+        request_mock.assert_not_called()
 
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_enable_rescue(self, servers_client, server, response_server_enable_rescue):
-        servers_client._client.request.return_value = response_server_enable_rescue
+    def test_enable_rescue(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        response_server_enable_rescue,
+    ):
+        request_mock.return_value = response_server_enable_rescue
         response = servers_client.enable_rescue(server, "linux64", [2323])
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/enable_rescue",
             method="POST",
             json={"type": "linux64", "ssh_keys": [2323]},
@@ -1147,10 +1247,16 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_disable_rescue(self, servers_client, server, generic_action):
-        servers_client._client.request.return_value = generic_action
+    def test_disable_rescue(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = servers_client.disable_rescue(server)
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/disable_rescue", method="POST"
         )
 
@@ -1160,12 +1266,18 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_create_image(self, servers_client, server, response_server_create_image):
-        servers_client._client.request.return_value = response_server_create_image
+    def test_create_image(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        response_server_create_image,
+    ):
+        request_mock.return_value = response_server_create_image
         response = servers_client.create_image(
             server, description="my image", type="snapshot", labels={"key": "value"}
         )
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/create_image",
             method="POST",
             json={
@@ -1182,14 +1294,20 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_rebuild(self, servers_client, server, generic_action):
-        servers_client._client.request.return_value = generic_action
+    def test_rebuild(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         response = servers_client.rebuild(
             server,
             Image(name="ubuntu-20.04"),
             return_response=True,
         )
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/rebuild",
             method="POST",
             json={"image": "ubuntu-20.04"},
@@ -1202,10 +1320,16 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_enable_backup(self, servers_client, server, generic_action):
-        servers_client._client.request.return_value = generic_action
+    def test_enable_backup(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = servers_client.enable_backup(server)
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/enable_backup", method="POST"
         )
 
@@ -1215,10 +1339,16 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_disable_backup(self, servers_client, server, generic_action):
-        servers_client._client.request.return_value = generic_action
+    def test_disable_backup(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = servers_client.disable_backup(server)
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/disable_backup", method="POST"
         )
 
@@ -1228,12 +1358,18 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_attach_iso(self, servers_client, server, generic_action):
-        servers_client._client.request.return_value = generic_action
+    def test_attach_iso(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = servers_client.attach_iso(
             server, Iso(name="FreeBSD-11.0-RELEASE-amd64-dvd1")
         )
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/attach_iso",
             method="POST",
             json={"iso": "FreeBSD-11.0-RELEASE-amd64-dvd1"},
@@ -1245,10 +1381,16 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_detach_iso(self, servers_client, server, generic_action):
-        servers_client._client.request.return_value = generic_action
+    def test_detach_iso(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = servers_client.detach_iso(server)
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/detach_iso", method="POST"
         )
 
@@ -1258,10 +1400,16 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_change_dns_ptr(self, servers_client, server, generic_action):
-        servers_client._client.request.return_value = generic_action
+    def test_change_dns_ptr(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = servers_client.change_dns_ptr(server, "1.2.3.4", "example.com")
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/change_dns_ptr",
             method="POST",
             json={"ip": "1.2.3.4", "dns_ptr": "example.com"},
@@ -1273,10 +1421,16 @@ class TestServersClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_change_protection(self, servers_client, server, generic_action):
-        servers_client._client.request.return_value = generic_action
+    def test_change_protection(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = servers_client.change_protection(server, True, True)
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/change_protection",
             method="POST",
             json={"delete": True, "rebuild": True},
@@ -1289,11 +1443,15 @@ class TestServersClient:
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
     def test_request_console(
-        self, servers_client, server, response_server_request_console
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        response_server_request_console,
     ):
-        servers_client._client.request.return_value = response_server_request_console
+        request_mock.return_value = response_server_request_console
         response = servers_client.request_console(server)
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/request_console", method="POST"
         )
 
@@ -1312,13 +1470,18 @@ class TestServersClient:
         "network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))]
     )
     def test_attach_to_network(
-        self, servers_client, server, network, response_attach_to_network
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        network,
+        response_attach_to_network,
     ):
-        servers_client._client.request.return_value = response_attach_to_network
+        request_mock.return_value = response_attach_to_network
         action = servers_client.attach_to_network(
             server, network, "10.0.1.1", ["10.0.1.2", "10.0.1.3"]
         )
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/attach_to_network",
             method="POST",
             json={
@@ -1339,11 +1502,16 @@ class TestServersClient:
         "network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))]
     )
     def test_detach_from_network(
-        self, servers_client, server, network, response_detach_from_network
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        network,
+        response_detach_from_network,
     ):
-        servers_client._client.request.return_value = response_detach_from_network
+        request_mock.return_value = response_detach_from_network
         action = servers_client.detach_from_network(server, network)
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/detach_from_network",
             method="POST",
             json={"network": 4711},
@@ -1360,13 +1528,18 @@ class TestServersClient:
         "network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))]
     )
     def test_change_alias_ips(
-        self, servers_client, server, network, response_change_alias_ips
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        network,
+        response_change_alias_ips,
     ):
-        servers_client._client.request.return_value = response_change_alias_ips
+        request_mock.return_value = response_change_alias_ips
         action = servers_client.change_alias_ips(
             server, network, ["10.0.1.2", "10.0.1.3"]
         )
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/1/actions/change_alias_ips",
             method="POST",
             json={"network": 4711, "alias_ips": ["10.0.1.2", "10.0.1.3"]},
@@ -1376,26 +1549,32 @@ class TestServersClient:
         assert action.progress == 0
         assert action.command == "change_alias_ips"
 
-    def test_actions_get_by_id(self, servers_client, response_get_actions):
-        servers_client._client.request.return_value = {
-            "action": response_get_actions["actions"][0]
-        }
+    def test_actions_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        response_get_actions,
+    ):
+        request_mock.return_value = {"action": response_get_actions["actions"][0]}
         action = servers_client.actions.get_by_id(13)
 
-        servers_client._client.request.assert_called_with(
-            url="/servers/actions/13", method="GET"
-        )
+        request_mock.assert_called_with(url="/servers/actions/13", method="GET")
 
         assert isinstance(action, BoundAction)
         assert action._client == servers_client._client.actions
         assert action.id == 13
         assert action.command == "start_server"
 
-    def test_actions_get_list(self, servers_client, response_get_actions):
-        servers_client._client.request.return_value = response_get_actions
+    def test_actions_get_list(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         result = servers_client.actions.get_list()
 
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/actions",
             method="GET",
             params={},
@@ -1410,11 +1589,16 @@ class TestServersClient:
         assert actions[0].id == 13
         assert actions[0].command == "start_server"
 
-    def test_actions_get_all(self, servers_client, response_get_actions):
-        servers_client._client.request.return_value = response_get_actions
+    def test_actions_get_all(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         actions = servers_client.actions.get_all()
 
-        servers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/actions",
             method="GET",
             params={"page": 1, "per_page": 50},

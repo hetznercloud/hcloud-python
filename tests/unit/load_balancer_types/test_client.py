@@ -1,25 +1,25 @@
 from __future__ import annotations
 
-from unittest import mock
-
 import pytest
 
+from hcloud import Client
 from hcloud.load_balancer_types import LoadBalancerTypesClient
 
 
 class TestLoadBalancerTypesClient:
     @pytest.fixture()
-    def load_balancer_types_client(self):
-        return LoadBalancerTypesClient(client=mock.MagicMock())
+    def load_balancer_types_client(self, client: Client):
+        return LoadBalancerTypesClient(client)
 
-    def test_get_by_id(self, load_balancer_types_client, load_balancer_type_response):
-        load_balancer_types_client._client.request.return_value = (
-            load_balancer_type_response
-        )
+    def test_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        load_balancer_types_client: LoadBalancerTypesClient,
+        load_balancer_type_response,
+    ):
+        request_mock.return_value = load_balancer_type_response
         load_balancer_type = load_balancer_types_client.get_by_id(1)
-        load_balancer_types_client._client.request.assert_called_with(
-            url="/load_balancer_types/1", method="GET"
-        )
+        request_mock.assert_called_with(url="/load_balancer_types/1", method="GET")
         assert load_balancer_type._client is load_balancer_types_client
         assert load_balancer_type.id == 1
         assert load_balancer_type.name == "LB11"
@@ -28,13 +28,15 @@ class TestLoadBalancerTypesClient:
         "params", [{"name": "LB11", "page": 1, "per_page": 10}, {"name": ""}, {}]
     )
     def test_get_list(
-        self, load_balancer_types_client, two_load_balancer_types_response, params
+        self,
+        request_mock: mock.MagicMock,
+        load_balancer_types_client: LoadBalancerTypesClient,
+        two_load_balancer_types_response,
+        params,
     ):
-        load_balancer_types_client._client.request.return_value = (
-            two_load_balancer_types_response
-        )
+        request_mock.return_value = two_load_balancer_types_response
         result = load_balancer_types_client.get_list(**params)
-        load_balancer_types_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancer_types", method="GET", params=params
         )
 
@@ -56,16 +58,18 @@ class TestLoadBalancerTypesClient:
 
     @pytest.mark.parametrize("params", [{"name": "LB21"}])
     def test_get_all(
-        self, load_balancer_types_client, two_load_balancer_types_response, params
+        self,
+        request_mock: mock.MagicMock,
+        load_balancer_types_client: LoadBalancerTypesClient,
+        two_load_balancer_types_response,
+        params,
     ):
-        load_balancer_types_client._client.request.return_value = (
-            two_load_balancer_types_response
-        )
+        request_mock.return_value = two_load_balancer_types_response
         load_balancer_types = load_balancer_types_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        load_balancer_types_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancer_types", method="GET", params=params
         )
 
@@ -83,16 +87,17 @@ class TestLoadBalancerTypesClient:
         assert load_balancer_types2.name == "LB21"
 
     def test_get_by_name(
-        self, load_balancer_types_client, one_load_balancer_types_response
+        self,
+        request_mock: mock.MagicMock,
+        load_balancer_types_client: LoadBalancerTypesClient,
+        one_load_balancer_types_response,
     ):
-        load_balancer_types_client._client.request.return_value = (
-            one_load_balancer_types_response
-        )
+        request_mock.return_value = one_load_balancer_types_response
         load_balancer_type = load_balancer_types_client.get_by_name("LB21")
 
         params = {"name": "LB21"}
 
-        load_balancer_types_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancer_types", method="GET", params=params
         )
 
