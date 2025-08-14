@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from unittest import mock
+
 import pytest  # noqa: F401
 
 from hcloud import Client

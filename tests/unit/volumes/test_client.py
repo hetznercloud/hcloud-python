@@ -329,7 +329,11 @@ class TestVolumesClient:
             },
         )
 
-    def test_create_negative_size(self, volumes_client):
+    def test_create_negative_size(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client,
+    ):
         with pytest.raises(ValueError) as e:
             volumes_client.create(
                 -100, "database-storage", location=Location(name="location")

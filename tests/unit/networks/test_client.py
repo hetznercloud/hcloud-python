@@ -444,6 +444,7 @@ class TestNetworksClient:
 
     def test_create_with_route_and_expose_routes_to_vswitch(
         self,
+        request_mock: mock.MagicMock,
         networks_client,
         network_route,
         network_create_response_with_expose_routes_to_vswitch,
