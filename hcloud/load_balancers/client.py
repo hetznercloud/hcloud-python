@@ -7,7 +7,7 @@ from dateutil.parser import isoparse
 
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
 from ..certificates import BoundCertificate
-from ..core import BoundModelBase, ClientEntityBase, Meta
+from ..core import BoundModelBase, Meta, ResourceClientBase
 from ..load_balancer_types import BoundLoadBalancerType
 from ..locations import BoundLocation
 from ..metrics import Metrics
@@ -369,7 +369,7 @@ class LoadBalancersPageResult(NamedTuple):
     meta: Meta
 
 
-class LoadBalancersClient(ClientEntityBase):
+class LoadBalancersClient(ResourceClientBase):
     _client: Client
 
     actions: ResourceActionsClient
