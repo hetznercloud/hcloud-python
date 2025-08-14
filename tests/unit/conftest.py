@@ -21,14 +21,6 @@ def client(request_mock) -> Client:
     return c
 
 
-@pytest.fixture(autouse=True, scope="function")
-def mocked_requests():
-    patcher = mock.patch("hcloud._client.requests")
-    mocked_requests = patcher.start()
-    yield mocked_requests
-    patcher.stop()
-
-
 @pytest.fixture()
 def generic_action():
     return {
