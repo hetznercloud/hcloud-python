@@ -156,7 +156,10 @@ class TestImagesClient:
         return ImagesClient(client)
 
     def test_get_by_id(
-        self, request_mock: mock.MagicMock, images_client: ImagesClient, image_response
+        self,
+        request_mock: mock.MagicMock,
+        images_client: ImagesClient,
+        image_response,
     ):
         request_mock.return_value = image_response
         image = images_client.get_by_id(1)

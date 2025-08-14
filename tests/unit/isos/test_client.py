@@ -41,7 +41,10 @@ class TestIsosClient:
         return IsosClient(client)
 
     def test_get_by_id(
-        self, request_mock: mock.MagicMock, isos_client: IsosClient, iso_response
+        self,
+        request_mock: mock.MagicMock,
+        isos_client: IsosClient,
+        iso_response,
     ):
         request_mock.return_value = iso_response
         iso = isos_client.get_by_id(1)
@@ -116,7 +119,10 @@ class TestIsosClient:
         assert isos2.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
 
     def test_get_by_name(
-        self, request_mock: mock.MagicMock, isos_client: IsosClient, one_isos_response
+        self,
+        request_mock: mock.MagicMock,
+        isos_client: IsosClient,
+        one_isos_response,
     ):
         request_mock.return_value = one_isos_response
         iso = isos_client.get_by_name("FreeBSD-11.0-RELEASE-amd64-dvd1")

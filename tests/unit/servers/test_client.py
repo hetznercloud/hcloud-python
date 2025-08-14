@@ -1215,7 +1215,10 @@ class TestServersClient:
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
     def test_change_type_with_blank_server_type(
-        self, request_mock: mock.MagicMock, servers_client: ServersClient, server
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
     ):
         with pytest.raises(ValueError) as e:
             servers_client.change_type(server, ServerType(), upgrade_disk=True)

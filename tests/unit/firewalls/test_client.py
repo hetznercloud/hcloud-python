@@ -484,7 +484,10 @@ class TestFirewallsClient:
         "firewall", [Firewall(id=1), BoundFirewall(mock.MagicMock(), dict(id=1))]
     )
     def test_delete(
-        self, request_mock: mock.MagicMock, firewalls_client: FirewallsClient, firewall
+        self,
+        request_mock: mock.MagicMock,
+        firewalls_client: FirewallsClient,
+        firewall,
     ):
         delete_success = firewalls_client.delete(firewall)
         request_mock.assert_called_with(url="/firewalls/1", method="DELETE")
