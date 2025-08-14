@@ -311,7 +311,7 @@ class TestImagesClient:
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
 
-        assert actions[0]._client == images_client._client.actions
+        assert actions[0]._client == images_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"
 
@@ -391,7 +391,7 @@ class TestImagesClient:
         request_mock.assert_called_with(url="/images/actions/13", method="GET")
 
         assert isinstance(action, BoundAction)
-        assert action._client == images_client._client.actions
+        assert action._client == images_client._parent.actions
         assert action.id == 13
         assert action.command == "change_protection"
 
@@ -415,7 +415,7 @@ class TestImagesClient:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == images_client._client.actions
+        assert actions[0]._client == images_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"
 
@@ -436,6 +436,6 @@ class TestImagesClient:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == images_client._client.actions
+        assert actions[0]._client == images_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"

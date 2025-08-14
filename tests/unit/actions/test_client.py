@@ -89,7 +89,7 @@ class TestResourceActionsClient:
         request_mock.return_value = generic_action
         action = actions_client.get_by_id(1)
         request_mock.assert_called_with(url="/resource/actions/1", method="GET")
-        assert action._client == actions_client._client.actions
+        assert action._client == actions_client._parent.actions
         assert action.id == 1
         assert action.command == "stop_server"
 
@@ -118,11 +118,11 @@ class TestResourceActionsClient:
         action1 = actions[0]
         action2 = actions[1]
 
-        assert action1._client == actions_client._client.actions
+        assert action1._client == actions_client._parent.actions
         assert action1.id == 1
         assert action1.command == "start_server"
 
-        assert action2._client == actions_client._client.actions
+        assert action2._client == actions_client._parent.actions
         assert action2.id == 2
         assert action2.command == "stop_server"
 
@@ -148,11 +148,11 @@ class TestResourceActionsClient:
         action1 = actions[0]
         action2 = actions[1]
 
-        assert action1._client == actions_client._client.actions
+        assert action1._client == actions_client._parent.actions
         assert action1.id == 1
         assert action1.command == "start_server"
 
-        assert action2._client == actions_client._client.actions
+        assert action2._client == actions_client._parent.actions
         assert action2.id == 2
         assert action2.command == "stop_server"
 
@@ -171,7 +171,7 @@ class TestActionsClient:
         request_mock.return_value = generic_action
         action = actions_client.get_by_id(1)
         request_mock.assert_called_with(url="/actions/1", method="GET")
-        assert action._client == actions_client._client.actions
+        assert action._client == actions_client._parent.actions
         assert action.id == 1
         assert action.command == "stop_server"
 
@@ -199,11 +199,11 @@ class TestActionsClient:
         action1 = actions[0]
         action2 = actions[1]
 
-        assert action1._client == actions_client._client.actions
+        assert action1._client == actions_client._parent.actions
         assert action1.id == 1
         assert action1.command == "start_server"
 
-        assert action2._client == actions_client._client.actions
+        assert action2._client == actions_client._parent.actions
         assert action2.id == 2
         assert action2.command == "stop_server"
 
@@ -228,10 +228,10 @@ class TestActionsClient:
         action1 = actions[0]
         action2 = actions[1]
 
-        assert action1._client == actions_client._client.actions
+        assert action1._client == actions_client._parent.actions
         assert action1.id == 1
         assert action1.command == "start_server"
 
-        assert action2._client == actions_client._client.actions
+        assert action2._client == actions_client._parent.actions
         assert action2.id == 2
         assert action2.command == "stop_server"
