@@ -160,7 +160,7 @@ class PlacementGroupsClient(ResourceClientBase):
 
         action = None
         if response.get("action") is not None:
-            action = BoundAction(self._client.actions, response["action"])
+            action = BoundAction(self._parent.actions, response["action"])
 
         result = CreatePlacementGroupResponse(
             placement_group=BoundPlacementGroup(self, response["placement_group"]),

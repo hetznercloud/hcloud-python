@@ -518,7 +518,7 @@ class LoadBalancersClient(ResourceClientBase):
 
         return CreateLoadBalancerResponse(
             load_balancer=BoundLoadBalancer(self, response["load_balancer"]),
-            action=BoundAction(self._client.actions, response["action"]),
+            action=BoundAction(self._parent.actions, response["action"]),
         )
 
     def update(
@@ -637,7 +637,7 @@ class LoadBalancersClient(ResourceClientBase):
             params=params,
         )
         actions = [
-            BoundAction(self._client.actions, action_data)
+            BoundAction(self._parent.actions, action_data)
             for action_data in response["actions"]
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))
@@ -683,7 +683,7 @@ class LoadBalancersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def update_service(
         self,
@@ -703,7 +703,7 @@ class LoadBalancersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def delete_service(
         self,
@@ -724,7 +724,7 @@ class LoadBalancersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def add_target(
         self,
@@ -745,7 +745,7 @@ class LoadBalancersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def remove_target(
         self,
@@ -768,7 +768,7 @@ class LoadBalancersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def change_algorithm(
         self,
@@ -789,7 +789,7 @@ class LoadBalancersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def change_dns_ptr(
         self,
@@ -811,7 +811,7 @@ class LoadBalancersClient(ResourceClientBase):
             method="POST",
             json={"ip": ip, "dns_ptr": dns_ptr},
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def change_protection(
         self,
@@ -834,7 +834,7 @@ class LoadBalancersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def attach_to_network(
         self,
@@ -859,7 +859,7 @@ class LoadBalancersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def detach_from_network(
         self,
@@ -878,7 +878,7 @@ class LoadBalancersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def enable_public_interface(
         self,
@@ -895,7 +895,7 @@ class LoadBalancersClient(ResourceClientBase):
             url=f"/load_balancers/{load_balancer.id}/actions/enable_public_interface",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def disable_public_interface(
         self,
@@ -912,7 +912,7 @@ class LoadBalancersClient(ResourceClientBase):
             url=f"/load_balancers/{load_balancer.id}/actions/disable_public_interface",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def change_type(
         self,
@@ -932,4 +932,4 @@ class LoadBalancersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])

@@ -231,7 +231,7 @@ class FirewallsClient(ResourceClientBase):
             params=params,
         )
         actions = [
-            BoundAction(self._client.actions, action_data)
+            BoundAction(self._parent.actions, action_data)
             for action_data in response["actions"]
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))
@@ -377,7 +377,7 @@ class FirewallsClient(ResourceClientBase):
         actions = []
         if response.get("actions") is not None:
             actions = [
-                BoundAction(self._client.actions, action_data)
+                BoundAction(self._parent.actions, action_data)
                 for action_data in response["actions"]
             ]
 
@@ -447,7 +447,7 @@ class FirewallsClient(ResourceClientBase):
             json=data,
         )
         return [
-            BoundAction(self._client.actions, action_data)
+            BoundAction(self._parent.actions, action_data)
             for action_data in response["actions"]
         ]
 
@@ -471,7 +471,7 @@ class FirewallsClient(ResourceClientBase):
             json=data,
         )
         return [
-            BoundAction(self._client.actions, action_data)
+            BoundAction(self._parent.actions, action_data)
             for action_data in response["actions"]
         ]
 
@@ -495,6 +495,6 @@ class FirewallsClient(ResourceClientBase):
             json=data,
         )
         return [
-            BoundAction(self._client.actions, action_data)
+            BoundAction(self._parent.actions, action_data)
             for action_data in response["actions"]
         ]

@@ -224,7 +224,7 @@ class PrimaryIPsClient(ResourceClientBase):
 
         action = None
         if response.get("action") is not None:
-            action = BoundAction(self._client.actions, response["action"])
+            action = BoundAction(self._parent.actions, response["action"])
 
         result = CreatePrimaryIPResponse(
             primary_ip=BoundPrimaryIP(self, response["primary_ip"]), action=action
@@ -298,7 +298,7 @@ class PrimaryIPsClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def assign(
         self,
@@ -320,7 +320,7 @@ class PrimaryIPsClient(ResourceClientBase):
             method="POST",
             json={"assignee_id": assignee_id, "assignee_type": assignee_type},
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def unassign(self, primary_ip: PrimaryIP | BoundPrimaryIP) -> BoundAction:
         """Unassigns a Primary IP, resulting in it being unreachable. You may assign it to a server again at a later time.
@@ -332,7 +332,7 @@ class PrimaryIPsClient(ResourceClientBase):
             url=f"/primary_ips/{primary_ip.id}/actions/unassign",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def change_dns_ptr(
         self,
@@ -354,4 +354,4 @@ class PrimaryIPsClient(ResourceClientBase):
             method="POST",
             json={"ip": ip, "dns_ptr": dns_ptr},
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])

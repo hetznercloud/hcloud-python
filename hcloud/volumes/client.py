@@ -274,9 +274,9 @@ class VolumesClient(ResourceClientBase):
 
         result = CreateVolumeResponse(
             volume=BoundVolume(self, response["volume"]),
-            action=BoundAction(self._client.actions, response["action"]),
+            action=BoundAction(self._parent.actions, response["action"]),
             next_actions=[
-                BoundAction(self._client.actions, action)
+                BoundAction(self._parent.actions, action)
                 for action in response["next_actions"]
             ],
         )
@@ -319,7 +319,7 @@ class VolumesClient(ResourceClientBase):
             params=params,
         )
         actions = [
-            BoundAction(self._client.actions, action_data)
+            BoundAction(self._parent.actions, action_data)
             for action_data in response["actions"]
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))
@@ -395,7 +395,7 @@ class VolumesClient(ResourceClientBase):
             json={"size": size},
             method="POST",
         )
-        return BoundAction(self._client.actions, data["action"])
+        return BoundAction(self._parent.actions, data["action"])
 
     def attach(
         self,
@@ -419,7 +419,7 @@ class VolumesClient(ResourceClientBase):
             json=data,
             method="POST",
         )
-        return BoundAction(self._client.actions, data["action"])
+        return BoundAction(self._parent.actions, data["action"])
 
     def detach(self, volume: Volume | BoundVolume) -> BoundAction:
         """Detaches a volume from the server it’s attached to. You may attach it to a server again at a later time.
@@ -431,7 +431,7 @@ class VolumesClient(ResourceClientBase):
             url=f"/volumes/{volume.id}/actions/detach",
             method="POST",
         )
-        return BoundAction(self._client.actions, data["action"])
+        return BoundAction(self._parent.actions, data["action"])
 
     def change_protection(
         self,
@@ -454,4 +454,4 @@ class VolumesClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])

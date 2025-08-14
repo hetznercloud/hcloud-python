@@ -75,7 +75,7 @@ class ResourceActionsClient(ResourceClientBase):
             url=f"{self._resource}/actions/{id}",
             method="GET",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def get_list(
         self,
@@ -112,7 +112,7 @@ class ResourceActionsClient(ResourceClientBase):
             params=params,
         )
         actions = [
-            BoundAction(self._client.actions, action_data)
+            BoundAction(self._parent.actions, action_data)
             for action_data in response["actions"]
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))

@@ -187,7 +187,7 @@ class FloatingIPsClient(ResourceClientBase):
             params=params,
         )
         actions = [
-            BoundAction(self._client.actions, action_data)
+            BoundAction(self._parent.actions, action_data)
             for action_data in response["actions"]
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))
@@ -328,7 +328,7 @@ class FloatingIPsClient(ResourceClientBase):
 
         action = None
         if response.get("action") is not None:
-            action = BoundAction(self._client.actions, response["action"])
+            action = BoundAction(self._parent.actions, response["action"])
 
         result = CreateFloatingIPResponse(
             floating_ip=BoundFloatingIP(self, response["floating_ip"]), action=action
@@ -402,7 +402,7 @@ class FloatingIPsClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def assign(
         self,
@@ -421,7 +421,7 @@ class FloatingIPsClient(ResourceClientBase):
             method="POST",
             json={"server": server.id},
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def unassign(self, floating_ip: FloatingIP | BoundFloatingIP) -> BoundAction:
         """Unassigns a Floating IP, resulting in it being unreachable. You may assign it to a server again at a later time.
@@ -433,7 +433,7 @@ class FloatingIPsClient(ResourceClientBase):
             url=f"/floating_ips/{floating_ip.id}/actions/unassign",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def change_dns_ptr(
         self,
@@ -455,4 +455,4 @@ class FloatingIPsClient(ResourceClientBase):
             method="POST",
             json={"ip": ip, "dns_ptr": dns_ptr},
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
