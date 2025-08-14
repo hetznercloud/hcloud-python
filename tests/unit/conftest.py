@@ -23,7 +23,7 @@ def request_mock() -> mock.MagicMock:
 @pytest.fixture()
 def client(request_mock) -> Client:
     c = Client(token="TOKEN")
-    c.request = request_mock
+    c._client.request = request_mock
     return c
 
 
