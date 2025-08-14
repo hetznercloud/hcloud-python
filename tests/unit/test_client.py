@@ -299,3 +299,29 @@ class TestBaseClient:
 
         assert client._session.request.call_count == 2
         assert result == {"result": "data"}
+
+    def test_request_fail_timeout(self, client: ClientBase):
+        client._retry_interval_func = constant_backoff_function(0.0)
+        client._session.request.side_effect = requests.exceptions.Timeout("timeout")
+
+        with pytest.raises(requests.exceptions.Timeout) as exc:
+            client.request(method="GET", url="/path")
+
+        assert str(exc.value) == "timeout"
+        assert client._session.request.call_count == 6
+
+    def test_request_fail_timeout_recover(self, client: ClientBase):
+        client._retry_interval_func = constant_backoff_function(0.0)
+
+        client._session.request.side_effect = [
+            requests.exceptions.Timeout("timeout"),
+            make_response(
+                status=HTTPStatus.OK,
+                json={"result": "data"},
+            ),
+        ]
+
+        result = client.request(method="GET", url="/path")
+
+        assert client._session.request.call_count == 2
+        assert result == {"result": "data"}
