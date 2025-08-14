@@ -53,8 +53,16 @@ class ActionsPageResult(NamedTuple):
 class ResourceActionsClient(ResourceClientBase):
     _resource: str
 
-    def __init__(self, client: Client, resource: str | None):
-        super().__init__(client)
+    def __init__(self, client: ResourceClientBase | Client, resource: str | None):
+        if isinstance(client, ResourceClientBase):
+            super().__init__(client._parent)
+            # Use the same base client as the the resource base client. Allows us to
+            # choose the base client outside of the ResourceActionsClient.
+            self._client = client._client
+        else:
+            # Backward compatibility, defaults to the parent ("top level") base client (`_client`).
+            super().__init__(client)
+
         self._resource = resource or ""
 
     def get_by_id(self, id: int) -> BoundAction:

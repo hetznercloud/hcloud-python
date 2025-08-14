@@ -78,6 +78,25 @@ def exponential_backoff_function(
     return func
 
 
+def _build_user_agent(
+    application_name: str | None,
+    application_version: str | None,
+) -> str:
+    """Build the user agent of the hcloud-python instance with the user application name (if specified)
+
+    :return: The user agent of this hcloud-python instance
+    """
+    parts = []
+    for name, version in [
+        (application_name, application_version),
+        ("hcloud-python", __version__),
+    ]:
+        if name is not None:
+            parts.append(name if version is None else f"{name}/{version}")
+
+    return " ".join(parts)
+
+
 class Client:
     """
     Client for the Hetzner Cloud API.
@@ -112,14 +131,6 @@ class Client:
     breaking changes.
     """
 
-    _version = __version__
-    __user_agent_prefix = "hcloud-python"
-
-    _retry_interval = staticmethod(
-        exponential_backoff_function(base=1.0, multiplier=2, cap=60.0, jitter=True)
-    )
-    _retry_max_retries = 5
-
     def __init__(
         self,
         token: str,
@@ -143,18 +154,15 @@ class Client:
             Max retries before timeout when polling actions from the API.
         :param timeout: Requests timeout in seconds
         """
-        self.token = token
-        self._api_endpoint = api_endpoint
-        self._application_name = application_name
-        self._application_version = application_version
-        self._requests_session = requests.Session()
-        self._requests_timeout = timeout
-
-        if isinstance(poll_interval, (int, float)):
-            self._poll_interval_func = constant_backoff_function(poll_interval)
-        else:
-            self._poll_interval_func = poll_interval
-        self._poll_max_retries = poll_max_retries
+        self._client = ClientBase(
+            token=token,
+            endpoint=api_endpoint,
+            application_name=application_name,
+            application_version=application_version,
+            poll_interval=poll_interval,
+            poll_max_retries=poll_max_retries,
+            timeout=timeout,
+        )
 
         self.datacenters = DatacentersClient(self)
         """DatacentersClient Instance
@@ -246,27 +254,58 @@ class Client:
         :type: :class:`PlacementGroupsClient <hcloud.placement_groups.client.PlacementGroupsClient>`
         """
 
-    def _get_user_agent(self) -> str:
-        """Get the user agent of the hcloud-python instance with the user application name (if specified)
+    def request(  # type: ignore[no-untyped-def]
+        self,
+        method: str,
+        url: str,
+        **kwargs,
+    ) -> dict:
+        """Perform a request to the Hetzner Cloud API.
 
-        :return: The user agent of this hcloud-python instance
+        :param method: Method to perform the request.
+        :param url: URL to perform the request.
+        :param timeout: Requests timeout in seconds.
         """
-        user_agents = []
-        for name, version in [
-            (self._application_name, self._application_version),
-            (self.__user_agent_prefix, self._version),
-        ]:
-            if name is not None:
-                user_agents.append(name if version is None else f"{name}/{version}")
+        return self._client.request(method, url, **kwargs)
 
-        return " ".join(user_agents)
 
-    def _get_headers(self) -> dict:
-        headers = {
-            "User-Agent": self._get_user_agent(),
-            "Authorization": f"Bearer {self.token}",
+class ClientBase:
+    def __init__(
+        self,
+        token: str,
+        *,
+        endpoint: str,
+        application_name: str | None = None,
+        application_version: str | None = None,
+        poll_interval: int | float | BackoffFunction = 1.0,
+        poll_max_retries: int = 120,
+        timeout: float | tuple[float, float] | None = None,
+    ):
+        self._token = token
+        self._endpoint = endpoint
+
+        self._user_agent = _build_user_agent(application_name, application_version)
+        self._headers = {
+            "User-Agent": self._user_agent,
+            "Authorization": f"Bearer {self._token}",
+            "Accept": "application/json",
         }
-        return headers
+
+        if isinstance(poll_interval, (int, float)):
+            poll_interval_func = constant_backoff_function(poll_interval)
+        else:
+            poll_interval_func = poll_interval
+
+        self._poll_interval_func = poll_interval_func
+        self._poll_max_retries = poll_max_retries
+
+        self._retry_interval_func = exponential_backoff_function(
+            base=1.0, multiplier=2, cap=60.0, jitter=True
+        )
+        self._retry_max_retries = 5
+
+        self._timeout = timeout
+        self._session = requests.Session()
 
     def request(  # type: ignore[no-untyped-def]
         self,
@@ -274,22 +313,22 @@ class Client:
         url: str,
         **kwargs,
     ) -> dict:
-        """Perform a request to the Hetzner Cloud API, wrapper around requests.request
+        """Perform a request to the provided URL.
 
-        :param method: HTTP Method to perform the Request
-        :param url: URL of the Endpoint
-        :param timeout: Requests timeout in seconds
+        :param method: Method to perform the request.
+        :param url: URL to perform the request.
+        :param timeout: Requests timeout in seconds.
         :return: Response
         """
-        kwargs.setdefault("timeout", self._requests_timeout)
+        kwargs.setdefault("timeout", self._timeout)
 
-        url = self._api_endpoint + url
-        headers = self._get_headers()
+        url = self._endpoint + url
+        headers = self._headers
 
         retries = 0
         while True:
             try:
-                response = self._requests_session.request(
+                response = self._session.request(
                     method=method,
                     url=url,
                     headers=headers,
@@ -298,13 +337,13 @@ class Client:
                 return self._read_response(response)
             except APIException as exception:
                 if retries < self._retry_max_retries and self._retry_policy(exception):
-                    time.sleep(self._retry_interval(retries))
+                    time.sleep(self._retry_interval_func(retries))
                     retries += 1
                     continue
                 raise
             except requests.exceptions.Timeout:
                 if retries < self._retry_max_retries:
-                    time.sleep(self._retry_interval(retries))
+                    time.sleep(self._retry_interval_func(retries))
                     retries += 1
                     continue
                 raise

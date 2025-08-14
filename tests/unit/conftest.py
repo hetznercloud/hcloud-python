@@ -9,6 +9,12 @@ import pytest
 from hcloud import Client
 
 
+@pytest.fixture(autouse=True, scope="session")
+def patch_package_version():
+    with mock.patch("hcloud._client.__version__", "0.0.0"):
+        yield
+
+
 @pytest.fixture()
 def request_mock() -> mock.MagicMock:
     return mock.MagicMock()
