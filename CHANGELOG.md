@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.5.5](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.5.5)
+
+### Bug Fixes
+
+- rename `ClientEntityBase` to `ResourceClientBase` (#532)
+
 ## [v2.5.4](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.5.4)
 
 ### Bug Fixes
