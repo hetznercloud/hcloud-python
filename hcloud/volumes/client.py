@@ -136,7 +136,6 @@ class VolumesPageResult(NamedTuple):
 
 
 class VolumesClient(ResourceClientBase):
-    _client: Client
 
     actions: ResourceActionsClient
     """Volumes scoped actions client

@@ -370,7 +370,6 @@ class LoadBalancersPageResult(NamedTuple):
 
 
 class LoadBalancersClient(ResourceClientBase):
-    _client: Client
 
     actions: ResourceActionsClient
     """Load Balancers scoped actions client

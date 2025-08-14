@@ -1,13 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, NamedTuple
+from typing import Any, NamedTuple
 
 from ..actions import BoundAction
 from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import CreatePlacementGroupResponse, PlacementGroup
-
-if TYPE_CHECKING:
-    from .._client import Client
 
 
 class BoundPlacementGroup(BoundModelBase, PlacementGroup):
@@ -44,7 +41,6 @@ class PlacementGroupsPageResult(NamedTuple):
 
 
 class PlacementGroupsClient(ResourceClientBase):
-    _client: Client
 
     def get_by_id(self, id: int) -> BoundPlacementGroup:
         """Returns a specific Placement Group object

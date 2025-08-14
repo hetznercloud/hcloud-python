@@ -104,7 +104,6 @@ class CertificatesPageResult(NamedTuple):
 
 
 class CertificatesClient(ResourceClientBase):
-    _client: Client
 
     actions: ResourceActionsClient
     """Certificates scoped actions client

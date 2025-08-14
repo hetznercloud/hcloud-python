@@ -140,7 +140,6 @@ class FloatingIPsPageResult(NamedTuple):
 
 
 class FloatingIPsClient(ResourceClientBase):
-    _client: Client
 
     actions: ResourceActionsClient
     """Floating IPs scoped actions client

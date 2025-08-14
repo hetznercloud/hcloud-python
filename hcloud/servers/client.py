@@ -483,7 +483,6 @@ class ServersPageResult(NamedTuple):
 
 
 class ServersClient(ResourceClientBase):
-    _client: Client
 
     actions: ResourceActionsClient
     """Servers scoped actions client

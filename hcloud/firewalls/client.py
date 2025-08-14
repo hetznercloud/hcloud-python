@@ -184,7 +184,6 @@ class FirewallsPageResult(NamedTuple):
 
 
 class FirewallsClient(ResourceClientBase):
-    _client: Client
 
     actions: ResourceActionsClient
     """Firewalls scoped actions client

@@ -113,7 +113,6 @@ class ImagesPageResult(NamedTuple):
 
 
 class ImagesClient(ResourceClientBase):
-    _client: Client
 
     actions: ResourceActionsClient
     """Images scoped actions client

@@ -98,7 +98,6 @@ class PrimaryIPsPageResult(NamedTuple):
 
 
 class PrimaryIPsClient(ResourceClientBase):
-    _client: Client
 
     actions: ResourceActionsClient
     """Primary IPs scoped actions client

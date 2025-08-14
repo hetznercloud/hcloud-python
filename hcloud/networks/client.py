@@ -167,7 +167,6 @@ class NetworksPageResult(NamedTuple):
 
 
 class NetworksClient(ResourceClientBase):
-    _client: Client
 
     actions: ResourceActionsClient
     """Networks scoped actions client
