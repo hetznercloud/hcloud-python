@@ -35,12 +35,3 @@ def generic_action():
             "error": {"code": "action_failed", "message": "Action failed"},
         }
     }
-
-
-@pytest.fixture()
-def hetzner_client():
-    client = Client(token="token")
-    patcher = mock.patch.object(client, "request")
-    patcher.start()
-    yield client
-    patcher.stop()
