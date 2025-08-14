@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
-from ..core import BaseResourceClient, BoundModelBase, Meta
+from ..core import BoundModelBase, Meta, ResourceClientBase
 from ..locations import BoundLocation
 from .domain import CreateVolumeResponse, Volume
 
@@ -135,7 +135,7 @@ class VolumesPageResult(NamedTuple):
     meta: Meta
 
 
-class VolumesClient(BaseResourceClient):
+class VolumesClient(ResourceClientBase):
     _client: Client
 
     actions: ResourceActionsClient

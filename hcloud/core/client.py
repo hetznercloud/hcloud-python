@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BaseResourceClient:
+class ResourceClientBase:
     _client: Client
 
     max_per_page: int = 50
@@ -51,18 +51,18 @@ class BaseResourceClient:
         return entities[0] if entities else None
 
 
-class ClientEntityBase(BaseResourceClient):
+class ClientEntityBase(ResourceClientBase):
     """
     Kept for backward compatibility.
 
     .. deprecated:: 2.6.0
-        Use :class:``hcloud.core.client.BaseResourceClient`` instead.
+        Use :class:``hcloud.core.client.ResourceClientBase`` instead.
     """
 
     def __init__(self, client: Client):
         warnings.warn(
             "The 'hcloud.core.client.ClientEntityBase' class is deprecated, please use the "
-            "'hcloud.core.client.BaseResourceClient' class instead.",
+            "'hcloud.core.client.ResourceClientBase' class instead.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -76,7 +76,7 @@ class BoundModelBase:
 
     def __init__(
         self,
-        client: BaseResourceClient,
+        client: ResourceClientBase,
         data: dict,
         complete: bool = True,
     ):

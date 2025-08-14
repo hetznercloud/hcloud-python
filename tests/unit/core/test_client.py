@@ -6,7 +6,7 @@ from unittest import mock
 import pytest
 
 from hcloud.actions import ActionsPageResult
-from hcloud.core import BaseDomain, BaseResourceClient, BoundModelBase, Meta
+from hcloud.core import BaseDomain, BoundModelBase, Meta, ResourceClientBase
 
 
 class TestBoundModelBase:
@@ -99,7 +99,7 @@ class TestBoundModelBase:
         assert bound_model_a != bound_model_b.data_model
 
 
-class TestBaseResourceClient:
+class TestResourceClientBase:
     @pytest.fixture()
     def client_class_constructor(self):
         def constructor(json_content_function):
@@ -107,7 +107,7 @@ class TestBaseResourceClient:
                 candies: list[Any]
                 meta: Meta
 
-            class CandiesClient(BaseResourceClient):
+            class CandiesClient(ResourceClientBase):
                 def get_list(self, status=None, page=None, per_page=None):
                     json_content = json_content_function(page)
                     results = [
@@ -122,7 +122,7 @@ class TestBaseResourceClient:
     @pytest.fixture()
     def client_class_with_actions_constructor(self):
         def constructor(json_content_function):
-            class CandiesClient(BaseResourceClient):
+            class CandiesClient(ResourceClientBase):
                 def get_actions_list(self, status, page=None, per_page=None):
                     json_content = json_content_function(page)
                     results = [

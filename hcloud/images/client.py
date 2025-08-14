@@ -4,7 +4,7 @@ import warnings
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
-from ..core import BaseResourceClient, BoundModelBase, Meta
+from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import Image
 
 if TYPE_CHECKING:
@@ -112,7 +112,7 @@ class ImagesPageResult(NamedTuple):
     meta: Meta
 
 
-class ImagesClient(BaseResourceClient):
+class ImagesClient(ResourceClientBase):
     _client: Client
 
     actions: ResourceActionsClient
