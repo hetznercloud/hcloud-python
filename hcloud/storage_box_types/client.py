@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BoundModelBase, ClientEntityBase, Meta
+from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import StorageBoxType
 
 if TYPE_CHECKING:
@@ -20,7 +20,7 @@ class StorageBoxTypesPageResult(NamedTuple):
     meta: Meta
 
 
-class StorageBoxTypesClient(ClientEntityBase):
+class StorageBoxTypesClient(ResourceClientBase):
     """
     A client for the Storage Box Types API.
 
