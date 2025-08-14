@@ -4,6 +4,7 @@ from unittest import mock
 
 import pytest
 
+from hcloud import Client
 from hcloud.actions import BoundAction
 from hcloud.datacenters import BoundDatacenter, Datacenter
 from hcloud.primary_ips import BoundPrimaryIP, PrimaryIP, PrimaryIPsClient
@@ -11,8 +12,8 @@ from hcloud.primary_ips import BoundPrimaryIP, PrimaryIP, PrimaryIPsClient
 
 class TestBoundPrimaryIP:
     @pytest.fixture()
-    def bound_primary_ip(self, hetzner_client):
-        return BoundPrimaryIP(client=hetzner_client.primary_ips, data=dict(id=14))
+    def bound_primary_ip(self, client: Client):
+        return BoundPrimaryIP(client.primary_ips, data=dict(id=14))
 
     def test_bound_primary_ip_init(self, primary_ip_response):
         bound_primary_ip = BoundPrimaryIP(
@@ -39,10 +40,15 @@ class TestBoundPrimaryIP:
         assert bound_primary_ip.datacenter.location.latitude == 50.47612
         assert bound_primary_ip.datacenter.location.longitude == 12.370071
 
-    def test_update(self, hetzner_client, bound_primary_ip, response_update_primary_ip):
-        hetzner_client.request.return_value = response_update_primary_ip
+    def test_update(
+        self,
+        request_mock: mock.MagicMock,
+        bound_primary_ip,
+        response_update_primary_ip,
+    ):
+        request_mock.return_value = response_update_primary_ip
         primary_ip = bound_primary_ip.update(auto_delete=True, name="my-resource")
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/primary_ips/14",
             method="PUT",
             json={"auto_delete": True, "name": "my-resource"},
@@ -51,19 +57,27 @@ class TestBoundPrimaryIP:
         assert primary_ip.id == 42
         assert primary_ip.auto_delete is True
 
-    def test_delete(self, hetzner_client, bound_primary_ip, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_delete(
+        self,
+        request_mock: mock.MagicMock,
+        bound_primary_ip,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         delete_success = bound_primary_ip.delete()
-        hetzner_client.request.assert_called_with(
-            url="/primary_ips/14", method="DELETE"
-        )
+        request_mock.assert_called_with(url="/primary_ips/14", method="DELETE")
 
         assert delete_success is True
 
-    def test_change_protection(self, hetzner_client, bound_primary_ip, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_change_protection(
+        self,
+        request_mock: mock.MagicMock,
+        bound_primary_ip,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_primary_ip.change_protection(True)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/primary_ips/14/actions/change_protection",
             method="POST",
             json={"delete": True},
@@ -72,10 +86,15 @@ class TestBoundPrimaryIP:
         assert action.id == 1
         assert action.progress == 0
 
-    def test_assign(self, hetzner_client, bound_primary_ip, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_assign(
+        self,
+        request_mock: mock.MagicMock,
+        bound_primary_ip,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_primary_ip.assign(assignee_id=12, assignee_type="server")
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/primary_ips/14/actions/assign",
             method="POST",
             json={"assignee_id": 12, "assignee_type": "server"},
@@ -83,19 +102,29 @@ class TestBoundPrimaryIP:
         assert action.id == 1
         assert action.progress == 0
 
-    def test_unassign(self, hetzner_client, bound_primary_ip, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_unassign(
+        self,
+        request_mock: mock.MagicMock,
+        bound_primary_ip,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_primary_ip.unassign()
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/primary_ips/14/actions/unassign", method="POST"
         )
         assert action.id == 1
         assert action.progress == 0
 
-    def test_change_dns_ptr(self, hetzner_client, bound_primary_ip, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_change_dns_ptr(
+        self,
+        request_mock: mock.MagicMock,
+        bound_primary_ip,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_primary_ip.change_dns_ptr("1.2.3.4", "server02.example.com")
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/primary_ips/14/actions/change_dns_ptr",
             method="POST",
             json={"ip": "1.2.3.4", "dns_ptr": "server02.example.com"},

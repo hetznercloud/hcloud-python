@@ -6,6 +6,7 @@ from unittest import mock
 
 import pytest
 
+from hcloud import Client
 from hcloud.actions import BoundAction
 from hcloud.images import BoundImage, Image, ImagesClient
 from hcloud.servers import BoundServer
@@ -13,8 +14,8 @@ from hcloud.servers import BoundServer
 
 class TestBoundImage:
     @pytest.fixture()
-    def bound_image(self, hetzner_client):
-        return BoundImage(client=hetzner_client.images, data=dict(id=14))
+    def bound_image(self, client: Client):
+        return BoundImage(client.images, data=dict(id=14))
 
     def test_bound_image_init(self, image_response):
         bound_image = BoundImage(client=mock.MagicMock(), data=image_response["image"])
@@ -50,11 +51,16 @@ class TestBoundImage:
         "params", [{}, {"sort": ["status"], "page": 1, "per_page": 2}]
     )
     def test_get_actions_list(
-        self, hetzner_client, bound_image, response_get_actions, params
+        self,
+        request_mock: mock.MagicMock,
+        client: Client,
+        bound_image,
+        response_get_actions,
+        params,
     ):
-        hetzner_client.request.return_value = response_get_actions
+        request_mock.return_value = response_get_actions
         result = bound_image.get_actions_list(**params)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/images/14/actions", method="GET", params=params
         )
 
@@ -63,35 +69,45 @@ class TestBoundImage:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == hetzner_client.actions
+        assert actions[0]._client == client.actions
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"
 
     @pytest.mark.parametrize("params", [{}, {"sort": ["status"]}])
     def test_get_actions(
-        self, hetzner_client, bound_image, response_get_actions, params
+        self,
+        request_mock: mock.MagicMock,
+        client: Client,
+        bound_image,
+        response_get_actions,
+        params,
     ):
-        hetzner_client.request.return_value = response_get_actions
+        request_mock.return_value = response_get_actions
         actions = bound_image.get_actions(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/images/14/actions", method="GET", params=params
         )
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == hetzner_client.actions
+        assert actions[0]._client == client.actions
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"
 
-    def test_update(self, hetzner_client, bound_image, response_update_image):
-        hetzner_client.request.return_value = response_update_image
+    def test_update(
+        self,
+        request_mock: mock.MagicMock,
+        bound_image,
+        response_update_image,
+    ):
+        request_mock.return_value = response_update_image
         image = bound_image.update(
             description="My new Image description", type="snapshot", labels={}
         )
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/images/14",
             method="PUT",
             json={
@@ -104,17 +120,27 @@ class TestBoundImage:
         assert image.id == 4711
         assert image.description == "My new Image description"
 
-    def test_delete(self, hetzner_client, bound_image, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_delete(
+        self,
+        request_mock: mock.MagicMock,
+        bound_image,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         delete_success = bound_image.delete()
-        hetzner_client.request.assert_called_with(url="/images/14", method="DELETE")
+        request_mock.assert_called_with(url="/images/14", method="DELETE")
 
         assert delete_success is True
 
-    def test_change_protection(self, hetzner_client, bound_image, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_change_protection(
+        self,
+        request_mock: mock.MagicMock,
+        bound_image,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_image.change_protection(True)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/images/14/actions/change_protection",
             method="POST",
             json={"delete": True},

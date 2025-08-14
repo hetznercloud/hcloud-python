@@ -4,6 +4,7 @@ from unittest import mock
 
 import pytest
 
+from hcloud import Client
 from hcloud.actions import BoundAction
 from hcloud.datacenters import BoundDatacenter, Datacenter
 from hcloud.firewalls import BoundFirewall, Firewall
@@ -29,8 +30,8 @@ from hcloud.volumes import BoundVolume, Volume
 
 class TestBoundServer:
     @pytest.fixture()
-    def bound_server(self, hetzner_client):
-        return BoundServer(client=hetzner_client.servers, data=dict(id=14))
+    def bound_server(self, client: Client):
+        return BoundServer(client.servers, data=dict(id=14))
 
     def test_bound_server_init(self, response_full_server):
         bound_server = BoundServer(
@@ -134,11 +135,16 @@ class TestBoundServer:
         ],
     )
     def test_get_actions_list(
-        self, hetzner_client, bound_server, response_get_actions, params
+        self,
+        request_mock: mock.MagicMock,
+        client: Client,
+        bound_server,
+        response_get_actions,
+        params,
     ):
-        hetzner_client.request.return_value = response_get_actions
+        request_mock.return_value = response_get_actions
         result = bound_server.get_actions_list(**params)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions", method="GET", params=params
         )
 
@@ -147,7 +153,7 @@ class TestBoundServer:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == hetzner_client.actions
+        assert actions[0]._client == client.actions
         assert actions[0].id == 13
         assert actions[0].command == "start_server"
 
@@ -155,54 +161,69 @@ class TestBoundServer:
         "params", [{"status": [Server.STATUS_RUNNING], "sort": "status"}, {}]
     )
     def test_get_actions(
-        self, hetzner_client, bound_server, response_get_actions, params
+        self,
+        request_mock: mock.MagicMock,
+        client: Client,
+        bound_server,
+        response_get_actions,
+        params,
     ):
-        hetzner_client.request.return_value = response_get_actions
+        request_mock.return_value = response_get_actions
         actions = bound_server.get_actions(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions", method="GET", params=params
         )
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == hetzner_client.actions
+        assert actions[0]._client == client.actions
         assert actions[0].id == 13
         assert actions[0].command == "start_server"
 
-    def test_update(self, hetzner_client, bound_server, response_update_server):
-        hetzner_client.request.return_value = response_update_server
+    def test_update(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        response_update_server,
+    ):
+        request_mock.return_value = response_update_server
         server = bound_server.update(name="new-name", labels={})
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14", method="PUT", json={"name": "new-name", "labels": {}}
         )
 
         assert server.id == 14
         assert server.name == "new-name"
 
-    def test_delete(self, hetzner_client, bound_server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_delete(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_server.delete()
-        hetzner_client.request.assert_called_with(url="/servers/14", method="DELETE")
+        request_mock.assert_called_with(url="/servers/14", method="DELETE")
 
         assert action.id == 1
         assert action.progress == 0
 
     def test_get_metrics(
         self,
-        hetzner_client,
+        request_mock: mock.MagicMock,
         bound_server: BoundServer,
         response_get_metrics,
     ):
-        hetzner_client.request.return_value = response_get_metrics
+        request_mock.return_value = response_get_metrics
         response = bound_server.get_metrics(
             type=["cpu", "disk"],
             start="2023-12-14T17:40:00+01:00",
             end="2023-12-14T17:50:00+01:00",
         )
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/metrics",
             method="GET",
             params={
@@ -216,50 +237,71 @@ class TestBoundServer:
         assert "disk.0.iops.read" in response.metrics.time_series
         assert len(response.metrics.time_series["disk.0.iops.read"]["values"]) == 3
 
-    def test_power_off(self, hetzner_client, bound_server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_power_off(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_server.power_off()
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/poweroff", method="POST"
         )
 
         assert action.id == 1
         assert action.progress == 0
 
-    def test_power_on(self, hetzner_client, bound_server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_power_on(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_server.power_on()
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/poweron", method="POST"
         )
 
         assert action.id == 1
         assert action.progress == 0
 
-    def test_reboot(self, hetzner_client, bound_server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_reboot(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_server.reboot()
-        hetzner_client.request.assert_called_with(
-            url="/servers/14/actions/reboot", method="POST"
-        )
+        request_mock.assert_called_with(url="/servers/14/actions/reboot", method="POST")
 
         assert action.id == 1
         assert action.progress == 0
 
-    def test_reset(self, hetzner_client, bound_server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_reset(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_server.reset()
-        hetzner_client.request.assert_called_with(
-            url="/servers/14/actions/reset", method="POST"
-        )
+        request_mock.assert_called_with(url="/servers/14/actions/reset", method="POST")
 
         assert action.id == 1
         assert action.progress == 0
 
-    def test_shutdown(self, hetzner_client, bound_server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_shutdown(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_server.shutdown()
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/shutdown", method="POST"
         )
 
@@ -267,11 +309,14 @@ class TestBoundServer:
         assert action.progress == 0
 
     def test_reset_password(
-        self, hetzner_client, bound_server, response_server_reset_password
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        response_server_reset_password,
     ):
-        hetzner_client.request.return_value = response_server_reset_password
+        request_mock.return_value = response_server_reset_password
         response = bound_server.reset_password()
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/reset_password", method="POST"
         )
 
@@ -279,10 +324,15 @@ class TestBoundServer:
         assert response.action.progress == 0
         assert response.root_password == "YItygq1v3GYjjMomLaKc"
 
-    def test_change_type(self, hetzner_client, bound_server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_change_type(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_server.change_type(ServerType(name="cx11"), upgrade_disk=True)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/change_type",
             method="POST",
             json={"server_type": "cx11", "upgrade_disk": True},
@@ -292,11 +342,14 @@ class TestBoundServer:
         assert action.progress == 0
 
     def test_enable_rescue(
-        self, hetzner_client, bound_server, response_server_enable_rescue
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        response_server_enable_rescue,
     ):
-        hetzner_client.request.return_value = response_server_enable_rescue
+        request_mock.return_value = response_server_enable_rescue
         response = bound_server.enable_rescue(type="linux64")
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/enable_rescue",
             method="POST",
             json={"type": "linux64"},
@@ -306,10 +359,15 @@ class TestBoundServer:
         assert response.action.progress == 0
         assert response.root_password == "YItygq1v3GYjjMomLaKc"
 
-    def test_disable_rescue(self, hetzner_client, bound_server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_disable_rescue(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_server.disable_rescue()
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/disable_rescue", method="POST"
         )
 
@@ -317,11 +375,14 @@ class TestBoundServer:
         assert action.progress == 0
 
     def test_create_image(
-        self, hetzner_client, bound_server, response_server_create_image
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        response_server_create_image,
     ):
-        hetzner_client.request.return_value = response_server_create_image
+        request_mock.return_value = response_server_create_image
         response = bound_server.create_image(description="my image", type="snapshot")
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/create_image",
             method="POST",
             json={"description": "my image", "type": "snapshot"},
@@ -331,13 +392,18 @@ class TestBoundServer:
         assert response.action.progress == 0
         assert response.image.description == "my image"
 
-    def test_rebuild(self, hetzner_client, bound_server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_rebuild(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         response = bound_server.rebuild(
             Image(name="ubuntu-20.04"),
             return_response=True,
         )
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/rebuild",
             method="POST",
             json={"image": "ubuntu-20.04"},
@@ -347,30 +413,45 @@ class TestBoundServer:
         assert response.action.progress == 0
         assert response.root_password is None or isinstance(response.root_password, str)
 
-    def test_enable_backup(self, hetzner_client, bound_server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_enable_backup(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_server.enable_backup()
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/enable_backup", method="POST"
         )
 
         assert action.id == 1
         assert action.progress == 0
 
-    def test_disable_backup(self, hetzner_client, bound_server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_disable_backup(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_server.disable_backup()
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/disable_backup", method="POST"
         )
 
         assert action.id == 1
         assert action.progress == 0
 
-    def test_attach_iso(self, hetzner_client, bound_server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_attach_iso(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_server.attach_iso(Iso(name="FreeBSD-11.0-RELEASE-amd64-dvd1"))
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/attach_iso",
             method="POST",
             json={"iso": "FreeBSD-11.0-RELEASE-amd64-dvd1"},
@@ -379,20 +460,30 @@ class TestBoundServer:
         assert action.id == 1
         assert action.progress == 0
 
-    def test_detach_iso(self, hetzner_client, bound_server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_detach_iso(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_server.detach_iso()
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/detach_iso", method="POST"
         )
 
         assert action.id == 1
         assert action.progress == 0
 
-    def test_change_dns_ptr(self, hetzner_client, bound_server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_change_dns_ptr(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_server.change_dns_ptr("1.2.3.4", "example.com")
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/change_dns_ptr",
             method="POST",
             json={"ip": "1.2.3.4", "dns_ptr": "example.com"},
@@ -401,10 +492,15 @@ class TestBoundServer:
         assert action.id == 1
         assert action.progress == 0
 
-    def test_change_protection(self, hetzner_client, bound_server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_change_protection(
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_server.change_protection(True, True)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/change_protection",
             method="POST",
             json={"delete": True, "rebuild": True},
@@ -414,11 +510,14 @@ class TestBoundServer:
         assert action.progress == 0
 
     def test_request_console(
-        self, hetzner_client, bound_server, response_server_request_console
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        response_server_request_console,
     ):
-        hetzner_client.request.return_value = response_server_request_console
+        request_mock.return_value = response_server_request_console
         response = bound_server.request_console()
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/request_console", method="POST"
         )
 
@@ -434,13 +533,17 @@ class TestBoundServer:
         "network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))]
     )
     def test_attach_to_network(
-        self, hetzner_client, bound_server, network, response_attach_to_network
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        network,
+        response_attach_to_network,
     ):
-        hetzner_client.request.return_value = response_attach_to_network
+        request_mock.return_value = response_attach_to_network
         action = bound_server.attach_to_network(
             network, "10.0.1.1", ["10.0.1.2", "10.0.1.3"]
         )
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/attach_to_network",
             method="POST",
             json={
@@ -458,11 +561,15 @@ class TestBoundServer:
         "network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))]
     )
     def test_detach_from_network(
-        self, hetzner_client, bound_server, network, response_detach_from_network
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        network,
+        response_detach_from_network,
     ):
-        hetzner_client.request.return_value = response_detach_from_network
+        request_mock.return_value = response_detach_from_network
         action = bound_server.detach_from_network(network)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/detach_from_network",
             method="POST",
             json={"network": 4711},
@@ -476,11 +583,15 @@ class TestBoundServer:
         "network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))]
     )
     def test_change_alias_ips(
-        self, hetzner_client, bound_server, network, response_change_alias_ips
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        network,
+        response_change_alias_ips,
     ):
-        hetzner_client.request.return_value = response_change_alias_ips
+        request_mock.return_value = response_change_alias_ips
         action = bound_server.change_alias_ips(network, ["10.0.1.2", "10.0.1.3"])
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/change_alias_ips",
             method="POST",
             json={"network": 4711, "alias_ips": ["10.0.1.2", "10.0.1.3"]},
@@ -496,14 +607,14 @@ class TestBoundServer:
     )
     def test_add_to_placement_group(
         self,
-        hetzner_client,
+        request_mock: mock.MagicMock,
         bound_server,
         placement_group,
         response_add_to_placement_group,
     ):
-        hetzner_client.request.return_value = response_add_to_placement_group
+        request_mock.return_value = response_add_to_placement_group
         action = bound_server.add_to_placement_group(placement_group)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/add_to_placement_group",
             method="POST",
             json={"placement_group": 897},
@@ -514,11 +625,14 @@ class TestBoundServer:
         assert action.command == "add_to_placement_group"
 
     def test_remove_from_placement_group(
-        self, hetzner_client, bound_server, response_remove_from_placement_group
+        self,
+        request_mock: mock.MagicMock,
+        bound_server,
+        response_remove_from_placement_group,
     ):
-        hetzner_client.request.return_value = response_remove_from_placement_group
+        request_mock.return_value = response_remove_from_placement_group
         action = bound_server.remove_from_placement_group()
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/servers/14/actions/remove_from_placement_group", method="POST"
         )
 

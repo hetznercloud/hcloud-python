@@ -4,6 +4,7 @@ from unittest import mock
 
 import pytest
 
+from hcloud import Client
 from hcloud.actions import BoundAction
 from hcloud.certificates import (
     BoundCertificate,
@@ -15,16 +16,21 @@ from hcloud.certificates import (
 
 class TestBoundCertificate:
     @pytest.fixture()
-    def bound_certificate(self, hetzner_client):
-        return BoundCertificate(client=hetzner_client.certificates, data=dict(id=14))
+    def bound_certificate(self, client: Client):
+        return BoundCertificate(client.certificates, data=dict(id=14))
 
     @pytest.mark.parametrize("params", [{"page": 1, "per_page": 10}, {}])
     def test_get_actions_list(
-        self, hetzner_client, bound_certificate, response_get_actions, params
+        self,
+        request_mock: mock.MagicMock,
+        client: Client,
+        bound_certificate,
+        response_get_actions,
+        params,
     ):
-        hetzner_client.request.return_value = response_get_actions
+        request_mock.return_value = response_get_actions
         result = bound_certificate.get_actions_list(**params)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/certificates/14/actions", method="GET", params=params
         )
 
@@ -33,23 +39,29 @@ class TestBoundCertificate:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == hetzner_client.actions
+        assert actions[0]._client == client.actions
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"
 
-    def test_get_actions(self, hetzner_client, bound_certificate, response_get_actions):
-        hetzner_client.request.return_value = response_get_actions
+    def test_get_actions(
+        self,
+        request_mock: mock.MagicMock,
+        client: Client,
+        bound_certificate,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         actions = bound_certificate.get_actions()
 
         params = {"page": 1, "per_page": 50}
 
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/certificates/14/actions", method="GET", params=params
         )
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == hetzner_client.actions
+        assert actions[0]._client == client.actions
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"
 
@@ -77,32 +89,41 @@ class TestBoundCertificate:
         assert bound_certificate.status.error.message == "error message"
 
     def test_update(
-        self, hetzner_client, bound_certificate, response_update_certificate
+        self,
+        request_mock: mock.MagicMock,
+        bound_certificate,
+        response_update_certificate,
     ):
-        hetzner_client.request.return_value = response_update_certificate
+        request_mock.return_value = response_update_certificate
         certificate = bound_certificate.update(name="New name")
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/certificates/14", method="PUT", json={"name": "New name"}
         )
 
         assert certificate.id == 2323
         assert certificate.name == "New name"
 
-    def test_delete(self, hetzner_client, bound_certificate, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_delete(
+        self,
+        request_mock: mock.MagicMock,
+        bound_certificate,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         delete_success = bound_certificate.delete()
-        hetzner_client.request.assert_called_with(
-            url="/certificates/14", method="DELETE"
-        )
+        request_mock.assert_called_with(url="/certificates/14", method="DELETE")
 
         assert delete_success is True
 
     def test_retry_issuance(
-        self, hetzner_client, bound_certificate, response_retry_issuance_action
+        self,
+        request_mock: mock.MagicMock,
+        bound_certificate,
+        response_retry_issuance_action,
     ):
-        hetzner_client.request.return_value = response_retry_issuance_action
+        request_mock.return_value = response_retry_issuance_action
         action = bound_certificate.retry_issuance()
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/certificates/14/actions/retry", method="POST"
         )
 

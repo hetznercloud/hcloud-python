@@ -5,6 +5,7 @@ from unittest import mock
 import pytest
 from dateutil.parser import isoparse
 
+from hcloud import Client
 from hcloud.actions import BoundAction
 from hcloud.locations import BoundLocation, Location
 from hcloud.servers import BoundServer, Server
@@ -13,8 +14,8 @@ from hcloud.volumes import BoundVolume, Volume, VolumesClient
 
 class TestBoundVolume:
     @pytest.fixture()
-    def bound_volume(self, hetzner_client):
-        return BoundVolume(client=hetzner_client.volumes, data=dict(id=14))
+    def bound_volume(self, client: Client):
+        return BoundVolume(client.volumes, data=dict(id=14))
 
     def test_bound_volume_init(self, volume_response):
         bound_volume = BoundVolume(
@@ -41,10 +42,16 @@ class TestBoundVolume:
         assert bound_volume.location.latitude == 50.47612
         assert bound_volume.location.longitude == 12.370071
 
-    def test_get_actions(self, hetzner_client, bound_volume, response_get_actions):
-        hetzner_client.request.return_value = response_get_actions
+    def test_get_actions(
+        self,
+        request_mock: mock.MagicMock,
+        client: Client,
+        bound_volume,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         actions = bound_volume.get_actions(sort="id")
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/volumes/14/actions",
             method="GET",
             params={"page": 1, "per_page": 50, "sort": "id"},
@@ -52,31 +59,46 @@ class TestBoundVolume:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == hetzner_client.actions
+        assert actions[0]._client == client.actions
         assert actions[0].id == 13
         assert actions[0].command == "attach_volume"
 
-    def test_update(self, hetzner_client, bound_volume, response_update_volume):
-        hetzner_client.request.return_value = response_update_volume
+    def test_update(
+        self,
+        request_mock: mock.MagicMock,
+        bound_volume,
+        response_update_volume,
+    ):
+        request_mock.return_value = response_update_volume
         volume = bound_volume.update(name="new-name")
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/volumes/14", method="PUT", json={"name": "new-name"}
         )
 
         assert volume.id == 4711
         assert volume.name == "new-name"
 
-    def test_delete(self, hetzner_client, bound_volume, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_delete(
+        self,
+        request_mock: mock.MagicMock,
+        bound_volume,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         delete_success = bound_volume.delete()
-        hetzner_client.request.assert_called_with(url="/volumes/14", method="DELETE")
+        request_mock.assert_called_with(url="/volumes/14", method="DELETE")
 
         assert delete_success is True
 
-    def test_change_protection(self, hetzner_client, bound_volume, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_change_protection(
+        self,
+        request_mock: mock.MagicMock,
+        bound_volume,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_volume.change_protection(True)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/volumes/14/actions/change_protection",
             method="POST",
             json={"delete": True},
@@ -88,10 +110,16 @@ class TestBoundVolume:
     @pytest.mark.parametrize(
         "server", (Server(id=1), BoundServer(mock.MagicMock(), dict(id=1)))
     )
-    def test_attach(self, hetzner_client, bound_volume, server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_attach(
+        self,
+        request_mock: mock.MagicMock,
+        bound_volume,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_volume.attach(server)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/volumes/14/actions/attach", method="POST", json={"server": 1}
         )
         assert action.id == 1
@@ -101,11 +129,15 @@ class TestBoundVolume:
         "server", (Server(id=1), BoundServer(mock.MagicMock(), dict(id=1)))
     )
     def test_attach_with_automount(
-        self, hetzner_client, bound_volume, server, generic_action
+        self,
+        request_mock: mock.MagicMock,
+        bound_volume,
+        server,
+        generic_action,
     ):
-        hetzner_client.request.return_value = generic_action
+        request_mock.return_value = generic_action
         action = bound_volume.attach(server, False)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/volumes/14/actions/attach",
             method="POST",
             json={"server": 1, "automount": False},
@@ -113,19 +145,27 @@ class TestBoundVolume:
         assert action.id == 1
         assert action.progress == 0
 
-    def test_detach(self, hetzner_client, bound_volume, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_detach(
+        self,
+        request_mock: mock.MagicMock,
+        bound_volume,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_volume.detach()
-        hetzner_client.request.assert_called_with(
-            url="/volumes/14/actions/detach", method="POST"
-        )
+        request_mock.assert_called_with(url="/volumes/14/actions/detach", method="POST")
         assert action.id == 1
         assert action.progress == 0
 
-    def test_resize(self, hetzner_client, bound_volume, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_resize(
+        self,
+        request_mock: mock.MagicMock,
+        bound_volume,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_volume.resize(50)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/volumes/14/actions/resize", method="POST", json={"size": 50}
         )
         assert action.id == 1

@@ -5,6 +5,7 @@ from unittest import mock
 import pytest
 from dateutil.parser import isoparse
 
+from hcloud import Client
 from hcloud.actions import BoundAction
 from hcloud.networks import (
     BoundNetwork,
@@ -18,8 +19,8 @@ from hcloud.servers import BoundServer
 
 class TestBoundNetwork:
     @pytest.fixture()
-    def bound_network(self, hetzner_client):
-        return BoundNetwork(client=hetzner_client.networks, data=dict(id=14))
+    def bound_network(self, client: Client):
+        return BoundNetwork(client.networks, data=dict(id=14))
 
     def test_bound_network_init(self, network_response):
         bound_network = BoundNetwork(
@@ -49,10 +50,16 @@ class TestBoundNetwork:
         assert bound_network.routes[0].destination == "10.100.1.0/24"
         assert bound_network.routes[0].gateway == "10.0.1.1"
 
-    def test_get_actions(self, hetzner_client, bound_network, response_get_actions):
-        hetzner_client.request.return_value = response_get_actions
+    def test_get_actions(
+        self,
+        request_mock: mock.MagicMock,
+        client: Client,
+        bound_network,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         actions = bound_network.get_actions(sort="id")
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/14/actions",
             method="GET",
             params={"page": 1, "per_page": 50, "sort": "id"},
@@ -60,31 +67,46 @@ class TestBoundNetwork:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == hetzner_client.actions
+        assert actions[0]._client == client.actions
         assert actions[0].id == 13
         assert actions[0].command == "add_subnet"
 
-    def test_update(self, hetzner_client, bound_network, response_update_network):
-        hetzner_client.request.return_value = response_update_network
+    def test_update(
+        self,
+        request_mock: mock.MagicMock,
+        bound_network,
+        response_update_network,
+    ):
+        request_mock.return_value = response_update_network
         network = bound_network.update(name="new-name")
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/14", method="PUT", json={"name": "new-name"}
         )
 
         assert network.id == 4711
         assert network.name == "new-name"
 
-    def test_delete(self, hetzner_client, bound_network, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_delete(
+        self,
+        request_mock: mock.MagicMock,
+        bound_network,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         delete_success = bound_network.delete()
-        hetzner_client.request.assert_called_with(url="/networks/14", method="DELETE")
+        request_mock.assert_called_with(url="/networks/14", method="DELETE")
 
         assert delete_success is True
 
-    def test_change_protection(self, hetzner_client, bound_network, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_change_protection(
+        self,
+        request_mock: mock.MagicMock,
+        bound_network,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_network.change_protection(True)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/14/actions/change_protection",
             method="POST",
             json={"delete": True},
@@ -93,15 +115,20 @@ class TestBoundNetwork:
         assert action.id == 1
         assert action.progress == 0
 
-    def test_add_subnet(self, hetzner_client, bound_network, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_add_subnet(
+        self,
+        request_mock: mock.MagicMock,
+        bound_network,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         subnet = NetworkSubnet(
             type=NetworkSubnet.TYPE_CLOUD,
             ip_range="10.0.1.0/24",
             network_zone="eu-central",
         )
         action = bound_network.add_subnet(subnet)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/14/actions/add_subnet",
             method="POST",
             json={
@@ -114,11 +141,16 @@ class TestBoundNetwork:
         assert action.id == 1
         assert action.progress == 0
 
-    def test_delete_subnet(self, hetzner_client, bound_network, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_delete_subnet(
+        self,
+        request_mock: mock.MagicMock,
+        bound_network,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         subnet = NetworkSubnet(ip_range="10.0.1.0/24")
         action = bound_network.delete_subnet(subnet)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/14/actions/delete_subnet",
             method="POST",
             json={"ip_range": "10.0.1.0/24"},
@@ -127,11 +159,16 @@ class TestBoundNetwork:
         assert action.id == 1
         assert action.progress == 0
 
-    def test_add_route(self, hetzner_client, bound_network, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_add_route(
+        self,
+        request_mock: mock.MagicMock,
+        bound_network,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         route = NetworkRoute(destination="10.100.1.0/24", gateway="10.0.1.1")
         action = bound_network.add_route(route)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/14/actions/add_route",
             method="POST",
             json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"},
@@ -140,11 +177,16 @@ class TestBoundNetwork:
         assert action.id == 1
         assert action.progress == 0
 
-    def test_delete_route(self, hetzner_client, bound_network, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_delete_route(
+        self,
+        request_mock: mock.MagicMock,
+        bound_network,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         route = NetworkRoute(destination="10.100.1.0/24", gateway="10.0.1.1")
         action = bound_network.delete_route(route)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/14/actions/delete_route",
             method="POST",
             json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"},
@@ -153,10 +195,15 @@ class TestBoundNetwork:
         assert action.id == 1
         assert action.progress == 0
 
-    def test_change_ip(self, hetzner_client, bound_network, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_change_ip(
+        self,
+        request_mock: mock.MagicMock,
+        bound_network,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_network.change_ip_range("10.0.0.0/12")
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/14/actions/change_ip_range",
             method="POST",
             json={"ip_range": "10.0.0.0/12"},

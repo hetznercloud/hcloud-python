@@ -4,6 +4,7 @@ from unittest import mock
 
 import pytest
 
+from hcloud import Client
 from hcloud.actions import BoundAction
 from hcloud.floating_ips import BoundFloatingIP, FloatingIP, FloatingIPsClient
 from hcloud.locations import BoundLocation, Location
@@ -12,8 +13,8 @@ from hcloud.servers import BoundServer, Server
 
 class TestBoundFloatingIP:
     @pytest.fixture()
-    def bound_floating_ip(self, hetzner_client):
-        return BoundFloatingIP(client=hetzner_client.floating_ips, data=dict(id=14))
+    def bound_floating_ip(self, client: Client):
+        return BoundFloatingIP(client.floating_ips, data=dict(id=14))
 
     def test_bound_floating_ip_init(self, floating_ip_response):
         bound_floating_ip = BoundFloatingIP(
@@ -41,10 +42,16 @@ class TestBoundFloatingIP:
         assert bound_floating_ip.home_location.latitude == 50.47612
         assert bound_floating_ip.home_location.longitude == 12.370071
 
-    def test_get_actions(self, hetzner_client, bound_floating_ip, response_get_actions):
-        hetzner_client.request.return_value = response_get_actions
+    def test_get_actions(
+        self,
+        request_mock: mock.MagicMock,
+        client: Client,
+        bound_floating_ip,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         actions = bound_floating_ip.get_actions(sort="id")
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/floating_ips/14/actions",
             method="GET",
             params={"sort": "id", "page": 1, "per_page": 50},
@@ -52,18 +59,21 @@ class TestBoundFloatingIP:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == hetzner_client.actions
+        assert actions[0]._client == client.actions
         assert actions[0].id == 13
         assert actions[0].command == "assign_floating_ip"
 
     def test_update(
-        self, hetzner_client, bound_floating_ip, response_update_floating_ip
+        self,
+        request_mock: mock.MagicMock,
+        bound_floating_ip,
+        response_update_floating_ip,
     ):
-        hetzner_client.request.return_value = response_update_floating_ip
+        request_mock.return_value = response_update_floating_ip
         floating_ip = bound_floating_ip.update(
             description="New description", name="New name"
         )
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/floating_ips/14",
             method="PUT",
             json={"description": "New description", "name": "New name"},
@@ -73,19 +83,27 @@ class TestBoundFloatingIP:
         assert floating_ip.description == "New description"
         assert floating_ip.name == "New name"
 
-    def test_delete(self, hetzner_client, bound_floating_ip, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_delete(
+        self,
+        request_mock: mock.MagicMock,
+        bound_floating_ip,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         delete_success = bound_floating_ip.delete()
-        hetzner_client.request.assert_called_with(
-            url="/floating_ips/14", method="DELETE"
-        )
+        request_mock.assert_called_with(url="/floating_ips/14", method="DELETE")
 
         assert delete_success is True
 
-    def test_change_protection(self, hetzner_client, bound_floating_ip, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_change_protection(
+        self,
+        request_mock: mock.MagicMock,
+        bound_floating_ip,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_floating_ip.change_protection(True)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/floating_ips/14/actions/change_protection",
             method="POST",
             json={"delete": True},
@@ -97,28 +115,44 @@ class TestBoundFloatingIP:
     @pytest.mark.parametrize(
         "server", (Server(id=1), BoundServer(mock.MagicMock(), dict(id=1)))
     )
-    def test_assign(self, hetzner_client, bound_floating_ip, server, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_assign(
+        self,
+        request_mock: mock.MagicMock,
+        bound_floating_ip,
+        server,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_floating_ip.assign(server)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/floating_ips/14/actions/assign", method="POST", json={"server": 1}
         )
         assert action.id == 1
         assert action.progress == 0
 
-    def test_unassign(self, hetzner_client, bound_floating_ip, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_unassign(
+        self,
+        request_mock: mock.MagicMock,
+        bound_floating_ip,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_floating_ip.unassign()
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/floating_ips/14/actions/unassign", method="POST"
         )
         assert action.id == 1
         assert action.progress == 0
 
-    def test_change_dns_ptr(self, hetzner_client, bound_floating_ip, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_change_dns_ptr(
+        self,
+        request_mock: mock.MagicMock,
+        bound_floating_ip,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_floating_ip.change_dns_ptr("1.2.3.4", "server02.example.com")
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/floating_ips/14/actions/change_dns_ptr",
             method="POST",
             json={"ip": "1.2.3.4", "dns_ptr": "server02.example.com"},

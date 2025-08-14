@@ -4,6 +4,7 @@ from unittest import mock
 
 import pytest
 
+from hcloud import Client
 from hcloud.actions import (
     Action,
     ActionFailedException,
@@ -16,31 +17,38 @@ from hcloud.actions import (
 
 class TestBoundAction:
     @pytest.fixture()
-    def bound_running_action(self, mocked_requests):
-        action_client = ActionsClient(client=mocked_requests)
+    def bound_running_action(self, client: Client):
         # Speed up tests that run `wait_until_finished`
-        action_client._client._poll_interval_func = lambda _: 0.0
-        action_client._client._poll_max_retries = 3
+        client._poll_interval_func = lambda _: 0.0
+        client._poll_max_retries = 3
 
         return BoundAction(
-            client=action_client,
+            client=client.actions,
             data=dict(id=14, status=Action.STATUS_RUNNING),
         )
 
     def test_wait_until_finished(
-        self, bound_running_action, mocked_requests, running_action, successfully_action
+        self,
+        request_mock: mock.MagicMock,
+        bound_running_action,
+        running_action,
+        successfully_action,
     ):
-        mocked_requests.request.side_effect = [running_action, successfully_action]
+        request_mock.side_effect = [running_action, successfully_action]
         bound_running_action.wait_until_finished()
-        mocked_requests.request.assert_called_with(url="/actions/2", method="GET")
+        request_mock.assert_called_with(url="/actions/2", method="GET")
 
         assert bound_running_action.status == "success"
-        assert mocked_requests.request.call_count == 2
+        assert request_mock.call_count == 2
 
     def test_wait_until_finished_with_error(
-        self, bound_running_action, mocked_requests, running_action, failed_action
+        self,
+        request_mock: mock.MagicMock,
+        bound_running_action,
+        running_action,
+        failed_action,
     ):
-        mocked_requests.request.side_effect = [running_action, failed_action]
+        request_mock.side_effect = [running_action, failed_action]
         with pytest.raises(ActionFailedException) as exception_info:
             bound_running_action.wait_until_finished()
 
@@ -48,9 +56,13 @@ class TestBoundAction:
         assert exception_info.value.action.id == 2
 
     def test_wait_until_finished_max_retries(
-        self, bound_running_action, mocked_requests, running_action, successfully_action
+        self,
+        request_mock: mock.MagicMock,
+        bound_running_action,
+        running_action,
+        successfully_action,
     ):
-        mocked_requests.request.side_effect = [
+        request_mock.side_effect = [
             running_action,
             running_action,
             successfully_action,
@@ -60,7 +72,7 @@ class TestBoundAction:
 
         assert bound_running_action.status == "running"
         assert exception_info.value.action.id == 2
-        assert mocked_requests.request.call_count == 1
+        assert request_mock.call_count == 1
 
 
 class TestResourceActionsClient:
