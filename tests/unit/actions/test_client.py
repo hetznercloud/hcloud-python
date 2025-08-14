@@ -18,10 +18,6 @@ from hcloud.actions import (
 class TestBoundAction:
     @pytest.fixture()
     def bound_running_action(self, client: Client):
-        # Speed up tests that run `wait_until_finished`
-        client._poll_interval_func = lambda _: 0.0
-        client._poll_max_retries = 3
-
         return BoundAction(
             client=client.actions,
             data=dict(id=14, status=Action.STATUS_RUNNING),

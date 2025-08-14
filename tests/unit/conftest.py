@@ -22,7 +22,12 @@ def request_mock() -> mock.MagicMock:
 
 @pytest.fixture()
 def client(request_mock) -> Client:
-    c = Client(token="TOKEN")
+    c = Client(
+        token="TOKEN",
+        # Speed up tests that use `_poll_interval_func`
+        poll_interval=0.0,
+        poll_max_retries=3,
+    )
     c._client.request = request_mock
     return c
 
