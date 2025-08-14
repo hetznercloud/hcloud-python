@@ -434,15 +434,18 @@ class TestBoundLoadBalancer:
 
 class TestLoadBalancerslient:
     @pytest.fixture()
-    def load_balancers_client(self):
-        return LoadBalancersClient(client=mock.MagicMock())
+    def load_balancers_client(self, client: Client):
+        return LoadBalancersClient(client)
 
-    def test_get_by_id(self, load_balancers_client, response_load_balancer):
-        load_balancers_client._client.request.return_value = response_load_balancer
+    def test_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        load_balancers_client: LoadBalancersClient,
+        response_load_balancer,
+    ):
+        request_mock.return_value = response_load_balancer
         bound_load_balancer = load_balancers_client.get_by_id(1)
-        load_balancers_client._client.request.assert_called_with(
-            url="/load_balancers/1", method="GET"
-        )
+        request_mock.assert_called_with(url="/load_balancers/1", method="GET")
         assert bound_load_balancer._client is load_balancers_client
         assert bound_load_balancer.id == 4711
         assert bound_load_balancer.name == "Web Frontend"
@@ -464,13 +467,15 @@ class TestLoadBalancerslient:
         ],
     )
     def test_get_list(
-        self, load_balancers_client, response_simple_load_balancers, params
+        self,
+        request_mock: mock.MagicMock,
+        load_balancers_client: LoadBalancersClient,
+        response_simple_load_balancers,
+        params,
     ):
-        load_balancers_client._client.request.return_value = (
-            response_simple_load_balancers
-        )
+        request_mock.return_value = response_simple_load_balancers
         result = load_balancers_client.get_list(**params)
-        load_balancers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers", method="GET", params=params
         )
 
@@ -494,16 +499,18 @@ class TestLoadBalancerslient:
         "params", [{"name": "loadbalancer1", "label_selector": "label1"}, {}]
     )
     def test_get_all(
-        self, load_balancers_client, response_simple_load_balancers, params
+        self,
+        request_mock: mock.MagicMock,
+        load_balancers_client: LoadBalancersClient,
+        response_simple_load_balancers,
+        params,
     ):
-        load_balancers_client._client.request.return_value = (
-            response_simple_load_balancers
-        )
+        request_mock.return_value = response_simple_load_balancers
         bound_load_balancers = load_balancers_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        load_balancers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers", method="GET", params=params
         )
 
@@ -520,15 +527,18 @@ class TestLoadBalancerslient:
         assert bound_load_balancer2.id == 4712
         assert bound_load_balancer2.name == "Web Frontend2"
 
-    def test_get_by_name(self, load_balancers_client, response_simple_load_balancers):
-        load_balancers_client._client.request.return_value = (
-            response_simple_load_balancers
-        )
+    def test_get_by_name(
+        self,
+        request_mock: mock.MagicMock,
+        load_balancers_client: LoadBalancersClient,
+        response_simple_load_balancers,
+    ):
+        request_mock.return_value = response_simple_load_balancers
         bound_load_balancer = load_balancers_client.get_by_name("Web Frontend")
 
         params = {"name": "Web Frontend"}
 
-        load_balancers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers", method="GET", params=params
         )
 
@@ -536,16 +546,19 @@ class TestLoadBalancerslient:
         assert bound_load_balancer.id == 4711
         assert bound_load_balancer.name == "Web Frontend"
 
-    def test_create(self, load_balancers_client, response_create_load_balancer):
-        load_balancers_client._client.request.return_value = (
-            response_create_load_balancer
-        )
+    def test_create(
+        self,
+        request_mock: mock.MagicMock,
+        load_balancers_client: LoadBalancersClient,
+        response_create_load_balancer,
+    ):
+        request_mock.return_value = response_create_load_balancer
         response = load_balancers_client.create(
             "my-balancer",
             load_balancer_type=LoadBalancerType(name="lb11"),
             location=Location(id=1),
         )
-        load_balancers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers",
             method="POST",
             json={"name": "my-balancer", "load_balancer_type": "lb11", "location": 1},
@@ -562,13 +575,17 @@ class TestLoadBalancerslient:
         [LoadBalancer(id=1), BoundLoadBalancer(mock.MagicMock(), dict(id=1))],
     )
     def test_change_type_with_load_balancer_type_name(
-        self, load_balancers_client, load_balancer, generic_action
+        self,
+        request_mock: mock.MagicMock,
+        load_balancers_client: LoadBalancersClient,
+        load_balancer,
+        generic_action,
     ):
-        load_balancers_client._client.request.return_value = generic_action
+        request_mock.return_value = generic_action
         action = load_balancers_client.change_type(
             load_balancer, LoadBalancerType(name="lb11")
         )
-        load_balancers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers/1/actions/change_type",
             method="POST",
             json={"load_balancer_type": "lb11"},
@@ -582,13 +599,17 @@ class TestLoadBalancerslient:
         [LoadBalancer(id=1), BoundLoadBalancer(mock.MagicMock(), dict(id=1))],
     )
     def test_change_type_with_load_balancer_type_id(
-        self, load_balancers_client, load_balancer, generic_action
+        self,
+        request_mock: mock.MagicMock,
+        load_balancers_client: LoadBalancersClient,
+        load_balancer,
+        generic_action,
     ):
-        load_balancers_client._client.request.return_value = generic_action
+        request_mock.return_value = generic_action
         action = load_balancers_client.change_type(
             load_balancer, LoadBalancerType(id=1)
         )
-        load_balancers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers/1/actions/change_type",
             method="POST",
             json={"load_balancer_type": 1},
@@ -597,26 +618,32 @@ class TestLoadBalancerslient:
         assert action.id == 1
         assert action.progress == 0
 
-    def test_actions_get_by_id(self, load_balancers_client, response_get_actions):
-        load_balancers_client._client.request.return_value = {
-            "action": response_get_actions["actions"][0]
-        }
+    def test_actions_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        load_balancers_client: LoadBalancersClient,
+        response_get_actions,
+    ):
+        request_mock.return_value = {"action": response_get_actions["actions"][0]}
         action = load_balancers_client.actions.get_by_id(13)
 
-        load_balancers_client._client.request.assert_called_with(
-            url="/load_balancers/actions/13", method="GET"
-        )
+        request_mock.assert_called_with(url="/load_balancers/actions/13", method="GET")
 
         assert isinstance(action, BoundAction)
         assert action._client == load_balancers_client._client.actions
         assert action.id == 13
         assert action.command == "change_protection"
 
-    def test_actions_get_list(self, load_balancers_client, response_get_actions):
-        load_balancers_client._client.request.return_value = response_get_actions
+    def test_actions_get_list(
+        self,
+        request_mock: mock.MagicMock,
+        load_balancers_client: LoadBalancersClient,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         result = load_balancers_client.actions.get_list()
 
-        load_balancers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers/actions",
             method="GET",
             params={},
@@ -631,11 +658,16 @@ class TestLoadBalancerslient:
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"
 
-    def test_actions_get_all(self, load_balancers_client, response_get_actions):
-        load_balancers_client._client.request.return_value = response_get_actions
+    def test_actions_get_all(
+        self,
+        request_mock: mock.MagicMock,
+        load_balancers_client: LoadBalancersClient,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         actions = load_balancers_client.actions.get_all()
 
-        load_balancers_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers/actions",
             method="GET",
             params={"page": 1, "per_page": 50},

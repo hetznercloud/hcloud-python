@@ -215,8 +215,8 @@ class TestBoundNetwork:
 
 class TestNetworksClient:
     @pytest.fixture()
-    def networks_client(self):
-        return NetworksClient(client=mock.MagicMock())
+    def networks_client(self, client: Client):
+        return NetworksClient(client)
 
     @pytest.fixture()
     def network_subnet(self):
@@ -239,12 +239,15 @@ class TestNetworksClient:
     def network_route(self):
         return NetworkRoute(destination="10.100.1.0/24", gateway="10.0.1.1")
 
-    def test_get_by_id(self, networks_client, network_response):
-        networks_client._client.request.return_value = network_response
+    def test_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network_response,
+    ):
+        request_mock.return_value = network_response
         bound_network = networks_client.get_by_id(1)
-        networks_client._client.request.assert_called_with(
-            url="/networks/1", method="GET"
-        )
+        request_mock.assert_called_with(url="/networks/1", method="GET")
         assert bound_network._client is networks_client
         assert bound_network.id == 1
         assert bound_network.name == "mynet"
@@ -253,12 +256,16 @@ class TestNetworksClient:
         "params",
         [{"label_selector": "label1", "page": 1, "per_page": 10}, {"name": ""}, {}],
     )
-    def test_get_list(self, networks_client, two_networks_response, params):
-        networks_client._client.request.return_value = two_networks_response
+    def test_get_list(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        two_networks_response,
+        params,
+    ):
+        request_mock.return_value = two_networks_response
         result = networks_client.get_list(**params)
-        networks_client._client.request.assert_called_with(
-            url="/networks", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/networks", method="GET", params=params)
 
         bound_networks = result.networks
         assert result.meta is not None
@@ -277,15 +284,19 @@ class TestNetworksClient:
         assert bound_network2.name == "myanothernet"
 
     @pytest.mark.parametrize("params", [{"label_selector": "label1"}])
-    def test_get_all(self, networks_client, two_networks_response, params):
-        networks_client._client.request.return_value = two_networks_response
+    def test_get_all(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        two_networks_response,
+        params,
+    ):
+        request_mock.return_value = two_networks_response
         bound_networks = networks_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        networks_client._client.request.assert_called_with(
-            url="/networks", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/networks", method="GET", params=params)
 
         assert len(bound_networks) == 2
 
@@ -300,39 +311,50 @@ class TestNetworksClient:
         assert bound_network2.id == 2
         assert bound_network2.name == "myanothernet"
 
-    def test_get_by_name(self, networks_client, one_network_response):
-        networks_client._client.request.return_value = one_network_response
+    def test_get_by_name(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        one_network_response,
+    ):
+        request_mock.return_value = one_network_response
         bound_network = networks_client.get_by_name("mynet")
 
         params = {"name": "mynet"}
 
-        networks_client._client.request.assert_called_with(
-            url="/networks", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/networks", method="GET", params=params)
 
         assert bound_network._client is networks_client
         assert bound_network.id == 1
         assert bound_network.name == "mynet"
 
-    def test_create(self, networks_client, network_create_response):
-        networks_client._client.request.return_value = network_create_response
+    def test_create(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network_create_response,
+    ):
+        request_mock.return_value = network_create_response
         networks_client.create(name="mynet", ip_range="10.0.0.0/8")
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks",
             method="POST",
             json={"name": "mynet", "ip_range": "10.0.0.0/8"},
         )
 
     def test_create_with_expose_routes_to_vswitch(
-        self, networks_client, network_create_response_with_expose_routes_to_vswitch
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network_create_response_with_expose_routes_to_vswitch,
     ):
-        networks_client._client.request.return_value = (
+        request_mock.return_value = (
             network_create_response_with_expose_routes_to_vswitch
         )
         networks_client.create(
             name="mynet", ip_range="10.0.0.0/8", expose_routes_to_vswitch=True
         )
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks",
             method="POST",
             json={
@@ -343,13 +365,17 @@ class TestNetworksClient:
         )
 
     def test_create_with_subnet(
-        self, networks_client, network_subnet, network_create_response
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network_subnet,
+        network_create_response,
     ):
-        networks_client._client.request.return_value = network_create_response
+        request_mock.return_value = network_create_response
         networks_client.create(
             name="mynet", ip_range="10.0.0.0/8", subnets=[network_subnet]
         )
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks",
             method="POST",
             json={
@@ -366,15 +392,19 @@ class TestNetworksClient:
         )
 
     def test_create_with_subnet_vswitch(
-        self, networks_client, network_subnet, network_create_response
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network_subnet,
+        network_create_response,
     ):
-        networks_client._client.request.return_value = network_create_response
+        request_mock.return_value = network_create_response
         network_subnet.type = NetworkSubnet.TYPE_VSWITCH
         network_subnet.vswitch_id = 1000
         networks_client.create(
             name="mynet", ip_range="10.0.0.0/8", subnets=[network_subnet]
         )
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks",
             method="POST",
             json={
@@ -392,13 +422,17 @@ class TestNetworksClient:
         )
 
     def test_create_with_route(
-        self, networks_client, network_route, network_create_response
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network_route,
+        network_create_response,
     ):
-        networks_client._client.request.return_value = network_create_response
+        request_mock.return_value = network_create_response
         networks_client.create(
             name="mynet", ip_range="10.0.0.0/8", routes=[network_route]
         )
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks",
             method="POST",
             json={
@@ -410,11 +444,12 @@ class TestNetworksClient:
 
     def test_create_with_route_and_expose_routes_to_vswitch(
         self,
+        request_mock: mock.MagicMock,
         networks_client,
         network_route,
         network_create_response_with_expose_routes_to_vswitch,
     ):
-        networks_client._client.request.return_value = (
+        request_mock.return_value = (
             network_create_response_with_expose_routes_to_vswitch
         )
         networks_client.create(
@@ -423,7 +458,7 @@ class TestNetworksClient:
             routes=[network_route],
             expose_routes_to_vswitch=True,
         )
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks",
             method="POST",
             json={
@@ -435,16 +470,21 @@ class TestNetworksClient:
         )
 
     def test_create_with_route_and_subnet(
-        self, networks_client, network_subnet, network_route, network_create_response
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network_subnet,
+        network_route,
+        network_create_response,
     ):
-        networks_client._client.request.return_value = network_create_response
+        request_mock.return_value = network_create_response
         networks_client.create(
             name="mynet",
             ip_range="10.0.0.0/8",
             subnets=[network_subnet],
             routes=[network_route],
         )
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks",
             method="POST",
             json={
@@ -464,10 +504,16 @@ class TestNetworksClient:
     @pytest.mark.parametrize(
         "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
     )
-    def test_get_actions_list(self, networks_client, network, response_get_actions):
-        networks_client._client.request.return_value = response_get_actions
+    def test_get_actions_list(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         result = networks_client.get_actions_list(network, sort="id")
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/1/actions", method="GET", params={"sort": "id"}
         )
 
@@ -482,12 +528,18 @@ class TestNetworksClient:
     @pytest.mark.parametrize(
         "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
     )
-    def test_update(self, networks_client, network, response_update_network):
-        networks_client._client.request.return_value = response_update_network
+    def test_update(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network,
+        response_update_network,
+    ):
+        request_mock.return_value = response_update_network
         network = networks_client.update(
             network, name="new-name", expose_routes_to_vswitch=True
         )
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/1",
             method="PUT",
             json={"name": "new-name", "expose_routes_to_vswitch": True},
@@ -500,10 +552,16 @@ class TestNetworksClient:
     @pytest.mark.parametrize(
         "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
     )
-    def test_change_protection(self, networks_client, network, generic_action):
-        networks_client._client.request.return_value = generic_action
+    def test_change_protection(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = networks_client.change_protection(network, True)
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/1/actions/change_protection",
             method="POST",
             json={"delete": True},
@@ -515,23 +573,34 @@ class TestNetworksClient:
     @pytest.mark.parametrize(
         "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
     )
-    def test_delete(self, networks_client, network, generic_action):
-        networks_client._client.request.return_value = generic_action
+    def test_delete(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         delete_success = networks_client.delete(network)
-        networks_client._client.request.assert_called_with(
-            url="/networks/1", method="DELETE"
-        )
+        request_mock.assert_called_with(url="/networks/1", method="DELETE")
 
         assert delete_success is True
 
     @pytest.mark.parametrize(
         "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
     )
-    def test_add_subnet(self, networks_client, network, generic_action, network_subnet):
-        networks_client._client.request.return_value = generic_action
+    def test_add_subnet(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network,
+        generic_action,
+        network_subnet,
+    ):
+        request_mock.return_value = generic_action
 
         action = networks_client.add_subnet(network, network_subnet)
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/1/actions/add_subnet",
             method="POST",
             json={
@@ -548,12 +617,17 @@ class TestNetworksClient:
         "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
     )
     def test_add_subnet_vswitch(
-        self, networks_client, network, generic_action, network_vswitch_subnet
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network,
+        generic_action,
+        network_vswitch_subnet,
     ):
-        networks_client._client.request.return_value = generic_action
+        request_mock.return_value = generic_action
 
         action = networks_client.add_subnet(network, network_vswitch_subnet)
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/1/actions/add_subnet",
             method="POST",
             json={
@@ -571,12 +645,17 @@ class TestNetworksClient:
         "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
     )
     def test_delete_subnet(
-        self, networks_client, network, generic_action, network_subnet
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network,
+        generic_action,
+        network_subnet,
     ):
-        networks_client._client.request.return_value = generic_action
+        request_mock.return_value = generic_action
 
         action = networks_client.delete_subnet(network, network_subnet)
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/1/actions/delete_subnet",
             method="POST",
             json={"ip_range": "10.0.1.0/24"},
@@ -588,11 +667,18 @@ class TestNetworksClient:
     @pytest.mark.parametrize(
         "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
     )
-    def test_add_route(self, networks_client, network, generic_action, network_route):
-        networks_client._client.request.return_value = generic_action
+    def test_add_route(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network,
+        generic_action,
+        network_route,
+    ):
+        request_mock.return_value = generic_action
 
         action = networks_client.add_route(network, network_route)
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/1/actions/add_route",
             method="POST",
             json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"},
@@ -605,12 +691,17 @@ class TestNetworksClient:
         "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
     )
     def test_delete_route(
-        self, networks_client, network, generic_action, network_route
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network,
+        generic_action,
+        network_route,
     ):
-        networks_client._client.request.return_value = generic_action
+        request_mock.return_value = generic_action
 
         action = networks_client.delete_route(network, network_route)
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/1/actions/delete_route",
             method="POST",
             json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"},
@@ -622,10 +713,16 @@ class TestNetworksClient:
     @pytest.mark.parametrize(
         "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
     )
-    def test_change_ip_range(self, networks_client, network, generic_action):
-        networks_client._client.request.return_value = generic_action
+    def test_change_ip_range(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = networks_client.change_ip_range(network, "10.0.0.0/12")
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/1/actions/change_ip_range",
             method="POST",
             json={"ip_range": "10.0.0.0/12"},
@@ -634,26 +731,32 @@ class TestNetworksClient:
         assert action.id == 1
         assert action.progress == 0
 
-    def test_actions_get_by_id(self, networks_client, response_get_actions):
-        networks_client._client.request.return_value = {
-            "action": response_get_actions["actions"][0]
-        }
+    def test_actions_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        response_get_actions,
+    ):
+        request_mock.return_value = {"action": response_get_actions["actions"][0]}
         action = networks_client.actions.get_by_id(13)
 
-        networks_client._client.request.assert_called_with(
-            url="/networks/actions/13", method="GET"
-        )
+        request_mock.assert_called_with(url="/networks/actions/13", method="GET")
 
         assert isinstance(action, BoundAction)
         assert action._client == networks_client._client.actions
         assert action.id == 13
         assert action.command == "add_subnet"
 
-    def test_actions_get_list(self, networks_client, response_get_actions):
-        networks_client._client.request.return_value = response_get_actions
+    def test_actions_get_list(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         result = networks_client.actions.get_list()
 
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/actions",
             method="GET",
             params={},
@@ -668,11 +771,16 @@ class TestNetworksClient:
         assert actions[0].id == 13
         assert actions[0].command == "add_subnet"
 
-    def test_actions_get_all(self, networks_client, response_get_actions):
-        networks_client._client.request.return_value = response_get_actions
+    def test_actions_get_all(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         actions = networks_client.actions.get_all()
 
-        networks_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/networks/actions",
             method="GET",
             params={"page": 1, "per_page": 50},

@@ -174,15 +174,18 @@ class TestBoundVolume:
 
 class TestVolumesClient:
     @pytest.fixture()
-    def volumes_client(self):
-        return VolumesClient(client=mock.MagicMock())
+    def volumes_client(self, client: Client):
+        return VolumesClient(client)
 
-    def test_get_by_id(self, volumes_client, volume_response):
-        volumes_client._client.request.return_value = volume_response
+    def test_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        volume_response,
+    ):
+        request_mock.return_value = volume_response
         bound_volume = volumes_client.get_by_id(1)
-        volumes_client._client.request.assert_called_with(
-            url="/volumes/1", method="GET"
-        )
+        request_mock.assert_called_with(url="/volumes/1", method="GET")
         assert bound_volume._client is volumes_client
         assert bound_volume.id == 1
         assert bound_volume.name == "database-storage"
@@ -191,12 +194,16 @@ class TestVolumesClient:
         "params",
         [{"label_selector": "label1", "page": 1, "per_page": 10}, {"name": ""}, {}],
     )
-    def test_get_list(self, volumes_client, two_volumes_response, params):
-        volumes_client._client.request.return_value = two_volumes_response
+    def test_get_list(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        two_volumes_response,
+        params,
+    ):
+        request_mock.return_value = two_volumes_response
         result = volumes_client.get_list(**params)
-        volumes_client._client.request.assert_called_with(
-            url="/volumes", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/volumes", method="GET", params=params)
 
         bound_volumes = result.volumes
         assert result.meta is not None
@@ -215,15 +222,19 @@ class TestVolumesClient:
         assert bound_volume2.name == "vault-storage"
 
     @pytest.mark.parametrize("params", [{"label_selector": "label1"}])
-    def test_get_all(self, volumes_client, two_volumes_response, params):
-        volumes_client._client.request.return_value = two_volumes_response
+    def test_get_all(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        two_volumes_response,
+        params,
+    ):
+        request_mock.return_value = two_volumes_response
         bound_volumes = volumes_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        volumes_client._client.request.assert_called_with(
-            url="/volumes", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/volumes", method="GET", params=params)
 
         assert len(bound_volumes) == 2
 
@@ -238,22 +249,30 @@ class TestVolumesClient:
         assert bound_volume2.id == 2
         assert bound_volume2.name == "vault-storage"
 
-    def test_get_by_name(self, volumes_client, one_volumes_response):
-        volumes_client._client.request.return_value = one_volumes_response
+    def test_get_by_name(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        one_volumes_response,
+    ):
+        request_mock.return_value = one_volumes_response
         bound_volume = volumes_client.get_by_name("database-storage")
 
         params = {"name": "database-storage"}
 
-        volumes_client._client.request.assert_called_with(
-            url="/volumes", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/volumes", method="GET", params=params)
 
         assert bound_volume._client is volumes_client
         assert bound_volume.id == 1
         assert bound_volume.name == "database-storage"
 
-    def test_create_with_location(self, volumes_client, volume_create_response):
-        volumes_client._client.request.return_value = volume_create_response
+    def test_create_with_location(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        volume_create_response,
+    ):
+        request_mock.return_value = volume_create_response
         response = volumes_client.create(
             100,
             "database-storage",
@@ -261,7 +280,7 @@ class TestVolumesClient:
             automount=False,
             format="xfs",
         )
-        volumes_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/volumes",
             method="POST",
             json={
@@ -287,12 +306,18 @@ class TestVolumesClient:
     @pytest.mark.parametrize(
         "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
     )
-    def test_create_with_server(self, volumes_client, server, volume_create_response):
-        volumes_client._client.request.return_value = volume_create_response
+    def test_create_with_server(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        server,
+        volume_create_response,
+    ):
+        request_mock.return_value = volume_create_response
         volumes_client.create(
             100, "database-storage", server=server, automount=False, format="xfs"
         )
-        volumes_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/volumes",
             method="POST",
             json={
@@ -304,34 +329,48 @@ class TestVolumesClient:
             },
         )
 
-    def test_create_negative_size(self, volumes_client):
+    def test_create_negative_size(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client,
+    ):
         with pytest.raises(ValueError) as e:
             volumes_client.create(
                 -100, "database-storage", location=Location(name="location")
             )
         assert str(e.value) == "size must be greater than 0"
-        volumes_client._client.request.assert_not_called()
+        request_mock.assert_not_called()
 
     @pytest.mark.parametrize(
         "location,server", [(None, None), ("location", Server(id=1))]
     )
     def test_create_wrong_location_server_combination(
-        self, volumes_client, location, server
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        location,
+        server,
     ):
         with pytest.raises(ValueError) as e:
             volumes_client.create(
                 100, "database-storage", location=location, server=server
             )
         assert str(e.value) == "only one of server or location must be provided"
-        volumes_client._client.request.assert_not_called()
+        request_mock.assert_not_called()
 
     @pytest.mark.parametrize(
         "volume", [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=1))]
     )
-    def test_get_actions_list(self, volumes_client, volume, response_get_actions):
-        volumes_client._client.request.return_value = response_get_actions
+    def test_get_actions_list(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        volume,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         result = volumes_client.get_actions_list(volume, sort="id")
-        volumes_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/volumes/1/actions", method="GET", params={"sort": "id"}
         )
 
@@ -346,10 +385,16 @@ class TestVolumesClient:
     @pytest.mark.parametrize(
         "volume", [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=1))]
     )
-    def test_update(self, volumes_client, volume, response_update_volume):
-        volumes_client._client.request.return_value = response_update_volume
+    def test_update(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        volume,
+        response_update_volume,
+    ):
+        request_mock.return_value = response_update_volume
         volume = volumes_client.update(volume, name="new-name")
-        volumes_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/volumes/1", method="PUT", json={"name": "new-name"}
         )
 
@@ -359,10 +404,16 @@ class TestVolumesClient:
     @pytest.mark.parametrize(
         "volume", [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=1))]
     )
-    def test_change_protection(self, volumes_client, volume, generic_action):
-        volumes_client._client.request.return_value = generic_action
+    def test_change_protection(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        volume,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = volumes_client.change_protection(volume, True)
-        volumes_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/volumes/1/actions/change_protection",
             method="POST",
             json={"delete": True},
@@ -374,12 +425,16 @@ class TestVolumesClient:
     @pytest.mark.parametrize(
         "volume", [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=1))]
     )
-    def test_delete(self, volumes_client, volume, generic_action):
-        volumes_client._client.request.return_value = generic_action
+    def test_delete(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        volume,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         delete_success = volumes_client.delete(volume)
-        volumes_client._client.request.assert_called_with(
-            url="/volumes/1", method="DELETE"
-        )
+        request_mock.assert_called_with(url="/volumes/1", method="DELETE")
 
         assert delete_success is True
 
@@ -393,10 +448,17 @@ class TestVolumesClient:
             ),
         ],
     )
-    def test_attach(self, volumes_client, server, volume, generic_action):
-        volumes_client._client.request.return_value = generic_action
+    def test_attach(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        server,
+        volume,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = volumes_client.attach(volume, server)
-        volumes_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/volumes/12/actions/attach", method="POST", json={"server": 1}
         )
         assert action.id == 1
@@ -405,47 +467,63 @@ class TestVolumesClient:
     @pytest.mark.parametrize(
         "volume", [Volume(id=12), BoundVolume(mock.MagicMock(), dict(id=12))]
     )
-    def test_detach(self, volumes_client, volume, generic_action):
-        volumes_client._client.request.return_value = generic_action
+    def test_detach(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        volume,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = volumes_client.detach(volume)
-        volumes_client._client.request.assert_called_with(
-            url="/volumes/12/actions/detach", method="POST"
-        )
+        request_mock.assert_called_with(url="/volumes/12/actions/detach", method="POST")
         assert action.id == 1
         assert action.progress == 0
 
     @pytest.mark.parametrize(
         "volume", [Volume(id=12), BoundVolume(mock.MagicMock(), dict(id=12))]
     )
-    def test_resize(self, volumes_client, volume, generic_action):
-        volumes_client._client.request.return_value = generic_action
+    def test_resize(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        volume,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = volumes_client.resize(volume, 50)
-        volumes_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/volumes/12/actions/resize", method="POST", json={"size": 50}
         )
         assert action.id == 1
         assert action.progress == 0
 
-    def test_actions_get_by_id(self, volumes_client, response_get_actions):
-        volumes_client._client.request.return_value = {
-            "action": response_get_actions["actions"][0]
-        }
+    def test_actions_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        response_get_actions,
+    ):
+        request_mock.return_value = {"action": response_get_actions["actions"][0]}
         action = volumes_client.actions.get_by_id(13)
 
-        volumes_client._client.request.assert_called_with(
-            url="/volumes/actions/13", method="GET"
-        )
+        request_mock.assert_called_with(url="/volumes/actions/13", method="GET")
 
         assert isinstance(action, BoundAction)
         assert action._client == volumes_client._client.actions
         assert action.id == 13
         assert action.command == "attach_volume"
 
-    def test_actions_get_list(self, volumes_client, response_get_actions):
-        volumes_client._client.request.return_value = response_get_actions
+    def test_actions_get_list(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         result = volumes_client.actions.get_list()
 
-        volumes_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/volumes/actions",
             method="GET",
             params={},
@@ -460,11 +538,16 @@ class TestVolumesClient:
         assert actions[0].id == 13
         assert actions[0].command == "attach_volume"
 
-    def test_actions_get_all(self, volumes_client, response_get_actions):
-        volumes_client._client.request.return_value = response_get_actions
+    def test_actions_get_all(
+        self,
+        request_mock: mock.MagicMock,
+        volumes_client: VolumesClient,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         actions = volumes_client.actions.get_all()
 
-        volumes_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/volumes/actions",
             method="GET",
             params={"page": 1, "per_page": 50},

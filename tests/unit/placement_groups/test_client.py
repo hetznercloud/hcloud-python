@@ -67,15 +67,20 @@ class TestBoundPlacementGroup:
 
 class TestPlacementGroupsClient:
     @pytest.fixture()
-    def placement_groups_client(self):
-        return PlacementGroupsClient(client=mock.MagicMock())
+    def placement_groups_client(self, client: Client):
+        return PlacementGroupsClient(client)
 
-    def test_get_by_id(self, placement_groups_client, placement_group_response):
-        placement_groups_client._client.request.return_value = placement_group_response
+    def test_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        placement_groups_client: PlacementGroupsClient,
+        placement_group_response,
+    ):
+        request_mock.return_value = placement_group_response
         placement_group = placement_groups_client.get_by_id(
             placement_group_response["placement_group"]["id"]
         )
-        placement_groups_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/placement_groups/{placement_group_id}".format(
                 placement_group_id=placement_group_response["placement_group"]["id"]
             ),
@@ -101,13 +106,15 @@ class TestPlacementGroupsClient:
         ],
     )
     def test_get_list(
-        self, placement_groups_client, two_placement_groups_response, params
+        self,
+        request_mock: mock.MagicMock,
+        placement_groups_client: PlacementGroupsClient,
+        two_placement_groups_response,
+        params,
     ):
-        placement_groups_client._client.request.return_value = (
-            two_placement_groups_response
-        )
+        request_mock.return_value = two_placement_groups_response
         result = placement_groups_client.get_list(**params)
-        placement_groups_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/placement_groups", method="GET", params=params
         )
 
@@ -137,15 +144,17 @@ class TestPlacementGroupsClient:
         ],
     )
     def test_get_all(
-        self, placement_groups_client, two_placement_groups_response, params
+        self,
+        request_mock: mock.MagicMock,
+        placement_groups_client: PlacementGroupsClient,
+        two_placement_groups_response,
+        params,
     ):
-        placement_groups_client._client.request.return_value = (
-            two_placement_groups_response
-        )
+        request_mock.return_value = two_placement_groups_response
         placement_groups = placement_groups_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
-        placement_groups_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/placement_groups", method="GET", params=params
         )
 
@@ -160,16 +169,19 @@ class TestPlacementGroupsClient:
 
             check_variables(placement_group, expected)
 
-    def test_get_by_name(self, placement_groups_client, one_placement_group_response):
-        placement_groups_client._client.request.return_value = (
-            one_placement_group_response
-        )
+    def test_get_by_name(
+        self,
+        request_mock: mock.MagicMock,
+        placement_groups_client: PlacementGroupsClient,
+        one_placement_group_response,
+    ):
+        request_mock.return_value = one_placement_group_response
         placement_group = placement_groups_client.get_by_name(
             one_placement_group_response["placement_groups"][0]["name"]
         )
 
         params = {"name": one_placement_group_response["placement_groups"][0]["name"]}
-        placement_groups_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/placement_groups", method="GET", params=params
         )
 
@@ -177,10 +189,13 @@ class TestPlacementGroupsClient:
             placement_group, one_placement_group_response["placement_groups"][0]
         )
 
-    def test_create(self, placement_groups_client, response_create_placement_group):
-        placement_groups_client._client.request.return_value = (
-            response_create_placement_group
-        )
+    def test_create(
+        self,
+        request_mock: mock.MagicMock,
+        placement_groups_client: PlacementGroupsClient,
+        response_create_placement_group,
+    ):
+        request_mock.return_value = response_create_placement_group
         response = placement_groups_client.create(
             name=response_create_placement_group["placement_group"]["name"],
             type=response_create_placement_group["placement_group"]["type"],
@@ -192,7 +207,7 @@ class TestPlacementGroupsClient:
             "labels": response_create_placement_group["placement_group"]["labels"],
             "type": response_create_placement_group["placement_group"]["type"],
         }
-        placement_groups_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/placement_groups", method="POST", json=json
         )
 
