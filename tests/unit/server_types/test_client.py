@@ -5,13 +5,14 @@ from unittest import mock
 
 import pytest
 
+from hcloud import Client
 from hcloud.server_types import BoundServerType, ServerTypesClient
 
 
 class TestBoundServerType:
     @pytest.fixture()
-    def bound_server_type(self, hetzner_client):
-        return BoundServerType(client=hetzner_client.server_types, data=dict(id=14))
+    def bound_server_type(self, client: Client):
+        return BoundServerType(client.server_types, data=dict(id=14))
 
     def test_bound_server_type_init(self, server_type_response):
         bound_server_type = BoundServerType(

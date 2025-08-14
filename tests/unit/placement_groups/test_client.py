@@ -4,6 +4,7 @@ from unittest import mock
 
 import pytest
 
+from hcloud import Client
 from hcloud.placement_groups import BoundPlacementGroup, PlacementGroupsClient
 
 
@@ -17,10 +18,8 @@ def check_variables(placement_group, expected):
 
 class TestBoundPlacementGroup:
     @pytest.fixture()
-    def bound_placement_group(self, hetzner_client):
-        return BoundPlacementGroup(
-            client=hetzner_client.placement_groups, data=dict(id=897)
-        )
+    def bound_placement_group(self, client: Client):
+        return BoundPlacementGroup(client.placement_groups, data=dict(id=897))
 
     def test_bound_placement_group_init(self, placement_group_response):
         bound_placement_group = BoundPlacementGroup(
@@ -32,14 +31,17 @@ class TestBoundPlacementGroup:
         )
 
     def test_update(
-        self, hetzner_client, bound_placement_group, placement_group_response
+        self,
+        request_mock: mock.MagicMock,
+        bound_placement_group,
+        placement_group_response,
     ):
-        hetzner_client.request.return_value = placement_group_response
+        request_mock.return_value = placement_group_response
         placement_group = bound_placement_group.update(
             name=placement_group_response["placement_group"]["name"],
             labels=placement_group_response["placement_group"]["labels"],
         )
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/placement_groups/{placement_group_id}".format(
                 placement_group_id=placement_group_response["placement_group"]["id"]
             ),
@@ -52,11 +54,13 @@ class TestBoundPlacementGroup:
 
         check_variables(placement_group, placement_group_response["placement_group"])
 
-    def test_delete(self, hetzner_client, bound_placement_group):
+    def test_delete(
+        self,
+        request_mock: mock.MagicMock,
+        bound_placement_group,
+    ):
         delete_success = bound_placement_group.delete()
-        hetzner_client.request.assert_called_with(
-            url="/placement_groups/897", method="DELETE"
-        )
+        request_mock.assert_called_with(url="/placement_groups/897", method="DELETE")
 
         assert delete_success is True
 

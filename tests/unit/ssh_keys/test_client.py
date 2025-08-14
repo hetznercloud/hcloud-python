@@ -4,13 +4,14 @@ from unittest import mock
 
 import pytest
 
+from hcloud import Client
 from hcloud.ssh_keys import BoundSSHKey, SSHKey, SSHKeysClient
 
 
 class TestBoundSSHKey:
     @pytest.fixture()
-    def bound_ssh_key(self, hetzner_client):
-        return BoundSSHKey(client=hetzner_client.ssh_keys, data=dict(id=14))
+    def bound_ssh_key(self, client: Client):
+        return BoundSSHKey(client.ssh_keys, data=dict(id=14))
 
     def test_bound_ssh_key_init(self, ssh_key_response):
         bound_ssh_key = BoundSSHKey(
@@ -25,20 +26,30 @@ class TestBoundSSHKey:
         )
         assert bound_ssh_key.public_key == "ssh-rsa AAAjjk76kgf...Xt"
 
-    def test_update(self, hetzner_client, bound_ssh_key, response_update_ssh_key):
-        hetzner_client.request.return_value = response_update_ssh_key
+    def test_update(
+        self,
+        request_mock: mock.MagicMock,
+        bound_ssh_key,
+        response_update_ssh_key,
+    ):
+        request_mock.return_value = response_update_ssh_key
         ssh_key = bound_ssh_key.update(name="New name")
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/ssh_keys/14", method="PUT", json={"name": "New name"}
         )
 
         assert ssh_key.id == 2323
         assert ssh_key.name == "New name"
 
-    def test_delete(self, hetzner_client, bound_ssh_key, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_delete(
+        self,
+        request_mock: mock.MagicMock,
+        bound_ssh_key,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         delete_success = bound_ssh_key.delete()
-        hetzner_client.request.assert_called_with(url="/ssh_keys/14", method="DELETE")
+        request_mock.assert_called_with(url="/ssh_keys/14", method="DELETE")
 
         assert delete_success is True
 

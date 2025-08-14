@@ -1,3 +1,5 @@
+# pylint: disable=redefined-outer-name
+
 from __future__ import annotations
 
 from unittest import mock
@@ -5,6 +7,18 @@ from unittest import mock
 import pytest
 
 from hcloud import Client
+
+
+@pytest.fixture()
+def request_mock() -> mock.MagicMock:
+    return mock.MagicMock()
+
+
+@pytest.fixture()
+def client(request_mock) -> Client:
+    c = Client(token="TOKEN")
+    c.request = request_mock
+    return c
 
 
 @pytest.fixture(autouse=True, scope="function")

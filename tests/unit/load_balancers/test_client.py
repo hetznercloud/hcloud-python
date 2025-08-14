@@ -4,6 +4,7 @@ from unittest import mock
 
 import pytest
 
+from hcloud import Client
 from hcloud.actions import BoundAction
 from hcloud.load_balancer_types import LoadBalancerType
 from hcloud.load_balancers import (
@@ -24,8 +25,8 @@ from hcloud.servers import Server
 
 class TestBoundLoadBalancer:
     @pytest.fixture()
-    def bound_load_balancer(self, hetzner_client):
-        return BoundLoadBalancer(client=hetzner_client.load_balancers, data=dict(id=14))
+    def bound_load_balancer(self, client: Client):
+        return BoundLoadBalancer(client.load_balancers, data=dict(id=14))
 
     def test_bound_load_balancer_init(self, response_load_balancer):
         bound_load_balancer = BoundLoadBalancer(
@@ -37,11 +38,16 @@ class TestBoundLoadBalancer:
 
     @pytest.mark.parametrize("params", [{"page": 1, "per_page": 10}, {}])
     def test_get_actions_list(
-        self, hetzner_client, bound_load_balancer, response_get_actions, params
+        self,
+        request_mock: mock.MagicMock,
+        client: Client,
+        bound_load_balancer,
+        response_get_actions,
+        params,
     ):
-        hetzner_client.request.return_value = response_get_actions
+        request_mock.return_value = response_get_actions
         result = bound_load_balancer.get_actions_list(**params)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers/14/actions", method="GET", params=params
         )
 
@@ -50,35 +56,43 @@ class TestBoundLoadBalancer:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == hetzner_client.actions
+        assert actions[0]._client == client.actions
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"
 
     @pytest.mark.parametrize("params", [{}])
     def test_get_actions(
-        self, hetzner_client, bound_load_balancer, response_get_actions, params
+        self,
+        request_mock: mock.MagicMock,
+        client: Client,
+        bound_load_balancer,
+        response_get_actions,
+        params,
     ):
-        hetzner_client.request.return_value = response_get_actions
+        request_mock.return_value = response_get_actions
         actions = bound_load_balancer.get_actions(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers/14/actions", method="GET", params=params
         )
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == hetzner_client.actions
+        assert actions[0]._client == client.actions
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"
 
     def test_update(
-        self, hetzner_client, bound_load_balancer, response_update_load_balancer
+        self,
+        request_mock: mock.MagicMock,
+        bound_load_balancer,
+        response_update_load_balancer,
     ):
-        hetzner_client.request.return_value = response_update_load_balancer
+        request_mock.return_value = response_update_load_balancer
         load_balancer = bound_load_balancer.update(name="new-name", labels={})
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers/14",
             method="PUT",
             json={"name": "new-name", "labels": {}},
@@ -87,28 +101,31 @@ class TestBoundLoadBalancer:
         assert load_balancer.id == 4711
         assert load_balancer.name == "new-name"
 
-    def test_delete(self, hetzner_client, generic_action, bound_load_balancer):
-        hetzner_client.request.return_value = generic_action
+    def test_delete(
+        self,
+        request_mock: mock.MagicMock,
+        bound_load_balancer,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         delete_success = bound_load_balancer.delete()
-        hetzner_client.request.assert_called_with(
-            url="/load_balancers/14", method="DELETE"
-        )
+        request_mock.assert_called_with(url="/load_balancers/14", method="DELETE")
 
         assert delete_success is True
 
     def test_get_metrics(
         self,
-        hetzner_client,
-        response_get_metrics,
+        request_mock: mock.MagicMock,
         bound_load_balancer: BoundLoadBalancer,
+        response_get_metrics,
     ):
-        hetzner_client.request.return_value = response_get_metrics
+        request_mock.return_value = response_get_metrics
         response = bound_load_balancer.get_metrics(
             type=["requests_per_second"],
             start="2023-12-14T16:55:32+01:00",
             end="2023-12-14T16:55:32+01:00",
         )
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers/14/metrics",
             method="GET",
             params={
@@ -121,12 +138,15 @@ class TestBoundLoadBalancer:
         assert len(response.metrics.time_series["requests_per_second"]["values"]) == 3
 
     def test_add_service(
-        self, hetzner_client, response_add_service, bound_load_balancer
+        self,
+        request_mock: mock.MagicMock,
+        bound_load_balancer,
+        response_add_service,
     ):
-        hetzner_client.request.return_value = response_add_service
+        request_mock.return_value = response_add_service
         service = LoadBalancerService(listen_port=80, protocol="http")
         action = bound_load_balancer.add_service(service)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             json={"protocol": "http", "listen_port": 80},
             url="/load_balancers/14/actions/add_service",
             method="POST",
@@ -137,12 +157,15 @@ class TestBoundLoadBalancer:
         assert action.command == "add_service"
 
     def test_delete_service(
-        self, hetzner_client, response_delete_service, bound_load_balancer
+        self,
+        request_mock: mock.MagicMock,
+        bound_load_balancer,
+        response_delete_service,
     ):
-        hetzner_client.request.return_value = response_delete_service
+        request_mock.return_value = response_delete_service
         service = LoadBalancerService(listen_port=12)
         action = bound_load_balancer.delete_service(service)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             json={"listen_port": 12},
             url="/load_balancers/14/actions/delete_service",
             method="POST",
@@ -175,12 +198,17 @@ class TestBoundLoadBalancer:
         ],
     )
     def test_add_target(
-        self, hetzner_client, response_add_target, bound_load_balancer, target, params
+        self,
+        request_mock: mock.MagicMock,
+        bound_load_balancer,
+        response_add_target,
+        target,
+        params,
     ):
-        hetzner_client.request.return_value = response_add_target
+        request_mock.return_value = response_add_target
         action = bound_load_balancer.add_target(target)
         params.update({"type": target.type})
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers/14/actions/add_target", method="POST", json=params
         )
 
@@ -212,16 +240,16 @@ class TestBoundLoadBalancer:
     )
     def test_remove_target(
         self,
-        hetzner_client,
-        response_remove_target,
+        request_mock: mock.MagicMock,
         bound_load_balancer,
+        response_remove_target,
         target,
         params,
     ):
-        hetzner_client.request.return_value = response_remove_target
+        request_mock.return_value = response_remove_target
         action = bound_load_balancer.remove_target(target)
         params.update({"type": target.type})
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers/14/actions/remove_target", method="POST", json=params
         )
 
@@ -230,16 +258,19 @@ class TestBoundLoadBalancer:
         assert action.command == "remove_target"
 
     def test_update_service(
-        self, hetzner_client, response_update_service, bound_load_balancer
+        self,
+        request_mock: mock.MagicMock,
+        bound_load_balancer,
+        response_update_service,
     ):
-        hetzner_client.request.return_value = response_update_service
+        request_mock.return_value = response_update_service
         new_health_check = LoadBalancerHealthCheck(
             protocol="http", port=13, interval=1, timeout=1, retries=1
         )
         service = LoadBalancerService(listen_port=12, health_check=new_health_check)
 
         action = bound_load_balancer.update_service(service)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             json={
                 "listen_port": 12,
                 "health_check": {
@@ -259,12 +290,15 @@ class TestBoundLoadBalancer:
         assert action.command == "update_service"
 
     def test_change_algorithm(
-        self, hetzner_client, response_change_algorithm, bound_load_balancer
+        self,
+        request_mock: mock.MagicMock,
+        bound_load_balancer,
+        response_change_algorithm,
     ):
-        hetzner_client.request.return_value = response_change_algorithm
+        request_mock.return_value = response_change_algorithm
         algorithm = LoadBalancerAlgorithm(type="round_robin")
         action = bound_load_balancer.change_algorithm(algorithm)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             json={"type": "round_robin"},
             url="/load_balancers/14/actions/change_algorithm",
             method="POST",
@@ -275,13 +309,16 @@ class TestBoundLoadBalancer:
         assert action.command == "change_algorithm"
 
     def test_change_dns_ptr(
-        self, hetzner_client, response_change_reverse_dns_entry, bound_load_balancer
+        self,
+        request_mock: mock.MagicMock,
+        bound_load_balancer,
+        response_change_reverse_dns_entry,
     ):
-        hetzner_client.request.return_value = response_change_reverse_dns_entry
+        request_mock.return_value = response_change_reverse_dns_entry
         action = bound_load_balancer.change_dns_ptr(
             ip="1.2.3.4", dns_ptr="lb1.example.com"
         )
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             json={"dns_ptr": "lb1.example.com", "ip": "1.2.3.4"},
             url="/load_balancers/14/actions/change_dns_ptr",
             method="POST",
@@ -292,11 +329,14 @@ class TestBoundLoadBalancer:
         assert action.command == "change_dns_ptr"
 
     def test_change_protection(
-        self, hetzner_client, response_change_protection, bound_load_balancer
+        self,
+        request_mock: mock.MagicMock,
+        bound_load_balancer,
+        response_change_protection,
     ):
-        hetzner_client.request.return_value = response_change_protection
+        request_mock.return_value = response_change_protection
         action = bound_load_balancer.change_protection(delete=True)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             json={"delete": True},
             url="/load_balancers/14/actions/change_protection",
             method="POST",
@@ -307,11 +347,14 @@ class TestBoundLoadBalancer:
         assert action.command == "change_protection"
 
     def test_enable_public_interface(
-        self, response_enable_public_interface, hetzner_client, bound_load_balancer
+        self,
+        request_mock: mock.MagicMock,
+        bound_load_balancer,
+        response_enable_public_interface,
     ):
-        hetzner_client.request.return_value = response_enable_public_interface
+        request_mock.return_value = response_enable_public_interface
         action = bound_load_balancer.enable_public_interface()
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers/14/actions/enable_public_interface", method="POST"
         )
 
@@ -320,11 +363,14 @@ class TestBoundLoadBalancer:
         assert action.command == "enable_public_interface"
 
     def test_disable_public_interface(
-        self, response_disable_public_interface, hetzner_client, bound_load_balancer
+        self,
+        request_mock: mock.MagicMock,
+        bound_load_balancer,
+        response_disable_public_interface,
     ):
-        hetzner_client.request.return_value = response_disable_public_interface
+        request_mock.return_value = response_disable_public_interface
         action = bound_load_balancer.disable_public_interface()
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers/14/actions/disable_public_interface", method="POST"
         )
 
@@ -334,13 +380,13 @@ class TestBoundLoadBalancer:
 
     def test_attach_to_network(
         self,
-        response_attach_load_balancer_to_network,
-        hetzner_client,
+        request_mock: mock.MagicMock,
         bound_load_balancer,
+        response_attach_load_balancer_to_network,
     ):
-        hetzner_client.request.return_value = response_attach_load_balancer_to_network
+        request_mock.return_value = response_attach_load_balancer_to_network
         action = bound_load_balancer.attach_to_network(Network(id=1))
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             json={"network": 1},
             url="/load_balancers/14/actions/attach_to_network",
             method="POST",
@@ -351,11 +397,14 @@ class TestBoundLoadBalancer:
         assert action.command == "attach_to_network"
 
     def test_detach_from_network(
-        self, response_detach_from_network, hetzner_client, bound_load_balancer
+        self,
+        request_mock: mock.MagicMock,
+        bound_load_balancer,
+        response_detach_from_network,
     ):
-        hetzner_client.request.return_value = response_detach_from_network
+        request_mock.return_value = response_detach_from_network
         action = bound_load_balancer.detach_from_network(Network(id=1))
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             json={"network": 1},
             url="/load_balancers/14/actions/detach_from_network",
             method="POST",
@@ -365,10 +414,15 @@ class TestBoundLoadBalancer:
         assert action.progress == 100
         assert action.command == "detach_from_network"
 
-    def test_change_type(self, hetzner_client, bound_load_balancer, generic_action):
-        hetzner_client.request.return_value = generic_action
+    def test_change_type(
+        self,
+        request_mock: mock.MagicMock,
+        bound_load_balancer,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = bound_load_balancer.change_type(LoadBalancerType(name="lb21"))
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/load_balancers/14/actions/change_type",
             method="POST",
             json={"load_balancer_type": "lb21"},

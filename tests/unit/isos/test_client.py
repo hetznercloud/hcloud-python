@@ -6,13 +6,14 @@ from unittest import mock
 
 import pytest
 
+from hcloud import Client
 from hcloud.isos import BoundIso, IsosClient
 
 
 class TestBoundIso:
     @pytest.fixture()
-    def bound_iso(self, hetzner_client):
-        return BoundIso(client=hetzner_client.isos, data=dict(id=14))
+    def bound_iso(self, client: Client):
+        return BoundIso(client.isos, data=dict(id=14))
 
     def test_bound_iso_init(self, iso_response):
         bound_iso = BoundIso(client=mock.MagicMock(), data=iso_response["iso"])
