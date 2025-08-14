@@ -4,6 +4,7 @@ from unittest import mock
 
 import pytest
 
+from hcloud import Client
 from hcloud.actions import (
     Action,
     ActionFailedException,
@@ -16,31 +17,38 @@ from hcloud.actions import (
 
 class TestBoundAction:
     @pytest.fixture()
-    def bound_running_action(self, mocked_requests):
-        action_client = ActionsClient(client=mocked_requests)
+    def bound_running_action(self, client: Client):
         # Speed up tests that run `wait_until_finished`
-        action_client._client._poll_interval_func = lambda _: 0.0
-        action_client._client._poll_max_retries = 3
+        client._poll_interval_func = lambda _: 0.0
+        client._poll_max_retries = 3
 
         return BoundAction(
-            client=action_client,
+            client=client.actions,
             data=dict(id=14, status=Action.STATUS_RUNNING),
         )
 
     def test_wait_until_finished(
-        self, bound_running_action, mocked_requests, running_action, successfully_action
+        self,
+        request_mock: mock.MagicMock,
+        bound_running_action,
+        running_action,
+        successfully_action,
     ):
-        mocked_requests.request.side_effect = [running_action, successfully_action]
+        request_mock.side_effect = [running_action, successfully_action]
         bound_running_action.wait_until_finished()
-        mocked_requests.request.assert_called_with(url="/actions/2", method="GET")
+        request_mock.assert_called_with(url="/actions/2", method="GET")
 
         assert bound_running_action.status == "success"
-        assert mocked_requests.request.call_count == 2
+        assert request_mock.call_count == 2
 
     def test_wait_until_finished_with_error(
-        self, bound_running_action, mocked_requests, running_action, failed_action
+        self,
+        request_mock: mock.MagicMock,
+        bound_running_action,
+        running_action,
+        failed_action,
     ):
-        mocked_requests.request.side_effect = [running_action, failed_action]
+        request_mock.side_effect = [running_action, failed_action]
         with pytest.raises(ActionFailedException) as exception_info:
             bound_running_action.wait_until_finished()
 
@@ -48,9 +56,13 @@ class TestBoundAction:
         assert exception_info.value.action.id == 2
 
     def test_wait_until_finished_max_retries(
-        self, bound_running_action, mocked_requests, running_action, successfully_action
+        self,
+        request_mock: mock.MagicMock,
+        bound_running_action,
+        running_action,
+        successfully_action,
     ):
-        mocked_requests.request.side_effect = [
+        request_mock.side_effect = [
             running_action,
             running_action,
             successfully_action,
@@ -60,20 +72,23 @@ class TestBoundAction:
 
         assert bound_running_action.status == "running"
         assert exception_info.value.action.id == 2
-        assert mocked_requests.request.call_count == 1
+        assert request_mock.call_count == 1
 
 
 class TestResourceActionsClient:
     @pytest.fixture()
-    def actions_client(self):
-        return ResourceActionsClient(client=mock.MagicMock(), resource="/resource")
+    def actions_client(self, client: Client):
+        return ResourceActionsClient(client, resource="/resource")
 
-    def test_get_by_id(self, actions_client, generic_action):
-        actions_client._client.request.return_value = generic_action
+    def test_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        actions_client: ActionsClient,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = actions_client.get_by_id(1)
-        actions_client._client.request.assert_called_with(
-            url="/resource/actions/1", method="GET"
-        )
+        request_mock.assert_called_with(url="/resource/actions/1", method="GET")
         assert action._client == actions_client._client.actions
         assert action.id == 1
         assert action.command == "stop_server"
@@ -82,10 +97,16 @@ class TestResourceActionsClient:
         "params",
         [{}, {"status": ["active"], "sort": ["status"], "page": 2, "per_page": 10}],
     )
-    def test_get_list(self, actions_client, generic_action_list, params):
-        actions_client._client.request.return_value = generic_action_list
+    def test_get_list(
+        self,
+        request_mock: mock.MagicMock,
+        actions_client: ActionsClient,
+        generic_action_list,
+        params,
+    ):
+        request_mock.return_value = generic_action_list
         result = actions_client.get_list(**params)
-        actions_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/resource/actions", method="GET", params=params
         )
 
@@ -106,13 +127,19 @@ class TestResourceActionsClient:
         assert action2.command == "stop_server"
 
     @pytest.mark.parametrize("params", [{}, {"status": ["active"], "sort": ["status"]}])
-    def test_get_all(self, actions_client, generic_action_list, params):
-        actions_client._client.request.return_value = generic_action_list
+    def test_get_all(
+        self,
+        request_mock: mock.MagicMock,
+        actions_client: ActionsClient,
+        generic_action_list,
+        params,
+    ):
+        request_mock.return_value = generic_action_list
         actions = actions_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        actions_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/resource/actions", method="GET", params=params
         )
 
@@ -132,15 +159,18 @@ class TestResourceActionsClient:
 
 class TestActionsClient:
     @pytest.fixture()
-    def actions_client(self):
-        return ActionsClient(client=mock.MagicMock())
+    def actions_client(self, client: Client):
+        return ActionsClient(client)
 
-    def test_get_by_id(self, actions_client, generic_action):
-        actions_client._client.request.return_value = generic_action
+    def test_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        actions_client: ActionsClient,
+        generic_action,
+    ):
+        request_mock.return_value = generic_action
         action = actions_client.get_by_id(1)
-        actions_client._client.request.assert_called_with(
-            url="/actions/1", method="GET"
-        )
+        request_mock.assert_called_with(url="/actions/1", method="GET")
         assert action._client == actions_client._client.actions
         assert action.id == 1
         assert action.command == "stop_server"
@@ -149,13 +179,17 @@ class TestActionsClient:
         "params",
         [{}, {"status": ["active"], "sort": ["status"], "page": 2, "per_page": 10}],
     )
-    def test_get_list(self, actions_client, generic_action_list, params):
-        actions_client._client.request.return_value = generic_action_list
+    def test_get_list(
+        self,
+        request_mock: mock.MagicMock,
+        actions_client: ActionsClient,
+        generic_action_list,
+        params,
+    ):
+        request_mock.return_value = generic_action_list
         with pytest.deprecated_call():
             result = actions_client.get_list(**params)
-        actions_client._client.request.assert_called_with(
-            url="/actions", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/actions", method="GET", params=params)
 
         assert result.meta is not None
 
@@ -174,16 +208,20 @@ class TestActionsClient:
         assert action2.command == "stop_server"
 
     @pytest.mark.parametrize("params", [{}, {"status": ["active"], "sort": ["status"]}])
-    def test_get_all(self, actions_client, generic_action_list, params):
-        actions_client._client.request.return_value = generic_action_list
+    def test_get_all(
+        self,
+        request_mock: mock.MagicMock,
+        actions_client: ActionsClient,
+        generic_action_list,
+        params,
+    ):
+        request_mock.return_value = generic_action_list
         with pytest.deprecated_call():
             actions = actions_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        actions_client._client.request.assert_called_with(
-            url="/actions", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/actions", method="GET", params=params)
 
         assert len(actions) == 2
 

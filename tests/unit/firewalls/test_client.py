@@ -4,6 +4,7 @@ from unittest import mock
 
 import pytest
 
+from hcloud import Client
 from hcloud.actions import BoundAction
 from hcloud.firewalls import (
     BoundFirewall,
@@ -18,8 +19,8 @@ from hcloud.servers import Server
 
 class TestBoundFirewall:
     @pytest.fixture()
-    def bound_firewall(self, hetzner_client):
-        return BoundFirewall(client=hetzner_client.firewalls, data=dict(id=1))
+    def bound_firewall(self, client: Client):
+        return BoundFirewall(client.firewalls, data=dict(id=1))
 
     def test_bound_firewall_init(self, firewall_response):
         bound_firewall = BoundFirewall(
@@ -75,11 +76,16 @@ class TestBoundFirewall:
         "params", [{}, {"sort": ["created"], "page": 1, "per_page": 2}]
     )
     def test_get_actions_list(
-        self, hetzner_client, bound_firewall, response_get_actions, params
+        self,
+        request_mock: mock.MagicMock,
+        client: Client,
+        bound_firewall,
+        response_get_actions,
+        params,
     ):
-        hetzner_client.request.return_value = response_get_actions
+        request_mock.return_value = response_get_actions
         result = bound_firewall.get_actions_list(**params)
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/firewalls/1/actions", method="GET", params=params
         )
 
@@ -88,35 +94,45 @@ class TestBoundFirewall:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == hetzner_client.actions
+        assert actions[0]._client == client.actions
         assert actions[0].id == 13
         assert actions[0].command == "set_firewall_rules"
 
     @pytest.mark.parametrize("params", [{}, {"sort": ["created"]}])
     def test_get_actions(
-        self, hetzner_client, bound_firewall, response_get_actions, params
+        self,
+        request_mock: mock.MagicMock,
+        client: Client,
+        bound_firewall,
+        response_get_actions,
+        params,
     ):
-        hetzner_client.request.return_value = response_get_actions
+        request_mock.return_value = response_get_actions
         actions = bound_firewall.get_actions(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/firewalls/1/actions", method="GET", params=params
         )
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == hetzner_client.actions
+        assert actions[0]._client == client.actions
         assert actions[0].id == 13
         assert actions[0].command == "set_firewall_rules"
 
-    def test_update(self, hetzner_client, bound_firewall, response_update_firewall):
-        hetzner_client.request.return_value = response_update_firewall
+    def test_update(
+        self,
+        request_mock: mock.MagicMock,
+        bound_firewall,
+        response_update_firewall,
+    ):
+        request_mock.return_value = response_update_firewall
         firewall = bound_firewall.update(
             name="New Corporate Intranet Protection", labels={}
         )
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/firewalls/1",
             method="PUT",
             json={"name": "New Corporate Intranet Protection", "labels": {}},
@@ -125,14 +141,23 @@ class TestBoundFirewall:
         assert firewall.id == 38
         assert firewall.name == "New Corporate Intranet Protection"
 
-    def test_delete(self, hetzner_client, bound_firewall):
+    def test_delete(
+        self,
+        request_mock: mock.MagicMock,
+        bound_firewall,
+    ):
         delete_success = bound_firewall.delete()
-        hetzner_client.request.assert_called_with(url="/firewalls/1", method="DELETE")
+        request_mock.assert_called_with(url="/firewalls/1", method="DELETE")
 
         assert delete_success is True
 
-    def test_set_rules(self, hetzner_client, bound_firewall, response_set_rules):
-        hetzner_client.request.return_value = response_set_rules
+    def test_set_rules(
+        self,
+        request_mock: mock.MagicMock,
+        bound_firewall,
+        response_set_rules,
+    ):
+        request_mock.return_value = response_set_rules
         actions = bound_firewall.set_rules(
             [
                 FirewallRule(
@@ -143,7 +168,7 @@ class TestBoundFirewall:
                 )
             ]
         )
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/firewalls/1/actions/set_rules",
             method="POST",
             json={
@@ -162,13 +187,16 @@ class TestBoundFirewall:
         assert actions[0].progress == 100
 
     def test_apply_to_resources(
-        self, hetzner_client, bound_firewall, response_set_rules
+        self,
+        request_mock: mock.MagicMock,
+        bound_firewall,
+        response_set_rules,
     ):
-        hetzner_client.request.return_value = response_set_rules
+        request_mock.return_value = response_set_rules
         actions = bound_firewall.apply_to_resources(
             [FirewallResource(type=FirewallResource.TYPE_SERVER, server=Server(id=5))]
         )
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/firewalls/1/actions/apply_to_resources",
             method="POST",
             json={"apply_to": [{"type": "server", "server": {"id": 5}}]},
@@ -178,13 +206,16 @@ class TestBoundFirewall:
         assert actions[0].progress == 100
 
     def test_remove_from_resources(
-        self, hetzner_client, bound_firewall, response_set_rules
+        self,
+        request_mock: mock.MagicMock,
+        bound_firewall,
+        response_set_rules,
     ):
-        hetzner_client.request.return_value = response_set_rules
+        request_mock.return_value = response_set_rules
         actions = bound_firewall.remove_from_resources(
             [FirewallResource(type=FirewallResource.TYPE_SERVER, server=Server(id=5))]
         )
-        hetzner_client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/firewalls/1/actions/remove_from_resources",
             method="POST",
             json={"remove_from": [{"type": "server", "server": {"id": 5}}]},
@@ -196,15 +227,18 @@ class TestBoundFirewall:
 
 class TestFirewallsClient:
     @pytest.fixture()
-    def firewalls_client(self):
-        return FirewallsClient(client=mock.MagicMock())
+    def firewalls_client(self, client: Client):
+        return FirewallsClient(client)
 
-    def test_get_by_id(self, firewalls_client, firewall_response):
-        firewalls_client._client.request.return_value = firewall_response
+    def test_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        firewalls_client: FirewallsClient,
+        firewall_response,
+    ):
+        request_mock.return_value = firewall_response
         firewall = firewalls_client.get_by_id(1)
-        firewalls_client._client.request.assert_called_with(
-            url="/firewalls/1", method="GET"
-        )
+        request_mock.assert_called_with(url="/firewalls/1", method="GET")
         assert firewall._client is firewalls_client
         assert firewall.id == 38
         assert firewall.name == "Corporate Intranet Protection"
@@ -223,12 +257,16 @@ class TestFirewallsClient:
             {},
         ],
     )
-    def test_get_list(self, firewalls_client, two_firewalls_response, params):
-        firewalls_client._client.request.return_value = two_firewalls_response
+    def test_get_list(
+        self,
+        request_mock: mock.MagicMock,
+        firewalls_client: FirewallsClient,
+        two_firewalls_response,
+        params,
+    ):
+        request_mock.return_value = two_firewalls_response
         result = firewalls_client.get_list(**params)
-        firewalls_client._client.request.assert_called_with(
-            url="/firewalls", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/firewalls", method="GET", params=params)
 
         firewalls = result.firewalls
         assert result.meta is not None
@@ -257,15 +295,19 @@ class TestFirewallsClient:
             {},
         ],
     )
-    def test_get_all(self, firewalls_client, two_firewalls_response, params):
-        firewalls_client._client.request.return_value = two_firewalls_response
+    def test_get_all(
+        self,
+        request_mock: mock.MagicMock,
+        firewalls_client: FirewallsClient,
+        two_firewalls_response,
+        params,
+    ):
+        request_mock.return_value = two_firewalls_response
         firewalls = firewalls_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        firewalls_client._client.request.assert_called_with(
-            url="/firewalls", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/firewalls", method="GET", params=params)
 
         assert len(firewalls) == 2
 
@@ -280,15 +322,18 @@ class TestFirewallsClient:
         assert firewalls2.id == 39
         assert firewalls2.name == "Corporate Extranet Protection"
 
-    def test_get_by_name(self, firewalls_client, one_firewalls_response):
-        firewalls_client._client.request.return_value = one_firewalls_response
+    def test_get_by_name(
+        self,
+        request_mock: mock.MagicMock,
+        firewalls_client: FirewallsClient,
+        one_firewalls_response,
+    ):
+        request_mock.return_value = one_firewalls_response
         firewall = firewalls_client.get_by_name("Corporate Intranet Protection")
 
         params = {"name": "Corporate Intranet Protection"}
 
-        firewalls_client._client.request.assert_called_with(
-            url="/firewalls", method="GET", params=params
-        )
+        request_mock.assert_called_with(url="/firewalls", method="GET", params=params)
 
         assert firewall._client is firewalls_client
         assert firewall.id == 38
@@ -297,10 +342,16 @@ class TestFirewallsClient:
     @pytest.mark.parametrize(
         "firewall", [Firewall(id=1), BoundFirewall(mock.MagicMock(), dict(id=1))]
     )
-    def test_get_actions_list(self, firewalls_client, firewall, response_get_actions):
-        firewalls_client._client.request.return_value = response_get_actions
+    def test_get_actions_list(
+        self,
+        request_mock: mock.MagicMock,
+        firewalls_client: FirewallsClient,
+        firewall,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         result = firewalls_client.get_actions_list(firewall)
-        firewalls_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/firewalls/1/actions", method="GET", params={}
         )
 
@@ -314,8 +365,13 @@ class TestFirewallsClient:
         assert actions[0].id == 13
         assert actions[0].command == "set_firewall_rules"
 
-    def test_create(self, firewalls_client, response_create_firewall):
-        firewalls_client._client.request.return_value = response_create_firewall
+    def test_create(
+        self,
+        request_mock: mock.MagicMock,
+        firewalls_client: FirewallsClient,
+        response_create_firewall,
+    ):
+        request_mock.return_value = response_create_firewall
         response = firewalls_client.create(
             "Corporate Intranet Protection",
             rules=[
@@ -335,7 +391,7 @@ class TestFirewallsClient:
                 ),
             ],
         )
-        firewalls_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/firewalls",
             method="POST",
             json={
@@ -366,12 +422,18 @@ class TestFirewallsClient:
     @pytest.mark.parametrize(
         "firewall", [Firewall(id=38), BoundFirewall(mock.MagicMock(), dict(id=38))]
     )
-    def test_update(self, firewalls_client, firewall, response_update_firewall):
-        firewalls_client._client.request.return_value = response_update_firewall
+    def test_update(
+        self,
+        request_mock: mock.MagicMock,
+        firewalls_client: FirewallsClient,
+        firewall,
+        response_update_firewall,
+    ):
+        request_mock.return_value = response_update_firewall
         firewall = firewalls_client.update(
             firewall, name="New Corporate Intranet Protection", labels={}
         )
-        firewalls_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/firewalls/38",
             method="PUT",
             json={"name": "New Corporate Intranet Protection", "labels": {}},
@@ -383,8 +445,14 @@ class TestFirewallsClient:
     @pytest.mark.parametrize(
         "firewall", [Firewall(id=1), BoundFirewall(mock.MagicMock(), dict(id=1))]
     )
-    def test_set_rules(self, firewalls_client, firewall, response_set_rules):
-        firewalls_client._client.request.return_value = response_set_rules
+    def test_set_rules(
+        self,
+        request_mock: mock.MagicMock,
+        firewalls_client: FirewallsClient,
+        firewall,
+        response_set_rules,
+    ):
+        request_mock.return_value = response_set_rules
         actions = firewalls_client.set_rules(
             firewall,
             [
@@ -395,7 +463,7 @@ class TestFirewallsClient:
                 )
             ],
         )
-        firewalls_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/firewalls/1/actions/set_rules",
             method="POST",
             json={
@@ -415,25 +483,34 @@ class TestFirewallsClient:
     @pytest.mark.parametrize(
         "firewall", [Firewall(id=1), BoundFirewall(mock.MagicMock(), dict(id=1))]
     )
-    def test_delete(self, firewalls_client, firewall):
+    def test_delete(
+        self,
+        request_mock: mock.MagicMock,
+        firewalls_client: FirewallsClient,
+        firewall,
+    ):
         delete_success = firewalls_client.delete(firewall)
-        firewalls_client._client.request.assert_called_with(
-            url="/firewalls/1", method="DELETE"
-        )
+        request_mock.assert_called_with(url="/firewalls/1", method="DELETE")
 
         assert delete_success is True
 
     @pytest.mark.parametrize(
         "firewall", [Firewall(id=1), BoundFirewall(mock.MagicMock(), dict(id=1))]
     )
-    def test_apply_to_resources(self, firewalls_client, firewall, response_set_rules):
-        firewalls_client._client.request.return_value = response_set_rules
+    def test_apply_to_resources(
+        self,
+        request_mock: mock.MagicMock,
+        firewalls_client: FirewallsClient,
+        firewall,
+        response_set_rules,
+    ):
+        request_mock.return_value = response_set_rules
 
         actions = firewalls_client.apply_to_resources(
             firewall,
             [FirewallResource(type=FirewallResource.TYPE_SERVER, server=Server(id=5))],
         )
-        firewalls_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/firewalls/1/actions/apply_to_resources",
             method="POST",
             json={"apply_to": [{"type": "server", "server": {"id": 5}}]},
@@ -446,15 +523,19 @@ class TestFirewallsClient:
         "firewall", [Firewall(id=1), BoundFirewall(mock.MagicMock(), dict(id=1))]
     )
     def test_remove_from_resources(
-        self, firewalls_client, firewall, response_set_rules
+        self,
+        request_mock: mock.MagicMock,
+        firewalls_client: FirewallsClient,
+        firewall,
+        response_set_rules,
     ):
-        firewalls_client._client.request.return_value = response_set_rules
+        request_mock.return_value = response_set_rules
 
         actions = firewalls_client.remove_from_resources(
             firewall,
             [FirewallResource(type=FirewallResource.TYPE_SERVER, server=Server(id=5))],
         )
-        firewalls_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/firewalls/1/actions/remove_from_resources",
             method="POST",
             json={"remove_from": [{"type": "server", "server": {"id": 5}}]},
@@ -463,26 +544,32 @@ class TestFirewallsClient:
         assert actions[0].id == 13
         assert actions[0].progress == 100
 
-    def test_actions_get_by_id(self, firewalls_client, response_get_actions):
-        firewalls_client._client.request.return_value = {
-            "action": response_get_actions["actions"][0]
-        }
+    def test_actions_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        firewalls_client: FirewallsClient,
+        response_get_actions,
+    ):
+        request_mock.return_value = {"action": response_get_actions["actions"][0]}
         action = firewalls_client.actions.get_by_id(13)
 
-        firewalls_client._client.request.assert_called_with(
-            url="/firewalls/actions/13", method="GET"
-        )
+        request_mock.assert_called_with(url="/firewalls/actions/13", method="GET")
 
         assert isinstance(action, BoundAction)
         assert action._client == firewalls_client._client.actions
         assert action.id == 13
         assert action.command == "set_firewall_rules"
 
-    def test_actions_get_list(self, firewalls_client, response_get_actions):
-        firewalls_client._client.request.return_value = response_get_actions
+    def test_actions_get_list(
+        self,
+        request_mock: mock.MagicMock,
+        firewalls_client: FirewallsClient,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         result = firewalls_client.actions.get_list()
 
-        firewalls_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/firewalls/actions",
             method="GET",
             params={},
@@ -497,11 +584,16 @@ class TestFirewallsClient:
         assert actions[0].id == 13
         assert actions[0].command == "set_firewall_rules"
 
-    def test_actions_get_all(self, firewalls_client, response_get_actions):
-        firewalls_client._client.request.return_value = response_get_actions
+    def test_actions_get_all(
+        self,
+        request_mock: mock.MagicMock,
+        firewalls_client: FirewallsClient,
+        response_get_actions,
+    ):
+        request_mock.return_value = response_get_actions
         actions = firewalls_client.actions.get_all()
 
-        firewalls_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/firewalls/actions",
             method="GET",
             params={"page": 1, "per_page": 50},

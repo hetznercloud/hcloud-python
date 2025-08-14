@@ -5,13 +5,14 @@ from unittest import mock
 
 import pytest
 
+from hcloud import Client
 from hcloud.server_types import BoundServerType, ServerTypesClient
 
 
 class TestBoundServerType:
     @pytest.fixture()
-    def bound_server_type(self, hetzner_client):
-        return BoundServerType(client=hetzner_client.server_types, data=dict(id=14))
+    def bound_server_type(self, client: Client):
+        return BoundServerType(client.server_types, data=dict(id=14))
 
     def test_bound_server_type_init(self, server_type_response):
         bound_server_type = BoundServerType(
@@ -41,15 +42,18 @@ class TestBoundServerType:
 
 class TestServerTypesClient:
     @pytest.fixture()
-    def server_types_client(self):
-        return ServerTypesClient(client=mock.MagicMock())
+    def server_types_client(self, client: Client):
+        return ServerTypesClient(client)
 
-    def test_get_by_id(self, server_types_client, server_type_response):
-        server_types_client._client.request.return_value = server_type_response
+    def test_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        server_types_client: ServerTypesClient,
+        server_type_response,
+    ):
+        request_mock.return_value = server_type_response
         server_type = server_types_client.get_by_id(1)
-        server_types_client._client.request.assert_called_with(
-            url="/server_types/1", method="GET"
-        )
+        request_mock.assert_called_with(url="/server_types/1", method="GET")
         assert server_type._client is server_types_client
         assert server_type.id == 1
         assert server_type.name == "cx11"
@@ -57,10 +61,16 @@ class TestServerTypesClient:
     @pytest.mark.parametrize(
         "params", [{"name": "cx11", "page": 1, "per_page": 10}, {"name": ""}, {}]
     )
-    def test_get_list(self, server_types_client, two_server_types_response, params):
-        server_types_client._client.request.return_value = two_server_types_response
+    def test_get_list(
+        self,
+        request_mock: mock.MagicMock,
+        server_types_client: ServerTypesClient,
+        two_server_types_response,
+        params,
+    ):
+        request_mock.return_value = two_server_types_response
         result = server_types_client.get_list(**params)
-        server_types_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/server_types", method="GET", params=params
         )
 
@@ -81,13 +91,19 @@ class TestServerTypesClient:
         assert server_types2.name == "cx21"
 
     @pytest.mark.parametrize("params", [{"name": "cx11"}])
-    def test_get_all(self, server_types_client, two_server_types_response, params):
-        server_types_client._client.request.return_value = two_server_types_response
+    def test_get_all(
+        self,
+        request_mock: mock.MagicMock,
+        server_types_client: ServerTypesClient,
+        two_server_types_response,
+        params,
+    ):
+        request_mock.return_value = two_server_types_response
         server_types = server_types_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        server_types_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/server_types", method="GET", params=params
         )
 
@@ -104,13 +120,18 @@ class TestServerTypesClient:
         assert server_types2.id == 2
         assert server_types2.name == "cx21"
 
-    def test_get_by_name(self, server_types_client, one_server_types_response):
-        server_types_client._client.request.return_value = one_server_types_response
+    def test_get_by_name(
+        self,
+        request_mock: mock.MagicMock,
+        server_types_client: ServerTypesClient,
+        one_server_types_response,
+    ):
+        request_mock.return_value = one_server_types_response
         server_type = server_types_client.get_by_name("cx11")
 
         params = {"name": "cx11"}
 
-        server_types_client._client.request.assert_called_with(
+        request_mock.assert_called_with(
             url="/server_types", method="GET", params=params
         )
 

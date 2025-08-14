@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..core import BoundModelBase, ClientEntityBase, Meta
+from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import SSHKey
 
 if TYPE_CHECKING:
@@ -41,7 +41,7 @@ class SSHKeysPageResult(NamedTuple):
     meta: Meta
 
 
-class SSHKeysClient(ClientEntityBase):
+class SSHKeysClient(ResourceClientBase):
     _client: Client
 
     def get_by_id(self, id: int) -> BoundSSHKey:
