@@ -29,6 +29,7 @@ def client(request_mock) -> Client:
         poll_max_retries=3,
     )
     c._client.request = request_mock
+    c._client_hetzner.request = request_mock
     return c
 
 

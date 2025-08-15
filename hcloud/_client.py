@@ -167,6 +167,15 @@ class Client:
             poll_max_retries=poll_max_retries,
             timeout=timeout,
         )
+        self._client_hetzner = ClientBase(
+            token=token,
+            endpoint=api_endpoint_hetzner,
+            application_name=application_name,
+            application_version=application_version,
+            poll_interval=poll_interval,
+            poll_max_retries=poll_max_retries,
+            timeout=timeout,
+        )
 
         self.datacenters = DatacentersClient(self)
         """DatacentersClient Instance

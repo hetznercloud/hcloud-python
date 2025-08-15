@@ -27,7 +27,9 @@ class StorageBoxTypesClient(ResourceClientBase):
     See https://docs.hetzner.cloud/reference/hetzner#storage-box-types.
     """
 
-    _client: Client
+    def __init__(self, client: Client):
+        super().__init__(client)
+        self._client = client._client_hetzner
 
     def get_by_id(self, id: int) -> BoundStorageBoxType:
         """
@@ -37,7 +39,7 @@ class StorageBoxTypesClient(ResourceClientBase):
 
         :param id: ID of the Storage Box Type.
         """
-        response = self._client._request_hetzner(  # pylint: disable=protected-access
+        response = self._client.request(
             method="GET",
             url=f"/storage_box_types/{id}",
         )
@@ -76,7 +78,7 @@ class StorageBoxTypesClient(ResourceClientBase):
         if per_page is not None:
             params["per_page"] = per_page
 
-        response = self._client._request_hetzner(  # pylint: disable=protected-access
+        response = self._client.request(
             method="GET",
             url="/storage_box_types",
             params=params,
