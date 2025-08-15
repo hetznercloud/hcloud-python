@@ -88,9 +88,9 @@ class TestBoundVolume:
         self,
         request_mock: mock.MagicMock,
         bound_volume,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         delete_success = bound_volume.delete()
 
@@ -105,9 +105,9 @@ class TestBoundVolume:
         self,
         request_mock: mock.MagicMock,
         bound_volume,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_volume.change_protection(True)
 
@@ -128,9 +128,9 @@ class TestBoundVolume:
         request_mock: mock.MagicMock,
         bound_volume,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_volume.attach(server)
 
@@ -150,9 +150,9 @@ class TestBoundVolume:
         request_mock: mock.MagicMock,
         bound_volume,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_volume.attach(server, False)
 
@@ -168,9 +168,9 @@ class TestBoundVolume:
         self,
         request_mock: mock.MagicMock,
         bound_volume,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_volume.detach()
 
@@ -185,9 +185,9 @@ class TestBoundVolume:
         self,
         request_mock: mock.MagicMock,
         bound_volume,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_volume.resize(50)
 
@@ -472,9 +472,9 @@ class TestVolumesClient:
         request_mock: mock.MagicMock,
         volumes_client: VolumesClient,
         volume,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = volumes_client.change_protection(volume, True)
 
@@ -495,9 +495,9 @@ class TestVolumesClient:
         request_mock: mock.MagicMock,
         volumes_client: VolumesClient,
         volume,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         delete_success = volumes_client.delete(volume)
 
@@ -524,9 +524,9 @@ class TestVolumesClient:
         volumes_client: VolumesClient,
         server,
         volume,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = volumes_client.attach(volume, server)
 
@@ -546,9 +546,9 @@ class TestVolumesClient:
         request_mock: mock.MagicMock,
         volumes_client: VolumesClient,
         volume,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = volumes_client.detach(volume)
 
@@ -567,9 +567,9 @@ class TestVolumesClient:
         request_mock: mock.MagicMock,
         volumes_client: VolumesClient,
         volume,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = volumes_client.resize(volume, 50)
 

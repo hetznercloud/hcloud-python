@@ -91,9 +91,9 @@ class TestBoundFloatingIP:
         self,
         request_mock: mock.MagicMock,
         bound_floating_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         delete_success = bound_floating_ip.delete()
 
@@ -108,9 +108,9 @@ class TestBoundFloatingIP:
         self,
         request_mock: mock.MagicMock,
         bound_floating_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_floating_ip.change_protection(True)
 
@@ -131,9 +131,9 @@ class TestBoundFloatingIP:
         request_mock: mock.MagicMock,
         bound_floating_ip,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_floating_ip.assign(server)
 
@@ -149,9 +149,9 @@ class TestBoundFloatingIP:
         self,
         request_mock: mock.MagicMock,
         bound_floating_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_floating_ip.unassign()
 
@@ -166,9 +166,9 @@ class TestBoundFloatingIP:
         self,
         request_mock: mock.MagicMock,
         bound_floating_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_floating_ip.change_dns_ptr("1.2.3.4", "server02.example.com")
 
@@ -448,9 +448,9 @@ class TestFloatingIPsClient:
         request_mock: mock.MagicMock,
         floating_ips_client: FloatingIPsClient,
         floating_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = floating_ips_client.change_protection(floating_ip, True)
 
@@ -471,9 +471,9 @@ class TestFloatingIPsClient:
         request_mock: mock.MagicMock,
         floating_ips_client: FloatingIPsClient,
         floating_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         delete_success = floating_ips_client.delete(floating_ip)
 
@@ -500,9 +500,9 @@ class TestFloatingIPsClient:
         floating_ips_client: FloatingIPsClient,
         server,
         floating_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = floating_ips_client.assign(floating_ip, server)
 
@@ -523,9 +523,9 @@ class TestFloatingIPsClient:
         request_mock: mock.MagicMock,
         floating_ips_client: FloatingIPsClient,
         floating_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = floating_ips_client.unassign(floating_ip)
 
@@ -545,9 +545,9 @@ class TestFloatingIPsClient:
         request_mock: mock.MagicMock,
         floating_ips_client: FloatingIPsClient,
         floating_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = floating_ips_client.change_dns_ptr(
             floating_ip, "1.2.3.4", "server02.example.com"
