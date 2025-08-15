@@ -34,12 +34,12 @@ class BoundStorageBox(BoundModelBase, StorageBox):
         raw = data.get("storage_box_type")
         if raw is not None:
             data["storage_box_type"] = BoundStorageBoxType(
-                client._client.storage_box_types, raw
+                client._parent.storage_box_types, raw
             )
 
         raw = data.get("location")
         if raw is not None:
-            data["location"] = BoundLocation(client._client.locations, raw)
+            data["location"] = BoundLocation(client._parent.locations, raw)
 
         raw = data.get("snapshot_plan")
         if raw is not None:
@@ -70,7 +70,9 @@ class StorageBoxesClient(ResourceClientBase):
     See https://docs.hetzner.cloud/reference/hetzner#storage-boxes.
     """
 
-    _client: Client
+    def __init__(self, client: Client):
+        super().__init__(client)
+        self._client = client._client_hetzner
 
     def get_by_id(self, id: int) -> BoundStorageBox:
         """
@@ -80,7 +82,7 @@ class StorageBoxesClient(ResourceClientBase):
 
         :param id: ID of the Storage Box.
         """
-        response = self._client._request_hetzner(  # pylint: disable=protected-access
+        response = self._client.request(
             method="GET",
             url=f"/storage_boxes/{id}",
         )
@@ -123,7 +125,7 @@ class StorageBoxesClient(ResourceClientBase):
         if per_page is not None:
             params["per_page"] = per_page
 
-        response = self._client._request_hetzner(  # pylint: disable=protected-access
+        response = self._client.request(
             method="GET",
             url="/storage_boxes",
             params=params,
@@ -189,7 +191,7 @@ class StorageBoxesClient(ResourceClientBase):
         if labels is not None:
             data["labels"] = labels
 
-        response = self._client._request_hetzner(  # pylint: disable=protected-access
+        response = self._client.request(
             method="POST",
             url="/storage_boxes",
             json=data,
@@ -197,7 +199,7 @@ class StorageBoxesClient(ResourceClientBase):
 
         return CreateStorageBoxResponse(
             storage_box=BoundStorageBox(self, response["storage_box"]),
-            action=BoundAction(self._client.actions, response["action"]),
+            action=BoundAction(self._parent.actions, response["action"]),
         )
 
     def update(
@@ -222,7 +224,7 @@ class StorageBoxesClient(ResourceClientBase):
         if labels is not None:
             data["labels"] = labels
 
-        response = self._client._request_hetzner(  # pylint: disable=protected-access
+        response = self._client.request(
             method="PUT",
             url=f"/storage_boxes/{storage_box.id}",
             json=data,
@@ -241,13 +243,13 @@ class StorageBoxesClient(ResourceClientBase):
 
         :param storage_box: Storage Box to delete.
         """
-        response = self._client._request_hetzner(  # pylint: disable=protected-access
+        response = self._client.request(
             method="DELETE",
             url=f"/storage_boxes/{storage_box.id}",
         )
 
         return DeleteStorageBoxResponse(
-            action=BoundAction(self._client.actions, response["action"])
+            action=BoundAction(self._parent.actions, response["action"])
         )
 
     def get_folders(
@@ -269,7 +271,7 @@ class StorageBoxesClient(ResourceClientBase):
         if path is not None:
             params["path"] = path
 
-        response = self._client._request_hetzner(  # pylint: disable=protected-access
+        response = self._client.request(
             method="GET",
             url=f"/storage_boxes/{storage_box.id}/folders",
             params=params,

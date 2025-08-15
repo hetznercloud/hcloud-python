@@ -21,10 +21,10 @@ from hcloud.storage_boxes.domain import StorageBoxAccessSettings
 
 def assert_bound_model(
     o: BoundStorageBox,
-    client: StorageBoxesClient,
+    resource_client: StorageBoxesClient,
 ):
     assert isinstance(o, BoundStorageBox)
-    assert o._client is client
+    assert o._client is resource_client
     assert o.id == 42
     assert o.name == "storage-box1"
 
@@ -38,35 +38,27 @@ def assert_bound_action(
     assert o.id == 22
 
 
-@pytest.fixture(name="request_mock")
-def request_mock_fixture():
-    return mock.MagicMock()
-
-
-@pytest.fixture(name="client")
-def client_fixture(request_mock) -> StorageBoxesClient:
-    client = Client("")
-    client._request_hetzner = request_mock
-    return StorageBoxesClient(client=client)
-
-
 class TestClient:
+    @pytest.fixture()
+    def resource_client(self, client: Client) -> StorageBoxesClient:
+        return StorageBoxesClient(client)
+
     def test_get_by_id(
         self,
         request_mock: mock.MagicMock,
-        client: StorageBoxesClient,
+        resource_client: StorageBoxesClient,
         storage_box1,
     ):
         request_mock.return_value = {"storage_box": storage_box1}
 
-        result = client.get_by_id(42)
+        result = resource_client.get_by_id(42)
 
         request_mock.assert_called_with(
             method="GET",
             url="/storage_boxes/42",
         )
 
-        assert_bound_model(result, client)
+        assert_bound_model(result, resource_client)
         assert result.storage_box_type.id == 42
         assert result.storage_box_type.name == "bx11"
         assert result.location.id == 1
@@ -102,14 +94,14 @@ class TestClient:
     def test_get_list(
         self,
         request_mock: mock.MagicMock,
-        client: StorageBoxesClient,
+        resource_client: StorageBoxesClient,
         storage_box1,
         storage_box2,
         params,
     ):
         request_mock.return_value = {"storage_boxes": [storage_box1, storage_box2]}
 
-        result = client.get_list(**params)
+        result = resource_client.get_list(**params)
 
         request_mock.assert_called_with(
             url="/storage_boxes",
@@ -123,11 +115,11 @@ class TestClient:
         result1 = result.storage_boxes[0]
         result2 = result.storage_boxes[1]
 
-        assert result1._client is client
+        assert result1._client is resource_client
         assert result1.id == 42
         assert result1.name == "storage-box1"
 
-        assert result2._client is client
+        assert result2._client is resource_client
         assert result2.id == 43
         assert result2.name == "storage-box2"
 
@@ -141,14 +133,14 @@ class TestClient:
     def test_get_all(
         self,
         request_mock: mock.MagicMock,
-        client: StorageBoxesClient,
+        resource_client: StorageBoxesClient,
         storage_box1,
         storage_box2,
         params,
     ):
         request_mock.return_value = {"storage_boxes": [storage_box1, storage_box2]}
 
-        result = client.get_all(**params)
+        result = resource_client.get_all(**params)
 
         request_mock.assert_called_with(
             url="/storage_boxes",
@@ -161,23 +153,23 @@ class TestClient:
         result1 = result[0]
         result2 = result[1]
 
-        assert result1._client is client
+        assert result1._client is resource_client
         assert result1.id == 42
         assert result1.name == "storage-box1"
 
-        assert result2._client is client
+        assert result2._client is resource_client
         assert result2.id == 43
         assert result2.name == "storage-box2"
 
     def test_get_by_name(
         self,
         request_mock: mock.MagicMock,
-        client: StorageBoxesClient,
+        resource_client: StorageBoxesClient,
         storage_box1,
     ):
         request_mock.return_value = {"storage_boxes": [storage_box1]}
 
-        result = client.get_by_name("bx11")
+        result = resource_client.get_by_name("bx11")
 
         params = {"name": "bx11"}
 
@@ -187,12 +179,12 @@ class TestClient:
             params=params,
         )
 
-        assert_bound_model(result, client)
+        assert_bound_model(result, resource_client)
 
     def test_create(
         self,
         request_mock: mock.MagicMock,
-        client: StorageBoxesClient,
+        resource_client: StorageBoxesClient,
         storage_box1,
         action_running1,
     ):
@@ -201,7 +193,7 @@ class TestClient:
             "action": action_running1,
         }
 
-        result = client.create(
+        result = resource_client.create(
             name="storage-box1",
             password="secret-password",
             location=Location(name="fsn1"),
@@ -233,19 +225,19 @@ class TestClient:
             },
         )
 
-        assert_bound_model(result.storage_box, client)
+        assert_bound_model(result.storage_box, resource_client)
 
     def test_update(
         self,
         request_mock: mock.MagicMock,
-        client: StorageBoxesClient,
+        resource_client: StorageBoxesClient,
         storage_box1,
     ):
         request_mock.return_value = {
             "storage_box": storage_box1,
         }
 
-        result = client.update(
+        result = resource_client.update(
             StorageBox(id=42),
             name="name",
             labels={"key": "value"},
@@ -260,26 +252,26 @@ class TestClient:
             },
         )
 
-        assert_bound_model(result, client)
+        assert_bound_model(result, resource_client)
 
     def test_delete(
         self,
         request_mock: mock.MagicMock,
-        client: StorageBoxesClient,
+        resource_client: StorageBoxesClient,
         action_running1,
     ):
         request_mock.return_value = {
             "action": action_running1,
         }
 
-        result = client.delete(StorageBox(id=42))
+        result = resource_client.delete(StorageBox(id=42))
 
         request_mock.assert_called_with(
             method="DELETE",
             url="/storage_boxes/42",
         )
 
-        assert_bound_action(result.action, client._client.actions)
+        assert_bound_action(result.action, resource_client._parent.actions)
 
     @pytest.mark.parametrize(
         "params",
@@ -291,14 +283,14 @@ class TestClient:
     def test_get_folders(
         self,
         request_mock: mock.MagicMock,
-        client: StorageBoxesClient,
+        resource_client: StorageBoxesClient,
         params,
     ):
         request_mock.return_value = {
             "folders": ["dir1", "dir2"],
         }
 
-        result = client.get_folders(StorageBox(id=42), **params)
+        result = resource_client.get_folders(StorageBox(id=42), **params)
 
         request_mock.assert_called_with(
             method="GET", url="/storage_boxes/42/folders", params=params
