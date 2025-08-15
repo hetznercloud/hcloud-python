@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..actions import BoundAction
-from ..core import BoundModelBase, ClientEntityBase, Meta
+from ..core import BoundModelBase, Meta, ResourceClientBase
 from ..locations import BoundLocation, Location
 from ..storage_box_types import BoundStorageBoxType, StorageBoxType
 from .domain import (
@@ -63,7 +63,7 @@ class StorageBoxesPageResult(NamedTuple):
     meta: Meta
 
 
-class StorageBoxesClient(ClientEntityBase):
+class StorageBoxesClient(ResourceClientBase):
     """
     A client for the Storage Boxes API.
 
