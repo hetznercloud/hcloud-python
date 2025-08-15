@@ -521,7 +521,7 @@ class TestNetworksClient:
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
 
-        assert actions[0]._client == networks_client._client.actions
+        assert actions[0]._client == networks_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "add_subnet"
 
@@ -743,7 +743,7 @@ class TestNetworksClient:
         request_mock.assert_called_with(url="/networks/actions/13", method="GET")
 
         assert isinstance(action, BoundAction)
-        assert action._client == networks_client._client.actions
+        assert action._client == networks_client._parent.actions
         assert action.id == 13
         assert action.command == "add_subnet"
 
@@ -767,7 +767,7 @@ class TestNetworksClient:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == networks_client._client.actions
+        assert actions[0]._client == networks_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "add_subnet"
 
@@ -788,6 +788,6 @@ class TestNetworksClient:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == networks_client._client.actions
+        assert actions[0]._client == networks_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "add_subnet"

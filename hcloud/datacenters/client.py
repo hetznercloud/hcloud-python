@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, NamedTuple
+from typing import Any, NamedTuple
 
 from ..core import BoundModelBase, Meta, ResourceClientBase
 from ..locations import BoundLocation
 from ..server_types import BoundServerType
 from .domain import Datacenter, DatacenterServerTypes
-
-if TYPE_CHECKING:
-    from .._client import Client
 
 
 class BoundDatacenter(BoundModelBase, Datacenter):
@@ -19,25 +16,25 @@ class BoundDatacenter(BoundModelBase, Datacenter):
     def __init__(self, client: DatacentersClient, data: dict):
         location = data.get("location")
         if location is not None:
-            data["location"] = BoundLocation(client._client.locations, location)
+            data["location"] = BoundLocation(client._parent.locations, location)
 
         server_types = data.get("server_types")
         if server_types is not None:
             available = [
                 BoundServerType(
-                    client._client.server_types, {"id": server_type}, complete=False
+                    client._parent.server_types, {"id": server_type}, complete=False
                 )
                 for server_type in server_types["available"]
             ]
             supported = [
                 BoundServerType(
-                    client._client.server_types, {"id": server_type}, complete=False
+                    client._parent.server_types, {"id": server_type}, complete=False
                 )
                 for server_type in server_types["supported"]
             ]
             available_for_migration = [
                 BoundServerType(
-                    client._client.server_types, {"id": server_type}, complete=False
+                    client._parent.server_types, {"id": server_type}, complete=False
                 )
                 for server_type in server_types["available_for_migration"]
             ]
@@ -56,7 +53,6 @@ class DatacentersPageResult(NamedTuple):
 
 
 class DatacentersClient(ResourceClientBase):
-    _client: Client
 
     def get_by_id(self, id: int) -> BoundDatacenter:
         """Get a specific datacenter by its ID.

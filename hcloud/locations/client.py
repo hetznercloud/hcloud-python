@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, NamedTuple
+from typing import Any, NamedTuple
 
 from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import Location
-
-if TYPE_CHECKING:
-    from .._client import Client
 
 
 class BoundLocation(BoundModelBase, Location):
@@ -21,7 +18,6 @@ class LocationsPageResult(NamedTuple):
 
 
 class LocationsClient(ResourceClientBase):
-    _client: Client
 
     def get_by_id(self, id: int) -> BoundLocation:
         """Get a specific location by its ID.

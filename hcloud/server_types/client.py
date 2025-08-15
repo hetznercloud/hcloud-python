@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, NamedTuple
+from typing import Any, NamedTuple
 
 from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import ServerType
-
-if TYPE_CHECKING:
-    from .._client import Client
 
 
 class BoundServerType(BoundModelBase, ServerType):
@@ -21,7 +18,6 @@ class ServerTypesPageResult(NamedTuple):
 
 
 class ServerTypesClient(ResourceClientBase):
-    _client: Client
 
     def get_by_id(self, id: int) -> BoundServerType:
         """Returns a specific Server Type.

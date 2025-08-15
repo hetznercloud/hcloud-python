@@ -57,28 +57,28 @@ class BoundServer(BoundModelBase, Server):
     def __init__(self, client: ServersClient, data: dict, complete: bool = True):
         datacenter = data.get("datacenter")
         if datacenter is not None:
-            data["datacenter"] = BoundDatacenter(client._client.datacenters, datacenter)
+            data["datacenter"] = BoundDatacenter(client._parent.datacenters, datacenter)
 
         volumes = data.get("volumes", [])
         if volumes:
             volumes = [
-                BoundVolume(client._client.volumes, {"id": volume}, complete=False)
+                BoundVolume(client._parent.volumes, {"id": volume}, complete=False)
                 for volume in volumes
             ]
             data["volumes"] = volumes
 
         image = data.get("image", None)
         if image is not None:
-            data["image"] = BoundImage(client._client.images, image)
+            data["image"] = BoundImage(client._parent.images, image)
 
         iso = data.get("iso", None)
         if iso is not None:
-            data["iso"] = BoundIso(client._client.isos, iso)
+            data["iso"] = BoundIso(client._parent.isos, iso)
 
         server_type = data.get("server_type")
         if server_type is not None:
             data["server_type"] = BoundServerType(
-                client._client.server_types, server_type
+                client._parent.server_types, server_type
             )
 
         public_net = data.get("public_net")
@@ -90,7 +90,7 @@ class BoundServer(BoundModelBase, Server):
             )
             ipv4_primary_ip = (
                 BoundPrimaryIP(
-                    client._client.primary_ips,
+                    client._parent.primary_ips,
                     {"id": public_net["ipv4"]["id"]},
                     complete=False,
                 )
@@ -104,7 +104,7 @@ class BoundServer(BoundModelBase, Server):
             )
             ipv6_primary_ip = (
                 BoundPrimaryIP(
-                    client._client.primary_ips,
+                    client._parent.primary_ips,
                     {"id": public_net["ipv6"]["id"]},
                     complete=False,
                 )
@@ -113,14 +113,14 @@ class BoundServer(BoundModelBase, Server):
             )
             floating_ips = [
                 BoundFloatingIP(
-                    client._client.floating_ips, {"id": floating_ip}, complete=False
+                    client._parent.floating_ips, {"id": floating_ip}, complete=False
                 )
                 for floating_ip in public_net["floating_ips"]
             ]
             firewalls = [
                 PublicNetworkFirewall(
                     BoundFirewall(
-                        client._client.firewalls, {"id": firewall["id"]}, complete=False
+                        client._parent.firewalls, {"id": firewall["id"]}, complete=False
                     ),
                     status=firewall["status"],
                 )
@@ -143,7 +143,7 @@ class BoundServer(BoundModelBase, Server):
             private_nets = [
                 PrivateNet(
                     network=BoundNetwork(
-                        client._client.networks,
+                        client._parent.networks,
                         {"id": private_net["network"]},
                         complete=False,
                     ),
@@ -158,7 +158,7 @@ class BoundServer(BoundModelBase, Server):
         placement_group = data.get("placement_group")
         if placement_group:
             placement_group = BoundPlacementGroup(
-                client._client.placement_groups, placement_group
+                client._parent.placement_groups, placement_group
             )
             data["placement_group"] = placement_group
 
@@ -483,7 +483,6 @@ class ServersPageResult(NamedTuple):
 
 
 class ServersClient(ResourceClientBase):
-    _client: Client
 
     actions: ResourceActionsClient
     """Servers scoped actions client
@@ -669,9 +668,9 @@ class ServersClient(ResourceClientBase):
 
         result = CreateServerResponse(
             server=BoundServer(self, response["server"]),
-            action=BoundAction(self._client.actions, response["action"]),
+            action=BoundAction(self._parent.actions, response["action"]),
             next_actions=[
-                BoundAction(self._client.actions, action)
+                BoundAction(self._parent.actions, action)
                 for action in response["next_actions"]
             ],
             root_password=response["root_password"],
@@ -715,7 +714,7 @@ class ServersClient(ResourceClientBase):
             params=params,
         )
         actions = [
-            BoundAction(self._client.actions, action_data)
+            BoundAction(self._parent.actions, action_data)
             for action_data in response["actions"]
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))
@@ -816,7 +815,7 @@ class ServersClient(ResourceClientBase):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(url=f"/servers/{server.id}", method="DELETE")
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def power_off(self, server: Server | BoundServer) -> BoundAction:
         """Cuts power to the server. This forcefully stops it without giving the server operating system time to gracefully stop
@@ -828,7 +827,7 @@ class ServersClient(ResourceClientBase):
             url=f"/servers/{server.id}/actions/poweroff",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def power_on(self, server: Server | BoundServer) -> BoundAction:
         """Starts a server by turning its power on.
@@ -840,7 +839,7 @@ class ServersClient(ResourceClientBase):
             url=f"/servers/{server.id}/actions/poweron",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def reboot(self, server: Server | BoundServer) -> BoundAction:
         """Reboots a server gracefully by sending an ACPI request.
@@ -852,7 +851,7 @@ class ServersClient(ResourceClientBase):
             url=f"/servers/{server.id}/actions/reboot",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def reset(self, server: Server | BoundServer) -> BoundAction:
         """Cuts power to a server and starts it again.
@@ -864,7 +863,7 @@ class ServersClient(ResourceClientBase):
             url=f"/servers/{server.id}/actions/reset",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def shutdown(self, server: Server | BoundServer) -> BoundAction:
         """Shuts down a server gracefully by sending an ACPI shutdown request.
@@ -876,7 +875,7 @@ class ServersClient(ResourceClientBase):
             url=f"/servers/{server.id}/actions/shutdown",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def reset_password(self, server: Server | BoundServer) -> ResetPasswordResponse:
         """Resets the root password. Only works for Linux systems that are running the qemu guest agent.
@@ -889,7 +888,7 @@ class ServersClient(ResourceClientBase):
             method="POST",
         )
         return ResetPasswordResponse(
-            action=BoundAction(self._client.actions, response["action"]),
+            action=BoundAction(self._parent.actions, response["action"]),
             root_password=response["root_password"],
         )
 
@@ -917,7 +916,7 @@ class ServersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def enable_rescue(
         self,
@@ -945,7 +944,7 @@ class ServersClient(ResourceClientBase):
             json=data,
         )
         return EnableRescueResponse(
-            action=BoundAction(self._client.actions, response["action"]),
+            action=BoundAction(self._parent.actions, response["action"]),
             root_password=response["root_password"],
         )
 
@@ -959,7 +958,7 @@ class ServersClient(ResourceClientBase):
             url=f"/servers/{server.id}/actions/disable_rescue",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def create_image(
         self,
@@ -996,8 +995,8 @@ class ServersClient(ResourceClientBase):
             json=data,
         )
         return CreateImageResponse(
-            action=BoundAction(self._client.actions, response["action"]),
-            image=BoundImage(self._client.images, response["image"]),
+            action=BoundAction(self._parent.actions, response["action"]),
+            image=BoundImage(self._parent.images, response["image"]),
         )
 
     def rebuild(
@@ -1020,7 +1019,7 @@ class ServersClient(ResourceClientBase):
         )
 
         return RebuildResponse(
-            action=BoundAction(self._client.actions, response["action"]),
+            action=BoundAction(self._parent.actions, response["action"]),
             root_password=response.get("root_password"),
         )
 
@@ -1034,7 +1033,7 @@ class ServersClient(ResourceClientBase):
             url=f"/servers/{server.id}/actions/enable_backup",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def disable_backup(self, server: Server | BoundServer) -> BoundAction:
         """Disables the automatic backup option and deletes all existing Backups for a Server.
@@ -1046,7 +1045,7 @@ class ServersClient(ResourceClientBase):
             url=f"/servers/{server.id}/actions/disable_backup",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def attach_iso(
         self,
@@ -1065,7 +1064,7 @@ class ServersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def detach_iso(self, server: Server | BoundServer) -> BoundAction:
         """Detaches an ISO from a server.
@@ -1077,7 +1076,7 @@ class ServersClient(ResourceClientBase):
             url=f"/servers/{server.id}/actions/detach_iso",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def change_dns_ptr(
         self,
@@ -1100,7 +1099,7 @@ class ServersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def change_protection(
         self,
@@ -1128,7 +1127,7 @@ class ServersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def request_console(self, server: Server | BoundServer) -> RequestConsoleResponse:
         """Requests credentials for remote access via vnc over websocket to keyboard, monitor, and mouse for a server.
@@ -1141,7 +1140,7 @@ class ServersClient(ResourceClientBase):
             method="POST",
         )
         return RequestConsoleResponse(
-            action=BoundAction(self._client.actions, response["action"]),
+            action=BoundAction(self._parent.actions, response["action"]),
             wss_url=response["wss_url"],
             password=response["password"],
         )
@@ -1173,7 +1172,7 @@ class ServersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def detach_from_network(
         self,
@@ -1192,7 +1191,7 @@ class ServersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def change_alias_ips(
         self,
@@ -1214,7 +1213,7 @@ class ServersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def add_to_placement_group(
         self,
@@ -1233,7 +1232,7 @@ class ServersClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def remove_from_placement_group(self, server: Server | BoundServer) -> BoundAction:
         """Removes a server from a placement group.
@@ -1245,4 +1244,4 @@ class ServersClient(ResourceClientBase):
             url=f"/servers/{server.id}/actions/remove_from_placement_group",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])

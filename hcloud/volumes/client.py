@@ -21,7 +21,7 @@ class BoundVolume(BoundModelBase, Volume):
     def __init__(self, client: VolumesClient, data: dict, complete: bool = True):
         location = data.get("location")
         if location is not None:
-            data["location"] = BoundLocation(client._client.locations, location)
+            data["location"] = BoundLocation(client._parent.locations, location)
 
         # pylint: disable=import-outside-toplevel
         from ..servers import BoundServer
@@ -29,7 +29,7 @@ class BoundVolume(BoundModelBase, Volume):
         server = data.get("server")
         if server is not None:
             data["server"] = BoundServer(
-                client._client.servers, {"id": server}, complete=False
+                client._parent.servers, {"id": server}, complete=False
             )
         super().__init__(client, data, complete)
 
@@ -136,7 +136,6 @@ class VolumesPageResult(NamedTuple):
 
 
 class VolumesClient(ResourceClientBase):
-    _client: Client
 
     actions: ResourceActionsClient
     """Volumes scoped actions client
@@ -275,9 +274,9 @@ class VolumesClient(ResourceClientBase):
 
         result = CreateVolumeResponse(
             volume=BoundVolume(self, response["volume"]),
-            action=BoundAction(self._client.actions, response["action"]),
+            action=BoundAction(self._parent.actions, response["action"]),
             next_actions=[
-                BoundAction(self._client.actions, action)
+                BoundAction(self._parent.actions, action)
                 for action in response["next_actions"]
             ],
         )
@@ -320,7 +319,7 @@ class VolumesClient(ResourceClientBase):
             params=params,
         )
         actions = [
-            BoundAction(self._client.actions, action_data)
+            BoundAction(self._parent.actions, action_data)
             for action_data in response["actions"]
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))
@@ -396,7 +395,7 @@ class VolumesClient(ResourceClientBase):
             json={"size": size},
             method="POST",
         )
-        return BoundAction(self._client.actions, data["action"])
+        return BoundAction(self._parent.actions, data["action"])
 
     def attach(
         self,
@@ -420,7 +419,7 @@ class VolumesClient(ResourceClientBase):
             json=data,
             method="POST",
         )
-        return BoundAction(self._client.actions, data["action"])
+        return BoundAction(self._parent.actions, data["action"])
 
     def detach(self, volume: Volume | BoundVolume) -> BoundAction:
         """Detaches a volume from the server it’s attached to. You may attach it to a server again at a later time.
@@ -432,7 +431,7 @@ class VolumesClient(ResourceClientBase):
             url=f"/volumes/{volume.id}/actions/detach",
             method="POST",
         )
-        return BoundAction(self._client.actions, data["action"])
+        return BoundAction(self._parent.actions, data["action"])
 
     def change_protection(
         self,
@@ -455,4 +454,4 @@ class VolumesClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])

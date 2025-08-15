@@ -104,7 +104,6 @@ class CertificatesPageResult(NamedTuple):
 
 
 class CertificatesClient(ResourceClientBase):
-    _client: Client
 
     actions: ResourceActionsClient
     """Certificates scoped actions client
@@ -248,7 +247,7 @@ class CertificatesClient(ResourceClientBase):
         response = self._client.request(url="/certificates", method="POST", json=data)
         return CreateManagedCertificateResponse(
             certificate=BoundCertificate(self, response["certificate"]),
-            action=BoundAction(self._client.actions, response["action"]),
+            action=BoundAction(self._parent.actions, response["action"]),
         )
 
     def update(
@@ -328,7 +327,7 @@ class CertificatesClient(ResourceClientBase):
             params=params,
         )
         actions = [
-            BoundAction(self._client.actions, action_data)
+            BoundAction(self._parent.actions, action_data)
             for action_data in response["actions"]
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))
@@ -368,4 +367,4 @@ class CertificatesClient(ResourceClientBase):
             url=f"/certificates/{certificate.id}/actions/retry",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])

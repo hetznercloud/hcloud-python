@@ -378,7 +378,7 @@ class TestVolumesClient:
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
 
-        assert actions[0]._client == volumes_client._client.actions
+        assert actions[0]._client == volumes_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "attach_volume"
 
@@ -510,7 +510,7 @@ class TestVolumesClient:
         request_mock.assert_called_with(url="/volumes/actions/13", method="GET")
 
         assert isinstance(action, BoundAction)
-        assert action._client == volumes_client._client.actions
+        assert action._client == volumes_client._parent.actions
         assert action.id == 13
         assert action.command == "attach_volume"
 
@@ -534,7 +534,7 @@ class TestVolumesClient:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == volumes_client._client.actions
+        assert actions[0]._client == volumes_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "attach_volume"
 
@@ -555,6 +555,6 @@ class TestVolumesClient:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == volumes_client._client.actions
+        assert actions[0]._client == volumes_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "attach_volume"

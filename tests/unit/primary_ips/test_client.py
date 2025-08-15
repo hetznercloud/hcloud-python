@@ -390,7 +390,7 @@ class TestPrimaryIPsClient:
         request_mock.assert_called_with(url="/primary_ips/actions/13", method="GET")
 
         assert isinstance(action, BoundAction)
-        assert action._client == primary_ips_client._client.actions
+        assert action._client == primary_ips_client._parent.actions
         assert action.id == 13
         assert action.command == "assign_primary_ip"
 
@@ -414,7 +414,7 @@ class TestPrimaryIPsClient:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == primary_ips_client._client.actions
+        assert actions[0]._client == primary_ips_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "assign_primary_ip"
 
@@ -435,6 +435,6 @@ class TestPrimaryIPsClient:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == primary_ips_client._client.actions
+        assert actions[0]._client == primary_ips_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "assign_primary_ip"

@@ -358,7 +358,7 @@ class TestCertificatesClient:
         request_mock.assert_called_with(url="/certificates/actions/13", method="GET")
 
         assert isinstance(action, BoundAction)
-        assert action._client == certificates_client._client.actions
+        assert action._client == certificates_client._parent.actions
         assert action.id == 13
         assert action.command == "change_protection"
 
@@ -382,7 +382,7 @@ class TestCertificatesClient:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == certificates_client._client.actions
+        assert actions[0]._client == certificates_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"
 
@@ -403,6 +403,6 @@ class TestCertificatesClient:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == certificates_client._client.actions
+        assert actions[0]._client == certificates_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "change_protection"
