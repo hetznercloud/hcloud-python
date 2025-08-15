@@ -4,21 +4,20 @@ import warnings
 from typing import TYPE_CHECKING, Any, Callable
 
 if TYPE_CHECKING:
-    from .._client import Client
+    from .._client import Client, ClientBase
     from .domain import BaseDomain
 
 
 class ResourceClientBase:
-    _client: Client
+    _parent: Client
+    _client: ClientBase
 
     max_per_page: int = 50
 
     def __init__(self, client: Client):
-        """
-        :param client: Client
-        :return self
-        """
-        self._client = client
+        self._parent = client
+        # Use the parent "default" base client.
+        self._client = client._client
 
     def _iter_pages(  # type: ignore[no-untyped-def]
         self,

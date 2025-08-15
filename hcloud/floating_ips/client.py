@@ -25,13 +25,13 @@ class BoundFloatingIP(BoundModelBase, FloatingIP):
         server = data.get("server")
         if server is not None:
             data["server"] = BoundServer(
-                client._client.servers, {"id": server}, complete=False
+                client._parent.servers, {"id": server}, complete=False
             )
 
         home_location = data.get("home_location")
         if home_location is not None:
             data["home_location"] = BoundLocation(
-                client._client.locations, home_location
+                client._parent.locations, home_location
             )
 
         super().__init__(client, data, complete)
@@ -140,7 +140,6 @@ class FloatingIPsPageResult(NamedTuple):
 
 
 class FloatingIPsClient(ResourceClientBase):
-    _client: Client
 
     actions: ResourceActionsClient
     """Floating IPs scoped actions client
@@ -188,7 +187,7 @@ class FloatingIPsClient(ResourceClientBase):
             params=params,
         )
         actions = [
-            BoundAction(self._client.actions, action_data)
+            BoundAction(self._parent.actions, action_data)
             for action_data in response["actions"]
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))
@@ -329,7 +328,7 @@ class FloatingIPsClient(ResourceClientBase):
 
         action = None
         if response.get("action") is not None:
-            action = BoundAction(self._client.actions, response["action"])
+            action = BoundAction(self._parent.actions, response["action"])
 
         result = CreateFloatingIPResponse(
             floating_ip=BoundFloatingIP(self, response["floating_ip"]), action=action
@@ -403,7 +402,7 @@ class FloatingIPsClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def assign(
         self,
@@ -422,7 +421,7 @@ class FloatingIPsClient(ResourceClientBase):
             method="POST",
             json={"server": server.id},
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def unassign(self, floating_ip: FloatingIP | BoundFloatingIP) -> BoundAction:
         """Unassigns a Floating IP, resulting in it being unreachable. You may assign it to a server again at a later time.
@@ -434,7 +433,7 @@ class FloatingIPsClient(ResourceClientBase):
             url=f"/floating_ips/{floating_ip.id}/actions/unassign",
             method="POST",
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
 
     def change_dns_ptr(
         self,
@@ -456,4 +455,4 @@ class FloatingIPsClient(ResourceClientBase):
             method="POST",
             json={"ip": ip, "dns_ptr": dns_ptr},
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
