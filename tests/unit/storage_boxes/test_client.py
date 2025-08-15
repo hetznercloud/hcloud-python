@@ -297,3 +297,124 @@ class TestClient:
         )
 
         assert result.folders == ["dir1", "dir2"]
+
+    # ============ Actions ============
+
+    def test_actions_get_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_running1,
+    ):
+        request_mock.return_value = {
+            "action": action_running1,
+        }
+
+        result = resource_client.actions.get_by_id(22)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/storage_boxes/actions/22",
+        )
+
+        assert_bound_action(result, resource_client._parent.actions)
+
+    def test_actions_get_list(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_running1,
+    ):
+        request_mock.return_value = {
+            "actions": [action_running1],
+        }
+
+        result = resource_client.actions.get_list()
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/storage_boxes/actions",
+            params={},
+        )
+
+        assert len(result.actions) == 1
+        assert_bound_action(result.actions[0], resource_client._parent.actions)
+
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {"status": "", "sort": ""},
+            {},
+        ],
+    )
+    def test_actions_get_all(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_running1,
+        params,
+    ):
+        request_mock.return_value = {
+            "actions": [action_running1],
+        }
+
+        result = resource_client.actions.get_all(**params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/storage_boxes/actions",
+            params={**params, "page": 1, "per_page": 50},
+        )
+
+        assert len(result) == 1
+        assert_bound_action(result[0], resource_client._parent.actions)
+
+    def test_get_actions_list(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_running1,
+    ):
+        request_mock.return_value = {
+            "actions": [action_running1],
+        }
+
+        result = resource_client.get_actions_list(StorageBox(id=42))
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/storage_boxes/42/actions",
+            params={},
+        )
+
+        assert len(result.actions) == 1
+        assert_bound_action(result.actions[0], resource_client._parent.actions)
+
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {"status": "", "sort": ""},
+            {},
+        ],
+    )
+    def test_get_actions(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_running1,
+        params,
+    ):
+        request_mock.return_value = {
+            "actions": [action_running1],
+        }
+
+        result = resource_client.get_actions(StorageBox(id=42), **params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/storage_boxes/42/actions",
+            params={**params, "page": 1, "per_page": 50},
+        )
+
+        assert len(result) == 1
+        assert_bound_action(result[0], resource_client._parent.actions)
