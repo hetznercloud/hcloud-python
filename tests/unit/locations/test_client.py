@@ -20,8 +20,13 @@ class TestLocationsClient:
         location_response,
     ):
         request_mock.return_value = location_response
+
         location = locations_client.get_by_id(1)
-        request_mock.assert_called_with(url="/locations/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/locations/1",
+        )
         assert location._client is locations_client
         assert location.id == 1
         assert location.name == "fsn1"
@@ -38,8 +43,14 @@ class TestLocationsClient:
         params,
     ):
         request_mock.return_value = two_locations_response
+
         result = locations_client.get_list(**params)
-        request_mock.assert_called_with(url="/locations", method="GET", params=params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/locations",
+            params=params,
+        )
 
         locations = result.locations
         assert result.meta is not None
@@ -68,11 +79,16 @@ class TestLocationsClient:
         params,
     ):
         request_mock.return_value = two_locations_response
+
         locations = locations_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        request_mock.assert_called_with(url="/locations", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/locations",
+            params=params,
+        )
 
         assert len(locations) == 2
 
@@ -96,11 +112,16 @@ class TestLocationsClient:
         one_locations_response,
     ):
         request_mock.return_value = one_locations_response
+
         location = locations_client.get_by_name("fsn1")
 
         params = {"name": "fsn1"}
 
-        request_mock.assert_called_with(url="/locations", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/locations",
+            params=params,
+        )
 
         assert location._client is locations_client
         assert location.id == 1

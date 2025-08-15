@@ -58,10 +58,12 @@ class TestBoundNetwork:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         actions = bound_network.get_actions(sort="id")
+
         request_mock.assert_called_with(
-            url="/networks/14/actions",
             method="GET",
+            url="/networks/14/actions",
             params={"page": 1, "per_page": 50, "sort": "id"},
         )
 
@@ -78,9 +80,13 @@ class TestBoundNetwork:
         response_update_network,
     ):
         request_mock.return_value = response_update_network
+
         network = bound_network.update(name="new-name")
+
         request_mock.assert_called_with(
-            url="/networks/14", method="PUT", json={"name": "new-name"}
+            method="PUT",
+            url="/networks/14",
+            json={"name": "new-name"},
         )
 
         assert network.id == 4711
@@ -93,8 +99,13 @@ class TestBoundNetwork:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         delete_success = bound_network.delete()
-        request_mock.assert_called_with(url="/networks/14", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/networks/14",
+        )
 
         assert delete_success is True
 
@@ -105,10 +116,12 @@ class TestBoundNetwork:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_network.change_protection(True)
+
         request_mock.assert_called_with(
-            url="/networks/14/actions/change_protection",
             method="POST",
+            url="/networks/14/actions/change_protection",
             json={"delete": True},
         )
 
@@ -122,15 +135,17 @@ class TestBoundNetwork:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         subnet = NetworkSubnet(
             type=NetworkSubnet.TYPE_CLOUD,
             ip_range="10.0.1.0/24",
             network_zone="eu-central",
         )
         action = bound_network.add_subnet(subnet)
+
         request_mock.assert_called_with(
-            url="/networks/14/actions/add_subnet",
             method="POST",
+            url="/networks/14/actions/add_subnet",
             json={
                 "type": NetworkSubnet.TYPE_CLOUD,
                 "ip_range": "10.0.1.0/24",
@@ -148,11 +163,13 @@ class TestBoundNetwork:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         subnet = NetworkSubnet(ip_range="10.0.1.0/24")
         action = bound_network.delete_subnet(subnet)
+
         request_mock.assert_called_with(
-            url="/networks/14/actions/delete_subnet",
             method="POST",
+            url="/networks/14/actions/delete_subnet",
             json={"ip_range": "10.0.1.0/24"},
         )
 
@@ -166,11 +183,13 @@ class TestBoundNetwork:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         route = NetworkRoute(destination="10.100.1.0/24", gateway="10.0.1.1")
         action = bound_network.add_route(route)
+
         request_mock.assert_called_with(
-            url="/networks/14/actions/add_route",
             method="POST",
+            url="/networks/14/actions/add_route",
             json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"},
         )
 
@@ -184,11 +203,13 @@ class TestBoundNetwork:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         route = NetworkRoute(destination="10.100.1.0/24", gateway="10.0.1.1")
         action = bound_network.delete_route(route)
+
         request_mock.assert_called_with(
-            url="/networks/14/actions/delete_route",
             method="POST",
+            url="/networks/14/actions/delete_route",
             json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"},
         )
 
@@ -202,10 +223,12 @@ class TestBoundNetwork:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_network.change_ip_range("10.0.0.0/12")
+
         request_mock.assert_called_with(
-            url="/networks/14/actions/change_ip_range",
             method="POST",
+            url="/networks/14/actions/change_ip_range",
             json={"ip_range": "10.0.0.0/12"},
         )
 
@@ -246,8 +269,13 @@ class TestNetworksClient:
         network_response,
     ):
         request_mock.return_value = network_response
+
         bound_network = networks_client.get_by_id(1)
-        request_mock.assert_called_with(url="/networks/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/networks/1",
+        )
         assert bound_network._client is networks_client
         assert bound_network.id == 1
         assert bound_network.name == "mynet"
@@ -264,8 +292,14 @@ class TestNetworksClient:
         params,
     ):
         request_mock.return_value = two_networks_response
+
         result = networks_client.get_list(**params)
-        request_mock.assert_called_with(url="/networks", method="GET", params=params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/networks",
+            params=params,
+        )
 
         bound_networks = result.networks
         assert result.meta is not None
@@ -292,11 +326,16 @@ class TestNetworksClient:
         params,
     ):
         request_mock.return_value = two_networks_response
+
         bound_networks = networks_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        request_mock.assert_called_with(url="/networks", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/networks",
+            params=params,
+        )
 
         assert len(bound_networks) == 2
 
@@ -318,11 +357,16 @@ class TestNetworksClient:
         one_network_response,
     ):
         request_mock.return_value = one_network_response
+
         bound_network = networks_client.get_by_name("mynet")
 
         params = {"name": "mynet"}
 
-        request_mock.assert_called_with(url="/networks", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/networks",
+            params=params,
+        )
 
         assert bound_network._client is networks_client
         assert bound_network.id == 1
@@ -335,10 +379,12 @@ class TestNetworksClient:
         network_create_response,
     ):
         request_mock.return_value = network_create_response
+
         networks_client.create(name="mynet", ip_range="10.0.0.0/8")
+
         request_mock.assert_called_with(
-            url="/networks",
             method="POST",
+            url="/networks",
             json={"name": "mynet", "ip_range": "10.0.0.0/8"},
         )
 
@@ -354,9 +400,10 @@ class TestNetworksClient:
         networks_client.create(
             name="mynet", ip_range="10.0.0.0/8", expose_routes_to_vswitch=True
         )
+
         request_mock.assert_called_with(
-            url="/networks",
             method="POST",
+            url="/networks",
             json={
                 "name": "mynet",
                 "ip_range": "10.0.0.0/8",
@@ -372,12 +419,14 @@ class TestNetworksClient:
         network_create_response,
     ):
         request_mock.return_value = network_create_response
+
         networks_client.create(
             name="mynet", ip_range="10.0.0.0/8", subnets=[network_subnet]
         )
+
         request_mock.assert_called_with(
-            url="/networks",
             method="POST",
+            url="/networks",
             json={
                 "name": "mynet",
                 "ip_range": "10.0.0.0/8",
@@ -399,14 +448,16 @@ class TestNetworksClient:
         network_create_response,
     ):
         request_mock.return_value = network_create_response
+
         network_subnet.type = NetworkSubnet.TYPE_VSWITCH
         network_subnet.vswitch_id = 1000
         networks_client.create(
             name="mynet", ip_range="10.0.0.0/8", subnets=[network_subnet]
         )
+
         request_mock.assert_called_with(
-            url="/networks",
             method="POST",
+            url="/networks",
             json={
                 "name": "mynet",
                 "ip_range": "10.0.0.0/8",
@@ -429,12 +480,14 @@ class TestNetworksClient:
         network_create_response,
     ):
         request_mock.return_value = network_create_response
+
         networks_client.create(
             name="mynet", ip_range="10.0.0.0/8", routes=[network_route]
         )
+
         request_mock.assert_called_with(
-            url="/networks",
             method="POST",
+            url="/networks",
             json={
                 "name": "mynet",
                 "ip_range": "10.0.0.0/8",
@@ -458,9 +511,10 @@ class TestNetworksClient:
             routes=[network_route],
             expose_routes_to_vswitch=True,
         )
+
         request_mock.assert_called_with(
-            url="/networks",
             method="POST",
+            url="/networks",
             json={
                 "name": "mynet",
                 "ip_range": "10.0.0.0/8",
@@ -478,15 +532,17 @@ class TestNetworksClient:
         network_create_response,
     ):
         request_mock.return_value = network_create_response
+
         networks_client.create(
             name="mynet",
             ip_range="10.0.0.0/8",
             subnets=[network_subnet],
             routes=[network_route],
         )
+
         request_mock.assert_called_with(
-            url="/networks",
             method="POST",
+            url="/networks",
             json={
                 "name": "mynet",
                 "ip_range": "10.0.0.0/8",
@@ -512,9 +568,13 @@ class TestNetworksClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         result = networks_client.get_actions_list(network, sort="id")
+
         request_mock.assert_called_with(
-            url="/networks/1/actions", method="GET", params={"sort": "id"}
+            method="GET",
+            url="/networks/1/actions",
+            params={"sort": "id"},
         )
 
         actions = result.actions
@@ -536,12 +596,14 @@ class TestNetworksClient:
         response_update_network,
     ):
         request_mock.return_value = response_update_network
+
         network = networks_client.update(
             network, name="new-name", expose_routes_to_vswitch=True
         )
+
         request_mock.assert_called_with(
-            url="/networks/1",
             method="PUT",
+            url="/networks/1",
             json={"name": "new-name", "expose_routes_to_vswitch": True},
         )
 
@@ -560,10 +622,12 @@ class TestNetworksClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = networks_client.change_protection(network, True)
+
         request_mock.assert_called_with(
-            url="/networks/1/actions/change_protection",
             method="POST",
+            url="/networks/1/actions/change_protection",
             json={"delete": True},
         )
 
@@ -581,8 +645,13 @@ class TestNetworksClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         delete_success = networks_client.delete(network)
-        request_mock.assert_called_with(url="/networks/1", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/networks/1",
+        )
 
         assert delete_success is True
 
@@ -600,9 +669,10 @@ class TestNetworksClient:
         request_mock.return_value = generic_action
 
         action = networks_client.add_subnet(network, network_subnet)
+
         request_mock.assert_called_with(
-            url="/networks/1/actions/add_subnet",
             method="POST",
+            url="/networks/1/actions/add_subnet",
             json={
                 "type": NetworkSubnet.TYPE_CLOUD,
                 "ip_range": "10.0.1.0/24",
@@ -627,9 +697,10 @@ class TestNetworksClient:
         request_mock.return_value = generic_action
 
         action = networks_client.add_subnet(network, network_vswitch_subnet)
+
         request_mock.assert_called_with(
-            url="/networks/1/actions/add_subnet",
             method="POST",
+            url="/networks/1/actions/add_subnet",
             json={
                 "type": NetworkSubnet.TYPE_VSWITCH,
                 "ip_range": "10.0.1.0/24",
@@ -655,9 +726,10 @@ class TestNetworksClient:
         request_mock.return_value = generic_action
 
         action = networks_client.delete_subnet(network, network_subnet)
+
         request_mock.assert_called_with(
-            url="/networks/1/actions/delete_subnet",
             method="POST",
+            url="/networks/1/actions/delete_subnet",
             json={"ip_range": "10.0.1.0/24"},
         )
 
@@ -678,9 +750,10 @@ class TestNetworksClient:
         request_mock.return_value = generic_action
 
         action = networks_client.add_route(network, network_route)
+
         request_mock.assert_called_with(
-            url="/networks/1/actions/add_route",
             method="POST",
+            url="/networks/1/actions/add_route",
             json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"},
         )
 
@@ -701,9 +774,10 @@ class TestNetworksClient:
         request_mock.return_value = generic_action
 
         action = networks_client.delete_route(network, network_route)
+
         request_mock.assert_called_with(
-            url="/networks/1/actions/delete_route",
             method="POST",
+            url="/networks/1/actions/delete_route",
             json={"destination": "10.100.1.0/24", "gateway": "10.0.1.1"},
         )
 
@@ -721,10 +795,12 @@ class TestNetworksClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = networks_client.change_ip_range(network, "10.0.0.0/12")
+
         request_mock.assert_called_with(
-            url="/networks/1/actions/change_ip_range",
             method="POST",
+            url="/networks/1/actions/change_ip_range",
             json={"ip_range": "10.0.0.0/12"},
         )
 
@@ -740,7 +816,10 @@ class TestNetworksClient:
         request_mock.return_value = {"action": response_get_actions["actions"][0]}
         action = networks_client.actions.get_by_id(13)
 
-        request_mock.assert_called_with(url="/networks/actions/13", method="GET")
+        request_mock.assert_called_with(
+            method="GET",
+            url="/networks/actions/13",
+        )
 
         assert isinstance(action, BoundAction)
         assert action._client == networks_client._parent.actions
@@ -754,11 +833,12 @@ class TestNetworksClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         result = networks_client.actions.get_list()
 
         request_mock.assert_called_with(
-            url="/networks/actions",
             method="GET",
+            url="/networks/actions",
             params={},
         )
 
@@ -778,11 +858,12 @@ class TestNetworksClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         actions = networks_client.actions.get_all()
 
         request_mock.assert_called_with(
-            url="/networks/actions",
             method="GET",
+            url="/networks/actions",
             params={"page": 1, "per_page": 50},
         )
 

@@ -59,9 +59,13 @@ class TestBoundImage:
         params,
     ):
         request_mock.return_value = response_get_actions
+
         result = bound_image.get_actions_list(**params)
+
         request_mock.assert_called_with(
-            url="/images/14/actions", method="GET", params=params
+            method="GET",
+            url="/images/14/actions",
+            params=params,
         )
 
         actions = result.actions
@@ -83,12 +87,15 @@ class TestBoundImage:
         params,
     ):
         request_mock.return_value = response_get_actions
+
         actions = bound_image.get_actions(**params)
 
         params.update({"page": 1, "per_page": 50})
 
         request_mock.assert_called_with(
-            url="/images/14/actions", method="GET", params=params
+            method="GET",
+            url="/images/14/actions",
+            params=params,
         )
 
         assert len(actions) == 1
@@ -104,12 +111,14 @@ class TestBoundImage:
         response_update_image,
     ):
         request_mock.return_value = response_update_image
+
         image = bound_image.update(
             description="My new Image description", type="snapshot", labels={}
         )
+
         request_mock.assert_called_with(
-            url="/images/14",
             method="PUT",
+            url="/images/14",
             json={
                 "description": "My new Image description",
                 "type": "snapshot",
@@ -127,8 +136,13 @@ class TestBoundImage:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         delete_success = bound_image.delete()
-        request_mock.assert_called_with(url="/images/14", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/images/14",
+        )
 
         assert delete_success is True
 
@@ -139,10 +153,12 @@ class TestBoundImage:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_image.change_protection(True)
+
         request_mock.assert_called_with(
-            url="/images/14/actions/change_protection",
             method="POST",
+            url="/images/14/actions/change_protection",
             json={"delete": True},
         )
 
@@ -162,8 +178,13 @@ class TestImagesClient:
         image_response,
     ):
         request_mock.return_value = image_response
+
         image = images_client.get_by_id(1)
-        request_mock.assert_called_with(url="/images/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/images/1",
+        )
         assert image._client is images_client
         assert image.id == 4711
         assert image.name == "ubuntu-20.04"
@@ -193,8 +214,14 @@ class TestImagesClient:
         params,
     ):
         request_mock.return_value = two_images_response
+
         result = images_client.get_list(**params)
-        request_mock.assert_called_with(url="/images", method="GET", params=params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/images",
+            params=params,
+        )
 
         images = result.images
         assert result.meta is not None
@@ -234,11 +261,16 @@ class TestImagesClient:
         params,
     ):
         request_mock.return_value = two_images_response
+
         images = images_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        request_mock.assert_called_with(url="/images", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/images",
+            params=params,
+        )
 
         assert len(images) == 2
 
@@ -260,12 +292,17 @@ class TestImagesClient:
         one_images_response,
     ):
         request_mock.return_value = one_images_response
+
         with pytest.deprecated_call():
             image = images_client.get_by_name("ubuntu-20.04")
 
         params = {"name": "ubuntu-20.04"}
 
-        request_mock.assert_called_with(url="/images", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/images",
+            params=params,
+        )
 
         assert image._client is images_client
         assert image.id == 4711
@@ -278,11 +315,16 @@ class TestImagesClient:
         one_images_response,
     ):
         request_mock.return_value = one_images_response
+
         image = images_client.get_by_name_and_architecture("ubuntu-20.04", "x86")
 
         params = {"name": "ubuntu-20.04", "architecture": ["x86"]}
 
-        request_mock.assert_called_with(url="/images", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/images",
+            params=params,
+        )
 
         assert image._client is images_client
         assert image.id == 4711
@@ -300,9 +342,13 @@ class TestImagesClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         result = images_client.get_actions_list(image)
+
         request_mock.assert_called_with(
-            url="/images/1/actions", method="GET", params={}
+            method="GET",
+            url="/images/1/actions",
+            params={},
         )
 
         actions = result.actions
@@ -326,12 +372,14 @@ class TestImagesClient:
         response_update_image,
     ):
         request_mock.return_value = response_update_image
+
         image = images_client.update(
             image, description="My new Image description", type="snapshot", labels={}
         )
+
         request_mock.assert_called_with(
-            url="/images/1",
             method="PUT",
+            url="/images/1",
             json={
                 "description": "My new Image description",
                 "type": "snapshot",
@@ -353,10 +401,12 @@ class TestImagesClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = images_client.change_protection(image, True)
+
         request_mock.assert_called_with(
-            url="/images/1/actions/change_protection",
             method="POST",
+            url="/images/1/actions/change_protection",
             json={"delete": True},
         )
 
@@ -374,8 +424,13 @@ class TestImagesClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         delete_success = images_client.delete(image)
-        request_mock.assert_called_with(url="/images/1", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/images/1",
+        )
 
         assert delete_success is True
 
@@ -388,7 +443,10 @@ class TestImagesClient:
         request_mock.return_value = {"action": response_get_actions["actions"][0]}
         action = images_client.actions.get_by_id(13)
 
-        request_mock.assert_called_with(url="/images/actions/13", method="GET")
+        request_mock.assert_called_with(
+            method="GET",
+            url="/images/actions/13",
+        )
 
         assert isinstance(action, BoundAction)
         assert action._client == images_client._parent.actions
@@ -402,11 +460,12 @@ class TestImagesClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         result = images_client.actions.get_list()
 
         request_mock.assert_called_with(
-            url="/images/actions",
             method="GET",
+            url="/images/actions",
             params={},
         )
 
@@ -426,11 +485,12 @@ class TestImagesClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         actions = images_client.actions.get_all()
 
         request_mock.assert_called_with(
-            url="/images/actions",
             method="GET",
+            url="/images/actions",
             params={"page": 1, "per_page": 50},
         )
 

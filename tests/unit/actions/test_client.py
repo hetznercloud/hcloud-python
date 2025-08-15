@@ -30,9 +30,17 @@ class TestBoundAction:
         running_action,
         successfully_action,
     ):
-        request_mock.side_effect = [running_action, successfully_action]
+        request_mock.side_effect = [
+            running_action,
+            successfully_action,
+        ]
+
         bound_running_action.wait_until_finished()
-        request_mock.assert_called_with(url="/actions/2", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/actions/2",
+        )
 
         assert bound_running_action.status == "success"
         assert request_mock.call_count == 2
@@ -83,8 +91,13 @@ class TestResourceActionsClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = actions_client.get_by_id(1)
-        request_mock.assert_called_with(url="/resource/actions/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/resource/actions/1",
+        )
         assert action._client == actions_client._parent.actions
         assert action.id == 1
         assert action.command == "stop_server"
@@ -101,9 +114,13 @@ class TestResourceActionsClient:
         params,
     ):
         request_mock.return_value = generic_action_list
+
         result = actions_client.get_list(**params)
+
         request_mock.assert_called_with(
-            url="/resource/actions", method="GET", params=params
+            method="GET",
+            url="/resource/actions",
+            params=params,
         )
 
         assert result.meta is not None
@@ -131,12 +148,15 @@ class TestResourceActionsClient:
         params,
     ):
         request_mock.return_value = generic_action_list
+
         actions = actions_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
         request_mock.assert_called_with(
-            url="/resource/actions", method="GET", params=params
+            method="GET",
+            url="/resource/actions",
+            params=params,
         )
 
         assert len(actions) == 2
@@ -165,8 +185,13 @@ class TestActionsClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = actions_client.get_by_id(1)
-        request_mock.assert_called_with(url="/actions/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/actions/1",
+        )
         assert action._client == actions_client._parent.actions
         assert action.id == 1
         assert action.command == "stop_server"
@@ -183,9 +208,15 @@ class TestActionsClient:
         params,
     ):
         request_mock.return_value = generic_action_list
+
         with pytest.deprecated_call():
             result = actions_client.get_list(**params)
-        request_mock.assert_called_with(url="/actions", method="GET", params=params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/actions",
+            params=params,
+        )
 
         assert result.meta is not None
 
@@ -212,12 +243,17 @@ class TestActionsClient:
         params,
     ):
         request_mock.return_value = generic_action_list
+
         with pytest.deprecated_call():
             actions = actions_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        request_mock.assert_called_with(url="/actions", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/actions",
+            params=params,
+        )
 
         assert len(actions) == 2
 

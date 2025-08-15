@@ -47,8 +47,13 @@ class TestIsosClient:
         iso_response,
     ):
         request_mock.return_value = iso_response
+
         iso = isos_client.get_by_id(1)
-        request_mock.assert_called_with(url="/isos/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/isos/1",
+        )
         assert iso._client is isos_client
         assert iso.id == 4711
         assert iso.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
@@ -69,8 +74,14 @@ class TestIsosClient:
         params,
     ):
         request_mock.return_value = two_isos_response
+
         result = isos_client.get_list(**params)
-        request_mock.assert_called_with(url="/isos", method="GET", params=params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/isos",
+            params=params,
+        )
 
         isos = result.isos
         assert result.meta is not None
@@ -99,11 +110,16 @@ class TestIsosClient:
         params,
     ):
         request_mock.return_value = two_isos_response
+
         isos = isos_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        request_mock.assert_called_with(url="/isos", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/isos",
+            params=params,
+        )
 
         assert len(isos) == 2
 
@@ -125,11 +141,16 @@ class TestIsosClient:
         one_isos_response,
     ):
         request_mock.return_value = one_isos_response
+
         iso = isos_client.get_by_name("FreeBSD-11.0-RELEASE-amd64-dvd1")
 
         params = {"name": "FreeBSD-11.0-RELEASE-amd64-dvd1"}
 
-        request_mock.assert_called_with(url="/isos", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/isos",
+            params=params,
+        )
 
         assert iso._client is isos_client
         assert iso.id == 4711

@@ -52,8 +52,13 @@ class TestServerTypesClient:
         server_type_response,
     ):
         request_mock.return_value = server_type_response
+
         server_type = server_types_client.get_by_id(1)
-        request_mock.assert_called_with(url="/server_types/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/server_types/1",
+        )
         assert server_type._client is server_types_client
         assert server_type.id == 1
         assert server_type.name == "cx11"
@@ -69,9 +74,13 @@ class TestServerTypesClient:
         params,
     ):
         request_mock.return_value = two_server_types_response
+
         result = server_types_client.get_list(**params)
+
         request_mock.assert_called_with(
-            url="/server_types", method="GET", params=params
+            method="GET",
+            url="/server_types",
+            params=params,
         )
 
         server_types = result.server_types
@@ -99,12 +108,15 @@ class TestServerTypesClient:
         params,
     ):
         request_mock.return_value = two_server_types_response
+
         server_types = server_types_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
         request_mock.assert_called_with(
-            url="/server_types", method="GET", params=params
+            method="GET",
+            url="/server_types",
+            params=params,
         )
 
         assert len(server_types) == 2
@@ -127,12 +139,15 @@ class TestServerTypesClient:
         one_server_types_response,
     ):
         request_mock.return_value = one_server_types_response
+
         server_type = server_types_client.get_by_name("cx11")
 
         params = {"name": "cx11"}
 
         request_mock.assert_called_with(
-            url="/server_types", method="GET", params=params
+            method="GET",
+            url="/server_types",
+            params=params,
         )
 
         assert server_type._client is server_types_client

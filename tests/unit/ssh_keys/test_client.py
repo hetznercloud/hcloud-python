@@ -33,9 +33,13 @@ class TestBoundSSHKey:
         response_update_ssh_key,
     ):
         request_mock.return_value = response_update_ssh_key
+
         ssh_key = bound_ssh_key.update(name="New name")
+
         request_mock.assert_called_with(
-            url="/ssh_keys/14", method="PUT", json={"name": "New name"}
+            method="PUT",
+            url="/ssh_keys/14",
+            json={"name": "New name"},
         )
 
         assert ssh_key.id == 2323
@@ -48,8 +52,13 @@ class TestBoundSSHKey:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         delete_success = bound_ssh_key.delete()
-        request_mock.assert_called_with(url="/ssh_keys/14", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/ssh_keys/14",
+        )
 
         assert delete_success is True
 
@@ -66,8 +75,13 @@ class TestSSHKeysClient:
         ssh_key_response,
     ):
         request_mock.return_value = ssh_key_response
+
         ssh_key = ssh_keys_client.get_by_id(1)
-        request_mock.assert_called_with(url="/ssh_keys/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/ssh_keys/1",
+        )
         assert ssh_key._client is ssh_keys_client
         assert ssh_key.id == 2323
         assert ssh_key.name == "My ssh key"
@@ -94,8 +108,14 @@ class TestSSHKeysClient:
         params,
     ):
         request_mock.return_value = two_ssh_keys_response
+
         result = ssh_keys_client.get_list(**params)
-        request_mock.assert_called_with(url="/ssh_keys", method="GET", params=params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/ssh_keys",
+            params=params,
+        )
 
         ssh_keys = result.ssh_keys
         assert len(ssh_keys) == 2
@@ -122,10 +142,16 @@ class TestSSHKeysClient:
         params,
     ):
         request_mock.return_value = two_ssh_keys_response
+
         ssh_keys = ssh_keys_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
-        request_mock.assert_called_with(url="/ssh_keys", method="GET", params=params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/ssh_keys",
+            params=params,
+        )
 
         assert len(ssh_keys) == 2
 
@@ -147,10 +173,16 @@ class TestSSHKeysClient:
         one_ssh_keys_response,
     ):
         request_mock.return_value = one_ssh_keys_response
+
         ssh_keys = ssh_keys_client.get_by_name("SSH-Key")
 
         params = {"name": "SSH-Key"}
-        request_mock.assert_called_with(url="/ssh_keys", method="GET", params=params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/ssh_keys",
+            params=params,
+        )
 
         assert ssh_keys._client is ssh_keys_client
         assert ssh_keys.id == 2323
@@ -163,12 +195,18 @@ class TestSSHKeysClient:
         one_ssh_keys_response,
     ):
         request_mock.return_value = one_ssh_keys_response
+
         ssh_keys = ssh_keys_client.get_by_fingerprint(
             "b7:2f:30:a0:2f:6c:58:6c:21:04:58:61:ba:06:3b:2f"
         )
 
         params = {"fingerprint": "b7:2f:30:a0:2f:6c:58:6c:21:04:58:61:ba:06:3b:2f"}
-        request_mock.assert_called_with(url="/ssh_keys", method="GET", params=params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/ssh_keys",
+            params=params,
+        )
 
         assert ssh_keys._client is ssh_keys_client
         assert ssh_keys.id == 2323
@@ -181,12 +219,14 @@ class TestSSHKeysClient:
         ssh_key_response,
     ):
         request_mock.return_value = ssh_key_response
+
         ssh_key = ssh_keys_client.create(
             name="My ssh key", public_key="ssh-rsa AAAjjk76kgf...Xt"
         )
+
         request_mock.assert_called_with(
-            url="/ssh_keys",
             method="POST",
+            url="/ssh_keys",
             json={"name": "My ssh key", "public_key": "ssh-rsa AAAjjk76kgf...Xt"},
         )
 
@@ -204,9 +244,13 @@ class TestSSHKeysClient:
         response_update_ssh_key,
     ):
         request_mock.return_value = response_update_ssh_key
+
         ssh_key = ssh_keys_client.update(ssh_key, name="New name")
+
         request_mock.assert_called_with(
-            url="/ssh_keys/1", method="PUT", json={"name": "New name"}
+            method="PUT",
+            url="/ssh_keys/1",
+            json={"name": "New name"},
         )
 
         assert ssh_key.id == 2323
@@ -223,7 +267,12 @@ class TestSSHKeysClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         delete_success = ssh_keys_client.delete(ssh_key)
-        request_mock.assert_called_with(url="/ssh_keys/1", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/ssh_keys/1",
+        )
 
         assert delete_success is True

@@ -47,10 +47,12 @@ class TestBoundPrimaryIP:
         response_update_primary_ip,
     ):
         request_mock.return_value = response_update_primary_ip
+
         primary_ip = bound_primary_ip.update(auto_delete=True, name="my-resource")
+
         request_mock.assert_called_with(
-            url="/primary_ips/14",
             method="PUT",
+            url="/primary_ips/14",
             json={"auto_delete": True, "name": "my-resource"},
         )
 
@@ -64,8 +66,13 @@ class TestBoundPrimaryIP:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         delete_success = bound_primary_ip.delete()
-        request_mock.assert_called_with(url="/primary_ips/14", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/primary_ips/14",
+        )
 
         assert delete_success is True
 
@@ -76,10 +83,12 @@ class TestBoundPrimaryIP:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_primary_ip.change_protection(True)
+
         request_mock.assert_called_with(
-            url="/primary_ips/14/actions/change_protection",
             method="POST",
+            url="/primary_ips/14/actions/change_protection",
             json={"delete": True},
         )
 
@@ -93,10 +102,12 @@ class TestBoundPrimaryIP:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_primary_ip.assign(assignee_id=12, assignee_type="server")
+
         request_mock.assert_called_with(
-            url="/primary_ips/14/actions/assign",
             method="POST",
+            url="/primary_ips/14/actions/assign",
             json={"assignee_id": 12, "assignee_type": "server"},
         )
         assert action.id == 1
@@ -109,9 +120,12 @@ class TestBoundPrimaryIP:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_primary_ip.unassign()
+
         request_mock.assert_called_with(
-            url="/primary_ips/14/actions/unassign", method="POST"
+            method="POST",
+            url="/primary_ips/14/actions/unassign",
         )
         assert action.id == 1
         assert action.progress == 0
@@ -123,10 +137,12 @@ class TestBoundPrimaryIP:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_primary_ip.change_dns_ptr("1.2.3.4", "server02.example.com")
+
         request_mock.assert_called_with(
-            url="/primary_ips/14/actions/change_dns_ptr",
             method="POST",
+            url="/primary_ips/14/actions/change_dns_ptr",
             json={"ip": "1.2.3.4", "dns_ptr": "server02.example.com"},
         )
         assert action.id == 1
@@ -145,8 +161,13 @@ class TestPrimaryIPsClient:
         primary_ip_response,
     ):
         request_mock.return_value = primary_ip_response
+
         bound_primary_ip = primary_ips_client.get_by_id(1)
-        request_mock.assert_called_with(url="/primary_ips/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/primary_ips/1",
+        )
         assert bound_primary_ip._client is primary_ips_client
         assert bound_primary_ip.id == 42
 
@@ -157,9 +178,13 @@ class TestPrimaryIPsClient:
         one_primary_ips_response,
     ):
         request_mock.return_value = one_primary_ips_response
+
         bound_primary_ip = primary_ips_client.get_by_name("my-resource")
+
         request_mock.assert_called_with(
-            url="/primary_ips", method="GET", params={"name": "my-resource"}
+            method="GET",
+            url="/primary_ips",
+            params={"name": "my-resource"},
         )
         assert bound_primary_ip._client is primary_ips_client
         assert bound_primary_ip.id == 42
@@ -174,11 +199,16 @@ class TestPrimaryIPsClient:
         params,
     ):
         request_mock.return_value = all_primary_ips_response
+
         bound_primary_ips = primary_ips_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        request_mock.assert_called_with(url="/primary_ips", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/primary_ips",
+            params=params,
+        )
 
         assert len(bound_primary_ips) == 1
 
@@ -195,12 +225,14 @@ class TestPrimaryIPsClient:
         primary_ip_response,
     ):
         request_mock.return_value = primary_ip_response
+
         response = primary_ips_client.create(
             type="ipv6", name="my-resource", datacenter=Datacenter(name="datacenter")
         )
+
         request_mock.assert_called_with(
-            url="/primary_ips",
             method="POST",
+            url="/primary_ips",
             json={
                 "name": "my-resource",
                 "type": "ipv6",
@@ -225,15 +257,17 @@ class TestPrimaryIPsClient:
         primary_ip_create_response,
     ):
         request_mock.return_value = primary_ip_create_response
+
         response = primary_ips_client.create(
             type="ipv6",
             name="my-ip",
             assignee_id=17,
             assignee_type="server",
         )
+
         request_mock.assert_called_with(
-            url="/primary_ips",
             method="POST",
+            url="/primary_ips",
             json={
                 "name": "my-ip",
                 "type": "ipv6",
@@ -262,12 +296,14 @@ class TestPrimaryIPsClient:
         response_update_primary_ip,
     ):
         request_mock.return_value = response_update_primary_ip
+
         primary_ip = primary_ips_client.update(
             primary_ip, auto_delete=True, name="my-resource"
         )
+
         request_mock.assert_called_with(
-            url="/primary_ips/1",
             method="PUT",
+            url="/primary_ips/1",
             json={"auto_delete": True, "name": "my-resource"},
         )
 
@@ -286,10 +322,12 @@ class TestPrimaryIPsClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = primary_ips_client.change_protection(primary_ip, True)
+
         request_mock.assert_called_with(
-            url="/primary_ips/1/actions/change_protection",
             method="POST",
+            url="/primary_ips/1/actions/change_protection",
             json={"delete": True},
         )
 
@@ -307,8 +345,13 @@ class TestPrimaryIPsClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         delete_success = primary_ips_client.delete(primary_ip)
-        request_mock.assert_called_with(url="/primary_ips/1", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/primary_ips/1",
+        )
 
         assert delete_success is True
 
@@ -329,10 +372,12 @@ class TestPrimaryIPsClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = primary_ips_client.assign(primary_ip, assignee_id, assignee_type)
+
         request_mock.assert_called_with(
-            url="/primary_ips/12/actions/assign",
             method="POST",
+            url="/primary_ips/12/actions/assign",
             json={"assignee_id": 1, "assignee_type": "server"},
         )
         assert action.id == 1
@@ -349,9 +394,12 @@ class TestPrimaryIPsClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = primary_ips_client.unassign(primary_ip)
+
         request_mock.assert_called_with(
-            url="/primary_ips/12/actions/unassign", method="POST"
+            method="POST",
+            url="/primary_ips/12/actions/unassign",
         )
         assert action.id == 1
         assert action.progress == 0
@@ -367,12 +415,14 @@ class TestPrimaryIPsClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = primary_ips_client.change_dns_ptr(
             primary_ip, "1.2.3.4", "server02.example.com"
         )
+
         request_mock.assert_called_with(
-            url="/primary_ips/12/actions/change_dns_ptr",
             method="POST",
+            url="/primary_ips/12/actions/change_dns_ptr",
             json={"ip": "1.2.3.4", "dns_ptr": "server02.example.com"},
         )
         assert action.id == 1
@@ -387,7 +437,10 @@ class TestPrimaryIPsClient:
         request_mock.return_value = {"action": response_get_actions["actions"][0]}
         action = primary_ips_client.actions.get_by_id(13)
 
-        request_mock.assert_called_with(url="/primary_ips/actions/13", method="GET")
+        request_mock.assert_called_with(
+            method="GET",
+            url="/primary_ips/actions/13",
+        )
 
         assert isinstance(action, BoundAction)
         assert action._client == primary_ips_client._parent.actions
@@ -401,11 +454,12 @@ class TestPrimaryIPsClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         result = primary_ips_client.actions.get_list()
 
         request_mock.assert_called_with(
-            url="/primary_ips/actions",
             method="GET",
+            url="/primary_ips/actions",
             params={},
         )
 
@@ -425,11 +479,12 @@ class TestPrimaryIPsClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         actions = primary_ips_client.actions.get_all()
 
         request_mock.assert_called_with(
-            url="/primary_ips/actions",
             method="GET",
+            url="/primary_ips/actions",
             params={"page": 1, "per_page": 50},
         )
 
