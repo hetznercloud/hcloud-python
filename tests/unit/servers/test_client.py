@@ -213,9 +213,9 @@ class TestBoundServer:
         self,
         request_mock: mock.MagicMock,
         bound_server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_server.delete()
 
@@ -259,9 +259,9 @@ class TestBoundServer:
         self,
         request_mock: mock.MagicMock,
         bound_server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_server.power_off()
 
@@ -277,9 +277,9 @@ class TestBoundServer:
         self,
         request_mock: mock.MagicMock,
         bound_server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_server.power_on()
 
@@ -295,9 +295,9 @@ class TestBoundServer:
         self,
         request_mock: mock.MagicMock,
         bound_server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_server.reboot()
 
@@ -313,9 +313,9 @@ class TestBoundServer:
         self,
         request_mock: mock.MagicMock,
         bound_server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_server.reset()
 
@@ -331,9 +331,9 @@ class TestBoundServer:
         self,
         request_mock: mock.MagicMock,
         bound_server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_server.shutdown()
 
@@ -368,9 +368,9 @@ class TestBoundServer:
         self,
         request_mock: mock.MagicMock,
         bound_server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_server.change_type(ServerType(name="cx11"), upgrade_disk=True)
 
@@ -407,9 +407,9 @@ class TestBoundServer:
         self,
         request_mock: mock.MagicMock,
         bound_server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_server.disable_rescue()
 
@@ -445,9 +445,9 @@ class TestBoundServer:
         self,
         request_mock: mock.MagicMock,
         bound_server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         response = bound_server.rebuild(
             Image(name="ubuntu-20.04"),
@@ -468,9 +468,9 @@ class TestBoundServer:
         self,
         request_mock: mock.MagicMock,
         bound_server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_server.enable_backup()
 
@@ -486,9 +486,9 @@ class TestBoundServer:
         self,
         request_mock: mock.MagicMock,
         bound_server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_server.disable_backup()
 
@@ -504,9 +504,9 @@ class TestBoundServer:
         self,
         request_mock: mock.MagicMock,
         bound_server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_server.attach_iso(Iso(name="FreeBSD-11.0-RELEASE-amd64-dvd1"))
 
@@ -523,9 +523,9 @@ class TestBoundServer:
         self,
         request_mock: mock.MagicMock,
         bound_server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_server.detach_iso()
 
@@ -541,9 +541,9 @@ class TestBoundServer:
         self,
         request_mock: mock.MagicMock,
         bound_server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_server.change_dns_ptr("1.2.3.4", "example.com")
 
@@ -560,9 +560,9 @@ class TestBoundServer:
         self,
         request_mock: mock.MagicMock,
         bound_server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_server.change_protection(True, True)
 
@@ -1169,9 +1169,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = servers_client.delete(server)
 
@@ -1191,9 +1191,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = servers_client.power_off(server)
 
@@ -1213,9 +1213,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = servers_client.power_on(server)
 
@@ -1235,9 +1235,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = servers_client.reboot(server)
 
@@ -1257,9 +1257,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = servers_client.reset(server)
 
@@ -1279,9 +1279,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = servers_client.shutdown(server)
 
@@ -1324,9 +1324,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = servers_client.change_type(
             server, ServerType(name="cx11"), upgrade_disk=True
@@ -1349,9 +1349,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = servers_client.change_type(server, ServerType(id=1), upgrade_disk=True)
 
@@ -1411,9 +1411,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = servers_client.disable_rescue(server)
 
@@ -1463,9 +1463,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         response = servers_client.rebuild(
             server,
@@ -1491,9 +1491,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = servers_client.enable_backup(server)
 
@@ -1513,9 +1513,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = servers_client.disable_backup(server)
 
@@ -1535,9 +1535,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = servers_client.attach_iso(
             server, Iso(name="FreeBSD-11.0-RELEASE-amd64-dvd1")
@@ -1560,9 +1560,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = servers_client.detach_iso(server)
 
@@ -1582,9 +1582,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = servers_client.change_dns_ptr(server, "1.2.3.4", "example.com")
 
@@ -1605,9 +1605,9 @@ class TestServersClient:
         request_mock: mock.MagicMock,
         servers_client: ServersClient,
         server,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = servers_client.change_protection(server, True, True)
 

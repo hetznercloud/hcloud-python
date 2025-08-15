@@ -49,9 +49,9 @@ class TestBoundSSHKey:
         self,
         request_mock: mock.MagicMock,
         bound_ssh_key,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         delete_success = bound_ssh_key.delete()
 
@@ -264,9 +264,9 @@ class TestSSHKeysClient:
         request_mock: mock.MagicMock,
         ssh_keys_client: SSHKeysClient,
         ssh_key,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         delete_success = ssh_keys_client.delete(ssh_key)
 

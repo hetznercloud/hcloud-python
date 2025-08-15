@@ -133,9 +133,9 @@ class TestBoundImage:
         self,
         request_mock: mock.MagicMock,
         bound_image,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         delete_success = bound_image.delete()
 
@@ -150,9 +150,9 @@ class TestBoundImage:
         self,
         request_mock: mock.MagicMock,
         bound_image,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_image.change_protection(True)
 
@@ -398,9 +398,9 @@ class TestImagesClient:
         request_mock: mock.MagicMock,
         images_client: ImagesClient,
         image,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = images_client.change_protection(image, True)
 
@@ -421,9 +421,9 @@ class TestImagesClient:
         request_mock: mock.MagicMock,
         images_client: ImagesClient,
         image,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         delete_success = images_client.delete(image)
 

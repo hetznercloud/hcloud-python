@@ -114,9 +114,9 @@ class TestBoundLoadBalancer:
         self,
         request_mock: mock.MagicMock,
         bound_load_balancer,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         delete_success = bound_load_balancer.delete()
 
@@ -464,9 +464,9 @@ class TestBoundLoadBalancer:
         self,
         request_mock: mock.MagicMock,
         bound_load_balancer,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_load_balancer.change_type(LoadBalancerType(name="lb21"))
 
@@ -644,9 +644,9 @@ class TestLoadBalancerslient:
         request_mock: mock.MagicMock,
         load_balancers_client: LoadBalancersClient,
         load_balancer,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = load_balancers_client.change_type(
             load_balancer, LoadBalancerType(name="lb11")
@@ -670,9 +670,9 @@ class TestLoadBalancerslient:
         request_mock: mock.MagicMock,
         load_balancers_client: LoadBalancersClient,
         load_balancer,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = load_balancers_client.change_type(
             load_balancer, LoadBalancerType(id=1)

@@ -118,9 +118,9 @@ class TestBoundCertificate:
         self,
         request_mock: mock.MagicMock,
         bound_certificate,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         delete_success = bound_certificate.delete()
 
@@ -362,9 +362,9 @@ class TestCertificatesClient:
         request_mock: mock.MagicMock,
         certificates_client: CertificatesClient,
         certificate,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         delete_success = certificates_client.delete(certificate)
 

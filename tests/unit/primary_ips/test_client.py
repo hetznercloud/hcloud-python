@@ -63,9 +63,9 @@ class TestBoundPrimaryIP:
         self,
         request_mock: mock.MagicMock,
         bound_primary_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         delete_success = bound_primary_ip.delete()
 
@@ -80,9 +80,9 @@ class TestBoundPrimaryIP:
         self,
         request_mock: mock.MagicMock,
         bound_primary_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_primary_ip.change_protection(True)
 
@@ -99,9 +99,9 @@ class TestBoundPrimaryIP:
         self,
         request_mock: mock.MagicMock,
         bound_primary_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_primary_ip.assign(assignee_id=12, assignee_type="server")
 
@@ -117,9 +117,9 @@ class TestBoundPrimaryIP:
         self,
         request_mock: mock.MagicMock,
         bound_primary_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_primary_ip.unassign()
 
@@ -134,9 +134,9 @@ class TestBoundPrimaryIP:
         self,
         request_mock: mock.MagicMock,
         bound_primary_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_primary_ip.change_dns_ptr("1.2.3.4", "server02.example.com")
 
@@ -319,9 +319,9 @@ class TestPrimaryIPsClient:
         request_mock: mock.MagicMock,
         primary_ips_client: PrimaryIPsClient,
         primary_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = primary_ips_client.change_protection(primary_ip, True)
 
@@ -342,9 +342,9 @@ class TestPrimaryIPsClient:
         request_mock: mock.MagicMock,
         primary_ips_client: PrimaryIPsClient,
         primary_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         delete_success = primary_ips_client.delete(primary_ip)
 
@@ -369,9 +369,9 @@ class TestPrimaryIPsClient:
         assignee_id,
         assignee_type,
         primary_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = primary_ips_client.assign(primary_ip, assignee_id, assignee_type)
 
@@ -391,9 +391,9 @@ class TestPrimaryIPsClient:
         request_mock: mock.MagicMock,
         primary_ips_client: PrimaryIPsClient,
         primary_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = primary_ips_client.unassign(primary_ip)
 
@@ -412,9 +412,9 @@ class TestPrimaryIPsClient:
         request_mock: mock.MagicMock,
         primary_ips_client: PrimaryIPsClient,
         primary_ip,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = primary_ips_client.change_dns_ptr(
             primary_ip, "1.2.3.4", "server02.example.com"

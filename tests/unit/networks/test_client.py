@@ -96,9 +96,9 @@ class TestBoundNetwork:
         self,
         request_mock: mock.MagicMock,
         bound_network,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         delete_success = bound_network.delete()
 
@@ -113,9 +113,9 @@ class TestBoundNetwork:
         self,
         request_mock: mock.MagicMock,
         bound_network,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_network.change_protection(True)
 
@@ -132,9 +132,9 @@ class TestBoundNetwork:
         self,
         request_mock: mock.MagicMock,
         bound_network,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         subnet = NetworkSubnet(
             type=NetworkSubnet.TYPE_CLOUD,
@@ -160,9 +160,9 @@ class TestBoundNetwork:
         self,
         request_mock: mock.MagicMock,
         bound_network,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         subnet = NetworkSubnet(ip_range="10.0.1.0/24")
         action = bound_network.delete_subnet(subnet)
@@ -180,9 +180,9 @@ class TestBoundNetwork:
         self,
         request_mock: mock.MagicMock,
         bound_network,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         route = NetworkRoute(destination="10.100.1.0/24", gateway="10.0.1.1")
         action = bound_network.add_route(route)
@@ -200,9 +200,9 @@ class TestBoundNetwork:
         self,
         request_mock: mock.MagicMock,
         bound_network,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         route = NetworkRoute(destination="10.100.1.0/24", gateway="10.0.1.1")
         action = bound_network.delete_route(route)
@@ -220,9 +220,9 @@ class TestBoundNetwork:
         self,
         request_mock: mock.MagicMock,
         bound_network,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = bound_network.change_ip_range("10.0.0.0/12")
 
@@ -619,9 +619,9 @@ class TestNetworksClient:
         request_mock: mock.MagicMock,
         networks_client: NetworksClient,
         network,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = networks_client.change_protection(network, True)
 
@@ -642,9 +642,9 @@ class TestNetworksClient:
         request_mock: mock.MagicMock,
         networks_client: NetworksClient,
         network,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         delete_success = networks_client.delete(network)
 
@@ -663,10 +663,10 @@ class TestNetworksClient:
         request_mock: mock.MagicMock,
         networks_client: NetworksClient,
         network,
-        generic_action,
+        action_response,
         network_subnet,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = networks_client.add_subnet(network, network_subnet)
 
@@ -691,10 +691,10 @@ class TestNetworksClient:
         request_mock: mock.MagicMock,
         networks_client: NetworksClient,
         network,
-        generic_action,
+        action_response,
         network_vswitch_subnet,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = networks_client.add_subnet(network, network_vswitch_subnet)
 
@@ -720,10 +720,10 @@ class TestNetworksClient:
         request_mock: mock.MagicMock,
         networks_client: NetworksClient,
         network,
-        generic_action,
+        action_response,
         network_subnet,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = networks_client.delete_subnet(network, network_subnet)
 
@@ -744,10 +744,10 @@ class TestNetworksClient:
         request_mock: mock.MagicMock,
         networks_client: NetworksClient,
         network,
-        generic_action,
+        action_response,
         network_route,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = networks_client.add_route(network, network_route)
 
@@ -768,10 +768,10 @@ class TestNetworksClient:
         request_mock: mock.MagicMock,
         networks_client: NetworksClient,
         network,
-        generic_action,
+        action_response,
         network_route,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = networks_client.delete_route(network, network_route)
 
@@ -792,9 +792,9 @@ class TestNetworksClient:
         request_mock: mock.MagicMock,
         networks_client: NetworksClient,
         network,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = networks_client.change_ip_range(network, "10.0.0.0/12")
 

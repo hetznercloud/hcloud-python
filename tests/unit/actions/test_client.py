@@ -6,7 +6,6 @@ import pytest
 
 from hcloud import Client
 from hcloud.actions import (
-    Action,
     ActionFailedException,
     ActionsClient,
     ActionTimeoutException,
@@ -14,68 +13,79 @@ from hcloud.actions import (
     ResourceActionsClient,
 )
 
+from ..conftest import assert_bound_action1, assert_bound_action2
+
 
 class TestBoundAction:
     @pytest.fixture()
-    def bound_running_action(self, client: Client):
-        return BoundAction(
-            client=client.actions,
-            data=dict(id=14, status=Action.STATUS_RUNNING),
-        )
+    def bound_running_action(self, client: Client, action1_running):
+        return BoundAction(client=client.actions, data=action1_running)
 
     def test_wait_until_finished(
         self,
         request_mock: mock.MagicMock,
         bound_running_action,
-        running_action,
-        successfully_action,
+        action1_running,
+        action1_success,
     ):
         request_mock.side_effect = [
-            running_action,
-            successfully_action,
+            {"action": action1_running},
+            {"action": action1_success},
         ]
 
         bound_running_action.wait_until_finished()
 
         request_mock.assert_called_with(
             method="GET",
-            url="/actions/2",
+            url="/actions/1",
         )
 
         assert bound_running_action.status == "success"
+        assert bound_running_action.id == 1
+
         assert request_mock.call_count == 2
 
     def test_wait_until_finished_with_error(
         self,
         request_mock: mock.MagicMock,
         bound_running_action,
-        running_action,
-        failed_action,
+        action1_running,
+        action1_error,
     ):
-        request_mock.side_effect = [running_action, failed_action]
-        with pytest.raises(ActionFailedException) as exception_info:
+        request_mock.side_effect = [
+            {"action": action1_running},
+            {"action": action1_error},
+        ]
+
+        with pytest.raises(ActionFailedException) as exc:
             bound_running_action.wait_until_finished()
 
         assert bound_running_action.status == "error"
-        assert exception_info.value.action.id == 2
+        assert bound_running_action.id == 1
+        assert exc.value.action.id == 1
+
+        assert request_mock.call_count == 2
 
     def test_wait_until_finished_max_retries(
         self,
         request_mock: mock.MagicMock,
         bound_running_action,
-        running_action,
-        successfully_action,
+        action1_running,
+        action1_success,
     ):
         request_mock.side_effect = [
-            running_action,
-            running_action,
-            successfully_action,
+            {"action": action1_running},
+            {"action": action1_running},
+            {"action": action1_success},
         ]
-        with pytest.raises(ActionTimeoutException) as exception_info:
+
+        with pytest.raises(ActionTimeoutException) as exc:
             bound_running_action.wait_until_finished(max_retries=1)
 
         assert bound_running_action.status == "running"
-        assert exception_info.value.action.id == 2
+        assert bound_running_action.id == 1
+        assert exc.value.action.id == 1
+
         assert request_mock.call_count == 1
 
 
@@ -88,9 +98,9 @@ class TestResourceActionsClient:
         self,
         request_mock: mock.MagicMock,
         actions_client: ActionsClient,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = actions_client.get_by_id(1)
 
@@ -98,22 +108,24 @@ class TestResourceActionsClient:
             method="GET",
             url="/resource/actions/1",
         )
-        assert action._client == actions_client._parent.actions
-        assert action.id == 1
-        assert action.command == "stop_server"
+
+        assert_bound_action1(action, actions_client._parent.actions)
 
     @pytest.mark.parametrize(
         "params",
-        [{}, {"status": ["active"], "sort": ["status"], "page": 2, "per_page": 10}],
+        [
+            {},
+            {"status": ["active"], "sort": ["status"], "page": 2, "per_page": 10},
+        ],
     )
     def test_get_list(
         self,
         request_mock: mock.MagicMock,
         actions_client: ActionsClient,
-        generic_action_list,
+        action_list_response,
         params,
     ):
-        request_mock.return_value = generic_action_list
+        request_mock.return_value = action_list_response
 
         result = actions_client.get_list(**params)
 
@@ -127,50 +139,30 @@ class TestResourceActionsClient:
 
         actions = result.actions
         assert len(actions) == 2
-
-        action1 = actions[0]
-        action2 = actions[1]
-
-        assert action1._client == actions_client._parent.actions
-        assert action1.id == 1
-        assert action1.command == "start_server"
-
-        assert action2._client == actions_client._parent.actions
-        assert action2.id == 2
-        assert action2.command == "stop_server"
+        assert_bound_action1(actions[0], actions_client._parent.actions)
+        assert_bound_action2(actions[1], actions_client._parent.actions)
 
     @pytest.mark.parametrize("params", [{}, {"status": ["active"], "sort": ["status"]}])
     def test_get_all(
         self,
         request_mock: mock.MagicMock,
         actions_client: ActionsClient,
-        generic_action_list,
+        action_list_response,
         params,
     ):
-        request_mock.return_value = generic_action_list
+        request_mock.return_value = action_list_response
 
         actions = actions_client.get_all(**params)
-
-        params.update({"page": 1, "per_page": 50})
 
         request_mock.assert_called_with(
             method="GET",
             url="/resource/actions",
-            params=params,
+            params={**params, "page": 1, "per_page": 50},
         )
 
         assert len(actions) == 2
-
-        action1 = actions[0]
-        action2 = actions[1]
-
-        assert action1._client == actions_client._parent.actions
-        assert action1.id == 1
-        assert action1.command == "start_server"
-
-        assert action2._client == actions_client._parent.actions
-        assert action2.id == 2
-        assert action2.command == "stop_server"
+        assert_bound_action1(actions[0], actions_client._parent.actions)
+        assert_bound_action2(actions[1], actions_client._parent.actions)
 
 
 class TestActionsClient:
@@ -182,9 +174,9 @@ class TestActionsClient:
         self,
         request_mock: mock.MagicMock,
         actions_client: ActionsClient,
-        generic_action,
+        action_response,
     ):
-        request_mock.return_value = generic_action
+        request_mock.return_value = action_response
 
         action = actions_client.get_by_id(1)
 
@@ -192,22 +184,23 @@ class TestActionsClient:
             method="GET",
             url="/actions/1",
         )
-        assert action._client == actions_client._parent.actions
-        assert action.id == 1
-        assert action.command == "stop_server"
+        assert_bound_action1(action, actions_client._parent.actions)
 
     @pytest.mark.parametrize(
         "params",
-        [{}, {"status": ["active"], "sort": ["status"], "page": 2, "per_page": 10}],
+        [
+            {},
+            {"status": ["active"], "sort": ["status"], "page": 2, "per_page": 10},
+        ],
     )
     def test_get_list(
         self,
         request_mock: mock.MagicMock,
         actions_client: ActionsClient,
-        generic_action_list,
+        action_list_response,
         params,
     ):
-        request_mock.return_value = generic_action_list
+        request_mock.return_value = action_list_response
 
         with pytest.deprecated_call():
             result = actions_client.get_list(**params)
@@ -222,48 +215,28 @@ class TestActionsClient:
 
         actions = result.actions
         assert len(actions) == 2
-
-        action1 = actions[0]
-        action2 = actions[1]
-
-        assert action1._client == actions_client._parent.actions
-        assert action1.id == 1
-        assert action1.command == "start_server"
-
-        assert action2._client == actions_client._parent.actions
-        assert action2.id == 2
-        assert action2.command == "stop_server"
+        assert_bound_action1(actions[0], actions_client._parent.actions)
+        assert_bound_action2(actions[1], actions_client._parent.actions)
 
     @pytest.mark.parametrize("params", [{}, {"status": ["active"], "sort": ["status"]}])
     def test_get_all(
         self,
         request_mock: mock.MagicMock,
         actions_client: ActionsClient,
-        generic_action_list,
+        action_list_response,
         params,
     ):
-        request_mock.return_value = generic_action_list
+        request_mock.return_value = action_list_response
 
         with pytest.deprecated_call():
             actions = actions_client.get_all(**params)
 
-        params.update({"page": 1, "per_page": 50})
-
         request_mock.assert_called_with(
             method="GET",
             url="/actions",
-            params=params,
+            params={**params, "page": 1, "per_page": 50},
         )
 
         assert len(actions) == 2
-
-        action1 = actions[0]
-        action2 = actions[1]
-
-        assert action1._client == actions_client._parent.actions
-        assert action1.id == 1
-        assert action1.command == "start_server"
-
-        assert action2._client == actions_client._parent.actions
-        assert action2.id == 2
-        assert action2.command == "stop_server"
+        assert_bound_action1(actions[0], actions_client._parent.actions)
+        assert_bound_action2(actions[1], actions_client._parent.actions)
