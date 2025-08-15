@@ -66,7 +66,7 @@ class TestBoundServer:
 
         assert isinstance(bound_server.datacenter, BoundDatacenter)
         assert (
-            bound_server.datacenter._client == bound_server._client._client.datacenters
+            bound_server.datacenter._client == bound_server._client._parent.datacenters
         )
         assert bound_server.datacenter.id == 1
         assert bound_server.datacenter.complete is True
@@ -74,30 +74,30 @@ class TestBoundServer:
         assert isinstance(bound_server.server_type, BoundServerType)
         assert (
             bound_server.server_type._client
-            == bound_server._client._client.server_types
+            == bound_server._client._parent.server_types
         )
         assert bound_server.server_type.id == 1
         assert bound_server.server_type.complete is True
 
         assert len(bound_server.volumes) == 2
         assert isinstance(bound_server.volumes[0], BoundVolume)
-        assert bound_server.volumes[0]._client == bound_server._client._client.volumes
+        assert bound_server.volumes[0]._client == bound_server._client._parent.volumes
         assert bound_server.volumes[0].id == 1
         assert bound_server.volumes[0].complete is False
 
         assert isinstance(bound_server.volumes[1], BoundVolume)
-        assert bound_server.volumes[1]._client == bound_server._client._client.volumes
+        assert bound_server.volumes[1]._client == bound_server._client._parent.volumes
         assert bound_server.volumes[1].id == 2
         assert bound_server.volumes[1].complete is False
 
         assert isinstance(bound_server.image, BoundImage)
-        assert bound_server.image._client == bound_server._client._client.images
+        assert bound_server.image._client == bound_server._client._parent.images
         assert bound_server.image.id == 4711
         assert bound_server.image.name == "ubuntu-20.04"
         assert bound_server.image.complete is True
 
         assert isinstance(bound_server.iso, BoundIso)
-        assert bound_server.iso._client == bound_server._client._client.isos
+        assert bound_server.iso._client == bound_server._client._parent.isos
         assert bound_server.iso.id == 4711
         assert bound_server.iso.name == "FreeBSD-11.0-RELEASE-amd64-dvd1"
         assert bound_server.iso.complete is True
@@ -106,7 +106,7 @@ class TestBoundServer:
         assert isinstance(bound_server.private_net[0], PrivateNet)
         assert (
             bound_server.private_net[0].network._client
-            == bound_server._client._client.networks
+            == bound_server._client._parent.networks
         )
         assert bound_server.private_net[0].ip == "10.1.1.5"
         assert bound_server.private_net[0].mac_address == "86:00:ff:2a:7d:e1"
@@ -116,7 +116,7 @@ class TestBoundServer:
         assert isinstance(bound_server.placement_group, BoundPlacementGroup)
         assert (
             bound_server.placement_group._client
-            == bound_server._client._client.placement_groups
+            == bound_server._client._parent.placement_groups
         )
         assert bound_server.placement_group.id == 897
         assert bound_server.placement_group.name == "my Placement Group"
@@ -774,7 +774,7 @@ class TestServersClient:
         assert bound_server.name == "my-server"
 
         assert isinstance(bound_action, BoundAction)
-        assert bound_action._client == servers_client._client.actions
+        assert bound_action._client == servers_client._parent.actions
         assert bound_action.id == 1
         assert bound_action.command == "create_server"
 
@@ -811,7 +811,7 @@ class TestServersClient:
         assert bound_server.name == "my-server"
 
         assert isinstance(bound_action, BoundAction)
-        assert bound_action._client == servers_client._client.actions
+        assert bound_action._client == servers_client._parent.actions
         assert bound_action.id == 1
         assert bound_action.command == "create_server"
 
@@ -854,7 +854,7 @@ class TestServersClient:
         assert bound_server.name == "my-server"
 
         assert isinstance(bound_action, BoundAction)
-        assert bound_action._client == servers_client._client.actions
+        assert bound_action._client == servers_client._parent.actions
         assert bound_action.id == 1
         assert bound_action.command == "create_server"
 
@@ -899,7 +899,7 @@ class TestServersClient:
         assert bound_server.name == "my-server"
 
         assert isinstance(bound_action, BoundAction)
-        assert bound_action._client == servers_client._client.actions
+        assert bound_action._client == servers_client._parent.actions
         assert bound_action.id == 1
         assert bound_action.command == "create_server"
 
@@ -944,7 +944,7 @@ class TestServersClient:
         assert bound_server.name == "my-server"
 
         assert isinstance(bound_action, BoundAction)
-        assert bound_action._client == servers_client._client.actions
+        assert bound_action._client == servers_client._parent.actions
         assert bound_action.id == 1
         assert bound_action.command == "create_server"
 
@@ -990,7 +990,7 @@ class TestServersClient:
         assert bound_server.name == "my-server"
 
         assert isinstance(bound_action, BoundAction)
-        assert bound_action._client == servers_client._client.actions
+        assert bound_action._client == servers_client._parent.actions
         assert bound_action.id == 1
         assert bound_action.command == "create_server"
 
@@ -1018,7 +1018,7 @@ class TestServersClient:
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
 
-        assert actions[0]._client == servers_client._client.actions
+        assert actions[0]._client == servers_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "start_server"
 
@@ -1564,7 +1564,7 @@ class TestServersClient:
         request_mock.assert_called_with(url="/servers/actions/13", method="GET")
 
         assert isinstance(action, BoundAction)
-        assert action._client == servers_client._client.actions
+        assert action._client == servers_client._parent.actions
         assert action.id == 13
         assert action.command == "start_server"
 
@@ -1588,7 +1588,7 @@ class TestServersClient:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == servers_client._client.actions
+        assert actions[0]._client == servers_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "start_server"
 
@@ -1609,6 +1609,6 @@ class TestServersClient:
 
         assert len(actions) == 1
         assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == servers_client._client.actions
+        assert actions[0]._client == servers_client._parent.actions
         assert actions[0].id == 13
         assert actions[0].command == "start_server"

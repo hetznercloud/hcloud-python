@@ -23,12 +23,12 @@ class BoundImage(BoundModelBase, Image):
         created_from = data.get("created_from")
         if created_from is not None:
             data["created_from"] = BoundServer(
-                client._client.servers, created_from, complete=False
+                client._parent.servers, created_from, complete=False
             )
         bound_to = data.get("bound_to")
         if bound_to is not None:
             data["bound_to"] = BoundServer(
-                client._client.servers, {"id": bound_to}, complete=False
+                client._parent.servers, {"id": bound_to}, complete=False
             )
 
         super().__init__(client, data)
@@ -113,7 +113,6 @@ class ImagesPageResult(NamedTuple):
 
 
 class ImagesClient(ResourceClientBase):
-    _client: Client
 
     actions: ResourceActionsClient
     """Images scoped actions client
@@ -161,7 +160,7 @@ class ImagesClient(ResourceClientBase):
             params=params,
         )
         actions = [
-            BoundAction(self._client.actions, action_data)
+            BoundAction(self._parent.actions, action_data)
             for action_data in response["actions"]
         ]
         return ActionsPageResult(actions, Meta.parse_meta(response))
@@ -406,4 +405,4 @@ class ImagesClient(ResourceClientBase):
             method="POST",
             json=data,
         )
-        return BoundAction(self._client.actions, response["action"])
+        return BoundAction(self._parent.actions, response["action"])
