@@ -143,9 +143,13 @@ class TestBoundServer:
         params,
     ):
         request_mock.return_value = response_get_actions
+
         result = bound_server.get_actions_list(**params)
+
         request_mock.assert_called_with(
-            url="/servers/14/actions", method="GET", params=params
+            method="GET",
+            url="/servers/14/actions",
+            params=params,
         )
 
         actions = result.actions
@@ -169,12 +173,15 @@ class TestBoundServer:
         params,
     ):
         request_mock.return_value = response_get_actions
+
         actions = bound_server.get_actions(**params)
 
         params.update({"page": 1, "per_page": 50})
 
         request_mock.assert_called_with(
-            url="/servers/14/actions", method="GET", params=params
+            method="GET",
+            url="/servers/14/actions",
+            params=params,
         )
 
         assert len(actions) == 1
@@ -190,9 +197,13 @@ class TestBoundServer:
         response_update_server,
     ):
         request_mock.return_value = response_update_server
+
         server = bound_server.update(name="new-name", labels={})
+
         request_mock.assert_called_with(
-            url="/servers/14", method="PUT", json={"name": "new-name", "labels": {}}
+            method="PUT",
+            url="/servers/14",
+            json={"name": "new-name", "labels": {}},
         )
 
         assert server.id == 14
@@ -205,8 +216,13 @@ class TestBoundServer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_server.delete()
-        request_mock.assert_called_with(url="/servers/14", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/servers/14",
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -218,14 +234,16 @@ class TestBoundServer:
         response_get_metrics,
     ):
         request_mock.return_value = response_get_metrics
+
         response = bound_server.get_metrics(
             type=["cpu", "disk"],
             start="2023-12-14T17:40:00+01:00",
             end="2023-12-14T17:50:00+01:00",
         )
+
         request_mock.assert_called_with(
-            url="/servers/14/metrics",
             method="GET",
+            url="/servers/14/metrics",
             params={
                 "type": "cpu,disk",
                 "start": "2023-12-14T17:40:00+01:00",
@@ -244,9 +262,12 @@ class TestBoundServer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_server.power_off()
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/poweroff", method="POST"
+            method="POST",
+            url="/servers/14/actions/poweroff",
         )
 
         assert action.id == 1
@@ -259,9 +280,12 @@ class TestBoundServer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_server.power_on()
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/poweron", method="POST"
+            method="POST",
+            url="/servers/14/actions/poweron",
         )
 
         assert action.id == 1
@@ -274,8 +298,13 @@ class TestBoundServer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_server.reboot()
-        request_mock.assert_called_with(url="/servers/14/actions/reboot", method="POST")
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/servers/14/actions/reboot",
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -287,8 +316,13 @@ class TestBoundServer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_server.reset()
-        request_mock.assert_called_with(url="/servers/14/actions/reset", method="POST")
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/servers/14/actions/reset",
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -300,9 +334,12 @@ class TestBoundServer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_server.shutdown()
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/shutdown", method="POST"
+            method="POST",
+            url="/servers/14/actions/shutdown",
         )
 
         assert action.id == 1
@@ -315,9 +352,12 @@ class TestBoundServer:
         response_server_reset_password,
     ):
         request_mock.return_value = response_server_reset_password
+
         response = bound_server.reset_password()
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/reset_password", method="POST"
+            method="POST",
+            url="/servers/14/actions/reset_password",
         )
 
         assert response.action.id == 1
@@ -331,10 +371,12 @@ class TestBoundServer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_server.change_type(ServerType(name="cx11"), upgrade_disk=True)
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/change_type",
             method="POST",
+            url="/servers/14/actions/change_type",
             json={"server_type": "cx11", "upgrade_disk": True},
         )
 
@@ -348,10 +390,12 @@ class TestBoundServer:
         response_server_enable_rescue,
     ):
         request_mock.return_value = response_server_enable_rescue
+
         response = bound_server.enable_rescue(type="linux64")
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/enable_rescue",
             method="POST",
+            url="/servers/14/actions/enable_rescue",
             json={"type": "linux64"},
         )
 
@@ -366,9 +410,12 @@ class TestBoundServer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_server.disable_rescue()
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/disable_rescue", method="POST"
+            method="POST",
+            url="/servers/14/actions/disable_rescue",
         )
 
         assert action.id == 1
@@ -381,10 +428,12 @@ class TestBoundServer:
         response_server_create_image,
     ):
         request_mock.return_value = response_server_create_image
+
         response = bound_server.create_image(description="my image", type="snapshot")
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/create_image",
             method="POST",
+            url="/servers/14/actions/create_image",
             json={"description": "my image", "type": "snapshot"},
         )
 
@@ -399,13 +448,15 @@ class TestBoundServer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         response = bound_server.rebuild(
             Image(name="ubuntu-20.04"),
             return_response=True,
         )
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/rebuild",
             method="POST",
+            url="/servers/14/actions/rebuild",
             json={"image": "ubuntu-20.04"},
         )
 
@@ -420,9 +471,12 @@ class TestBoundServer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_server.enable_backup()
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/enable_backup", method="POST"
+            method="POST",
+            url="/servers/14/actions/enable_backup",
         )
 
         assert action.id == 1
@@ -435,9 +489,12 @@ class TestBoundServer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_server.disable_backup()
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/disable_backup", method="POST"
+            method="POST",
+            url="/servers/14/actions/disable_backup",
         )
 
         assert action.id == 1
@@ -450,10 +507,12 @@ class TestBoundServer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_server.attach_iso(Iso(name="FreeBSD-11.0-RELEASE-amd64-dvd1"))
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/attach_iso",
             method="POST",
+            url="/servers/14/actions/attach_iso",
             json={"iso": "FreeBSD-11.0-RELEASE-amd64-dvd1"},
         )
 
@@ -467,9 +526,12 @@ class TestBoundServer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_server.detach_iso()
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/detach_iso", method="POST"
+            method="POST",
+            url="/servers/14/actions/detach_iso",
         )
 
         assert action.id == 1
@@ -482,10 +544,12 @@ class TestBoundServer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_server.change_dns_ptr("1.2.3.4", "example.com")
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/change_dns_ptr",
             method="POST",
+            url="/servers/14/actions/change_dns_ptr",
             json={"ip": "1.2.3.4", "dns_ptr": "example.com"},
         )
 
@@ -499,10 +563,12 @@ class TestBoundServer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_server.change_protection(True, True)
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/change_protection",
             method="POST",
+            url="/servers/14/actions/change_protection",
             json={"delete": True, "rebuild": True},
         )
 
@@ -516,9 +582,12 @@ class TestBoundServer:
         response_server_request_console,
     ):
         request_mock.return_value = response_server_request_console
+
         response = bound_server.request_console()
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/request_console", method="POST"
+            method="POST",
+            url="/servers/14/actions/request_console",
         )
 
         assert response.action.id == 1
@@ -540,12 +609,14 @@ class TestBoundServer:
         response_attach_to_network,
     ):
         request_mock.return_value = response_attach_to_network
+
         action = bound_server.attach_to_network(
             network, "10.0.1.1", ["10.0.1.2", "10.0.1.3"]
         )
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/attach_to_network",
             method="POST",
+            url="/servers/14/actions/attach_to_network",
             json={
                 "network": 4711,
                 "ip": "10.0.1.1",
@@ -568,10 +639,12 @@ class TestBoundServer:
         response_detach_from_network,
     ):
         request_mock.return_value = response_detach_from_network
+
         action = bound_server.detach_from_network(network)
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/detach_from_network",
             method="POST",
+            url="/servers/14/actions/detach_from_network",
             json={"network": 4711},
         )
 
@@ -590,10 +663,12 @@ class TestBoundServer:
         response_change_alias_ips,
     ):
         request_mock.return_value = response_change_alias_ips
+
         action = bound_server.change_alias_ips(network, ["10.0.1.2", "10.0.1.3"])
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/change_alias_ips",
             method="POST",
+            url="/servers/14/actions/change_alias_ips",
             json={"network": 4711, "alias_ips": ["10.0.1.2", "10.0.1.3"]},
         )
 
@@ -613,10 +688,12 @@ class TestBoundServer:
         response_add_to_placement_group,
     ):
         request_mock.return_value = response_add_to_placement_group
+
         action = bound_server.add_to_placement_group(placement_group)
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/add_to_placement_group",
             method="POST",
+            url="/servers/14/actions/add_to_placement_group",
             json={"placement_group": 897},
         )
 
@@ -631,9 +708,12 @@ class TestBoundServer:
         response_remove_from_placement_group,
     ):
         request_mock.return_value = response_remove_from_placement_group
+
         action = bound_server.remove_from_placement_group()
+
         request_mock.assert_called_with(
-            url="/servers/14/actions/remove_from_placement_group", method="POST"
+            method="POST",
+            url="/servers/14/actions/remove_from_placement_group",
         )
 
         assert action.id == 13
@@ -653,8 +733,13 @@ class TestServersClient:
         response_simple_server,
     ):
         request_mock.return_value = response_simple_server
+
         bound_server = servers_client.get_by_id(1)
-        request_mock.assert_called_with(url="/servers/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/servers/1",
+        )
         assert bound_server._client is servers_client
         assert bound_server.id == 1
         assert bound_server.name == "my-server"
@@ -675,8 +760,14 @@ class TestServersClient:
         params,
     ):
         request_mock.return_value = response_simple_servers
+
         result = servers_client.get_list(**params)
-        request_mock.assert_called_with(url="/servers", method="GET", params=params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/servers",
+            params=params,
+        )
 
         bound_servers = result.servers
         assert result.meta is not None
@@ -705,11 +796,16 @@ class TestServersClient:
         params,
     ):
         request_mock.return_value = response_simple_servers
+
         bound_servers = servers_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        request_mock.assert_called_with(url="/servers", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/servers",
+            params=params,
+        )
 
         assert len(bound_servers) == 2
 
@@ -731,11 +827,16 @@ class TestServersClient:
         response_simple_servers,
     ):
         request_mock.return_value = response_simple_servers
+
         bound_server = servers_client.get_by_name("my-server")
 
         params = {"name": "my-server"}
 
-        request_mock.assert_called_with(url="/servers", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/servers",
+            params=params,
+        )
 
         assert bound_server._client is servers_client
         assert bound_server.id == 1
@@ -748,15 +849,17 @@ class TestServersClient:
         response_create_simple_server,
     ):
         request_mock.return_value = response_create_simple_server
+
         response = servers_client.create(
             "my-server",
             server_type=ServerType(name="cx11"),
             image=Image(id=4711),
             datacenter=Datacenter(id=1),
         )
+
         request_mock.assert_called_with(
-            url="/servers",
             method="POST",
+            url="/servers",
             json={
                 "name": "my-server",
                 "server_type": "cx11",
@@ -785,15 +888,17 @@ class TestServersClient:
         response_create_simple_server,
     ):
         request_mock.return_value = response_create_simple_server
+
         response = servers_client.create(
             "my-server",
             server_type=ServerType(name="cx11"),
             image=Image(name="ubuntu-20.04"),
             location=Location(name="fsn1"),
         )
+
         request_mock.assert_called_with(
-            url="/servers",
             method="POST",
+            url="/servers",
             json={
                 "name": "my-server",
                 "server_type": "cx11",
@@ -822,6 +927,7 @@ class TestServersClient:
         response_create_simple_server,
     ):
         request_mock.return_value = response_create_simple_server
+
         volumes = [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=2))]
         response = servers_client.create(
             "my-server",
@@ -830,9 +936,10 @@ class TestServersClient:
             volumes=volumes,
             start_after_create=False,
         )
+
         request_mock.assert_called_with(
-            url="/servers",
             method="POST",
+            url="/servers",
             json={
                 "name": "my-server",
                 "server_type": "cx11",
@@ -867,6 +974,7 @@ class TestServersClient:
         response_create_simple_server,
     ):
         request_mock.return_value = response_create_simple_server
+
         networks = [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=2))]
         response = servers_client.create(
             "my-server",
@@ -875,9 +983,10 @@ class TestServersClient:
             networks=networks,
             start_after_create=False,
         )
+
         request_mock.assert_called_with(
-            url="/servers",
             method="POST",
+            url="/servers",
             json={
                 "name": "my-server",
                 "server_type": "cx11",
@@ -912,6 +1021,7 @@ class TestServersClient:
         response_create_simple_server,
     ):
         request_mock.return_value = response_create_simple_server
+
         firewalls = [Firewall(id=1), BoundFirewall(mock.MagicMock(), dict(id=2))]
         response = servers_client.create(
             "my-server",
@@ -920,9 +1030,10 @@ class TestServersClient:
             firewalls=firewalls,
             start_after_create=False,
         )
+
         request_mock.assert_called_with(
-            url="/servers",
             method="POST",
+            url="/servers",
             json={
                 "name": "my-server",
                 "server_type": "cx11",
@@ -957,6 +1068,7 @@ class TestServersClient:
         response_create_simple_server,
     ):
         request_mock.return_value = response_create_simple_server
+
         placement_group = PlacementGroup(id=1)
         response = servers_client.create(
             "my-server",
@@ -967,8 +1079,8 @@ class TestServersClient:
         )
 
         request_mock.assert_called_with(
-            url="/servers",
             method="POST",
+            url="/servers",
             json={
                 "name": "my-server",
                 "server_type": "cx11",
@@ -1007,9 +1119,13 @@ class TestServersClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         result = servers_client.get_actions_list(server)
+
         request_mock.assert_called_with(
-            url="/servers/1/actions", method="GET", params={}
+            method="GET",
+            url="/servers/1/actions",
+            params={},
         )
 
         actions = result.actions
@@ -1033,9 +1149,13 @@ class TestServersClient:
         response_update_server,
     ):
         request_mock.return_value = response_update_server
+
         server = servers_client.update(server, name="new-name", labels={})
+
         request_mock.assert_called_with(
-            url="/servers/1", method="PUT", json={"name": "new-name", "labels": {}}
+            method="PUT",
+            url="/servers/1",
+            json={"name": "new-name", "labels": {}},
         )
 
         assert server.id == 14
@@ -1052,8 +1172,13 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = servers_client.delete(server)
-        request_mock.assert_called_with(url="/servers/1", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/servers/1",
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -1069,9 +1194,12 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = servers_client.power_off(server)
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/poweroff", method="POST"
+            method="POST",
+            url="/servers/1/actions/poweroff",
         )
 
         assert action.id == 1
@@ -1088,8 +1216,13 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = servers_client.power_on(server)
-        request_mock.assert_called_with(url="/servers/1/actions/poweron", method="POST")
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/servers/1/actions/poweron",
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -1105,8 +1238,13 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = servers_client.reboot(server)
-        request_mock.assert_called_with(url="/servers/1/actions/reboot", method="POST")
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/servers/1/actions/reboot",
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -1122,8 +1260,13 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = servers_client.reset(server)
-        request_mock.assert_called_with(url="/servers/1/actions/reset", method="POST")
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/servers/1/actions/reset",
+        )
 
         assert action.id == 1
         assert action.progress == 0
@@ -1139,9 +1282,12 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = servers_client.shutdown(server)
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/shutdown", method="POST"
+            method="POST",
+            url="/servers/1/actions/shutdown",
         )
 
         assert action.id == 1
@@ -1158,9 +1304,12 @@ class TestServersClient:
         response_server_reset_password,
     ):
         request_mock.return_value = response_server_reset_password
+
         response = servers_client.reset_password(server)
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/reset_password", method="POST"
+            method="POST",
+            url="/servers/1/actions/reset_password",
         )
 
         assert response.action.id == 1
@@ -1178,12 +1327,14 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = servers_client.change_type(
             server, ServerType(name="cx11"), upgrade_disk=True
         )
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/change_type",
             method="POST",
+            url="/servers/1/actions/change_type",
             json={"server_type": "cx11", "upgrade_disk": True},
         )
 
@@ -1201,10 +1352,12 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = servers_client.change_type(server, ServerType(id=1), upgrade_disk=True)
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/change_type",
             method="POST",
+            url="/servers/1/actions/change_type",
             json={"server_type": 1, "upgrade_disk": True},
         )
 
@@ -1223,6 +1376,7 @@ class TestServersClient:
         with pytest.raises(ValueError) as e:
             servers_client.change_type(server, ServerType(), upgrade_disk=True)
         assert str(e.value) == "id or name must be set"
+
         request_mock.assert_not_called()
 
     @pytest.mark.parametrize(
@@ -1236,10 +1390,12 @@ class TestServersClient:
         response_server_enable_rescue,
     ):
         request_mock.return_value = response_server_enable_rescue
+
         response = servers_client.enable_rescue(server, "linux64", [2323])
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/enable_rescue",
             method="POST",
+            url="/servers/1/actions/enable_rescue",
             json={"type": "linux64", "ssh_keys": [2323]},
         )
 
@@ -1258,9 +1414,12 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = servers_client.disable_rescue(server)
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/disable_rescue", method="POST"
+            method="POST",
+            url="/servers/1/actions/disable_rescue",
         )
 
         assert action.id == 1
@@ -1277,12 +1436,14 @@ class TestServersClient:
         response_server_create_image,
     ):
         request_mock.return_value = response_server_create_image
+
         response = servers_client.create_image(
             server, description="my image", type="snapshot", labels={"key": "value"}
         )
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/create_image",
             method="POST",
+            url="/servers/1/actions/create_image",
             json={
                 "description": "my image",
                 "type": "snapshot",
@@ -1305,14 +1466,16 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         response = servers_client.rebuild(
             server,
             Image(name="ubuntu-20.04"),
             return_response=True,
         )
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/rebuild",
             method="POST",
+            url="/servers/1/actions/rebuild",
             json={"image": "ubuntu-20.04"},
         )
 
@@ -1331,9 +1494,12 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = servers_client.enable_backup(server)
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/enable_backup", method="POST"
+            method="POST",
+            url="/servers/1/actions/enable_backup",
         )
 
         assert action.id == 1
@@ -1350,9 +1516,12 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = servers_client.disable_backup(server)
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/disable_backup", method="POST"
+            method="POST",
+            url="/servers/1/actions/disable_backup",
         )
 
         assert action.id == 1
@@ -1369,12 +1538,14 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = servers_client.attach_iso(
             server, Iso(name="FreeBSD-11.0-RELEASE-amd64-dvd1")
         )
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/attach_iso",
             method="POST",
+            url="/servers/1/actions/attach_iso",
             json={"iso": "FreeBSD-11.0-RELEASE-amd64-dvd1"},
         )
 
@@ -1392,9 +1563,12 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = servers_client.detach_iso(server)
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/detach_iso", method="POST"
+            method="POST",
+            url="/servers/1/actions/detach_iso",
         )
 
         assert action.id == 1
@@ -1411,10 +1585,12 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = servers_client.change_dns_ptr(server, "1.2.3.4", "example.com")
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/change_dns_ptr",
             method="POST",
+            url="/servers/1/actions/change_dns_ptr",
             json={"ip": "1.2.3.4", "dns_ptr": "example.com"},
         )
 
@@ -1432,10 +1608,12 @@ class TestServersClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = servers_client.change_protection(server, True, True)
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/change_protection",
             method="POST",
+            url="/servers/1/actions/change_protection",
             json={"delete": True, "rebuild": True},
         )
 
@@ -1453,9 +1631,12 @@ class TestServersClient:
         response_server_request_console,
     ):
         request_mock.return_value = response_server_request_console
+
         response = servers_client.request_console(server)
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/request_console", method="POST"
+            method="POST",
+            url="/servers/1/actions/request_console",
         )
 
         assert response.action.id == 1
@@ -1481,12 +1662,14 @@ class TestServersClient:
         response_attach_to_network,
     ):
         request_mock.return_value = response_attach_to_network
+
         action = servers_client.attach_to_network(
             server, network, "10.0.1.1", ["10.0.1.2", "10.0.1.3"]
         )
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/attach_to_network",
             method="POST",
+            url="/servers/1/actions/attach_to_network",
             json={
                 "network": 4711,
                 "ip": "10.0.1.1",
@@ -1513,10 +1696,12 @@ class TestServersClient:
         response_detach_from_network,
     ):
         request_mock.return_value = response_detach_from_network
+
         action = servers_client.detach_from_network(server, network)
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/detach_from_network",
             method="POST",
+            url="/servers/1/actions/detach_from_network",
             json={"network": 4711},
         )
 
@@ -1539,12 +1724,14 @@ class TestServersClient:
         response_change_alias_ips,
     ):
         request_mock.return_value = response_change_alias_ips
+
         action = servers_client.change_alias_ips(
             server, network, ["10.0.1.2", "10.0.1.3"]
         )
+
         request_mock.assert_called_with(
-            url="/servers/1/actions/change_alias_ips",
             method="POST",
+            url="/servers/1/actions/change_alias_ips",
             json={"network": 4711, "alias_ips": ["10.0.1.2", "10.0.1.3"]},
         )
 
@@ -1561,7 +1748,10 @@ class TestServersClient:
         request_mock.return_value = {"action": response_get_actions["actions"][0]}
         action = servers_client.actions.get_by_id(13)
 
-        request_mock.assert_called_with(url="/servers/actions/13", method="GET")
+        request_mock.assert_called_with(
+            method="GET",
+            url="/servers/actions/13",
+        )
 
         assert isinstance(action, BoundAction)
         assert action._client == servers_client._parent.actions
@@ -1575,11 +1765,12 @@ class TestServersClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         result = servers_client.actions.get_list()
 
         request_mock.assert_called_with(
-            url="/servers/actions",
             method="GET",
+            url="/servers/actions",
             params={},
         )
 
@@ -1599,11 +1790,12 @@ class TestServersClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         actions = servers_client.actions.get_all()
 
         request_mock.assert_called_with(
-            url="/servers/actions",
             method="GET",
+            url="/servers/actions",
             params={"page": 1, "per_page": 50},
         )
 

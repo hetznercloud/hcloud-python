@@ -29,9 +29,13 @@ class TestBoundCertificate:
         params,
     ):
         request_mock.return_value = response_get_actions
+
         result = bound_certificate.get_actions_list(**params)
+
         request_mock.assert_called_with(
-            url="/certificates/14/actions", method="GET", params=params
+            method="GET",
+            url="/certificates/14/actions",
+            params=params,
         )
 
         actions = result.actions
@@ -51,12 +55,15 @@ class TestBoundCertificate:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         actions = bound_certificate.get_actions()
 
         params = {"page": 1, "per_page": 50}
 
         request_mock.assert_called_with(
-            url="/certificates/14/actions", method="GET", params=params
+            method="GET",
+            url="/certificates/14/actions",
+            params=params,
         )
 
         assert len(actions) == 1
@@ -95,9 +102,13 @@ class TestBoundCertificate:
         response_update_certificate,
     ):
         request_mock.return_value = response_update_certificate
+
         certificate = bound_certificate.update(name="New name")
+
         request_mock.assert_called_with(
-            url="/certificates/14", method="PUT", json={"name": "New name"}
+            method="PUT",
+            url="/certificates/14",
+            json={"name": "New name"},
         )
 
         assert certificate.id == 2323
@@ -110,8 +121,13 @@ class TestBoundCertificate:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         delete_success = bound_certificate.delete()
-        request_mock.assert_called_with(url="/certificates/14", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/certificates/14",
+        )
 
         assert delete_success is True
 
@@ -122,9 +138,12 @@ class TestBoundCertificate:
         response_retry_issuance_action,
     ):
         request_mock.return_value = response_retry_issuance_action
+
         action = bound_certificate.retry_issuance()
+
         request_mock.assert_called_with(
-            url="/certificates/14/actions/retry", method="POST"
+            method="POST",
+            url="/certificates/14/actions/retry",
         )
 
         assert action.id == 14
@@ -143,8 +162,13 @@ class TestCertificatesClient:
         certificate_response,
     ):
         request_mock.return_value = certificate_response
+
         certificate = certificates_client.get_by_id(1)
-        request_mock.assert_called_with(url="/certificates/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/certificates/1",
+        )
         assert certificate._client is certificates_client
         assert certificate.id == 2323
         assert certificate.name == "My Certificate"
@@ -170,9 +194,13 @@ class TestCertificatesClient:
         params,
     ):
         request_mock.return_value = two_certificates_response
+
         result = certificates_client.get_list(**params)
+
         request_mock.assert_called_with(
-            url="/certificates", method="GET", params=params
+            method="GET",
+            url="/certificates",
+            params=params,
         )
 
         certificates = result.certificates
@@ -200,11 +228,15 @@ class TestCertificatesClient:
         params,
     ):
         request_mock.return_value = two_certificates_response
+
         certificates = certificates_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
+
         request_mock.assert_called_with(
-            url="/certificates", method="GET", params=params
+            method="GET",
+            url="/certificates",
+            params=params,
         )
 
         assert len(certificates) == 2
@@ -227,11 +259,15 @@ class TestCertificatesClient:
         one_certificates_response,
     ):
         request_mock.return_value = one_certificates_response
+
         certificates = certificates_client.get_by_name("My Certificate")
 
         params = {"name": "My Certificate"}
+
         request_mock.assert_called_with(
-            url="/certificates", method="GET", params=params
+            method="GET",
+            url="/certificates",
+            params=params,
         )
 
         assert certificates._client is certificates_client
@@ -245,14 +281,16 @@ class TestCertificatesClient:
         certificate_response,
     ):
         request_mock.return_value = certificate_response
+
         certificate = certificates_client.create(
             name="My Certificate",
             certificate="-----BEGIN CERTIFICATE-----\n...",
             private_key="-----BEGIN PRIVATE KEY-----\n...",
         )
+
         request_mock.assert_called_with(
-            url="/certificates",
             method="POST",
+            url="/certificates",
             json={
                 "name": "My Certificate",
                 "certificate": "-----BEGIN CERTIFICATE-----\n...",
@@ -271,12 +309,14 @@ class TestCertificatesClient:
         create_managed_certificate_response,
     ):
         request_mock.return_value = create_managed_certificate_response
+
         create_managed_certificate_rsp = certificates_client.create_managed(
             name="My Certificate", domain_names=["example.com", "*.example.org"]
         )
+
         request_mock.assert_called_with(
-            url="/certificates",
             method="POST",
+            url="/certificates",
             json={
                 "name": "My Certificate",
                 "domain_names": ["example.com", "*.example.org"],
@@ -301,9 +341,13 @@ class TestCertificatesClient:
         response_update_certificate,
     ):
         request_mock.return_value = response_update_certificate
+
         certificate = certificates_client.update(certificate, name="New name")
+
         request_mock.assert_called_with(
-            url="/certificates/1", method="PUT", json={"name": "New name"}
+            method="PUT",
+            url="/certificates/1",
+            json={"name": "New name"},
         )
 
         assert certificate.id == 2323
@@ -321,8 +365,13 @@ class TestCertificatesClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         delete_success = certificates_client.delete(certificate)
-        request_mock.assert_called_with(url="/certificates/1", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/certificates/1",
+        )
 
         assert delete_success is True
 
@@ -338,9 +387,12 @@ class TestCertificatesClient:
         response_retry_issuance_action,
     ):
         request_mock.return_value = response_retry_issuance_action
+
         action = certificates_client.retry_issuance(certificate)
+
         request_mock.assert_called_with(
-            url="/certificates/1/actions/retry", method="POST"
+            method="POST",
+            url="/certificates/1/actions/retry",
         )
 
         assert action.id == 14
@@ -355,7 +407,10 @@ class TestCertificatesClient:
         request_mock.return_value = {"action": response_get_actions["actions"][0]}
         action = certificates_client.actions.get_by_id(13)
 
-        request_mock.assert_called_with(url="/certificates/actions/13", method="GET")
+        request_mock.assert_called_with(
+            method="GET",
+            url="/certificates/actions/13",
+        )
 
         assert isinstance(action, BoundAction)
         assert action._client == certificates_client._parent.actions
@@ -369,11 +424,12 @@ class TestCertificatesClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         result = certificates_client.actions.get_list()
 
         request_mock.assert_called_with(
-            url="/certificates/actions",
             method="GET",
+            url="/certificates/actions",
             params={},
         )
 
@@ -393,11 +449,12 @@ class TestCertificatesClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         actions = certificates_client.actions.get_all()
 
         request_mock.assert_called_with(
-            url="/certificates/actions",
             method="GET",
+            url="/certificates/actions",
             params={"page": 1, "per_page": 50},
         )
 

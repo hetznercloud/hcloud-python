@@ -20,8 +20,13 @@ class TestLoadBalancerTypesClient:
         load_balancer_type_response,
     ):
         request_mock.return_value = load_balancer_type_response
+
         load_balancer_type = load_balancer_types_client.get_by_id(1)
-        request_mock.assert_called_with(url="/load_balancer_types/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/load_balancer_types/1",
+        )
         assert load_balancer_type._client is load_balancer_types_client
         assert load_balancer_type.id == 1
         assert load_balancer_type.name == "LB11"
@@ -37,9 +42,13 @@ class TestLoadBalancerTypesClient:
         params,
     ):
         request_mock.return_value = two_load_balancer_types_response
+
         result = load_balancer_types_client.get_list(**params)
+
         request_mock.assert_called_with(
-            url="/load_balancer_types", method="GET", params=params
+            method="GET",
+            url="/load_balancer_types",
+            params=params,
         )
 
         load_balancer_types = result.load_balancer_types
@@ -67,12 +76,15 @@ class TestLoadBalancerTypesClient:
         params,
     ):
         request_mock.return_value = two_load_balancer_types_response
+
         load_balancer_types = load_balancer_types_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
         request_mock.assert_called_with(
-            url="/load_balancer_types", method="GET", params=params
+            method="GET",
+            url="/load_balancer_types",
+            params=params,
         )
 
         assert len(load_balancer_types) == 2
@@ -95,12 +107,15 @@ class TestLoadBalancerTypesClient:
         one_load_balancer_types_response,
     ):
         request_mock.return_value = one_load_balancer_types_response
+
         load_balancer_type = load_balancer_types_client.get_by_name("LB21")
 
         params = {"name": "LB21"}
 
         request_mock.assert_called_with(
-            url="/load_balancer_types", method="GET", params=params
+            method="GET",
+            url="/load_balancer_types",
+            params=params,
         )
 
         assert load_balancer_type._client is load_balancer_types_client

@@ -50,10 +50,12 @@ class TestBoundFloatingIP:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         actions = bound_floating_ip.get_actions(sort="id")
+
         request_mock.assert_called_with(
-            url="/floating_ips/14/actions",
             method="GET",
+            url="/floating_ips/14/actions",
             params={"sort": "id", "page": 1, "per_page": 50},
         )
 
@@ -70,12 +72,14 @@ class TestBoundFloatingIP:
         response_update_floating_ip,
     ):
         request_mock.return_value = response_update_floating_ip
+
         floating_ip = bound_floating_ip.update(
             description="New description", name="New name"
         )
+
         request_mock.assert_called_with(
-            url="/floating_ips/14",
             method="PUT",
+            url="/floating_ips/14",
             json={"description": "New description", "name": "New name"},
         )
 
@@ -90,8 +94,13 @@ class TestBoundFloatingIP:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         delete_success = bound_floating_ip.delete()
-        request_mock.assert_called_with(url="/floating_ips/14", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/floating_ips/14",
+        )
 
         assert delete_success is True
 
@@ -102,10 +111,12 @@ class TestBoundFloatingIP:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_floating_ip.change_protection(True)
+
         request_mock.assert_called_with(
-            url="/floating_ips/14/actions/change_protection",
             method="POST",
+            url="/floating_ips/14/actions/change_protection",
             json={"delete": True},
         )
 
@@ -123,9 +134,13 @@ class TestBoundFloatingIP:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_floating_ip.assign(server)
+
         request_mock.assert_called_with(
-            url="/floating_ips/14/actions/assign", method="POST", json={"server": 1}
+            method="POST",
+            url="/floating_ips/14/actions/assign",
+            json={"server": 1},
         )
         assert action.id == 1
         assert action.progress == 0
@@ -137,9 +152,12 @@ class TestBoundFloatingIP:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_floating_ip.unassign()
+
         request_mock.assert_called_with(
-            url="/floating_ips/14/actions/unassign", method="POST"
+            method="POST",
+            url="/floating_ips/14/actions/unassign",
         )
         assert action.id == 1
         assert action.progress == 0
@@ -151,10 +169,12 @@ class TestBoundFloatingIP:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_floating_ip.change_dns_ptr("1.2.3.4", "server02.example.com")
+
         request_mock.assert_called_with(
-            url="/floating_ips/14/actions/change_dns_ptr",
             method="POST",
+            url="/floating_ips/14/actions/change_dns_ptr",
             json={"ip": "1.2.3.4", "dns_ptr": "server02.example.com"},
         )
         assert action.id == 1
@@ -173,8 +193,13 @@ class TestFloatingIPsClient:
         floating_ip_response,
     ):
         request_mock.return_value = floating_ip_response
+
         bound_floating_ip = floating_ips_client.get_by_id(1)
-        request_mock.assert_called_with(url="/floating_ips/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/floating_ips/1",
+        )
         assert bound_floating_ip._client is floating_ips_client
         assert bound_floating_ip.id == 4711
         assert bound_floating_ip.description == "Web Frontend"
@@ -186,9 +211,13 @@ class TestFloatingIPsClient:
         one_floating_ips_response,
     ):
         request_mock.return_value = one_floating_ips_response
+
         bound_floating_ip = floating_ips_client.get_by_name("Web Frontend")
+
         request_mock.assert_called_with(
-            url="/floating_ips", method="GET", params={"name": "Web Frontend"}
+            method="GET",
+            url="/floating_ips",
+            params={"name": "Web Frontend"},
         )
         assert bound_floating_ip._client is floating_ips_client
         assert bound_floating_ip.id == 4711
@@ -207,9 +236,13 @@ class TestFloatingIPsClient:
         params,
     ):
         request_mock.return_value = two_floating_ips_response
+
         result = floating_ips_client.get_list(**params)
+
         request_mock.assert_called_with(
-            url="/floating_ips", method="GET", params=params
+            method="GET",
+            url="/floating_ips",
+            params=params,
         )
 
         bound_floating_ips = result.floating_ips
@@ -237,12 +270,15 @@ class TestFloatingIPsClient:
         params,
     ):
         request_mock.return_value = two_floating_ips_response
+
         bound_floating_ips = floating_ips_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
         request_mock.assert_called_with(
-            url="/floating_ips", method="GET", params=params
+            method="GET",
+            url="/floating_ips",
+            params=params,
         )
 
         assert len(bound_floating_ips) == 2
@@ -265,12 +301,14 @@ class TestFloatingIPsClient:
         floating_ip_response,
     ):
         request_mock.return_value = floating_ip_response
+
         response = floating_ips_client.create(
             "ipv6", "Web Frontend", home_location=Location(name="location")
         )
+
         request_mock.assert_called_with(
-            url="/floating_ips",
             method="POST",
+            url="/floating_ips",
             json={
                 "description": "Web Frontend",
                 "type": "ipv6",
@@ -297,12 +335,14 @@ class TestFloatingIPsClient:
         floating_ip_create_response,
     ):
         request_mock.return_value = floating_ip_create_response
+
         response = floating_ips_client.create(
             type="ipv6", description="Web Frontend", server=server
         )
+
         request_mock.assert_called_with(
-            url="/floating_ips",
             method="POST",
+            url="/floating_ips",
             json={"description": "Web Frontend", "type": "ipv6", "server": 1},
         )
         bound_floating_ip = response.floating_ip
@@ -324,12 +364,14 @@ class TestFloatingIPsClient:
         floating_ip_create_response,
     ):
         request_mock.return_value = floating_ip_create_response
+
         response = floating_ips_client.create(
             type="ipv6", description="Web Frontend", name="Web Frontend"
         )
+
         request_mock.assert_called_with(
-            url="/floating_ips",
             method="POST",
+            url="/floating_ips",
             json={
                 "description": "Web Frontend",
                 "type": "ipv6",
@@ -356,10 +398,12 @@ class TestFloatingIPsClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         actions = floating_ips_client.get_actions(floating_ip)
+
         request_mock.assert_called_with(
-            url="/floating_ips/1/actions",
             method="GET",
+            url="/floating_ips/1/actions",
             params={"page": 1, "per_page": 50},
         )
 
@@ -381,12 +425,14 @@ class TestFloatingIPsClient:
         response_update_floating_ip,
     ):
         request_mock.return_value = response_update_floating_ip
+
         floating_ip = floating_ips_client.update(
             floating_ip, description="New description", name="New name"
         )
+
         request_mock.assert_called_with(
-            url="/floating_ips/1",
             method="PUT",
+            url="/floating_ips/1",
             json={"description": "New description", "name": "New name"},
         )
 
@@ -405,10 +451,12 @@ class TestFloatingIPsClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = floating_ips_client.change_protection(floating_ip, True)
+
         request_mock.assert_called_with(
-            url="/floating_ips/1/actions/change_protection",
             method="POST",
+            url="/floating_ips/1/actions/change_protection",
             json={"delete": True},
         )
 
@@ -426,8 +474,13 @@ class TestFloatingIPsClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         delete_success = floating_ips_client.delete(floating_ip)
-        request_mock.assert_called_with(url="/floating_ips/1", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/floating_ips/1",
+        )
 
         assert delete_success is True
 
@@ -450,9 +503,13 @@ class TestFloatingIPsClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = floating_ips_client.assign(floating_ip, server)
+
         request_mock.assert_called_with(
-            url="/floating_ips/12/actions/assign", method="POST", json={"server": 1}
+            method="POST",
+            url="/floating_ips/12/actions/assign",
+            json={"server": 1},
         )
         assert action.id == 1
         assert action.progress == 0
@@ -469,9 +526,12 @@ class TestFloatingIPsClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = floating_ips_client.unassign(floating_ip)
+
         request_mock.assert_called_with(
-            url="/floating_ips/12/actions/unassign", method="POST"
+            method="POST",
+            url="/floating_ips/12/actions/unassign",
         )
         assert action.id == 1
         assert action.progress == 0
@@ -488,12 +548,14 @@ class TestFloatingIPsClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = floating_ips_client.change_dns_ptr(
             floating_ip, "1.2.3.4", "server02.example.com"
         )
+
         request_mock.assert_called_with(
-            url="/floating_ips/12/actions/change_dns_ptr",
             method="POST",
+            url="/floating_ips/12/actions/change_dns_ptr",
             json={"ip": "1.2.3.4", "dns_ptr": "server02.example.com"},
         )
         assert action.id == 1
@@ -508,7 +570,10 @@ class TestFloatingIPsClient:
         request_mock.return_value = {"action": response_get_actions["actions"][0]}
         action = floating_ips_client.actions.get_by_id(13)
 
-        request_mock.assert_called_with(url="/floating_ips/actions/13", method="GET")
+        request_mock.assert_called_with(
+            method="GET",
+            url="/floating_ips/actions/13",
+        )
 
         assert isinstance(action, BoundAction)
         assert action._client == floating_ips_client._parent.actions
@@ -522,11 +587,12 @@ class TestFloatingIPsClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         result = floating_ips_client.actions.get_list()
 
         request_mock.assert_called_with(
-            url="/floating_ips/actions",
             method="GET",
+            url="/floating_ips/actions",
             params={},
         )
 
@@ -546,11 +612,12 @@ class TestFloatingIPsClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         actions = floating_ips_client.actions.get_all()
 
         request_mock.assert_called_with(
-            url="/floating_ips/actions",
             method="GET",
+            url="/floating_ips/actions",
             params={"page": 1, "per_page": 50},
         )
 

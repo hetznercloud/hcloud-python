@@ -69,8 +69,13 @@ class TestDatacentersClient:
         datacenter_response,
     ):
         request_mock.return_value = datacenter_response
+
         datacenter = datacenters_client.get_by_id(1)
-        request_mock.assert_called_with(url="/datacenters/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/datacenters/1",
+        )
         assert datacenter._client is datacenters_client
         assert datacenter.id == 1
         assert datacenter.name == "fsn1-dc8"
@@ -86,8 +91,14 @@ class TestDatacentersClient:
         params,
     ):
         request_mock.return_value = two_datacenters_response
+
         result = datacenters_client.get_list(**params)
-        request_mock.assert_called_with(url="/datacenters", method="GET", params=params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/datacenters",
+            params=params,
+        )
 
         datacenters = result.datacenters
         assert result.meta is not None
@@ -116,10 +127,16 @@ class TestDatacentersClient:
         params,
     ):
         request_mock.return_value = two_datacenters_response
+
         datacenters = datacenters_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
-        request_mock.assert_called_with(url="/datacenters", method="GET", params=params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/datacenters",
+            params=params,
+        )
 
         assert len(datacenters) == 2
 
@@ -143,10 +160,16 @@ class TestDatacentersClient:
         one_datacenters_response,
     ):
         request_mock.return_value = one_datacenters_response
+
         datacenter = datacenters_client.get_by_name("fsn1-dc8")
 
         params = {"name": "fsn1-dc8"}
-        request_mock.assert_called_with(url="/datacenters", method="GET", params=params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/datacenters",
+            params=params,
+        )
 
         assert datacenter._client is datacenters_client
         assert datacenter.id == 1

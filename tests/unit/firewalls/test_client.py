@@ -84,9 +84,13 @@ class TestBoundFirewall:
         params,
     ):
         request_mock.return_value = response_get_actions
+
         result = bound_firewall.get_actions_list(**params)
+
         request_mock.assert_called_with(
-            url="/firewalls/1/actions", method="GET", params=params
+            method="GET",
+            url="/firewalls/1/actions",
+            params=params,
         )
 
         actions = result.actions
@@ -108,12 +112,15 @@ class TestBoundFirewall:
         params,
     ):
         request_mock.return_value = response_get_actions
+
         actions = bound_firewall.get_actions(**params)
 
         params.update({"page": 1, "per_page": 50})
 
         request_mock.assert_called_with(
-            url="/firewalls/1/actions", method="GET", params=params
+            method="GET",
+            url="/firewalls/1/actions",
+            params=params,
         )
 
         assert len(actions) == 1
@@ -129,12 +136,14 @@ class TestBoundFirewall:
         response_update_firewall,
     ):
         request_mock.return_value = response_update_firewall
+
         firewall = bound_firewall.update(
             name="New Corporate Intranet Protection", labels={}
         )
+
         request_mock.assert_called_with(
-            url="/firewalls/1",
             method="PUT",
+            url="/firewalls/1",
             json={"name": "New Corporate Intranet Protection", "labels": {}},
         )
 
@@ -147,7 +156,11 @@ class TestBoundFirewall:
         bound_firewall,
     ):
         delete_success = bound_firewall.delete()
-        request_mock.assert_called_with(url="/firewalls/1", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/firewalls/1",
+        )
 
         assert delete_success is True
 
@@ -158,6 +171,7 @@ class TestBoundFirewall:
         response_set_rules,
     ):
         request_mock.return_value = response_set_rules
+
         actions = bound_firewall.set_rules(
             [
                 FirewallRule(
@@ -168,9 +182,10 @@ class TestBoundFirewall:
                 )
             ]
         )
+
         request_mock.assert_called_with(
-            url="/firewalls/1/actions/set_rules",
             method="POST",
+            url="/firewalls/1/actions/set_rules",
             json={
                 "rules": [
                     {
@@ -193,12 +208,14 @@ class TestBoundFirewall:
         response_set_rules,
     ):
         request_mock.return_value = response_set_rules
+
         actions = bound_firewall.apply_to_resources(
             [FirewallResource(type=FirewallResource.TYPE_SERVER, server=Server(id=5))]
         )
+
         request_mock.assert_called_with(
-            url="/firewalls/1/actions/apply_to_resources",
             method="POST",
+            url="/firewalls/1/actions/apply_to_resources",
             json={"apply_to": [{"type": "server", "server": {"id": 5}}]},
         )
 
@@ -212,12 +229,14 @@ class TestBoundFirewall:
         response_set_rules,
     ):
         request_mock.return_value = response_set_rules
+
         actions = bound_firewall.remove_from_resources(
             [FirewallResource(type=FirewallResource.TYPE_SERVER, server=Server(id=5))]
         )
+
         request_mock.assert_called_with(
-            url="/firewalls/1/actions/remove_from_resources",
             method="POST",
+            url="/firewalls/1/actions/remove_from_resources",
             json={"remove_from": [{"type": "server", "server": {"id": 5}}]},
         )
 
@@ -237,8 +256,13 @@ class TestFirewallsClient:
         firewall_response,
     ):
         request_mock.return_value = firewall_response
+
         firewall = firewalls_client.get_by_id(1)
-        request_mock.assert_called_with(url="/firewalls/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/firewalls/1",
+        )
         assert firewall._client is firewalls_client
         assert firewall.id == 38
         assert firewall.name == "Corporate Intranet Protection"
@@ -265,8 +289,14 @@ class TestFirewallsClient:
         params,
     ):
         request_mock.return_value = two_firewalls_response
+
         result = firewalls_client.get_list(**params)
-        request_mock.assert_called_with(url="/firewalls", method="GET", params=params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/firewalls",
+            params=params,
+        )
 
         firewalls = result.firewalls
         assert result.meta is not None
@@ -303,11 +333,16 @@ class TestFirewallsClient:
         params,
     ):
         request_mock.return_value = two_firewalls_response
+
         firewalls = firewalls_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        request_mock.assert_called_with(url="/firewalls", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/firewalls",
+            params=params,
+        )
 
         assert len(firewalls) == 2
 
@@ -329,11 +364,16 @@ class TestFirewallsClient:
         one_firewalls_response,
     ):
         request_mock.return_value = one_firewalls_response
+
         firewall = firewalls_client.get_by_name("Corporate Intranet Protection")
 
         params = {"name": "Corporate Intranet Protection"}
 
-        request_mock.assert_called_with(url="/firewalls", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/firewalls",
+            params=params,
+        )
 
         assert firewall._client is firewalls_client
         assert firewall.id == 38
@@ -350,9 +390,13 @@ class TestFirewallsClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         result = firewalls_client.get_actions_list(firewall)
+
         request_mock.assert_called_with(
-            url="/firewalls/1/actions", method="GET", params={}
+            method="GET",
+            url="/firewalls/1/actions",
+            params={},
         )
 
         actions = result.actions
@@ -372,6 +416,7 @@ class TestFirewallsClient:
         response_create_firewall,
     ):
         request_mock.return_value = response_create_firewall
+
         response = firewalls_client.create(
             "Corporate Intranet Protection",
             rules=[
@@ -391,9 +436,10 @@ class TestFirewallsClient:
                 ),
             ],
         )
+
         request_mock.assert_called_with(
-            url="/firewalls",
             method="POST",
+            url="/firewalls",
             json={
                 "name": "Corporate Intranet Protection",
                 "rules": [
@@ -430,12 +476,14 @@ class TestFirewallsClient:
         response_update_firewall,
     ):
         request_mock.return_value = response_update_firewall
+
         firewall = firewalls_client.update(
             firewall, name="New Corporate Intranet Protection", labels={}
         )
+
         request_mock.assert_called_with(
-            url="/firewalls/38",
             method="PUT",
+            url="/firewalls/38",
             json={"name": "New Corporate Intranet Protection", "labels": {}},
         )
 
@@ -453,6 +501,7 @@ class TestFirewallsClient:
         response_set_rules,
     ):
         request_mock.return_value = response_set_rules
+
         actions = firewalls_client.set_rules(
             firewall,
             [
@@ -463,9 +512,10 @@ class TestFirewallsClient:
                 )
             ],
         )
+
         request_mock.assert_called_with(
-            url="/firewalls/1/actions/set_rules",
             method="POST",
+            url="/firewalls/1/actions/set_rules",
             json={
                 "rules": [
                     {
@@ -490,7 +540,11 @@ class TestFirewallsClient:
         firewall,
     ):
         delete_success = firewalls_client.delete(firewall)
-        request_mock.assert_called_with(url="/firewalls/1", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/firewalls/1",
+        )
 
         assert delete_success is True
 
@@ -510,9 +564,10 @@ class TestFirewallsClient:
             firewall,
             [FirewallResource(type=FirewallResource.TYPE_SERVER, server=Server(id=5))],
         )
+
         request_mock.assert_called_with(
-            url="/firewalls/1/actions/apply_to_resources",
             method="POST",
+            url="/firewalls/1/actions/apply_to_resources",
             json={"apply_to": [{"type": "server", "server": {"id": 5}}]},
         )
 
@@ -535,9 +590,10 @@ class TestFirewallsClient:
             firewall,
             [FirewallResource(type=FirewallResource.TYPE_SERVER, server=Server(id=5))],
         )
+
         request_mock.assert_called_with(
-            url="/firewalls/1/actions/remove_from_resources",
             method="POST",
+            url="/firewalls/1/actions/remove_from_resources",
             json={"remove_from": [{"type": "server", "server": {"id": 5}}]},
         )
 
@@ -553,7 +609,10 @@ class TestFirewallsClient:
         request_mock.return_value = {"action": response_get_actions["actions"][0]}
         action = firewalls_client.actions.get_by_id(13)
 
-        request_mock.assert_called_with(url="/firewalls/actions/13", method="GET")
+        request_mock.assert_called_with(
+            method="GET",
+            url="/firewalls/actions/13",
+        )
 
         assert isinstance(action, BoundAction)
         assert action._client == firewalls_client._parent.actions
@@ -567,11 +626,12 @@ class TestFirewallsClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         result = firewalls_client.actions.get_list()
 
         request_mock.assert_called_with(
-            url="/firewalls/actions",
             method="GET",
+            url="/firewalls/actions",
             params={},
         )
 
@@ -591,11 +651,12 @@ class TestFirewallsClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         actions = firewalls_client.actions.get_all()
 
         request_mock.assert_called_with(
-            url="/firewalls/actions",
             method="GET",
+            url="/firewalls/actions",
             params={"page": 1, "per_page": 50},
         )
 

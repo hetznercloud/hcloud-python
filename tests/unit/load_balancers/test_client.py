@@ -46,9 +46,13 @@ class TestBoundLoadBalancer:
         params,
     ):
         request_mock.return_value = response_get_actions
+
         result = bound_load_balancer.get_actions_list(**params)
+
         request_mock.assert_called_with(
-            url="/load_balancers/14/actions", method="GET", params=params
+            method="GET",
+            url="/load_balancers/14/actions",
+            params=params,
         )
 
         actions = result.actions
@@ -70,12 +74,15 @@ class TestBoundLoadBalancer:
         params,
     ):
         request_mock.return_value = response_get_actions
+
         actions = bound_load_balancer.get_actions(**params)
 
         params.update({"page": 1, "per_page": 50})
 
         request_mock.assert_called_with(
-            url="/load_balancers/14/actions", method="GET", params=params
+            method="GET",
+            url="/load_balancers/14/actions",
+            params=params,
         )
 
         assert len(actions) == 1
@@ -91,10 +98,12 @@ class TestBoundLoadBalancer:
         response_update_load_balancer,
     ):
         request_mock.return_value = response_update_load_balancer
+
         load_balancer = bound_load_balancer.update(name="new-name", labels={})
+
         request_mock.assert_called_with(
-            url="/load_balancers/14",
             method="PUT",
+            url="/load_balancers/14",
             json={"name": "new-name", "labels": {}},
         )
 
@@ -108,8 +117,13 @@ class TestBoundLoadBalancer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         delete_success = bound_load_balancer.delete()
-        request_mock.assert_called_with(url="/load_balancers/14", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/load_balancers/14",
+        )
 
         assert delete_success is True
 
@@ -120,14 +134,16 @@ class TestBoundLoadBalancer:
         response_get_metrics,
     ):
         request_mock.return_value = response_get_metrics
+
         response = bound_load_balancer.get_metrics(
             type=["requests_per_second"],
             start="2023-12-14T16:55:32+01:00",
             end="2023-12-14T16:55:32+01:00",
         )
+
         request_mock.assert_called_with(
-            url="/load_balancers/14/metrics",
             method="GET",
+            url="/load_balancers/14/metrics",
             params={
                 "type": "requests_per_second",
                 "start": "2023-12-14T16:55:32+01:00",
@@ -144,12 +160,14 @@ class TestBoundLoadBalancer:
         response_add_service,
     ):
         request_mock.return_value = response_add_service
+
         service = LoadBalancerService(listen_port=80, protocol="http")
         action = bound_load_balancer.add_service(service)
+
         request_mock.assert_called_with(
-            json={"protocol": "http", "listen_port": 80},
-            url="/load_balancers/14/actions/add_service",
             method="POST",
+            url="/load_balancers/14/actions/add_service",
+            json={"protocol": "http", "listen_port": 80},
         )
 
         assert action.id == 13
@@ -163,12 +181,14 @@ class TestBoundLoadBalancer:
         response_delete_service,
     ):
         request_mock.return_value = response_delete_service
+
         service = LoadBalancerService(listen_port=12)
         action = bound_load_balancer.delete_service(service)
+
         request_mock.assert_called_with(
-            json={"listen_port": 12},
-            url="/load_balancers/14/actions/delete_service",
             method="POST",
+            url="/load_balancers/14/actions/delete_service",
+            json={"listen_port": 12},
         )
 
         assert action.id == 13
@@ -206,10 +226,14 @@ class TestBoundLoadBalancer:
         params,
     ):
         request_mock.return_value = response_add_target
+
         action = bound_load_balancer.add_target(target)
         params.update({"type": target.type})
+
         request_mock.assert_called_with(
-            url="/load_balancers/14/actions/add_target", method="POST", json=params
+            method="POST",
+            url="/load_balancers/14/actions/add_target",
+            json=params,
         )
 
         assert action.id == 13
@@ -247,10 +271,14 @@ class TestBoundLoadBalancer:
         params,
     ):
         request_mock.return_value = response_remove_target
+
         action = bound_load_balancer.remove_target(target)
         params.update({"type": target.type})
+
         request_mock.assert_called_with(
-            url="/load_balancers/14/actions/remove_target", method="POST", json=params
+            method="POST",
+            url="/load_balancers/14/actions/remove_target",
+            json=params,
         )
 
         assert action.id == 13
@@ -264,13 +292,17 @@ class TestBoundLoadBalancer:
         response_update_service,
     ):
         request_mock.return_value = response_update_service
+
         new_health_check = LoadBalancerHealthCheck(
             protocol="http", port=13, interval=1, timeout=1, retries=1
         )
         service = LoadBalancerService(listen_port=12, health_check=new_health_check)
 
         action = bound_load_balancer.update_service(service)
+
         request_mock.assert_called_with(
+            method="POST",
+            url="/load_balancers/14/actions/update_service",
             json={
                 "listen_port": 12,
                 "health_check": {
@@ -281,8 +313,6 @@ class TestBoundLoadBalancer:
                     "retries": 1,
                 },
             },
-            url="/load_balancers/14/actions/update_service",
-            method="POST",
         )
 
         assert action.id == 13
@@ -296,12 +326,14 @@ class TestBoundLoadBalancer:
         response_change_algorithm,
     ):
         request_mock.return_value = response_change_algorithm
+
         algorithm = LoadBalancerAlgorithm(type="round_robin")
         action = bound_load_balancer.change_algorithm(algorithm)
+
         request_mock.assert_called_with(
-            json={"type": "round_robin"},
-            url="/load_balancers/14/actions/change_algorithm",
             method="POST",
+            url="/load_balancers/14/actions/change_algorithm",
+            json={"type": "round_robin"},
         )
 
         assert action.id == 13
@@ -315,13 +347,15 @@ class TestBoundLoadBalancer:
         response_change_reverse_dns_entry,
     ):
         request_mock.return_value = response_change_reverse_dns_entry
+
         action = bound_load_balancer.change_dns_ptr(
             ip="1.2.3.4", dns_ptr="lb1.example.com"
         )
+
         request_mock.assert_called_with(
-            json={"dns_ptr": "lb1.example.com", "ip": "1.2.3.4"},
-            url="/load_balancers/14/actions/change_dns_ptr",
             method="POST",
+            url="/load_balancers/14/actions/change_dns_ptr",
+            json={"dns_ptr": "lb1.example.com", "ip": "1.2.3.4"},
         )
 
         assert action.id == 13
@@ -335,11 +369,13 @@ class TestBoundLoadBalancer:
         response_change_protection,
     ):
         request_mock.return_value = response_change_protection
+
         action = bound_load_balancer.change_protection(delete=True)
+
         request_mock.assert_called_with(
-            json={"delete": True},
-            url="/load_balancers/14/actions/change_protection",
             method="POST",
+            url="/load_balancers/14/actions/change_protection",
+            json={"delete": True},
         )
 
         assert action.id == 13
@@ -353,9 +389,12 @@ class TestBoundLoadBalancer:
         response_enable_public_interface,
     ):
         request_mock.return_value = response_enable_public_interface
+
         action = bound_load_balancer.enable_public_interface()
+
         request_mock.assert_called_with(
-            url="/load_balancers/14/actions/enable_public_interface", method="POST"
+            method="POST",
+            url="/load_balancers/14/actions/enable_public_interface",
         )
 
         assert action.id == 13
@@ -369,9 +408,12 @@ class TestBoundLoadBalancer:
         response_disable_public_interface,
     ):
         request_mock.return_value = response_disable_public_interface
+
         action = bound_load_balancer.disable_public_interface()
+
         request_mock.assert_called_with(
-            url="/load_balancers/14/actions/disable_public_interface", method="POST"
+            method="POST",
+            url="/load_balancers/14/actions/disable_public_interface",
         )
 
         assert action.id == 13
@@ -385,11 +427,13 @@ class TestBoundLoadBalancer:
         response_attach_load_balancer_to_network,
     ):
         request_mock.return_value = response_attach_load_balancer_to_network
+
         action = bound_load_balancer.attach_to_network(Network(id=1))
+
         request_mock.assert_called_with(
-            json={"network": 1},
-            url="/load_balancers/14/actions/attach_to_network",
             method="POST",
+            url="/load_balancers/14/actions/attach_to_network",
+            json={"network": 1},
         )
 
         assert action.id == 13
@@ -403,11 +447,13 @@ class TestBoundLoadBalancer:
         response_detach_from_network,
     ):
         request_mock.return_value = response_detach_from_network
+
         action = bound_load_balancer.detach_from_network(Network(id=1))
+
         request_mock.assert_called_with(
-            json={"network": 1},
-            url="/load_balancers/14/actions/detach_from_network",
             method="POST",
+            url="/load_balancers/14/actions/detach_from_network",
+            json={"network": 1},
         )
 
         assert action.id == 13
@@ -421,10 +467,12 @@ class TestBoundLoadBalancer:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_load_balancer.change_type(LoadBalancerType(name="lb21"))
+
         request_mock.assert_called_with(
-            url="/load_balancers/14/actions/change_type",
             method="POST",
+            url="/load_balancers/14/actions/change_type",
             json={"load_balancer_type": "lb21"},
         )
 
@@ -444,8 +492,13 @@ class TestLoadBalancerslient:
         response_load_balancer,
     ):
         request_mock.return_value = response_load_balancer
+
         bound_load_balancer = load_balancers_client.get_by_id(1)
-        request_mock.assert_called_with(url="/load_balancers/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/load_balancers/1",
+        )
         assert bound_load_balancer._client is load_balancers_client
         assert bound_load_balancer.id == 4711
         assert bound_load_balancer.name == "Web Frontend"
@@ -474,9 +527,13 @@ class TestLoadBalancerslient:
         params,
     ):
         request_mock.return_value = response_simple_load_balancers
+
         result = load_balancers_client.get_list(**params)
+
         request_mock.assert_called_with(
-            url="/load_balancers", method="GET", params=params
+            method="GET",
+            url="/load_balancers",
+            params=params,
         )
 
         bound_load_balancers = result.load_balancers
@@ -506,12 +563,15 @@ class TestLoadBalancerslient:
         params,
     ):
         request_mock.return_value = response_simple_load_balancers
+
         bound_load_balancers = load_balancers_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
         request_mock.assert_called_with(
-            url="/load_balancers", method="GET", params=params
+            method="GET",
+            url="/load_balancers",
+            params=params,
         )
 
         assert len(bound_load_balancers) == 2
@@ -534,12 +594,15 @@ class TestLoadBalancerslient:
         response_simple_load_balancers,
     ):
         request_mock.return_value = response_simple_load_balancers
+
         bound_load_balancer = load_balancers_client.get_by_name("Web Frontend")
 
         params = {"name": "Web Frontend"}
 
         request_mock.assert_called_with(
-            url="/load_balancers", method="GET", params=params
+            method="GET",
+            url="/load_balancers",
+            params=params,
         )
 
         assert bound_load_balancer._client is load_balancers_client
@@ -553,14 +616,16 @@ class TestLoadBalancerslient:
         response_create_load_balancer,
     ):
         request_mock.return_value = response_create_load_balancer
+
         response = load_balancers_client.create(
             "my-balancer",
             load_balancer_type=LoadBalancerType(name="lb11"),
             location=Location(id=1),
         )
+
         request_mock.assert_called_with(
-            url="/load_balancers",
             method="POST",
+            url="/load_balancers",
             json={"name": "my-balancer", "load_balancer_type": "lb11", "location": 1},
         )
 
@@ -582,12 +647,14 @@ class TestLoadBalancerslient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = load_balancers_client.change_type(
             load_balancer, LoadBalancerType(name="lb11")
         )
+
         request_mock.assert_called_with(
-            url="/load_balancers/1/actions/change_type",
             method="POST",
+            url="/load_balancers/1/actions/change_type",
             json={"load_balancer_type": "lb11"},
         )
 
@@ -606,12 +673,14 @@ class TestLoadBalancerslient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = load_balancers_client.change_type(
             load_balancer, LoadBalancerType(id=1)
         )
+
         request_mock.assert_called_with(
-            url="/load_balancers/1/actions/change_type",
             method="POST",
+            url="/load_balancers/1/actions/change_type",
             json={"load_balancer_type": 1},
         )
 
@@ -627,7 +696,10 @@ class TestLoadBalancerslient:
         request_mock.return_value = {"action": response_get_actions["actions"][0]}
         action = load_balancers_client.actions.get_by_id(13)
 
-        request_mock.assert_called_with(url="/load_balancers/actions/13", method="GET")
+        request_mock.assert_called_with(
+            method="GET",
+            url="/load_balancers/actions/13",
+        )
 
         assert isinstance(action, BoundAction)
         assert action._client == load_balancers_client._parent.actions
@@ -641,11 +713,12 @@ class TestLoadBalancerslient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         result = load_balancers_client.actions.get_list()
 
         request_mock.assert_called_with(
-            url="/load_balancers/actions",
             method="GET",
+            url="/load_balancers/actions",
             params={},
         )
 
@@ -665,11 +738,12 @@ class TestLoadBalancerslient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         actions = load_balancers_client.actions.get_all()
 
         request_mock.assert_called_with(
-            url="/load_balancers/actions",
             method="GET",
+            url="/load_balancers/actions",
             params={"page": 1, "per_page": 50},
         )
 

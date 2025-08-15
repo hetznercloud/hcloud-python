@@ -50,10 +50,12 @@ class TestBoundVolume:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         actions = bound_volume.get_actions(sort="id")
+
         request_mock.assert_called_with(
-            url="/volumes/14/actions",
             method="GET",
+            url="/volumes/14/actions",
             params={"page": 1, "per_page": 50, "sort": "id"},
         )
 
@@ -70,9 +72,13 @@ class TestBoundVolume:
         response_update_volume,
     ):
         request_mock.return_value = response_update_volume
+
         volume = bound_volume.update(name="new-name")
+
         request_mock.assert_called_with(
-            url="/volumes/14", method="PUT", json={"name": "new-name"}
+            method="PUT",
+            url="/volumes/14",
+            json={"name": "new-name"},
         )
 
         assert volume.id == 4711
@@ -85,8 +91,13 @@ class TestBoundVolume:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         delete_success = bound_volume.delete()
-        request_mock.assert_called_with(url="/volumes/14", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/volumes/14",
+        )
 
         assert delete_success is True
 
@@ -97,10 +108,12 @@ class TestBoundVolume:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_volume.change_protection(True)
+
         request_mock.assert_called_with(
-            url="/volumes/14/actions/change_protection",
             method="POST",
+            url="/volumes/14/actions/change_protection",
             json={"delete": True},
         )
 
@@ -118,9 +131,13 @@ class TestBoundVolume:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_volume.attach(server)
+
         request_mock.assert_called_with(
-            url="/volumes/14/actions/attach", method="POST", json={"server": 1}
+            method="POST",
+            url="/volumes/14/actions/attach",
+            json={"server": 1},
         )
         assert action.id == 1
         assert action.progress == 0
@@ -136,10 +153,12 @@ class TestBoundVolume:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_volume.attach(server, False)
+
         request_mock.assert_called_with(
-            url="/volumes/14/actions/attach",
             method="POST",
+            url="/volumes/14/actions/attach",
             json={"server": 1, "automount": False},
         )
         assert action.id == 1
@@ -152,8 +171,13 @@ class TestBoundVolume:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_volume.detach()
-        request_mock.assert_called_with(url="/volumes/14/actions/detach", method="POST")
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/volumes/14/actions/detach",
+        )
         assert action.id == 1
         assert action.progress == 0
 
@@ -164,9 +188,13 @@ class TestBoundVolume:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = bound_volume.resize(50)
+
         request_mock.assert_called_with(
-            url="/volumes/14/actions/resize", method="POST", json={"size": 50}
+            method="POST",
+            url="/volumes/14/actions/resize",
+            json={"size": 50},
         )
         assert action.id == 1
         assert action.progress == 0
@@ -184,8 +212,13 @@ class TestVolumesClient:
         volume_response,
     ):
         request_mock.return_value = volume_response
+
         bound_volume = volumes_client.get_by_id(1)
-        request_mock.assert_called_with(url="/volumes/1", method="GET")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/volumes/1",
+        )
         assert bound_volume._client is volumes_client
         assert bound_volume.id == 1
         assert bound_volume.name == "database-storage"
@@ -202,8 +235,14 @@ class TestVolumesClient:
         params,
     ):
         request_mock.return_value = two_volumes_response
+
         result = volumes_client.get_list(**params)
-        request_mock.assert_called_with(url="/volumes", method="GET", params=params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/volumes",
+            params=params,
+        )
 
         bound_volumes = result.volumes
         assert result.meta is not None
@@ -230,11 +269,16 @@ class TestVolumesClient:
         params,
     ):
         request_mock.return_value = two_volumes_response
+
         bound_volumes = volumes_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
-        request_mock.assert_called_with(url="/volumes", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/volumes",
+            params=params,
+        )
 
         assert len(bound_volumes) == 2
 
@@ -256,11 +300,16 @@ class TestVolumesClient:
         one_volumes_response,
     ):
         request_mock.return_value = one_volumes_response
+
         bound_volume = volumes_client.get_by_name("database-storage")
 
         params = {"name": "database-storage"}
 
-        request_mock.assert_called_with(url="/volumes", method="GET", params=params)
+        request_mock.assert_called_with(
+            method="GET",
+            url="/volumes",
+            params=params,
+        )
 
         assert bound_volume._client is volumes_client
         assert bound_volume.id == 1
@@ -273,6 +322,7 @@ class TestVolumesClient:
         volume_create_response,
     ):
         request_mock.return_value = volume_create_response
+
         response = volumes_client.create(
             100,
             "database-storage",
@@ -280,9 +330,10 @@ class TestVolumesClient:
             automount=False,
             format="xfs",
         )
+
         request_mock.assert_called_with(
-            url="/volumes",
             method="POST",
+            url="/volumes",
             json={
                 "name": "database-storage",
                 "size": 100,
@@ -314,12 +365,14 @@ class TestVolumesClient:
         volume_create_response,
     ):
         request_mock.return_value = volume_create_response
+
         volumes_client.create(
             100, "database-storage", server=server, automount=False, format="xfs"
         )
+
         request_mock.assert_called_with(
-            url="/volumes",
             method="POST",
+            url="/volumes",
             json={
                 "name": "database-storage",
                 "size": 100,
@@ -339,6 +392,7 @@ class TestVolumesClient:
                 -100, "database-storage", location=Location(name="location")
             )
         assert str(e.value) == "size must be greater than 0"
+
         request_mock.assert_not_called()
 
     @pytest.mark.parametrize(
@@ -356,6 +410,7 @@ class TestVolumesClient:
                 100, "database-storage", location=location, server=server
             )
         assert str(e.value) == "only one of server or location must be provided"
+
         request_mock.assert_not_called()
 
     @pytest.mark.parametrize(
@@ -369,9 +424,13 @@ class TestVolumesClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         result = volumes_client.get_actions_list(volume, sort="id")
+
         request_mock.assert_called_with(
-            url="/volumes/1/actions", method="GET", params={"sort": "id"}
+            method="GET",
+            url="/volumes/1/actions",
+            params={"sort": "id"},
         )
 
         actions = result.actions
@@ -393,9 +452,13 @@ class TestVolumesClient:
         response_update_volume,
     ):
         request_mock.return_value = response_update_volume
+
         volume = volumes_client.update(volume, name="new-name")
+
         request_mock.assert_called_with(
-            url="/volumes/1", method="PUT", json={"name": "new-name"}
+            method="PUT",
+            url="/volumes/1",
+            json={"name": "new-name"},
         )
 
         assert volume.id == 4711
@@ -412,10 +475,12 @@ class TestVolumesClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = volumes_client.change_protection(volume, True)
+
         request_mock.assert_called_with(
-            url="/volumes/1/actions/change_protection",
             method="POST",
+            url="/volumes/1/actions/change_protection",
             json={"delete": True},
         )
 
@@ -433,8 +498,13 @@ class TestVolumesClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         delete_success = volumes_client.delete(volume)
-        request_mock.assert_called_with(url="/volumes/1", method="DELETE")
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/volumes/1",
+        )
 
         assert delete_success is True
 
@@ -457,9 +527,13 @@ class TestVolumesClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = volumes_client.attach(volume, server)
+
         request_mock.assert_called_with(
-            url="/volumes/12/actions/attach", method="POST", json={"server": 1}
+            method="POST",
+            url="/volumes/12/actions/attach",
+            json={"server": 1},
         )
         assert action.id == 1
         assert action.progress == 0
@@ -475,8 +549,13 @@ class TestVolumesClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = volumes_client.detach(volume)
-        request_mock.assert_called_with(url="/volumes/12/actions/detach", method="POST")
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/volumes/12/actions/detach",
+        )
         assert action.id == 1
         assert action.progress == 0
 
@@ -491,9 +570,13 @@ class TestVolumesClient:
         generic_action,
     ):
         request_mock.return_value = generic_action
+
         action = volumes_client.resize(volume, 50)
+
         request_mock.assert_called_with(
-            url="/volumes/12/actions/resize", method="POST", json={"size": 50}
+            method="POST",
+            url="/volumes/12/actions/resize",
+            json={"size": 50},
         )
         assert action.id == 1
         assert action.progress == 0
@@ -507,7 +590,10 @@ class TestVolumesClient:
         request_mock.return_value = {"action": response_get_actions["actions"][0]}
         action = volumes_client.actions.get_by_id(13)
 
-        request_mock.assert_called_with(url="/volumes/actions/13", method="GET")
+        request_mock.assert_called_with(
+            method="GET",
+            url="/volumes/actions/13",
+        )
 
         assert isinstance(action, BoundAction)
         assert action._client == volumes_client._parent.actions
@@ -521,11 +607,12 @@ class TestVolumesClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         result = volumes_client.actions.get_list()
 
         request_mock.assert_called_with(
-            url="/volumes/actions",
             method="GET",
+            url="/volumes/actions",
             params={},
         )
 
@@ -545,11 +632,12 @@ class TestVolumesClient:
         response_get_actions,
     ):
         request_mock.return_value = response_get_actions
+
         actions = volumes_client.actions.get_all()
 
         request_mock.assert_called_with(
-            url="/volumes/actions",
             method="GET",
+            url="/volumes/actions",
             params={"page": 1, "per_page": 50},
         )
 
