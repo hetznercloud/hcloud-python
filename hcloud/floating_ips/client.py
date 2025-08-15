@@ -140,6 +140,7 @@ class FloatingIPsPageResult(NamedTuple):
 
 
 class FloatingIPsClient(ResourceClientBase):
+    _base_url = "/floating_ips"
 
     actions: ResourceActionsClient
     """Floating IPs scoped actions client
@@ -149,7 +150,7 @@ class FloatingIPsClient(ResourceClientBase):
 
     def __init__(self, client: Client):
         super().__init__(client)
-        self.actions = ResourceActionsClient(client, "/floating_ips")
+        self.actions = ResourceActionsClient(client, self._base_url)
 
     def get_actions_list(
         self,
@@ -182,7 +183,7 @@ class FloatingIPsClient(ResourceClientBase):
         if per_page is not None:
             params["per_page"] = per_page
         response = self._client.request(
-            url=f"/floating_ips/{floating_ip.id}/actions",
+            url=f"{self._base_url}/{floating_ip.id}/actions",
             method="GET",
             params=params,
         )
@@ -221,7 +222,7 @@ class FloatingIPsClient(ResourceClientBase):
         :param id: int
         :return: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`
         """
-        response = self._client.request(url=f"/floating_ips/{id}", method="GET")
+        response = self._client.request(url=f"{self._base_url}/{id}", method="GET")
         return BoundFloatingIP(self, response["floating_ip"])
 
     def get_list(
@@ -254,9 +255,7 @@ class FloatingIPsClient(ResourceClientBase):
         if name is not None:
             params["name"] = name
 
-        response = self._client.request(
-            url="/floating_ips", method="GET", params=params
-        )
+        response = self._client.request(url=self._base_url, method="GET", params=params)
         floating_ips = [
             BoundFloatingIP(self, floating_ip_data)
             for floating_ip_data in response["floating_ips"]
@@ -324,7 +323,7 @@ class FloatingIPsClient(ResourceClientBase):
         if name is not None:
             data["name"] = name
 
-        response = self._client.request(url="/floating_ips", json=data, method="POST")
+        response = self._client.request(url=self._base_url, json=data, method="POST")
 
         action = None
         if response.get("action") is not None:
@@ -362,7 +361,7 @@ class FloatingIPsClient(ResourceClientBase):
             data["name"] = name
 
         response = self._client.request(
-            url=f"/floating_ips/{floating_ip.id}",
+            url=f"{self._base_url}/{floating_ip.id}",
             method="PUT",
             json=data,
         )
@@ -375,7 +374,7 @@ class FloatingIPsClient(ResourceClientBase):
         :return: boolean
         """
         self._client.request(
-            url=f"/floating_ips/{floating_ip.id}",
+            url=f"{self._base_url}/{floating_ip.id}",
             method="DELETE",
         )
         # Return always true, because the API does not return an action for it. When an error occurs a HcloudAPIException will be raised
@@ -398,7 +397,7 @@ class FloatingIPsClient(ResourceClientBase):
             data.update({"delete": delete})
 
         response = self._client.request(
-            url=f"/floating_ips/{floating_ip.id}/actions/change_protection",
+            url=f"{self._base_url}/{floating_ip.id}/actions/change_protection",
             method="POST",
             json=data,
         )
@@ -417,7 +416,7 @@ class FloatingIPsClient(ResourceClientBase):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/floating_ips/{floating_ip.id}/actions/assign",
+            url=f"{self._base_url}/{floating_ip.id}/actions/assign",
             method="POST",
             json={"server": server.id},
         )
@@ -430,7 +429,7 @@ class FloatingIPsClient(ResourceClientBase):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/floating_ips/{floating_ip.id}/actions/unassign",
+            url=f"{self._base_url}/{floating_ip.id}/actions/unassign",
             method="POST",
         )
         return BoundAction(self._parent.actions, response["action"])
@@ -451,7 +450,7 @@ class FloatingIPsClient(ResourceClientBase):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/floating_ips/{floating_ip.id}/actions/change_dns_ptr",
+            url=f"{self._base_url}/{floating_ip.id}/actions/change_dns_ptr",
             method="POST",
             json={"ip": ip, "dns_ptr": dns_ptr},
         )

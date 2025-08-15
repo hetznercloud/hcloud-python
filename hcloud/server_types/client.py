@@ -18,6 +18,7 @@ class ServerTypesPageResult(NamedTuple):
 
 
 class ServerTypesClient(ResourceClientBase):
+    _base_url = "/server_types"
 
     def get_by_id(self, id: int) -> BoundServerType:
         """Returns a specific Server Type.
@@ -25,7 +26,7 @@ class ServerTypesClient(ResourceClientBase):
         :param id: int
         :return: :class:`BoundServerType <hcloud.server_types.client.BoundServerType>`
         """
-        response = self._client.request(url=f"/server_types/{id}", method="GET")
+        response = self._client.request(url=f"{self._base_url}/{id}", method="GET")
         return BoundServerType(self, response["server_type"])
 
     def get_list(
@@ -52,9 +53,7 @@ class ServerTypesClient(ResourceClientBase):
         if per_page is not None:
             params["per_page"] = per_page
 
-        response = self._client.request(
-            url="/server_types", method="GET", params=params
-        )
+        response = self._client.request(url=self._base_url, method="GET", params=params)
         server_types = [
             BoundServerType(self, server_type_data)
             for server_type_data in response["server_types"]

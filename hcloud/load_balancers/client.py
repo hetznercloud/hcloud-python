@@ -370,6 +370,7 @@ class LoadBalancersPageResult(NamedTuple):
 
 
 class LoadBalancersClient(ResourceClientBase):
+    _base_url = "/load_balancers"
 
     actions: ResourceActionsClient
     """Load Balancers scoped actions client
@@ -379,7 +380,7 @@ class LoadBalancersClient(ResourceClientBase):
 
     def __init__(self, client: Client):
         super().__init__(client)
-        self.actions = ResourceActionsClient(client, "/load_balancers")
+        self.actions = ResourceActionsClient(client, self._base_url)
 
     def get_by_id(self, id: int) -> BoundLoadBalancer:
         """Get a specific Load Balancer
@@ -388,7 +389,7 @@ class LoadBalancersClient(ResourceClientBase):
         :return: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>`
         """
         response = self._client.request(
-            url=f"/load_balancers/{id}",
+            url=f"{self._base_url}/{id}",
             method="GET",
         )
         return BoundLoadBalancer(self, response["load_balancer"])
@@ -422,9 +423,7 @@ class LoadBalancersClient(ResourceClientBase):
         if per_page is not None:
             params["per_page"] = per_page
 
-        response = self._client.request(
-            url="/load_balancers", method="GET", params=params
-        )
+        response = self._client.request(url=self._base_url, method="GET", params=params)
 
         load_balancers = [
             BoundLoadBalancer(self, load_balancer_data)
@@ -514,7 +513,7 @@ class LoadBalancersClient(ResourceClientBase):
         if location is not None:
             data["location"] = location.id_or_name
 
-        response = self._client.request(url="/load_balancers", method="POST", json=data)
+        response = self._client.request(url=self._base_url, method="POST", json=data)
 
         return CreateLoadBalancerResponse(
             load_balancer=BoundLoadBalancer(self, response["load_balancer"]),
@@ -542,7 +541,7 @@ class LoadBalancersClient(ResourceClientBase):
         if labels is not None:
             data.update({"labels": labels})
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}",
+            url=f"{self._base_url}/{load_balancer.id}",
             method="PUT",
             json=data,
         )
@@ -555,7 +554,7 @@ class LoadBalancersClient(ResourceClientBase):
         :return: boolean
         """
         self._client.request(
-            url=f"/load_balancers/{load_balancer.id}",
+            url=f"{self._base_url}/{load_balancer.id}",
             method="DELETE",
         )
         return True
@@ -592,7 +591,7 @@ class LoadBalancersClient(ResourceClientBase):
             params["step"] = step
 
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}/metrics",
+            url=f"{self._base_url}/{load_balancer.id}/metrics",
             method="GET",
             params=params,
         )
@@ -632,7 +631,7 @@ class LoadBalancersClient(ResourceClientBase):
             params["per_page"] = per_page
 
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}/actions",
+            url=f"{self._base_url}/{load_balancer.id}/actions",
             method="GET",
             params=params,
         )
@@ -679,7 +678,7 @@ class LoadBalancersClient(ResourceClientBase):
         data: dict[str, Any] = service.to_payload()
 
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}/actions/add_service",
+            url=f"{self._base_url}/{load_balancer.id}/actions/add_service",
             method="POST",
             json=data,
         )
@@ -699,7 +698,7 @@ class LoadBalancersClient(ResourceClientBase):
         """
         data: dict[str, Any] = service.to_payload()
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}/actions/update_service",
+            url=f"{self._base_url}/{load_balancer.id}/actions/update_service",
             method="POST",
             json=data,
         )
@@ -720,7 +719,7 @@ class LoadBalancersClient(ResourceClientBase):
         data: dict[str, Any] = {"listen_port": service.listen_port}
 
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}/actions/delete_service",
+            url=f"{self._base_url}/{load_balancer.id}/actions/delete_service",
             method="POST",
             json=data,
         )
@@ -741,7 +740,7 @@ class LoadBalancersClient(ResourceClientBase):
         data: dict[str, Any] = target.to_payload()
 
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}/actions/add_target",
+            url=f"{self._base_url}/{load_balancer.id}/actions/add_target",
             method="POST",
             json=data,
         )
@@ -764,7 +763,7 @@ class LoadBalancersClient(ResourceClientBase):
         data.pop("use_private_ip", None)
 
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}/actions/remove_target",
+            url=f"{self._base_url}/{load_balancer.id}/actions/remove_target",
             method="POST",
             json=data,
         )
@@ -785,7 +784,7 @@ class LoadBalancersClient(ResourceClientBase):
         data: dict[str, Any] = {"type": algorithm.type}
 
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}/actions/change_algorithm",
+            url=f"{self._base_url}/{load_balancer.id}/actions/change_algorithm",
             method="POST",
             json=data,
         )
@@ -807,7 +806,7 @@ class LoadBalancersClient(ResourceClientBase):
         """
 
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}/actions/change_dns_ptr",
+            url=f"{self._base_url}/{load_balancer.id}/actions/change_dns_ptr",
             method="POST",
             json={"ip": ip, "dns_ptr": dns_ptr},
         )
@@ -830,7 +829,7 @@ class LoadBalancersClient(ResourceClientBase):
             data.update({"delete": delete})
 
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}/actions/change_protection",
+            url=f"{self._base_url}/{load_balancer.id}/actions/change_protection",
             method="POST",
             json=data,
         )
@@ -855,7 +854,7 @@ class LoadBalancersClient(ResourceClientBase):
             data.update({"ip": ip})
 
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}/actions/attach_to_network",
+            url=f"{self._base_url}/{load_balancer.id}/actions/attach_to_network",
             method="POST",
             json=data,
         )
@@ -874,7 +873,7 @@ class LoadBalancersClient(ResourceClientBase):
         """
         data: dict[str, Any] = {"network": network.id}
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}/actions/detach_from_network",
+            url=f"{self._base_url}/{load_balancer.id}/actions/detach_from_network",
             method="POST",
             json=data,
         )
@@ -892,7 +891,7 @@ class LoadBalancersClient(ResourceClientBase):
         """
 
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}/actions/enable_public_interface",
+            url=f"{self._base_url}/{load_balancer.id}/actions/enable_public_interface",
             method="POST",
         )
         return BoundAction(self._parent.actions, response["action"])
@@ -909,7 +908,7 @@ class LoadBalancersClient(ResourceClientBase):
         """
 
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}/actions/disable_public_interface",
+            url=f"{self._base_url}/{load_balancer.id}/actions/disable_public_interface",
             method="POST",
         )
         return BoundAction(self._parent.actions, response["action"])
@@ -928,7 +927,7 @@ class LoadBalancersClient(ResourceClientBase):
         """
         data: dict[str, Any] = {"load_balancer_type": load_balancer_type.id_or_name}
         response = self._client.request(
-            url=f"/load_balancers/{load_balancer.id}/actions/change_type",
+            url=f"{self._base_url}/{load_balancer.id}/actions/change_type",
             method="POST",
             json=data,
         )

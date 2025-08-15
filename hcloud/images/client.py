@@ -113,6 +113,7 @@ class ImagesPageResult(NamedTuple):
 
 
 class ImagesClient(ResourceClientBase):
+    _base_url = "/images"
 
     actions: ResourceActionsClient
     """Images scoped actions client
@@ -122,7 +123,7 @@ class ImagesClient(ResourceClientBase):
 
     def __init__(self, client: Client):
         super().__init__(client)
-        self.actions = ResourceActionsClient(client, "/images")
+        self.actions = ResourceActionsClient(client, self._base_url)
 
     def get_actions_list(
         self,
@@ -155,7 +156,7 @@ class ImagesClient(ResourceClientBase):
         if per_page is not None:
             params["per_page"] = per_page
         response = self._client.request(
-            url=f"/images/{image.id}/actions",
+            url=f"{self._base_url}/{image.id}/actions",
             method="GET",
             params=params,
         )
@@ -193,7 +194,7 @@ class ImagesClient(ResourceClientBase):
         :param id: int
         :return: :class:`BoundImage <hcloud.images.client.BoundImage`
         """
-        response = self._client.request(url=f"/images/{id}", method="GET")
+        response = self._client.request(url=f"{self._base_url}/{id}", method="GET")
         return BoundImage(self, response["image"])
 
     def get_list(
@@ -254,7 +255,7 @@ class ImagesClient(ResourceClientBase):
             params["status"] = per_page
         if include_deprecated is not None:
             params["include_deprecated"] = include_deprecated
-        response = self._client.request(url="/images", method="GET", params=params)
+        response = self._client.request(url=self._base_url, method="GET", params=params)
         images = [BoundImage(self, image_data) for image_data in response["images"]]
 
         return ImagesPageResult(images, Meta.parse_meta(response))
@@ -370,7 +371,7 @@ class ImagesClient(ResourceClientBase):
         if labels is not None:
             data.update({"labels": labels})
         response = self._client.request(
-            url=f"/images/{image.id}", method="PUT", json=data
+            url=f"{self._base_url}/{image.id}", method="PUT", json=data
         )
         return BoundImage(self, response["image"])
 
@@ -380,7 +381,7 @@ class ImagesClient(ResourceClientBase):
         :param :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
         :return: bool
         """
-        self._client.request(url=f"/images/{image.id}", method="DELETE")
+        self._client.request(url=f"{self._base_url}/{image.id}", method="DELETE")
         # Return allays true, because the API does not return an action for it. When an error occurs a APIException will be raised
         return True
 
@@ -401,7 +402,7 @@ class ImagesClient(ResourceClientBase):
             data.update({"delete": delete})
 
         response = self._client.request(
-            url=f"/images/{image.id}/actions/change_protection",
+            url=f"{self._base_url}/{image.id}/actions/change_protection",
             method="POST",
             json=data,
         )

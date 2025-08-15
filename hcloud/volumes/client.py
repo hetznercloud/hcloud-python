@@ -136,6 +136,7 @@ class VolumesPageResult(NamedTuple):
 
 
 class VolumesClient(ResourceClientBase):
+    _base_url = "/volumes"
 
     actions: ResourceActionsClient
     """Volumes scoped actions client
@@ -145,7 +146,7 @@ class VolumesClient(ResourceClientBase):
 
     def __init__(self, client: Client):
         super().__init__(client)
-        self.actions = ResourceActionsClient(client, "/volumes")
+        self.actions = ResourceActionsClient(client, self._base_url)
 
     def get_by_id(self, id: int) -> BoundVolume:
         """Get a specific volume by its id
@@ -153,7 +154,7 @@ class VolumesClient(ResourceClientBase):
         :param id: int
         :return: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>`
         """
-        response = self._client.request(url=f"/volumes/{id}", method="GET")
+        response = self._client.request(url=f"{self._base_url}/{id}", method="GET")
         return BoundVolume(self, response["volume"])
 
     def get_list(
@@ -190,7 +191,7 @@ class VolumesClient(ResourceClientBase):
         if per_page is not None:
             params["per_page"] = per_page
 
-        response = self._client.request(url="/volumes", method="GET", params=params)
+        response = self._client.request(url=self._base_url, method="GET", params=params)
         volumes = [
             BoundVolume(self, volume_data) for volume_data in response["volumes"]
         ]
@@ -270,7 +271,7 @@ class VolumesClient(ResourceClientBase):
         if format is not None:
             data["format"] = format
 
-        response = self._client.request(url="/volumes", json=data, method="POST")
+        response = self._client.request(url=self._base_url, json=data, method="POST")
 
         result = CreateVolumeResponse(
             volume=BoundVolume(self, response["volume"]),
@@ -314,7 +315,7 @@ class VolumesClient(ResourceClientBase):
             params["per_page"] = per_page
 
         response = self._client.request(
-            url=f"/volumes/{volume.id}/actions",
+            url=f"{self._base_url}/{volume.id}/actions",
             method="GET",
             params=params,
         )
@@ -367,7 +368,7 @@ class VolumesClient(ResourceClientBase):
         if labels is not None:
             data.update({"labels": labels})
         response = self._client.request(
-            url=f"/volumes/{volume.id}",
+            url=f"{self._base_url}/{volume.id}",
             method="PUT",
             json=data,
         )
@@ -379,7 +380,7 @@ class VolumesClient(ResourceClientBase):
         :param volume: :class:`BoundVolume <hcloud.volumes.client.BoundVolume>` or :class:`Volume <hcloud.volumes.domain.Volume>`
         :return: boolean
         """
-        self._client.request(url=f"/volumes/{volume.id}", method="DELETE")
+        self._client.request(url=f"{self._base_url}/{volume.id}", method="DELETE")
         return True
 
     def resize(self, volume: Volume | BoundVolume, size: int) -> BoundAction:
@@ -391,7 +392,7 @@ class VolumesClient(ResourceClientBase):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         data = self._client.request(
-            url=f"/volumes/{volume.id}/actions/resize",
+            url=f"{self._base_url}/{volume.id}/actions/resize",
             json={"size": size},
             method="POST",
         )
@@ -415,7 +416,7 @@ class VolumesClient(ResourceClientBase):
             data["automount"] = automount
 
         data = self._client.request(
-            url=f"/volumes/{volume.id}/actions/attach",
+            url=f"{self._base_url}/{volume.id}/actions/attach",
             json=data,
             method="POST",
         )
@@ -428,7 +429,7 @@ class VolumesClient(ResourceClientBase):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         data = self._client.request(
-            url=f"/volumes/{volume.id}/actions/detach",
+            url=f"{self._base_url}/{volume.id}/actions/detach",
             method="POST",
         )
         return BoundAction(self._parent.actions, data["action"])
@@ -450,7 +451,7 @@ class VolumesClient(ResourceClientBase):
             data.update({"delete": delete})
 
         response = self._client.request(
-            url=f"/volumes/{volume.id}/actions/change_protection",
+            url=f"{self._base_url}/{volume.id}/actions/change_protection",
             method="POST",
             json=data,
         )

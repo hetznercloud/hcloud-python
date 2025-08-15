@@ -98,6 +98,7 @@ class PrimaryIPsPageResult(NamedTuple):
 
 
 class PrimaryIPsClient(ResourceClientBase):
+    _base_url = "/primary_ips"
 
     actions: ResourceActionsClient
     """Primary IPs scoped actions client
@@ -107,7 +108,7 @@ class PrimaryIPsClient(ResourceClientBase):
 
     def __init__(self, client: Client):
         super().__init__(client)
-        self.actions = ResourceActionsClient(client, "/primary_ips")
+        self.actions = ResourceActionsClient(client, self._base_url)
 
     def get_by_id(self, id: int) -> BoundPrimaryIP:
         """Returns a specific Primary IP object.
@@ -115,7 +116,7 @@ class PrimaryIPsClient(ResourceClientBase):
         :param id: int
         :return: :class:`BoundPrimaryIP <hcloud.primary_ips.client.BoundPrimaryIP>`
         """
-        response = self._client.request(url=f"/primary_ips/{id}", method="GET")
+        response = self._client.request(url=f"{self._base_url}/{id}", method="GET")
         return BoundPrimaryIP(self, response["primary_ip"])
 
     def get_list(
@@ -153,7 +154,7 @@ class PrimaryIPsClient(ResourceClientBase):
         if ip is not None:
             params["ip"] = ip
 
-        response = self._client.request(url="/primary_ips", method="GET", params=params)
+        response = self._client.request(url=self._base_url, method="GET", params=params)
         primary_ips = [
             BoundPrimaryIP(self, primary_ip_data)
             for primary_ip_data in response["primary_ips"]
@@ -220,7 +221,7 @@ class PrimaryIPsClient(ResourceClientBase):
         if labels is not None:
             data["labels"] = labels
 
-        response = self._client.request(url="/primary_ips", json=data, method="POST")
+        response = self._client.request(url=self._base_url, json=data, method="POST")
 
         action = None
         if response.get("action") is not None:
@@ -258,7 +259,7 @@ class PrimaryIPsClient(ResourceClientBase):
             data["name"] = name
 
         response = self._client.request(
-            url=f"/primary_ips/{primary_ip.id}",
+            url=f"{self._base_url}/{primary_ip.id}",
             method="PUT",
             json=data,
         )
@@ -271,7 +272,7 @@ class PrimaryIPsClient(ResourceClientBase):
         :return: boolean
         """
         self._client.request(
-            url=f"/primary_ips/{primary_ip.id}",
+            url=f"{self._base_url}/{primary_ip.id}",
             method="DELETE",
         )
         # Return always true, because the API does not return an action for it. When an error occurs a HcloudAPIException will be raised
@@ -294,7 +295,7 @@ class PrimaryIPsClient(ResourceClientBase):
             data.update({"delete": delete})
 
         response = self._client.request(
-            url=f"/primary_ips/{primary_ip.id}/actions/change_protection",
+            url=f"{self._base_url}/{primary_ip.id}/actions/change_protection",
             method="POST",
             json=data,
         )
@@ -316,7 +317,7 @@ class PrimaryIPsClient(ResourceClientBase):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/primary_ips/{primary_ip.id}/actions/assign",
+            url=f"{self._base_url}/{primary_ip.id}/actions/assign",
             method="POST",
             json={"assignee_id": assignee_id, "assignee_type": assignee_type},
         )
@@ -329,7 +330,7 @@ class PrimaryIPsClient(ResourceClientBase):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/primary_ips/{primary_ip.id}/actions/unassign",
+            url=f"{self._base_url}/{primary_ip.id}/actions/unassign",
             method="POST",
         )
         return BoundAction(self._parent.actions, response["action"])
@@ -350,7 +351,7 @@ class PrimaryIPsClient(ResourceClientBase):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/primary_ips/{primary_ip.id}/actions/change_dns_ptr",
+            url=f"{self._base_url}/{primary_ip.id}/actions/change_dns_ptr",
             method="POST",
             json={"ip": ip, "dns_ptr": dns_ptr},
         )

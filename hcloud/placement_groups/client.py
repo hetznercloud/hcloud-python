@@ -41,6 +41,7 @@ class PlacementGroupsPageResult(NamedTuple):
 
 
 class PlacementGroupsClient(ResourceClientBase):
+    _base_url = "/placement_groups"
 
     def get_by_id(self, id: int) -> BoundPlacementGroup:
         """Returns a specific Placement Group object
@@ -49,7 +50,7 @@ class PlacementGroupsClient(ResourceClientBase):
         :return: :class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>`
         """
         response = self._client.request(
-            url=f"/placement_groups/{id}",
+            url=f"{self._base_url}/{id}",
             method="GET",
         )
         return BoundPlacementGroup(self, response["placement_group"])
@@ -92,9 +93,7 @@ class PlacementGroupsClient(ResourceClientBase):
             params["sort"] = sort
         if type is not None:
             params["type"] = type
-        response = self._client.request(
-            url="/placement_groups", method="GET", params=params
-        )
+        response = self._client.request(url=self._base_url, method="GET", params=params)
         placement_groups = [
             BoundPlacementGroup(self, placement_group_data)
             for placement_group_data in response["placement_groups"]
@@ -154,9 +153,7 @@ class PlacementGroupsClient(ResourceClientBase):
         data: dict[str, Any] = {"name": name, "type": type}
         if labels is not None:
             data["labels"] = labels
-        response = self._client.request(
-            url="/placement_groups", json=data, method="POST"
-        )
+        response = self._client.request(url=self._base_url, json=data, method="POST")
 
         action = None
         if response.get("action") is not None:
@@ -191,7 +188,7 @@ class PlacementGroupsClient(ResourceClientBase):
             data["name"] = name
 
         response = self._client.request(
-            url=f"/placement_groups/{placement_group.id}",
+            url=f"{self._base_url}/{placement_group.id}",
             method="PUT",
             json=data,
         )
@@ -204,7 +201,7 @@ class PlacementGroupsClient(ResourceClientBase):
         :return: boolean
         """
         self._client.request(
-            url=f"/placement_groups/{placement_group.id}",
+            url=f"{self._base_url}/{placement_group.id}",
             method="DELETE",
         )
         return True
