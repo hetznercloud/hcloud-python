@@ -6,7 +6,6 @@ import pytest
 from dateutil.parser import isoparse
 
 from hcloud import Client
-from hcloud.actions import BoundAction
 from hcloud.locations import BoundLocation, Location
 from hcloud.servers import BoundServer, Server
 from hcloud.volumes import BoundVolume, Volume, VolumesClient
@@ -41,29 +40,6 @@ class TestBoundVolume:
         assert bound_volume.location.city == "Falkenstein"
         assert bound_volume.location.latitude == 50.47612
         assert bound_volume.location.longitude == 12.370071
-
-    def test_get_actions(
-        self,
-        request_mock: mock.MagicMock,
-        client: Client,
-        bound_volume,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = bound_volume.get_actions(sort="id")
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/volumes/14/actions",
-            params={"page": 1, "per_page": 50, "sort": "id"},
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == client.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "attach_volume"
 
     def test_update(
         self,
@@ -416,34 +392,6 @@ class TestVolumesClient:
     @pytest.mark.parametrize(
         "volume", [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=1))]
     )
-    def test_get_actions_list(
-        self,
-        request_mock: mock.MagicMock,
-        volumes_client: VolumesClient,
-        volume,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = volumes_client.get_actions_list(volume, sort="id")
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/volumes/1/actions",
-            params={"sort": "id"},
-        )
-
-        actions = result.actions
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-
-        assert actions[0]._client == volumes_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "attach_volume"
-
-    @pytest.mark.parametrize(
-        "volume", [Volume(id=1), BoundVolume(mock.MagicMock(), dict(id=1))]
-    )
     def test_update(
         self,
         request_mock: mock.MagicMock,
@@ -580,69 +528,3 @@ class TestVolumesClient:
         )
         assert action.id == 1
         assert action.progress == 0
-
-    def test_actions_get_by_id(
-        self,
-        request_mock: mock.MagicMock,
-        volumes_client: VolumesClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = {"action": response_get_actions["actions"][0]}
-        action = volumes_client.actions.get_by_id(13)
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/volumes/actions/13",
-        )
-
-        assert isinstance(action, BoundAction)
-        assert action._client == volumes_client._parent.actions
-        assert action.id == 13
-        assert action.command == "attach_volume"
-
-    def test_actions_get_list(
-        self,
-        request_mock: mock.MagicMock,
-        volumes_client: VolumesClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = volumes_client.actions.get_list()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/volumes/actions",
-            params={},
-        )
-
-        actions = result.actions
-        assert result.meta is not None
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == volumes_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "attach_volume"
-
-    def test_actions_get_all(
-        self,
-        request_mock: mock.MagicMock,
-        volumes_client: VolumesClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = volumes_client.actions.get_all()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/volumes/actions",
-            params={"page": 1, "per_page": 50},
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == volumes_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "attach_volume"

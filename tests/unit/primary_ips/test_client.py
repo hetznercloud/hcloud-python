@@ -5,7 +5,6 @@ from unittest import mock
 import pytest
 
 from hcloud import Client
-from hcloud.actions import BoundAction
 from hcloud.datacenters import BoundDatacenter, Datacenter
 from hcloud.primary_ips import BoundPrimaryIP, PrimaryIP, PrimaryIPsClient
 
@@ -427,69 +426,3 @@ class TestPrimaryIPsClient:
         )
         assert action.id == 1
         assert action.progress == 0
-
-    def test_actions_get_by_id(
-        self,
-        request_mock: mock.MagicMock,
-        primary_ips_client: PrimaryIPsClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = {"action": response_get_actions["actions"][0]}
-        action = primary_ips_client.actions.get_by_id(13)
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/primary_ips/actions/13",
-        )
-
-        assert isinstance(action, BoundAction)
-        assert action._client == primary_ips_client._parent.actions
-        assert action.id == 13
-        assert action.command == "assign_primary_ip"
-
-    def test_actions_get_list(
-        self,
-        request_mock: mock.MagicMock,
-        primary_ips_client: PrimaryIPsClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = primary_ips_client.actions.get_list()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/primary_ips/actions",
-            params={},
-        )
-
-        actions = result.actions
-        assert result.meta is not None
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == primary_ips_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "assign_primary_ip"
-
-    def test_actions_get_all(
-        self,
-        request_mock: mock.MagicMock,
-        primary_ips_client: PrimaryIPsClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = primary_ips_client.actions.get_all()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/primary_ips/actions",
-            params={"page": 1, "per_page": 50},
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == primary_ips_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "assign_primary_ip"

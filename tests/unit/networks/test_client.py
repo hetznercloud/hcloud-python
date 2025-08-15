@@ -6,7 +6,6 @@ import pytest
 from dateutil.parser import isoparse
 
 from hcloud import Client
-from hcloud.actions import BoundAction
 from hcloud.networks import (
     BoundNetwork,
     Network,
@@ -49,29 +48,6 @@ class TestBoundNetwork:
         assert isinstance(bound_network.routes[0], NetworkRoute)
         assert bound_network.routes[0].destination == "10.100.1.0/24"
         assert bound_network.routes[0].gateway == "10.0.1.1"
-
-    def test_get_actions(
-        self,
-        request_mock: mock.MagicMock,
-        client: Client,
-        bound_network,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = bound_network.get_actions(sort="id")
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/networks/14/actions",
-            params={"page": 1, "per_page": 50, "sort": "id"},
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == client.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "add_subnet"
 
     def test_update(
         self,
@@ -560,34 +536,6 @@ class TestNetworksClient:
     @pytest.mark.parametrize(
         "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
     )
-    def test_get_actions_list(
-        self,
-        request_mock: mock.MagicMock,
-        networks_client: NetworksClient,
-        network,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = networks_client.get_actions_list(network, sort="id")
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/networks/1/actions",
-            params={"sort": "id"},
-        )
-
-        actions = result.actions
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-
-        assert actions[0]._client == networks_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "add_subnet"
-
-    @pytest.mark.parametrize(
-        "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
-    )
     def test_update(
         self,
         request_mock: mock.MagicMock,
@@ -806,69 +754,3 @@ class TestNetworksClient:
 
         assert action.id == 1
         assert action.progress == 0
-
-    def test_actions_get_by_id(
-        self,
-        request_mock: mock.MagicMock,
-        networks_client: NetworksClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = {"action": response_get_actions["actions"][0]}
-        action = networks_client.actions.get_by_id(13)
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/networks/actions/13",
-        )
-
-        assert isinstance(action, BoundAction)
-        assert action._client == networks_client._parent.actions
-        assert action.id == 13
-        assert action.command == "add_subnet"
-
-    def test_actions_get_list(
-        self,
-        request_mock: mock.MagicMock,
-        networks_client: NetworksClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = networks_client.actions.get_list()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/networks/actions",
-            params={},
-        )
-
-        actions = result.actions
-        assert result.meta is not None
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == networks_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "add_subnet"
-
-    def test_actions_get_all(
-        self,
-        request_mock: mock.MagicMock,
-        networks_client: NetworksClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = networks_client.actions.get_all()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/networks/actions",
-            params={"page": 1, "per_page": 50},
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == networks_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "add_subnet"

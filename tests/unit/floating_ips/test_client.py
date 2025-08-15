@@ -5,7 +5,6 @@ from unittest import mock
 import pytest
 
 from hcloud import Client
-from hcloud.actions import BoundAction
 from hcloud.floating_ips import BoundFloatingIP, FloatingIP, FloatingIPsClient
 from hcloud.locations import BoundLocation, Location
 from hcloud.servers import BoundServer, Server
@@ -41,29 +40,6 @@ class TestBoundFloatingIP:
         assert bound_floating_ip.home_location.city == "Falkenstein"
         assert bound_floating_ip.home_location.latitude == 50.47612
         assert bound_floating_ip.home_location.longitude == 12.370071
-
-    def test_get_actions(
-        self,
-        request_mock: mock.MagicMock,
-        client: Client,
-        bound_floating_ip,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = bound_floating_ip.get_actions(sort="id")
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/floating_ips/14/actions",
-            params={"sort": "id", "page": 1, "per_page": 50},
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == client.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "assign_floating_ip"
 
     def test_update(
         self,
@@ -390,33 +366,6 @@ class TestFloatingIPsClient:
     @pytest.mark.parametrize(
         "floating_ip", [FloatingIP(id=1), BoundFloatingIP(mock.MagicMock(), dict(id=1))]
     )
-    def test_get_actions(
-        self,
-        request_mock: mock.MagicMock,
-        floating_ips_client: FloatingIPsClient,
-        floating_ip,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = floating_ips_client.get_actions(floating_ip)
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/floating_ips/1/actions",
-            params={"page": 1, "per_page": 50},
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-
-        assert actions[0]._client == floating_ips_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "assign_floating_ip"
-
-    @pytest.mark.parametrize(
-        "floating_ip", [FloatingIP(id=1), BoundFloatingIP(mock.MagicMock(), dict(id=1))]
-    )
     def test_update(
         self,
         request_mock: mock.MagicMock,
@@ -560,69 +509,3 @@ class TestFloatingIPsClient:
         )
         assert action.id == 1
         assert action.progress == 0
-
-    def test_actions_get_by_id(
-        self,
-        request_mock: mock.MagicMock,
-        floating_ips_client: FloatingIPsClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = {"action": response_get_actions["actions"][0]}
-        action = floating_ips_client.actions.get_by_id(13)
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/floating_ips/actions/13",
-        )
-
-        assert isinstance(action, BoundAction)
-        assert action._client == floating_ips_client._parent.actions
-        assert action.id == 13
-        assert action.command == "assign_floating_ip"
-
-    def test_actions_get_list(
-        self,
-        request_mock: mock.MagicMock,
-        floating_ips_client: FloatingIPsClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = floating_ips_client.actions.get_list()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/floating_ips/actions",
-            params={},
-        )
-
-        actions = result.actions
-        assert result.meta is not None
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == floating_ips_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "assign_floating_ip"
-
-    def test_actions_get_all(
-        self,
-        request_mock: mock.MagicMock,
-        floating_ips_client: FloatingIPsClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = floating_ips_client.actions.get_all()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/floating_ips/actions",
-            params={"page": 1, "per_page": 50},
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == floating_ips_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "assign_floating_ip"
