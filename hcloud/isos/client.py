@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, NamedTuple
+from typing import Any, NamedTuple
 
 from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import Iso
-
-if TYPE_CHECKING:
-    from .._client import Client
 
 
 class BoundIso(BoundModelBase, Iso):
@@ -21,7 +18,6 @@ class IsosPageResult(NamedTuple):
 
 
 class IsosClient(ResourceClientBase):
-    _client: Client
 
     def get_by_id(self, id: int) -> BoundIso:
         """Get a specific ISO by its id
