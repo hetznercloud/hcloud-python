@@ -7,6 +7,7 @@ from unittest import mock
 import pytest
 from dateutil.parser import isoparse
 
+from hcloud import Client
 from hcloud.storage_box_types import (
     BoundStorageBoxType,
     StorageBoxTypesClient,
@@ -23,29 +24,27 @@ def assert_bound_model(
     assert o.name == "bx11"
 
 
-@pytest.fixture(name="client")
-def client_fixture() -> StorageBoxTypesClient:
-    return StorageBoxTypesClient(client=mock.MagicMock())
-
-
 class TestClient:
+    @pytest.fixture()
+    def resource_client(self, client: Client) -> StorageBoxTypesClient:
+        return StorageBoxTypesClient(client)
+
     def test_get_by_id(
         self,
-        client: StorageBoxTypesClient,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxTypesClient,
         storage_box_type1,
     ):
-        client._client._request_hetzner.return_value = {
-            "storage_box_type": storage_box_type1
-        }
+        request_mock.return_value = {"storage_box_type": storage_box_type1}
 
-        result = client.get_by_id(42)
+        result = resource_client.get_by_id(42)
 
-        client._client._request_hetzner.assert_called_with(
+        request_mock.assert_called_with(
             method="GET",
             url="/storage_box_types/42",
         )
 
-        assert_bound_model(result, client)
+        assert_bound_model(result, resource_client)
         assert result.description == "BX11"
         assert result.snapshot_limit == 10
         assert result.automatic_snapshot_limit == 10
@@ -73,18 +72,19 @@ class TestClient:
     )
     def test_get_list(
         self,
-        client: StorageBoxTypesClient,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxTypesClient,
         storage_box_type1,
         storage_box_type2,
         params,
     ):
-        client._client._request_hetzner.return_value = {
+        request_mock.return_value = {
             "storage_box_types": [storage_box_type1, storage_box_type2]
         }
 
-        result = client.get_list(**params)
+        result = resource_client.get_list(**params)
 
-        client._client._request_hetzner.assert_called_with(
+        request_mock.assert_called_with(
             url="/storage_box_types",
             method="GET",
             params=params,
@@ -96,11 +96,11 @@ class TestClient:
         result1 = result.storage_box_types[0]
         result2 = result.storage_box_types[1]
 
-        assert result1._client is client
+        assert result1._client is resource_client
         assert result1.id == 42
         assert result1.name == "bx11"
 
-        assert result2._client is client
+        assert result2._client is resource_client
         assert result2.id == 43
         assert result2.name == "bx21"
 
@@ -113,18 +113,19 @@ class TestClient:
     )
     def test_get_all(
         self,
-        client: StorageBoxTypesClient,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxTypesClient,
         storage_box_type1,
         storage_box_type2,
         params,
     ):
-        client._client._request_hetzner.return_value = {
+        request_mock.return_value = {
             "storage_box_types": [storage_box_type1, storage_box_type2]
         }
 
-        result = client.get_all(**params)
+        result = resource_client.get_all(**params)
 
-        client._client._request_hetzner.assert_called_with(
+        request_mock.assert_called_with(
             url="/storage_box_types",
             method="GET",
             params={**params, "page": 1, "per_page": 50},
@@ -135,31 +136,30 @@ class TestClient:
         result1 = result[0]
         result2 = result[1]
 
-        assert result1._client is client
+        assert result1._client is resource_client
         assert result1.id == 42
         assert result1.name == "bx11"
 
-        assert result2._client is client
+        assert result2._client is resource_client
         assert result2.id == 43
         assert result2.name == "bx21"
 
     def test_get_by_name(
         self,
-        client: StorageBoxTypesClient,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxTypesClient,
         storage_box_type1,
     ):
-        client._client._request_hetzner.return_value = {
-            "storage_box_types": [storage_box_type1]
-        }
+        request_mock.return_value = {"storage_box_types": [storage_box_type1]}
 
-        result = client.get_by_name("bx11")
+        result = resource_client.get_by_name("bx11")
 
         params = {"name": "bx11"}
 
-        client._client._request_hetzner.assert_called_with(
+        request_mock.assert_called_with(
             method="GET",
             url="/storage_box_types",
             params=params,
         )
 
-        assert_bound_model(result, client)
+        assert_bound_model(result, resource_client)

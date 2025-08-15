@@ -18,6 +18,7 @@ def request_mock() -> mock.MagicMock:
 def client(request_mock) -> Client:
     c = Client(token="TOKEN")
     c.request = request_mock
+    c._request_hetzner = request_mock
     return c
 
 
