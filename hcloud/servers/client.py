@@ -483,6 +483,7 @@ class ServersPageResult(NamedTuple):
 
 
 class ServersClient(ResourceClientBase):
+    _base_url = "/servers"
 
     actions: ResourceActionsClient
     """Servers scoped actions client
@@ -492,7 +493,7 @@ class ServersClient(ResourceClientBase):
 
     def __init__(self, client: Client):
         super().__init__(client)
-        self.actions = ResourceActionsClient(client, "/servers")
+        self.actions = ResourceActionsClient(client, self._base_url)
 
     def get_by_id(self, id: int) -> BoundServer:
         """Get a specific server
@@ -500,7 +501,7 @@ class ServersClient(ResourceClientBase):
         :param id: int
         :return: :class:`BoundServer <hcloud.servers.client.BoundServer>`
         """
-        response = self._client.request(url=f"/servers/{id}", method="GET")
+        response = self._client.request(url=f"{self._base_url}/{id}", method="GET")
         return BoundServer(self, response["server"])
 
     def get_list(
@@ -537,7 +538,7 @@ class ServersClient(ResourceClientBase):
         if per_page is not None:
             params["per_page"] = per_page
 
-        response = self._client.request(url="/servers", method="GET", params=params)
+        response = self._client.request(url=self._base_url, method="GET", params=params)
 
         ass_servers = [
             BoundServer(self, server_data) for server_data in response["servers"]
@@ -664,7 +665,7 @@ class ServersClient(ResourceClientBase):
                 data_public_net["ipv6"] = public_net.ipv6.id
             data["public_net"] = data_public_net
 
-        response = self._client.request(url="/servers", method="POST", json=data)
+        response = self._client.request(url=self._base_url, method="POST", json=data)
 
         result = CreateServerResponse(
             server=BoundServer(self, response["server"]),
@@ -709,7 +710,7 @@ class ServersClient(ResourceClientBase):
             params["per_page"] = per_page
 
         response = self._client.request(
-            url=f"/servers/{server.id}/actions",
+            url=f"{self._base_url}/{server.id}/actions",
             method="GET",
             params=params,
         )
@@ -762,7 +763,7 @@ class ServersClient(ResourceClientBase):
         if labels is not None:
             data.update({"labels": labels})
         response = self._client.request(
-            url=f"/servers/{server.id}",
+            url=f"{self._base_url}/{server.id}",
             method="PUT",
             json=data,
         )
@@ -800,7 +801,7 @@ class ServersClient(ResourceClientBase):
             params["step"] = step
 
         response = self._client.request(
-            url=f"/servers/{server.id}/metrics",
+            url=f"{self._base_url}/{server.id}/metrics",
             method="GET",
             params=params,
         )
@@ -814,7 +815,9 @@ class ServersClient(ResourceClientBase):
         :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        response = self._client.request(url=f"/servers/{server.id}", method="DELETE")
+        response = self._client.request(
+            url=f"{self._base_url}/{server.id}", method="DELETE"
+        )
         return BoundAction(self._parent.actions, response["action"])
 
     def power_off(self, server: Server | BoundServer) -> BoundAction:
@@ -824,7 +827,7 @@ class ServersClient(ResourceClientBase):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/poweroff",
+            url=f"{self._base_url}/{server.id}/actions/poweroff",
             method="POST",
         )
         return BoundAction(self._parent.actions, response["action"])
@@ -836,7 +839,7 @@ class ServersClient(ResourceClientBase):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/poweron",
+            url=f"{self._base_url}/{server.id}/actions/poweron",
             method="POST",
         )
         return BoundAction(self._parent.actions, response["action"])
@@ -848,7 +851,7 @@ class ServersClient(ResourceClientBase):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/reboot",
+            url=f"{self._base_url}/{server.id}/actions/reboot",
             method="POST",
         )
         return BoundAction(self._parent.actions, response["action"])
@@ -860,7 +863,7 @@ class ServersClient(ResourceClientBase):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/reset",
+            url=f"{self._base_url}/{server.id}/actions/reset",
             method="POST",
         )
         return BoundAction(self._parent.actions, response["action"])
@@ -872,7 +875,7 @@ class ServersClient(ResourceClientBase):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/shutdown",
+            url=f"{self._base_url}/{server.id}/actions/shutdown",
             method="POST",
         )
         return BoundAction(self._parent.actions, response["action"])
@@ -884,7 +887,7 @@ class ServersClient(ResourceClientBase):
         :return: :class:`ResetPasswordResponse <hcloud.servers.domain.ResetPasswordResponse>`
         """
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/reset_password",
+            url=f"{self._base_url}/{server.id}/actions/reset_password",
             method="POST",
         )
         return ResetPasswordResponse(
@@ -912,7 +915,7 @@ class ServersClient(ResourceClientBase):
             "upgrade_disk": upgrade_disk,
         }
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/change_type",
+            url=f"{self._base_url}/{server.id}/actions/change_type",
             method="POST",
             json=data,
         )
@@ -939,7 +942,7 @@ class ServersClient(ResourceClientBase):
             data.update({"ssh_keys": ssh_keys})
 
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/enable_rescue",
+            url=f"{self._base_url}/{server.id}/actions/enable_rescue",
             method="POST",
             json=data,
         )
@@ -955,7 +958,7 @@ class ServersClient(ResourceClientBase):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/disable_rescue",
+            url=f"{self._base_url}/{server.id}/actions/disable_rescue",
             method="POST",
         )
         return BoundAction(self._parent.actions, response["action"])
@@ -990,7 +993,7 @@ class ServersClient(ResourceClientBase):
             data.update({"labels": labels})
 
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/create_image",
+            url=f"{self._base_url}/{server.id}/actions/create_image",
             method="POST",
             json=data,
         )
@@ -1013,7 +1016,7 @@ class ServersClient(ResourceClientBase):
         """
         data: dict[str, Any] = {"image": image.id_or_name}
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/rebuild",
+            url=f"{self._base_url}/{server.id}/actions/rebuild",
             method="POST",
             json=data,
         )
@@ -1030,7 +1033,7 @@ class ServersClient(ResourceClientBase):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/enable_backup",
+            url=f"{self._base_url}/{server.id}/actions/enable_backup",
             method="POST",
         )
         return BoundAction(self._parent.actions, response["action"])
@@ -1042,7 +1045,7 @@ class ServersClient(ResourceClientBase):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/disable_backup",
+            url=f"{self._base_url}/{server.id}/actions/disable_backup",
             method="POST",
         )
         return BoundAction(self._parent.actions, response["action"])
@@ -1060,7 +1063,7 @@ class ServersClient(ResourceClientBase):
         """
         data: dict[str, Any] = {"iso": iso.id_or_name}
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/attach_iso",
+            url=f"{self._base_url}/{server.id}/actions/attach_iso",
             method="POST",
             json=data,
         )
@@ -1073,7 +1076,7 @@ class ServersClient(ResourceClientBase):
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/detach_iso",
+            url=f"{self._base_url}/{server.id}/actions/detach_iso",
             method="POST",
         )
         return BoundAction(self._parent.actions, response["action"])
@@ -1095,7 +1098,7 @@ class ServersClient(ResourceClientBase):
         """
         data: dict[str, Any] = {"ip": ip, "dns_ptr": dns_ptr}
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/change_dns_ptr",
+            url=f"{self._base_url}/{server.id}/actions/change_dns_ptr",
             method="POST",
             json=data,
         )
@@ -1123,7 +1126,7 @@ class ServersClient(ResourceClientBase):
             data.update({"rebuild": rebuild})
 
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/change_protection",
+            url=f"{self._base_url}/{server.id}/actions/change_protection",
             method="POST",
             json=data,
         )
@@ -1136,7 +1139,7 @@ class ServersClient(ResourceClientBase):
         :return: :class:`RequestConsoleResponse <hcloud.servers.domain.RequestConsoleResponse>`
         """
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/request_console",
+            url=f"{self._base_url}/{server.id}/actions/request_console",
             method="POST",
         )
         return RequestConsoleResponse(
@@ -1168,7 +1171,7 @@ class ServersClient(ResourceClientBase):
         if alias_ips is not None:
             data.update({"alias_ips": alias_ips})
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/attach_to_network",
+            url=f"{self._base_url}/{server.id}/actions/attach_to_network",
             method="POST",
             json=data,
         )
@@ -1187,7 +1190,7 @@ class ServersClient(ResourceClientBase):
         """
         data: dict[str, Any] = {"network": network.id}
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/detach_from_network",
+            url=f"{self._base_url}/{server.id}/actions/detach_from_network",
             method="POST",
             json=data,
         )
@@ -1209,7 +1212,7 @@ class ServersClient(ResourceClientBase):
         """
         data: dict[str, Any] = {"network": network.id, "alias_ips": alias_ips}
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/change_alias_ips",
+            url=f"{self._base_url}/{server.id}/actions/change_alias_ips",
             method="POST",
             json=data,
         )
@@ -1228,7 +1231,7 @@ class ServersClient(ResourceClientBase):
         """
         data: dict[str, Any] = {"placement_group": placement_group.id}
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/add_to_placement_group",
+            url=f"{self._base_url}/{server.id}/actions/add_to_placement_group",
             method="POST",
             json=data,
         )
@@ -1241,7 +1244,7 @@ class ServersClient(ResourceClientBase):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/servers/{server.id}/actions/remove_from_placement_group",
+            url=f"{self._base_url}/{server.id}/actions/remove_from_placement_group",
             method="POST",
         )
         return BoundAction(self._parent.actions, response["action"])

@@ -18,6 +18,7 @@ class LocationsPageResult(NamedTuple):
 
 
 class LocationsClient(ResourceClientBase):
+    _base_url = "/locations"
 
     def get_by_id(self, id: int) -> BoundLocation:
         """Get a specific location by its ID.
@@ -25,7 +26,7 @@ class LocationsClient(ResourceClientBase):
         :param id: int
         :return: :class:`BoundLocation <hcloud.locations.client.BoundLocation>`
         """
-        response = self._client.request(url=f"/locations/{id}", method="GET")
+        response = self._client.request(url=f"{self._base_url}/{id}", method="GET")
         return BoundLocation(self, response["location"])
 
     def get_list(
@@ -52,7 +53,7 @@ class LocationsClient(ResourceClientBase):
         if per_page is not None:
             params["per_page"] = per_page
 
-        response = self._client.request(url="/locations", method="GET", params=params)
+        response = self._client.request(url=self._base_url, method="GET", params=params)
         locations = [
             BoundLocation(self, location_data)
             for location_data in response["locations"]

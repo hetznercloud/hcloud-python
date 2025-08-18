@@ -104,6 +104,7 @@ class CertificatesPageResult(NamedTuple):
 
 
 class CertificatesClient(ResourceClientBase):
+    _base_url = "/certificates"
 
     actions: ResourceActionsClient
     """Certificates scoped actions client
@@ -113,7 +114,7 @@ class CertificatesClient(ResourceClientBase):
 
     def __init__(self, client: Client):
         super().__init__(client)
-        self.actions = ResourceActionsClient(client, "/certificates")
+        self.actions = ResourceActionsClient(client, self._base_url)
 
     def get_by_id(self, id: int) -> BoundCertificate:
         """Get a specific certificate by its ID.
@@ -121,7 +122,7 @@ class CertificatesClient(ResourceClientBase):
         :param id: int
         :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`
         """
-        response = self._client.request(url=f"/certificates/{id}", method="GET")
+        response = self._client.request(url=f"{self._base_url}/{id}", method="GET")
         return BoundCertificate(self, response["certificate"])
 
     def get_list(
@@ -156,9 +157,7 @@ class CertificatesClient(ResourceClientBase):
         if per_page is not None:
             params["per_page"] = per_page
 
-        response = self._client.request(
-            url="/certificates", method="GET", params=params
-        )
+        response = self._client.request(url=self._base_url, method="GET", params=params)
 
         certificates = [
             BoundCertificate(self, certificate_data)
@@ -218,7 +217,7 @@ class CertificatesClient(ResourceClientBase):
         }
         if labels is not None:
             data["labels"] = labels
-        response = self._client.request(url="/certificates", method="POST", json=data)
+        response = self._client.request(url=self._base_url, method="POST", json=data)
         return BoundCertificate(self, response["certificate"])
 
     def create_managed(
@@ -244,7 +243,7 @@ class CertificatesClient(ResourceClientBase):
         }
         if labels is not None:
             data["labels"] = labels
-        response = self._client.request(url="/certificates", method="POST", json=data)
+        response = self._client.request(url=self._base_url, method="POST", json=data)
         return CreateManagedCertificateResponse(
             certificate=BoundCertificate(self, response["certificate"]),
             action=BoundAction(self._parent.actions, response["action"]),
@@ -271,7 +270,7 @@ class CertificatesClient(ResourceClientBase):
         if labels is not None:
             data["labels"] = labels
         response = self._client.request(
-            url=f"/certificates/{certificate.id}",
+            url=f"{self._base_url}/{certificate.id}",
             method="PUT",
             json=data,
         )
@@ -284,7 +283,7 @@ class CertificatesClient(ResourceClientBase):
         :return: True
         """
         self._client.request(
-            url=f"/certificates/{certificate.id}",
+            url=f"{self._base_url}/{certificate.id}",
             method="DELETE",
         )
         # Return always true, because the API does not return an action for it. When an error occurs a HcloudAPIException will be raised
@@ -322,7 +321,7 @@ class CertificatesClient(ResourceClientBase):
             params["per_page"] = per_page
 
         response = self._client.request(
-            url=f"/certificates/{certificate.id}/actions",
+            url=f"{self._base_url}/{certificate.id}/actions",
             method="GET",
             params=params,
         )
@@ -364,7 +363,7 @@ class CertificatesClient(ResourceClientBase):
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         response = self._client.request(
-            url=f"/certificates/{certificate.id}/actions/retry",
+            url=f"{self._base_url}/{certificate.id}/actions/retry",
             method="POST",
         )
         return BoundAction(self._parent.actions, response["action"])

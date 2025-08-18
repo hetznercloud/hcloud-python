@@ -18,6 +18,7 @@ class IsosPageResult(NamedTuple):
 
 
 class IsosClient(ResourceClientBase):
+    _base_url = "/isos"
 
     def get_by_id(self, id: int) -> BoundIso:
         """Get a specific ISO by its id
@@ -25,7 +26,7 @@ class IsosClient(ResourceClientBase):
         :param id: int
         :return: :class:`BoundIso <hcloud.isos.client.BoundIso>`
         """
-        response = self._client.request(url=f"/isos/{id}", method="GET")
+        response = self._client.request(url=f"{self._base_url}/{id}", method="GET")
         return BoundIso(self, response["iso"])
 
     def get_list(
@@ -63,7 +64,7 @@ class IsosClient(ResourceClientBase):
         if per_page is not None:
             params["per_page"] = per_page
 
-        response = self._client.request(url="/isos", method="GET", params=params)
+        response = self._client.request(url=self._base_url, method="GET", params=params)
         isos = [BoundIso(self, iso_data) for iso_data in response["isos"]]
         return IsosPageResult(isos, Meta.parse_meta(response))
 

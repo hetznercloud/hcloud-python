@@ -167,6 +167,7 @@ class NetworksPageResult(NamedTuple):
 
 
 class NetworksClient(ResourceClientBase):
+    _base_url = "/networks"
 
     actions: ResourceActionsClient
     """Networks scoped actions client
@@ -176,7 +177,7 @@ class NetworksClient(ResourceClientBase):
 
     def __init__(self, client: Client):
         super().__init__(client)
-        self.actions = ResourceActionsClient(client, "/networks")
+        self.actions = ResourceActionsClient(client, self._base_url)
 
     def get_by_id(self, id: int) -> BoundNetwork:
         """Get a specific network
@@ -184,7 +185,7 @@ class NetworksClient(ResourceClientBase):
         :param id: int
         :return: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>`
         """
-        response = self._client.request(url=f"/networks/{id}", method="GET")
+        response = self._client.request(url=f"{self._base_url}/{id}", method="GET")
         return BoundNetwork(self, response["network"])
 
     def get_list(
@@ -216,7 +217,7 @@ class NetworksClient(ResourceClientBase):
         if per_page is not None:
             params["per_page"] = per_page
 
-        response = self._client.request(url="/networks", method="GET", params=params)
+        response = self._client.request(url=self._base_url, method="GET", params=params)
 
         networks = [
             BoundNetwork(self, network_data) for network_data in response["networks"]
@@ -300,7 +301,7 @@ class NetworksClient(ResourceClientBase):
         if labels is not None:
             data["labels"] = labels
 
-        response = self._client.request(url="/networks", method="POST", json=data)
+        response = self._client.request(url=self._base_url, method="POST", json=data)
 
         return BoundNetwork(self, response["network"])
 
@@ -334,7 +335,7 @@ class NetworksClient(ResourceClientBase):
             data.update({"labels": labels})
 
         response = self._client.request(
-            url=f"/networks/{network.id}",
+            url=f"{self._base_url}/{network.id}",
             method="PUT",
             json=data,
         )
@@ -346,7 +347,7 @@ class NetworksClient(ResourceClientBase):
         :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
         :return: boolean
         """
-        self._client.request(url=f"/networks/{network.id}", method="DELETE")
+        self._client.request(url=f"{self._base_url}/{network.id}", method="DELETE")
         return True
 
     def get_actions_list(
@@ -381,7 +382,7 @@ class NetworksClient(ResourceClientBase):
             params["per_page"] = per_page
 
         response = self._client.request(
-            url=f"/networks/{network.id}/actions",
+            url=f"{self._base_url}/{network.id}/actions",
             method="GET",
             params=params,
         )
@@ -435,7 +436,7 @@ class NetworksClient(ResourceClientBase):
             data["vswitch_id"] = subnet.vswitch_id
 
         response = self._client.request(
-            url=f"/networks/{network.id}/actions/add_subnet",
+            url=f"{self._base_url}/{network.id}/actions/add_subnet",
             method="POST",
             json=data,
         )
@@ -456,7 +457,7 @@ class NetworksClient(ResourceClientBase):
         data: dict[str, Any] = {"ip_range": subnet.ip_range}
 
         response = self._client.request(
-            url=f"/networks/{network.id}/actions/delete_subnet",
+            url=f"{self._base_url}/{network.id}/actions/delete_subnet",
             method="POST",
             json=data,
         )
@@ -480,7 +481,7 @@ class NetworksClient(ResourceClientBase):
         }
 
         response = self._client.request(
-            url=f"/networks/{network.id}/actions/add_route",
+            url=f"{self._base_url}/{network.id}/actions/add_route",
             method="POST",
             json=data,
         )
@@ -504,7 +505,7 @@ class NetworksClient(ResourceClientBase):
         }
 
         response = self._client.request(
-            url=f"/networks/{network.id}/actions/delete_route",
+            url=f"{self._base_url}/{network.id}/actions/delete_route",
             method="POST",
             json=data,
         )
@@ -525,7 +526,7 @@ class NetworksClient(ResourceClientBase):
         data: dict[str, Any] = {"ip_range": ip_range}
 
         response = self._client.request(
-            url=f"/networks/{network.id}/actions/change_ip_range",
+            url=f"{self._base_url}/{network.id}/actions/change_ip_range",
             method="POST",
             json=data,
         )
@@ -548,7 +549,7 @@ class NetworksClient(ResourceClientBase):
             data.update({"delete": delete})
 
         response = self._client.request(
-            url=f"/networks/{network.id}/actions/change_protection",
+            url=f"{self._base_url}/{network.id}/actions/change_protection",
             method="POST",
             json=data,
         )

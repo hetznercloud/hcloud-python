@@ -18,6 +18,7 @@ class LoadBalancerTypesPageResult(NamedTuple):
 
 
 class LoadBalancerTypesClient(ResourceClientBase):
+    _base_url = "/load_balancer_types"
 
     def get_by_id(self, id: int) -> BoundLoadBalancerType:
         """Returns a specific Load Balancer Type.
@@ -26,7 +27,7 @@ class LoadBalancerTypesClient(ResourceClientBase):
         :return: :class:`BoundLoadBalancerType <hcloud.load_balancer_type.client.BoundLoadBalancerType>`
         """
         response = self._client.request(
-            url=f"/load_balancer_types/{id}",
+            url=f"{self._base_url}/{id}",
             method="GET",
         )
         return BoundLoadBalancerType(self, response["load_balancer_type"])
@@ -55,9 +56,7 @@ class LoadBalancerTypesClient(ResourceClientBase):
         if per_page is not None:
             params["per_page"] = per_page
 
-        response = self._client.request(
-            url="/load_balancer_types", method="GET", params=params
-        )
+        response = self._client.request(url=self._base_url, method="GET", params=params)
         load_balancer_types = [
             BoundLoadBalancerType(self, load_balancer_type_data)
             for load_balancer_type_data in response["load_balancer_types"]

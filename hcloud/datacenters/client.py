@@ -53,6 +53,7 @@ class DatacentersPageResult(NamedTuple):
 
 
 class DatacentersClient(ResourceClientBase):
+    _base_url = "/datacenters"
 
     def get_by_id(self, id: int) -> BoundDatacenter:
         """Get a specific datacenter by its ID.
@@ -60,7 +61,7 @@ class DatacentersClient(ResourceClientBase):
         :param id: int
         :return: :class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`
         """
-        response = self._client.request(url=f"/datacenters/{id}", method="GET")
+        response = self._client.request(url=f"{self._base_url}/{id}", method="GET")
         return BoundDatacenter(self, response["datacenter"])
 
     def get_list(
@@ -89,7 +90,7 @@ class DatacentersClient(ResourceClientBase):
         if per_page is not None:
             params["per_page"] = per_page
 
-        response = self._client.request(url="/datacenters", method="GET", params=params)
+        response = self._client.request(url=self._base_url, method="GET", params=params)
 
         datacenters = [
             BoundDatacenter(self, datacenter_data)

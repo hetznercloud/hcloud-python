@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any, Callable, ClassVar
 
 if TYPE_CHECKING:
     from .._client import Client, ClientBase
@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 
 
 class ResourceClientBase:
+    _base_url: ClassVar[str]
     _parent: Client
     _client: ClientBase
 
