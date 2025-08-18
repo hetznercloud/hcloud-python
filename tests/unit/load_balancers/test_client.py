@@ -5,7 +5,6 @@ from unittest import mock
 import pytest
 
 from hcloud import Client
-from hcloud.actions import BoundAction
 from hcloud.load_balancer_types import LoadBalancerType
 from hcloud.load_balancers import (
     BoundLoadBalancer,
@@ -35,61 +34,6 @@ class TestBoundLoadBalancer:
 
         assert bound_load_balancer.id == 4711
         assert bound_load_balancer.name == "Web Frontend"
-
-    @pytest.mark.parametrize("params", [{"page": 1, "per_page": 10}, {}])
-    def test_get_actions_list(
-        self,
-        request_mock: mock.MagicMock,
-        client: Client,
-        bound_load_balancer,
-        response_get_actions,
-        params,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = bound_load_balancer.get_actions_list(**params)
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/load_balancers/14/actions",
-            params=params,
-        )
-
-        actions = result.actions
-        assert result.meta is not None
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == client.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "change_protection"
-
-    @pytest.mark.parametrize("params", [{}])
-    def test_get_actions(
-        self,
-        request_mock: mock.MagicMock,
-        client: Client,
-        bound_load_balancer,
-        response_get_actions,
-        params,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = bound_load_balancer.get_actions(**params)
-
-        params.update({"page": 1, "per_page": 50})
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/load_balancers/14/actions",
-            params=params,
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == client.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "change_protection"
 
     def test_update(
         self,
@@ -686,69 +630,3 @@ class TestLoadBalancerslient:
 
         assert action.id == 1
         assert action.progress == 0
-
-    def test_actions_get_by_id(
-        self,
-        request_mock: mock.MagicMock,
-        load_balancers_client: LoadBalancersClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = {"action": response_get_actions["actions"][0]}
-        action = load_balancers_client.actions.get_by_id(13)
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/load_balancers/actions/13",
-        )
-
-        assert isinstance(action, BoundAction)
-        assert action._client == load_balancers_client._parent.actions
-        assert action.id == 13
-        assert action.command == "change_protection"
-
-    def test_actions_get_list(
-        self,
-        request_mock: mock.MagicMock,
-        load_balancers_client: LoadBalancersClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = load_balancers_client.actions.get_list()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/load_balancers/actions",
-            params={},
-        )
-
-        actions = result.actions
-        assert result.meta is not None
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == load_balancers_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "change_protection"
-
-    def test_actions_get_all(
-        self,
-        request_mock: mock.MagicMock,
-        load_balancers_client: LoadBalancersClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = load_balancers_client.actions.get_all()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/load_balancers/actions",
-            params={"page": 1, "per_page": 50},
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == load_balancers_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "change_protection"

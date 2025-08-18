@@ -7,7 +7,6 @@ from unittest import mock
 import pytest
 
 from hcloud import Client
-from hcloud.actions import BoundAction
 from hcloud.images import BoundImage, Image, ImagesClient
 from hcloud.servers import BoundServer
 
@@ -46,63 +45,6 @@ class TestBoundImage:
         assert isinstance(bound_image.bound_to, BoundServer)
         assert bound_image.bound_to.id == 1
         assert bound_image.bound_to.complete is False
-
-    @pytest.mark.parametrize(
-        "params", [{}, {"sort": ["status"], "page": 1, "per_page": 2}]
-    )
-    def test_get_actions_list(
-        self,
-        request_mock: mock.MagicMock,
-        client: Client,
-        bound_image,
-        response_get_actions,
-        params,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = bound_image.get_actions_list(**params)
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/images/14/actions",
-            params=params,
-        )
-
-        actions = result.actions
-        assert result.meta is not None
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == client.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "change_protection"
-
-    @pytest.mark.parametrize("params", [{}, {"sort": ["status"]}])
-    def test_get_actions(
-        self,
-        request_mock: mock.MagicMock,
-        client: Client,
-        bound_image,
-        response_get_actions,
-        params,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = bound_image.get_actions(**params)
-
-        params.update({"page": 1, "per_page": 50})
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/images/14/actions",
-            params=params,
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == client.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "change_protection"
 
     def test_update(
         self,
@@ -334,36 +276,6 @@ class TestImagesClient:
     @pytest.mark.parametrize(
         "image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))]
     )
-    def test_get_actions_list(
-        self,
-        request_mock: mock.MagicMock,
-        images_client: ImagesClient,
-        image,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = images_client.get_actions_list(image)
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/images/1/actions",
-            params={},
-        )
-
-        actions = result.actions
-        assert result.meta is not None
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-
-        assert actions[0]._client == images_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "change_protection"
-
-    @pytest.mark.parametrize(
-        "image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))]
-    )
     def test_update(
         self,
         request_mock: mock.MagicMock,
@@ -433,69 +345,3 @@ class TestImagesClient:
         )
 
         assert delete_success is True
-
-    def test_actions_get_by_id(
-        self,
-        request_mock: mock.MagicMock,
-        images_client: ImagesClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = {"action": response_get_actions["actions"][0]}
-        action = images_client.actions.get_by_id(13)
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/images/actions/13",
-        )
-
-        assert isinstance(action, BoundAction)
-        assert action._client == images_client._parent.actions
-        assert action.id == 13
-        assert action.command == "change_protection"
-
-    def test_actions_get_list(
-        self,
-        request_mock: mock.MagicMock,
-        images_client: ImagesClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = images_client.actions.get_list()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/images/actions",
-            params={},
-        )
-
-        actions = result.actions
-        assert result.meta is not None
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == images_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "change_protection"
-
-    def test_actions_get_all(
-        self,
-        request_mock: mock.MagicMock,
-        images_client: ImagesClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = images_client.actions.get_all()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/images/actions",
-            params={"page": 1, "per_page": 50},
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == images_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "change_protection"

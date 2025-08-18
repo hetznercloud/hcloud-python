@@ -5,7 +5,6 @@ from unittest import mock
 import pytest
 
 from hcloud import Client
-from hcloud.actions import BoundAction
 from hcloud.certificates import (
     BoundCertificate,
     Certificate,
@@ -18,59 +17,6 @@ class TestBoundCertificate:
     @pytest.fixture()
     def bound_certificate(self, client: Client):
         return BoundCertificate(client.certificates, data=dict(id=14))
-
-    @pytest.mark.parametrize("params", [{"page": 1, "per_page": 10}, {}])
-    def test_get_actions_list(
-        self,
-        request_mock: mock.MagicMock,
-        client: Client,
-        bound_certificate,
-        response_get_actions,
-        params,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = bound_certificate.get_actions_list(**params)
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/certificates/14/actions",
-            params=params,
-        )
-
-        actions = result.actions
-        assert result.meta is not None
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == client.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "change_protection"
-
-    def test_get_actions(
-        self,
-        request_mock: mock.MagicMock,
-        client: Client,
-        bound_certificate,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = bound_certificate.get_actions()
-
-        params = {"page": 1, "per_page": 50}
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/certificates/14/actions",
-            params=params,
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == client.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "change_protection"
 
     def test_bound_certificate_init(self, certificate_response):
         bound_certificate = BoundCertificate(
@@ -397,69 +343,3 @@ class TestCertificatesClient:
 
         assert action.id == 14
         assert action.command == "issue_certificate"
-
-    def test_actions_get_by_id(
-        self,
-        request_mock: mock.MagicMock,
-        certificates_client: CertificatesClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = {"action": response_get_actions["actions"][0]}
-        action = certificates_client.actions.get_by_id(13)
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/certificates/actions/13",
-        )
-
-        assert isinstance(action, BoundAction)
-        assert action._client == certificates_client._parent.actions
-        assert action.id == 13
-        assert action.command == "change_protection"
-
-    def test_actions_get_list(
-        self,
-        request_mock: mock.MagicMock,
-        certificates_client: CertificatesClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = certificates_client.actions.get_list()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/certificates/actions",
-            params={},
-        )
-
-        actions = result.actions
-        assert result.meta is not None
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == certificates_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "change_protection"
-
-    def test_actions_get_all(
-        self,
-        request_mock: mock.MagicMock,
-        certificates_client: CertificatesClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = certificates_client.actions.get_all()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/certificates/actions",
-            params={"page": 1, "per_page": 50},
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == certificates_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "change_protection"

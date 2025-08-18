@@ -5,7 +5,6 @@ from unittest import mock
 import pytest
 
 from hcloud import Client
-from hcloud.actions import BoundAction
 from hcloud.firewalls import (
     BoundFirewall,
     Firewall,
@@ -71,63 +70,6 @@ class TestBoundFirewall:
             "ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128",
         ]
         assert firewall_out_rule.description == "allow http out"
-
-    @pytest.mark.parametrize(
-        "params", [{}, {"sort": ["created"], "page": 1, "per_page": 2}]
-    )
-    def test_get_actions_list(
-        self,
-        request_mock: mock.MagicMock,
-        client: Client,
-        bound_firewall,
-        response_get_actions,
-        params,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = bound_firewall.get_actions_list(**params)
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/firewalls/1/actions",
-            params=params,
-        )
-
-        actions = result.actions
-        assert result.meta is not None
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == client.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "set_firewall_rules"
-
-    @pytest.mark.parametrize("params", [{}, {"sort": ["created"]}])
-    def test_get_actions(
-        self,
-        request_mock: mock.MagicMock,
-        client: Client,
-        bound_firewall,
-        response_get_actions,
-        params,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = bound_firewall.get_actions(**params)
-
-        params.update({"page": 1, "per_page": 50})
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/firewalls/1/actions",
-            params=params,
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == client.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "set_firewall_rules"
 
     def test_update(
         self,
@@ -379,36 +321,6 @@ class TestFirewallsClient:
         assert firewall.id == 38
         assert firewall.name == "Corporate Intranet Protection"
 
-    @pytest.mark.parametrize(
-        "firewall", [Firewall(id=1), BoundFirewall(mock.MagicMock(), dict(id=1))]
-    )
-    def test_get_actions_list(
-        self,
-        request_mock: mock.MagicMock,
-        firewalls_client: FirewallsClient,
-        firewall,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = firewalls_client.get_actions_list(firewall)
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/firewalls/1/actions",
-            params={},
-        )
-
-        actions = result.actions
-        assert result.meta is not None
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-
-        assert actions[0]._client == firewalls_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "set_firewall_rules"
-
     def test_create(
         self,
         request_mock: mock.MagicMock,
@@ -599,69 +511,3 @@ class TestFirewallsClient:
 
         assert actions[0].id == 13
         assert actions[0].progress == 100
-
-    def test_actions_get_by_id(
-        self,
-        request_mock: mock.MagicMock,
-        firewalls_client: FirewallsClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = {"action": response_get_actions["actions"][0]}
-        action = firewalls_client.actions.get_by_id(13)
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/firewalls/actions/13",
-        )
-
-        assert isinstance(action, BoundAction)
-        assert action._client == firewalls_client._parent.actions
-        assert action.id == 13
-        assert action.command == "set_firewall_rules"
-
-    def test_actions_get_list(
-        self,
-        request_mock: mock.MagicMock,
-        firewalls_client: FirewallsClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        result = firewalls_client.actions.get_list()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/firewalls/actions",
-            params={},
-        )
-
-        actions = result.actions
-        assert result.meta is not None
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == firewalls_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "set_firewall_rules"
-
-    def test_actions_get_all(
-        self,
-        request_mock: mock.MagicMock,
-        firewalls_client: FirewallsClient,
-        response_get_actions,
-    ):
-        request_mock.return_value = response_get_actions
-
-        actions = firewalls_client.actions.get_all()
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/firewalls/actions",
-            params={"page": 1, "per_page": 50},
-        )
-
-        assert len(actions) == 1
-        assert isinstance(actions[0], BoundAction)
-        assert actions[0]._client == firewalls_client._parent.actions
-        assert actions[0].id == 13
-        assert actions[0].command == "set_firewall_rules"
