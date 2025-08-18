@@ -13,33 +13,33 @@ from hcloud.actions import (
     BoundAction,
     ResourceActionsClient,
 )
-from hcloud.certificates import CertificatesClient
-from hcloud.core import ResourceClientBase
-from hcloud.firewalls import FirewallsClient
-from hcloud.floating_ips import FloatingIPsClient
-from hcloud.images import ImagesClient
-from hcloud.load_balancers import LoadBalancersClient
-from hcloud.networks import NetworksClient
-from hcloud.primary_ips import PrimaryIPsClient
-from hcloud.servers import ServersClient
-from hcloud.volumes import VolumesClient
+from hcloud.certificates import BoundCertificate, CertificatesClient
+from hcloud.core import BoundModelBase, ResourceClientBase
+from hcloud.firewalls import BoundFirewall, FirewallsClient
+from hcloud.floating_ips import BoundFloatingIP, FloatingIPsClient
+from hcloud.images import BoundImage, ImagesClient
+from hcloud.load_balancers import BoundLoadBalancer, LoadBalancersClient
+from hcloud.networks import BoundNetwork, NetworksClient
+from hcloud.primary_ips import BoundPrimaryIP, PrimaryIPsClient
+from hcloud.servers import BoundServer, ServersClient
+from hcloud.volumes import BoundVolume, VolumesClient
 
 from ..conftest import assert_bound_action1, assert_bound_action2
 
-resource_clients_with_actions = {
-    "certificates": CertificatesClient,
-    "firewalls": FirewallsClient,
-    "floating_ips": FloatingIPsClient,
-    "images": ImagesClient,
-    "load_balancers": LoadBalancersClient,
-    "networks": NetworksClient,
-    "primary_ips": PrimaryIPsClient,
-    "servers": ServersClient,
-    "volumes": VolumesClient,
+resources_with_actions: dict[str, tuple[ResourceClientBase, BoundModelBase]] = {
+    "certificates": (CertificatesClient, BoundCertificate),
+    "firewalls": (FirewallsClient, BoundFirewall),
+    "floating_ips": (FloatingIPsClient, BoundFloatingIP),
+    "images": (ImagesClient, BoundImage),
+    "load_balancers": (LoadBalancersClient, BoundLoadBalancer),
+    "networks": (NetworksClient, BoundNetwork),
+    "primary_ips": (PrimaryIPsClient, BoundPrimaryIP),
+    "servers": (ServersClient, BoundServer),
+    "volumes": (VolumesClient, BoundVolume),
 }
 
 
-def test_resource_clients_with_actions(client: Client):
+def test_resources_with_actions(client: Client):
     """
     Ensure that the list of resource clients above is up to date.
     """
@@ -48,10 +48,12 @@ def test_resource_clients_with_actions(client: Client):
         predicate=lambda p: isinstance(p, ResourceClientBase) and hasattr(p, "actions"),
     )
     for name, member in members:
-        assert name in resource_clients_with_actions
-        assert member.__class__ is resource_clients_with_actions[name]
+        assert name in resources_with_actions
 
-    assert len(members) == len(resource_clients_with_actions)
+        resource_client_class, _ = resources_with_actions[name]
+        assert member.__class__ is resource_client_class
+
+    assert len(members) == len(resources_with_actions)
 
 
 class TestBoundAction:
@@ -133,7 +135,7 @@ class TestResourceActionsClient:
     /<resource>/actions/<id>
     """
 
-    @pytest.fixture(params=resource_clients_with_actions.keys())
+    @pytest.fixture(params=resources_with_actions.keys())
     def resource(self, request) -> str:
         return request.param
 
@@ -229,7 +231,7 @@ class TestResourceObjectActionsClient:
     /<resource>/<id>/actions
     """
 
-    @pytest.fixture(params=resource_clients_with_actions.keys())
+    @pytest.fixture(params=resources_with_actions.keys())
     def resource(self, request):
         if request.param == "primary_ips":
             pytest.skip("not implemented yet")
@@ -299,6 +301,85 @@ class TestResourceObjectActionsClient:
         assert len(actions) == 2
         assert_bound_action1(actions[0], resource_client._parent.actions)
         assert_bound_action2(actions[1], resource_client._parent.actions)
+
+
+class TestBoundModelActions:
+    """
+    /<resource>/<id>/actions
+    """
+
+    @pytest.fixture(params=resources_with_actions.keys())
+    def resource(self, request):
+        if request.param == "primary_ips":
+            pytest.skip("not implemented yet")
+        return request.param
+
+    @pytest.fixture()
+    def bound_model(self, client: Client, resource: str) -> ResourceClientBase:
+        _, bound_model_class = resources_with_actions[resource]
+        resource_client = getattr(client, resource)
+        return bound_model_class(resource_client, data={"id": 1})
+
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {},
+            {"status": ["running"], "sort": ["status"], "page": 2, "per_page": 10},
+        ],
+    )
+    def test_get_actions_list(
+        self,
+        request_mock: mock.MagicMock,
+        bound_model: BoundModelBase,
+        resource: str,
+        action_list_response,
+        params,
+    ):
+        request_mock.return_value = action_list_response
+
+        result = bound_model.get_actions_list(**params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url=f"/{resource}/1/actions",
+            params=params,
+        )
+
+        assert result.meta is not None
+
+        actions = result.actions
+        assert len(actions) == 2
+        assert_bound_action1(actions[0], bound_model._client._parent.actions)
+        assert_bound_action2(actions[1], bound_model._client._parent.actions)
+
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {},
+            {"status": ["running"], "sort": ["status"]},
+        ],
+    )
+    def test_get_actions(
+        self,
+        request_mock: mock.MagicMock,
+        bound_model: BoundModelBase,
+        resource: str,
+        action_list_response,
+        params,
+    ):
+        request_mock.return_value = action_list_response
+
+        actions = bound_model.get_actions(**params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url=f"/{resource}/1/actions",
+            params={**params, "page": 1, "per_page": 50},
+        )
+
+        assert len(actions) == 2
+        assert_bound_action1(actions[0], bound_model._client._parent.actions)
+        assert_bound_action2(actions[1], bound_model._client._parent.actions)
 
 
 class TestActionsClient:
