@@ -40,6 +40,9 @@ resource_clients_with_actions = {
 
 
 def test_resource_clients_with_actions(client: Client):
+    """
+    Ensure that the list of resource clients above is up to date.
+    """
     members = inspect.getmembers(
         client,
         predicate=lambda p: isinstance(p, ResourceClientBase) and hasattr(p, "actions"),
