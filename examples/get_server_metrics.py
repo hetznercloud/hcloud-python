@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from os import environ
 
 from hcloud import Client
@@ -24,7 +23,7 @@ if server is None:
     )
     server = response.server
 
-end = datetime.now()
+end = datetime.now(timezone.utc)
 start = end - timedelta(hours=1)
 
 response = server.get_metrics(
@@ -33,4 +32,4 @@ response = server.get_metrics(
     end=end,
 )
 
-print(json.dumps(response.metrics))
+print(response.metrics)
