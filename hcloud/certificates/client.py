@@ -53,7 +53,13 @@ class BoundCertificate(BoundModelBase, Certificate):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        return self._client.get_actions_list(self, status, sort, page, per_page)
+        return self._client.get_actions_list(
+            self,
+            status=status,
+            sort=sort,
+            page=page,
+            per_page=per_page,
+        )
 
     def get_actions(
         self,
@@ -68,7 +74,11 @@ class BoundCertificate(BoundModelBase, Certificate):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return self._client.get_actions(self, status, sort)
+        return self._client.get_actions(
+            self,
+            status=status,
+            sort=sort,
+        )
 
     def update(
         self,
@@ -83,7 +93,11 @@ class BoundCertificate(BoundModelBase, Certificate):
                User-defined labels (key-value pairs)
         :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`
         """
-        return self._client.update(self, name, labels)
+        return self._client.update(
+            self,
+            name=name,
+            labels=labels,
+        )
 
     def delete(self) -> bool:
         """Deletes a certificate.
