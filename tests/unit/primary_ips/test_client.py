@@ -8,13 +8,28 @@ from hcloud import Client
 from hcloud.datacenters import BoundDatacenter, Datacenter
 from hcloud.primary_ips import BoundPrimaryIP, PrimaryIP, PrimaryIPsClient
 
+from ..conftest import BoundModelTestCase
 
-class TestBoundPrimaryIP:
+
+class TestBoundPrimaryIP(BoundModelTestCase):
+    methods = [
+        BoundPrimaryIP.update,
+        BoundPrimaryIP.delete,
+        BoundPrimaryIP.change_dns_ptr,
+        BoundPrimaryIP.change_protection,
+        BoundPrimaryIP.assign,
+        BoundPrimaryIP.unassign,
+    ]
+
     @pytest.fixture()
-    def bound_primary_ip(self, client: Client):
-        return BoundPrimaryIP(client.primary_ips, data=dict(id=14))
+    def resource_client(self, client: Client):
+        return client.primary_ips
 
-    def test_bound_primary_ip_init(self, primary_ip_response):
+    @pytest.fixture()
+    def bound_model(self, resource_client: PrimaryIPsClient):
+        return BoundPrimaryIP(resource_client, data=dict(id=14))
+
+    def test_init(self, primary_ip_response):
         bound_primary_ip = BoundPrimaryIP(
             client=mock.MagicMock(), data=primary_ip_response["primary_ip"]
         )
@@ -38,114 +53,6 @@ class TestBoundPrimaryIP:
         assert bound_primary_ip.datacenter.location.city == "Falkenstein"
         assert bound_primary_ip.datacenter.location.latitude == 50.47612
         assert bound_primary_ip.datacenter.location.longitude == 12.370071
-
-    def test_update(
-        self,
-        request_mock: mock.MagicMock,
-        bound_primary_ip,
-        response_update_primary_ip,
-    ):
-        request_mock.return_value = response_update_primary_ip
-
-        primary_ip = bound_primary_ip.update(auto_delete=True, name="my-resource")
-
-        request_mock.assert_called_with(
-            method="PUT",
-            url="/primary_ips/14",
-            json={"auto_delete": True, "name": "my-resource"},
-        )
-
-        assert primary_ip.id == 42
-        assert primary_ip.auto_delete is True
-
-    def test_delete(
-        self,
-        request_mock: mock.MagicMock,
-        bound_primary_ip,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        delete_success = bound_primary_ip.delete()
-
-        request_mock.assert_called_with(
-            method="DELETE",
-            url="/primary_ips/14",
-        )
-
-        assert delete_success is True
-
-    def test_change_protection(
-        self,
-        request_mock: mock.MagicMock,
-        bound_primary_ip,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_primary_ip.change_protection(True)
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/primary_ips/14/actions/change_protection",
-            json={"delete": True},
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_assign(
-        self,
-        request_mock: mock.MagicMock,
-        bound_primary_ip,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_primary_ip.assign(assignee_id=12, assignee_type="server")
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/primary_ips/14/actions/assign",
-            json={"assignee_id": 12, "assignee_type": "server"},
-        )
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_unassign(
-        self,
-        request_mock: mock.MagicMock,
-        bound_primary_ip,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_primary_ip.unassign()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/primary_ips/14/actions/unassign",
-        )
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_change_dns_ptr(
-        self,
-        request_mock: mock.MagicMock,
-        bound_primary_ip,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_primary_ip.change_dns_ptr("1.2.3.4", "server02.example.com")
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/primary_ips/14/actions/change_dns_ptr",
-            json={"ip": "1.2.3.4", "dns_ptr": "server02.example.com"},
-        )
-        assert action.id == 1
-        assert action.progress == 0
 
 
 class TestPrimaryIPsClient:

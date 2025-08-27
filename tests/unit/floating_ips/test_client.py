@@ -9,152 +9,51 @@ from hcloud.floating_ips import BoundFloatingIP, FloatingIP, FloatingIPsClient
 from hcloud.locations import BoundLocation, Location
 from hcloud.servers import BoundServer, Server
 
+from ..conftest import BoundModelTestCase
 
-class TestBoundFloatingIP:
+
+class TestBoundFloatingIP(BoundModelTestCase):
+    methods = [
+        BoundFloatingIP.update,
+        BoundFloatingIP.delete,
+        BoundFloatingIP.change_protection,
+        BoundFloatingIP.change_dns_ptr,
+        BoundFloatingIP.assign,
+        BoundFloatingIP.unassign,
+    ]
+
     @pytest.fixture()
-    def bound_floating_ip(self, client: Client):
-        return BoundFloatingIP(client.floating_ips, data=dict(id=14))
+    def resource_client(self, client: Client):
+        return client.floating_ips
 
-    def test_bound_floating_ip_init(self, floating_ip_response):
-        bound_floating_ip = BoundFloatingIP(
-            client=mock.MagicMock(), data=floating_ip_response["floating_ip"]
+    @pytest.fixture()
+    def bound_model(self, resource_client, floating_ip_response):
+        return BoundFloatingIP(
+            resource_client, data=floating_ip_response["floating_ip"]
         )
 
-        assert bound_floating_ip.id == 4711
-        assert bound_floating_ip.description == "Web Frontend"
-        assert bound_floating_ip.name == "Web Frontend"
-        assert bound_floating_ip.ip == "131.232.99.1"
-        assert bound_floating_ip.type == "ipv4"
-        assert bound_floating_ip.protection == {"delete": False}
-        assert bound_floating_ip.labels == {}
-        assert bound_floating_ip.blocked is False
+    def test_init(self, bound_model: BoundFloatingIP):
+        o = bound_model
+        assert o.id == 4711
+        assert o.description == "Web Frontend"
+        assert o.name == "Web Frontend"
+        assert o.ip == "131.232.99.1"
+        assert o.type == "ipv4"
+        assert o.protection == {"delete": False}
+        assert o.labels == {}
+        assert o.blocked is False
 
-        assert isinstance(bound_floating_ip.server, BoundServer)
-        assert bound_floating_ip.server.id == 42
+        assert isinstance(o.server, BoundServer)
+        assert o.server.id == 42
 
-        assert isinstance(bound_floating_ip.home_location, BoundLocation)
-        assert bound_floating_ip.home_location.id == 1
-        assert bound_floating_ip.home_location.name == "fsn1"
-        assert bound_floating_ip.home_location.description == "Falkenstein DC Park 1"
-        assert bound_floating_ip.home_location.country == "DE"
-        assert bound_floating_ip.home_location.city == "Falkenstein"
-        assert bound_floating_ip.home_location.latitude == 50.47612
-        assert bound_floating_ip.home_location.longitude == 12.370071
-
-    def test_update(
-        self,
-        request_mock: mock.MagicMock,
-        bound_floating_ip,
-        response_update_floating_ip,
-    ):
-        request_mock.return_value = response_update_floating_ip
-
-        floating_ip = bound_floating_ip.update(
-            description="New description", name="New name"
-        )
-
-        request_mock.assert_called_with(
-            method="PUT",
-            url="/floating_ips/14",
-            json={"description": "New description", "name": "New name"},
-        )
-
-        assert floating_ip.id == 4711
-        assert floating_ip.description == "New description"
-        assert floating_ip.name == "New name"
-
-    def test_delete(
-        self,
-        request_mock: mock.MagicMock,
-        bound_floating_ip,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        delete_success = bound_floating_ip.delete()
-
-        request_mock.assert_called_with(
-            method="DELETE",
-            url="/floating_ips/14",
-        )
-
-        assert delete_success is True
-
-    def test_change_protection(
-        self,
-        request_mock: mock.MagicMock,
-        bound_floating_ip,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_floating_ip.change_protection(True)
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/floating_ips/14/actions/change_protection",
-            json={"delete": True},
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    @pytest.mark.parametrize(
-        "server", (Server(id=1), BoundServer(mock.MagicMock(), dict(id=1)))
-    )
-    def test_assign(
-        self,
-        request_mock: mock.MagicMock,
-        bound_floating_ip,
-        server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_floating_ip.assign(server)
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/floating_ips/14/actions/assign",
-            json={"server": 1},
-        )
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_unassign(
-        self,
-        request_mock: mock.MagicMock,
-        bound_floating_ip,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_floating_ip.unassign()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/floating_ips/14/actions/unassign",
-        )
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_change_dns_ptr(
-        self,
-        request_mock: mock.MagicMock,
-        bound_floating_ip,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_floating_ip.change_dns_ptr("1.2.3.4", "server02.example.com")
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/floating_ips/14/actions/change_dns_ptr",
-            json={"ip": "1.2.3.4", "dns_ptr": "server02.example.com"},
-        )
-        assert action.id == 1
-        assert action.progress == 0
+        assert isinstance(o.home_location, BoundLocation)
+        assert o.home_location.id == 1
+        assert o.home_location.name == "fsn1"
+        assert o.home_location.description == "Falkenstein DC Park 1"
+        assert o.home_location.country == "DE"
+        assert o.home_location.city == "Falkenstein"
+        assert o.home_location.latitude == 50.47612
+        assert o.home_location.longitude == 12.370071
 
 
 class TestFloatingIPsClient:

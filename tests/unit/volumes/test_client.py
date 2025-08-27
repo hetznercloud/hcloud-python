@@ -10,11 +10,26 @@ from hcloud.locations import BoundLocation, Location
 from hcloud.servers import BoundServer, Server
 from hcloud.volumes import BoundVolume, Volume, VolumesClient
 
+from ..conftest import BoundModelTestCase
 
-class TestBoundVolume:
+
+class TestBoundVolume(BoundModelTestCase):
+    methods = [
+        BoundVolume.update,
+        BoundVolume.delete,
+        BoundVolume.change_protection,
+        BoundVolume.attach,
+        BoundVolume.detach,
+        BoundVolume.resize,
+    ]
+
     @pytest.fixture()
-    def bound_volume(self, client: Client):
-        return BoundVolume(client.volumes, data=dict(id=14))
+    def resource_client(self, client: Client):
+        return client.volumes
+
+    @pytest.fixture()
+    def bound_model(self, resource_client):
+        return BoundVolume(resource_client, data=dict(id=14))
 
     def test_bound_volume_init(self, volume_response):
         bound_volume = BoundVolume(
@@ -40,140 +55,6 @@ class TestBoundVolume:
         assert bound_volume.location.city == "Falkenstein"
         assert bound_volume.location.latitude == 50.47612
         assert bound_volume.location.longitude == 12.370071
-
-    def test_update(
-        self,
-        request_mock: mock.MagicMock,
-        bound_volume,
-        response_update_volume,
-    ):
-        request_mock.return_value = response_update_volume
-
-        volume = bound_volume.update(name="new-name")
-
-        request_mock.assert_called_with(
-            method="PUT",
-            url="/volumes/14",
-            json={"name": "new-name"},
-        )
-
-        assert volume.id == 4711
-        assert volume.name == "new-name"
-
-    def test_delete(
-        self,
-        request_mock: mock.MagicMock,
-        bound_volume,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        delete_success = bound_volume.delete()
-
-        request_mock.assert_called_with(
-            method="DELETE",
-            url="/volumes/14",
-        )
-
-        assert delete_success is True
-
-    def test_change_protection(
-        self,
-        request_mock: mock.MagicMock,
-        bound_volume,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_volume.change_protection(True)
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/volumes/14/actions/change_protection",
-            json={"delete": True},
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    @pytest.mark.parametrize(
-        "server", (Server(id=1), BoundServer(mock.MagicMock(), dict(id=1)))
-    )
-    def test_attach(
-        self,
-        request_mock: mock.MagicMock,
-        bound_volume,
-        server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_volume.attach(server)
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/volumes/14/actions/attach",
-            json={"server": 1},
-        )
-        assert action.id == 1
-        assert action.progress == 0
-
-    @pytest.mark.parametrize(
-        "server", (Server(id=1), BoundServer(mock.MagicMock(), dict(id=1)))
-    )
-    def test_attach_with_automount(
-        self,
-        request_mock: mock.MagicMock,
-        bound_volume,
-        server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_volume.attach(server, False)
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/volumes/14/actions/attach",
-            json={"server": 1, "automount": False},
-        )
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_detach(
-        self,
-        request_mock: mock.MagicMock,
-        bound_volume,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_volume.detach()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/volumes/14/actions/detach",
-        )
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_resize(
-        self,
-        request_mock: mock.MagicMock,
-        bound_volume,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_volume.resize(50)
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/volumes/14/actions/resize",
-            json={"size": 50},
-        )
-        assert action.id == 1
-        assert action.progress == 0
 
 
 class TestVolumesClient:
@@ -343,7 +224,11 @@ class TestVolumesClient:
         request_mock.return_value = volume_create_response
 
         volumes_client.create(
-            100, "database-storage", server=server, automount=False, format="xfs"
+            size=100,
+            name="database-storage",
+            server=server,
+            automount=False,
+            format="xfs",
         )
 
         request_mock.assert_called_with(
@@ -476,12 +361,12 @@ class TestVolumesClient:
     ):
         request_mock.return_value = action_response
 
-        action = volumes_client.attach(volume, server)
+        action = volumes_client.attach(volume, server, True)
 
         request_mock.assert_called_with(
             method="POST",
             url="/volumes/12/actions/attach",
-            json={"server": 1},
+            json={"server": 1, "automount": True},
         )
         assert action.id == 1
         assert action.progress == 0

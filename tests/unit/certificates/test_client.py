@@ -12,88 +12,42 @@ from hcloud.certificates import (
     ManagedCertificateStatus,
 )
 
+from ..conftest import BoundModelTestCase
 
-class TestBoundCertificate:
+
+class TestBoundCertificate(BoundModelTestCase):
+    methods = [
+        BoundCertificate.update,
+        BoundCertificate.delete,
+        BoundCertificate.retry_issuance,
+    ]
+
     @pytest.fixture()
-    def bound_certificate(self, client: Client):
-        return BoundCertificate(client.certificates, data=dict(id=14))
+    def resource_client(self, client: Client):
+        return client.certificates
 
-    def test_bound_certificate_init(self, certificate_response):
-        bound_certificate = BoundCertificate(
-            client=mock.MagicMock(), data=certificate_response["certificate"]
+    @pytest.fixture()
+    def bound_model(self, resource_client, certificate_response):
+        return BoundCertificate(
+            resource_client, data=certificate_response["certificate"]
         )
 
-        assert bound_certificate.id == 2323
-        assert bound_certificate.name == "My Certificate"
-        assert bound_certificate.type == "managed"
-        assert (
-            bound_certificate.fingerprint
-            == "03:c7:55:9b:2a:d1:04:17:09:f6:d0:7f:18:34:63:d4:3e:5f"
-        )
-        assert bound_certificate.certificate == "-----BEGIN CERTIFICATE-----\n..."
-        assert len(bound_certificate.domain_names) == 3
-        assert bound_certificate.domain_names[0] == "example.com"
-        assert bound_certificate.domain_names[1] == "webmail.example.com"
-        assert bound_certificate.domain_names[2] == "www.example.com"
-        assert isinstance(bound_certificate.status, ManagedCertificateStatus)
-        assert bound_certificate.status.issuance == "failed"
-        assert bound_certificate.status.renewal == "scheduled"
-        assert bound_certificate.status.error.code == "error_code"
-        assert bound_certificate.status.error.message == "error message"
-
-    def test_update(
-        self,
-        request_mock: mock.MagicMock,
-        bound_certificate,
-        response_update_certificate,
-    ):
-        request_mock.return_value = response_update_certificate
-
-        certificate = bound_certificate.update(name="New name")
-
-        request_mock.assert_called_with(
-            method="PUT",
-            url="/certificates/14",
-            json={"name": "New name"},
-        )
-
-        assert certificate.id == 2323
-        assert certificate.name == "New name"
-
-    def test_delete(
-        self,
-        request_mock: mock.MagicMock,
-        bound_certificate,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        delete_success = bound_certificate.delete()
-
-        request_mock.assert_called_with(
-            method="DELETE",
-            url="/certificates/14",
-        )
-
-        assert delete_success is True
-
-    def test_retry_issuance(
-        self,
-        request_mock: mock.MagicMock,
-        bound_certificate,
-        response_retry_issuance_action,
-    ):
-        request_mock.return_value = response_retry_issuance_action
-
-        action = bound_certificate.retry_issuance()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/certificates/14/actions/retry",
-        )
-
-        assert action.id == 14
-        assert action.command == "issue_certificate"
+    def test_init(self, bound_model: BoundCertificate):
+        o = bound_model
+        assert o.id == 2323
+        assert o.name == "My Certificate"
+        assert o.type == "managed"
+        assert o.fingerprint == "03:c7:55:9b:2a:d1:04:17:09:f6:d0:7f:18:34:63:d4:3e:5f"
+        assert o.certificate == "-----BEGIN CERTIFICATE-----\n..."
+        assert len(o.domain_names) == 3
+        assert o.domain_names[0] == "example.com"
+        assert o.domain_names[1] == "webmail.example.com"
+        assert o.domain_names[2] == "www.example.com"
+        assert isinstance(o.status, ManagedCertificateStatus)
+        assert o.status.issuance == "failed"
+        assert o.status.renewal == "scheduled"
+        assert o.status.error.code == "error_code"
+        assert o.status.error.message == "error message"
 
 
 class TestCertificatesClient:

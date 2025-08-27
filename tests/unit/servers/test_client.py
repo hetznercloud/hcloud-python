@@ -27,13 +27,48 @@ from hcloud.servers import (
 )
 from hcloud.volumes import BoundVolume, Volume
 
+from ..conftest import BoundModelTestCase
 
-class TestBoundServer:
+
+class TestBoundServer(BoundModelTestCase):
+    methods = [
+        BoundServer.update,
+        BoundServer.delete,
+        BoundServer.add_to_placement_group,
+        BoundServer.remove_from_placement_group,
+        BoundServer.attach_iso,
+        BoundServer.detach_iso,
+        BoundServer.attach_to_network,
+        BoundServer.detach_from_network,
+        BoundServer.change_alias_ips,
+        BoundServer.change_dns_ptr,
+        BoundServer.change_protection,
+        BoundServer.change_type,
+        BoundServer.create_image,
+        BoundServer.disable_backup,
+        BoundServer.enable_backup,
+        BoundServer.disable_rescue,
+        BoundServer.enable_rescue,
+        BoundServer.get_metrics,
+        BoundServer.power_off,
+        BoundServer.power_on,
+        BoundServer.reboot,
+        BoundServer.rebuild,
+        BoundServer.shutdown,
+        BoundServer.reset,
+        BoundServer.request_console,
+        BoundServer.reset_password,
+    ]
+
     @pytest.fixture()
-    def bound_server(self, client: Client):
-        return BoundServer(client.servers, data=dict(id=14))
+    def resource_client(self, client: Client):
+        return client.servers
 
-    def test_bound_server_init(self, response_full_server):
+    @pytest.fixture()
+    def bound_model(self, resource_client: ServersClient):
+        return BoundServer(resource_client, data=dict(id=14))
+
+    def test_init(self, response_full_server):
         bound_server = BoundServer(
             client=mock.MagicMock(), data=response_full_server["server"]
         )
@@ -121,536 +156,6 @@ class TestBoundServer:
         assert bound_server.placement_group.id == 897
         assert bound_server.placement_group.name == "my Placement Group"
         assert bound_server.placement_group.complete is True
-
-    def test_update(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        response_update_server,
-    ):
-        request_mock.return_value = response_update_server
-
-        server = bound_server.update(name="new-name", labels={})
-
-        request_mock.assert_called_with(
-            method="PUT",
-            url="/servers/14",
-            json={"name": "new-name", "labels": {}},
-        )
-
-        assert server.id == 14
-        assert server.name == "new-name"
-
-    def test_delete(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_server.delete()
-
-        request_mock.assert_called_with(
-            method="DELETE",
-            url="/servers/14",
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_get_metrics(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server: BoundServer,
-        response_get_metrics,
-    ):
-        request_mock.return_value = response_get_metrics
-
-        response = bound_server.get_metrics(
-            type=["cpu", "disk"],
-            start="2023-12-14T17:40:00+01:00",
-            end="2023-12-14T17:50:00+01:00",
-        )
-
-        request_mock.assert_called_with(
-            method="GET",
-            url="/servers/14/metrics",
-            params={
-                "type": "cpu,disk",
-                "start": "2023-12-14T17:40:00+01:00",
-                "end": "2023-12-14T17:50:00+01:00",
-            },
-        )
-
-        assert "cpu" in response.metrics.time_series
-        assert "disk.0.iops.read" in response.metrics.time_series
-        assert len(response.metrics.time_series["disk.0.iops.read"]["values"]) == 3
-
-    def test_power_off(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_server.power_off()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/poweroff",
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_power_on(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_server.power_on()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/poweron",
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_reboot(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_server.reboot()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/reboot",
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_reset(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_server.reset()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/reset",
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_shutdown(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_server.shutdown()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/shutdown",
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_reset_password(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        response_server_reset_password,
-    ):
-        request_mock.return_value = response_server_reset_password
-
-        response = bound_server.reset_password()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/reset_password",
-        )
-
-        assert response.action.id == 1
-        assert response.action.progress == 0
-        assert response.root_password == "YItygq1v3GYjjMomLaKc"
-
-    def test_change_type(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_server.change_type(ServerType(name="cx11"), upgrade_disk=True)
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/change_type",
-            json={"server_type": "cx11", "upgrade_disk": True},
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_enable_rescue(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        response_server_enable_rescue,
-    ):
-        request_mock.return_value = response_server_enable_rescue
-
-        response = bound_server.enable_rescue(type="linux64")
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/enable_rescue",
-            json={"type": "linux64"},
-        )
-
-        assert response.action.id == 1
-        assert response.action.progress == 0
-        assert response.root_password == "YItygq1v3GYjjMomLaKc"
-
-    def test_disable_rescue(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_server.disable_rescue()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/disable_rescue",
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_create_image(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        response_server_create_image,
-    ):
-        request_mock.return_value = response_server_create_image
-
-        response = bound_server.create_image(description="my image", type="snapshot")
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/create_image",
-            json={"description": "my image", "type": "snapshot"},
-        )
-
-        assert response.action.id == 1
-        assert response.action.progress == 0
-        assert response.image.description == "my image"
-
-    def test_rebuild(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        response = bound_server.rebuild(
-            Image(name="ubuntu-20.04"),
-            return_response=True,
-        )
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/rebuild",
-            json={"image": "ubuntu-20.04"},
-        )
-
-        assert response.action.id == 1
-        assert response.action.progress == 0
-        assert response.root_password is None or isinstance(response.root_password, str)
-
-    def test_enable_backup(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_server.enable_backup()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/enable_backup",
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_disable_backup(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_server.disable_backup()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/disable_backup",
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_attach_iso(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_server.attach_iso(Iso(name="FreeBSD-11.0-RELEASE-amd64-dvd1"))
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/attach_iso",
-            json={"iso": "FreeBSD-11.0-RELEASE-amd64-dvd1"},
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_detach_iso(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_server.detach_iso()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/detach_iso",
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_change_dns_ptr(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_server.change_dns_ptr("1.2.3.4", "example.com")
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/change_dns_ptr",
-            json={"ip": "1.2.3.4", "dns_ptr": "example.com"},
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_change_protection(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_server.change_protection(True, True)
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/change_protection",
-            json={"delete": True, "rebuild": True},
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-
-    def test_request_console(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        response_server_request_console,
-    ):
-        request_mock.return_value = response_server_request_console
-
-        response = bound_server.request_console()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/request_console",
-        )
-
-        assert response.action.id == 1
-        assert response.action.progress == 0
-        assert (
-            response.wss_url
-            == "wss://console.hetzner.cloud/?server_id=1&token=3db32d15-af2f-459c-8bf8-dee1fd05f49c"
-        )
-        assert response.password == "9MQaTg2VAGI0FIpc10k3UpRXcHj2wQ6x"
-
-    @pytest.mark.parametrize(
-        "network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))]
-    )
-    def test_attach_to_network(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        network,
-        response_attach_to_network,
-    ):
-        request_mock.return_value = response_attach_to_network
-
-        action = bound_server.attach_to_network(
-            network, "10.0.1.1", ["10.0.1.2", "10.0.1.3"]
-        )
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/attach_to_network",
-            json={
-                "network": 4711,
-                "ip": "10.0.1.1",
-                "alias_ips": ["10.0.1.2", "10.0.1.3"],
-            },
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-        assert action.command == "attach_to_network"
-
-    @pytest.mark.parametrize(
-        "network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))]
-    )
-    def test_detach_from_network(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        network,
-        response_detach_from_network,
-    ):
-        request_mock.return_value = response_detach_from_network
-
-        action = bound_server.detach_from_network(network)
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/detach_from_network",
-            json={"network": 4711},
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-        assert action.command == "detach_from_network"
-
-    @pytest.mark.parametrize(
-        "network", [Network(id=4711), BoundNetwork(mock.MagicMock(), dict(id=4711))]
-    )
-    def test_change_alias_ips(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        network,
-        response_change_alias_ips,
-    ):
-        request_mock.return_value = response_change_alias_ips
-
-        action = bound_server.change_alias_ips(network, ["10.0.1.2", "10.0.1.3"])
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/change_alias_ips",
-            json={"network": 4711, "alias_ips": ["10.0.1.2", "10.0.1.3"]},
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
-        assert action.command == "change_alias_ips"
-
-    @pytest.mark.parametrize(
-        "placement_group",
-        [PlacementGroup(id=897), BoundPlacementGroup(mock.MagicMock, dict(id=897))],
-    )
-    def test_add_to_placement_group(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        placement_group,
-        response_add_to_placement_group,
-    ):
-        request_mock.return_value = response_add_to_placement_group
-
-        action = bound_server.add_to_placement_group(placement_group)
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/add_to_placement_group",
-            json={"placement_group": 897},
-        )
-
-        assert action.id == 13
-        assert action.progress == 0
-        assert action.command == "add_to_placement_group"
-
-    def test_remove_from_placement_group(
-        self,
-        request_mock: mock.MagicMock,
-        bound_server,
-        response_remove_from_placement_group,
-    ):
-        request_mock.return_value = response_remove_from_placement_group
-
-        action = bound_server.remove_from_placement_group()
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers/14/actions/remove_from_placement_group",
-        )
-
-        assert action.id == 13
-        assert action.progress == 100
-        assert action.command == "remove_from_placement_group"
 
 
 class TestServersClient:
@@ -1640,3 +1145,84 @@ class TestServersClient:
         assert action.id == 1
         assert action.progress == 0
         assert action.command == "change_alias_ips"
+
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
+    @pytest.mark.parametrize(
+        "placement_group",
+        [PlacementGroup(id=897), BoundPlacementGroup(mock.MagicMock, dict(id=897))],
+    )
+    def test_add_to_placement_group(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        placement_group,
+        response_add_to_placement_group,
+    ):
+        request_mock.return_value = response_add_to_placement_group
+
+        action = servers_client.add_to_placement_group(server, placement_group)
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/servers/1/actions/add_to_placement_group",
+            json={"placement_group": 897},
+        )
+
+        assert action.id == 13
+
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
+    def test_remove_from_placement_group(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        response_remove_from_placement_group,
+    ):
+        request_mock.return_value = response_remove_from_placement_group
+
+        action = servers_client.remove_from_placement_group(server)
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/servers/1/actions/remove_from_placement_group",
+        )
+
+        assert action.id == 13
+
+    @pytest.mark.parametrize(
+        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
+    )
+    def test_get_metrics(
+        self,
+        request_mock: mock.MagicMock,
+        servers_client: ServersClient,
+        server,
+        response_get_metrics,
+    ):
+        request_mock.return_value = response_get_metrics
+
+        response = servers_client.get_metrics(
+            server,
+            type=["cpu", "disk"],
+            start="2023-12-14T17:40:00+01:00",
+            end="2023-12-14T17:50:00+01:00",
+        )
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/servers/1/metrics",
+            params={
+                "type": "cpu,disk",
+                "start": "2023-12-14T17:40:00+01:00",
+                "end": "2023-12-14T17:50:00+01:00",
+            },
+        )
+
+        assert "cpu" in response.metrics.time_series
+        assert "disk.0.iops.read" in response.metrics.time_series
+        assert len(response.metrics.time_series["disk.0.iops.read"]["values"]) == 3
