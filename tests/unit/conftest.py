@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import inspect
 from collections.abc import Generator
+from typing import Callable, ClassVar
 from unittest import mock
 from warnings import warn
 
@@ -142,3 +144,88 @@ def hetzner_client() -> Generator[Client]:
     patcher.start()
     yield client
     patcher.stop()
+
+
+def build_kwargs_mock(func: Callable) -> dict[str, mock.Mock]:
+    """
+    Generate a kwargs dict that may be passed to the provided function for testing purposes.
+    """
+    s = inspect.signature(func)
+
+    kwargs = {}
+    for name, param in s.parameters.items():
+        if name in ("self",):
+            continue
+
+        if param.kind in (param.POSITIONAL_OR_KEYWORD, param.KEYWORD_ONLY):
+            kwargs[name] = mock.Mock()
+            continue
+
+        # Ignore **kwargs
+        if param.kind in (param.VAR_KEYWORD,):
+            continue
+
+        raise NotImplementedError(f"unsupported parameter kind: {param.kind}")
+
+    return kwargs
+
+
+def pytest_generate_tests(metafunc: pytest.Metafunc):
+    """
+    Magic function to generate a test for each bound model method.
+    """
+    if "bound_model_method" in metafunc.fixturenames:
+        metafunc.parametrize("bound_model_method", metafunc.cls.methods)
+
+
+class BoundModelTestCase:
+    methods: ClassVar[list[Callable]]
+
+    def test_method_list(self, bound_model):
+        """
+        Ensure the list of bound model methods is up to date.
+        """
+        members_count = 0
+        members_missing = []
+        for name, member in inspect.getmembers(
+            bound_model,
+            lambda m: inspect.ismethod(m)
+            and m.__func__ in bound_model.__class__.__dict__.values(),
+        ):
+            # Actions methods are already tested in TestBoundModelActions.
+            if name in ("__init__", "get_actions", "get_actions_list"):
+                continue
+
+            if member.__func__ in self.__class__.methods:
+                members_count += 1
+            else:
+                members_missing.append(member.__func__.__qualname__)
+
+        assert not members_missing, "untested methods:\n" + ",\n".join(members_missing)
+        assert members_count == len(self.__class__.methods)
+
+    def test_method(
+        self,
+        resource_client,
+        bound_model,
+        bound_model_method: Callable,
+    ):
+        # Check if the resource client has a method named after the bound model method.
+        assert hasattr(resource_client, bound_model_method.__name__)
+
+        # Mock the resource client method.
+        resource_client_method_mock = mock.MagicMock()
+        setattr(
+            resource_client,
+            bound_model_method.__name__,
+            resource_client_method_mock,
+        )
+
+        kwargs = build_kwargs_mock(bound_model_method)
+
+        # Call the bound model method
+        result = getattr(bound_model, bound_model_method.__name__)(**kwargs)
+
+        resource_client_method_mock.assert_called_with(bound_model, **kwargs)
+
+        assert result is resource_client_method_mock.return_value
