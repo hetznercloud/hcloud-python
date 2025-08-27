@@ -53,7 +53,11 @@ class BoundImage(BoundModelBase, Image):
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
         return self._client.get_actions_list(
-            self, sort=sort, page=page, per_page=per_page, status=status
+            self,
+            sort=sort,
+            page=page,
+            per_page=per_page,
+            status=status,
         )
 
     def get_actions(
@@ -69,7 +73,11 @@ class BoundImage(BoundModelBase, Image):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return self._client.get_actions(self, status=status, sort=sort)
+        return self._client.get_actions(
+            self,
+            status=status,
+            sort=sort,
+        )
 
     def update(
         self,
@@ -88,7 +96,9 @@ class BoundImage(BoundModelBase, Image):
                User-defined labels (key-value pairs)
         :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
         """
-        return self._client.update(self, description, type, labels)
+        return self._client.update(
+            self, description=description, type=type, labels=labels
+        )
 
     def delete(self) -> bool:
         """Deletes an Image. Only images of type snapshot and backup can be deleted.
@@ -104,7 +114,7 @@ class BoundImage(BoundModelBase, Image):
                If true, prevents the snapshot from being deleted
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.change_protection(self, delete)
+        return self._client.change_protection(self, delete=delete)
 
 
 class ImagesPageResult(NamedTuple):

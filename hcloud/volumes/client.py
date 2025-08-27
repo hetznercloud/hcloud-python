@@ -52,7 +52,9 @@ class BoundVolume(BoundModelBase, Volume):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        return self._client.get_actions_list(self, status, sort, page, per_page)
+        return self._client.get_actions_list(
+            self, status=status, sort=sort, page=page, per_page=per_page
+        )
 
     def get_actions(
         self,
@@ -67,7 +69,7 @@ class BoundVolume(BoundModelBase, Volume):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return self._client.get_actions(self, status, sort)
+        return self._client.get_actions(self, status=status, sort=sort)
 
     def update(
         self,
@@ -82,7 +84,7 @@ class BoundVolume(BoundModelBase, Volume):
                User-defined labels (key-value pairs)
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.update(self, name, labels)
+        return self._client.update(self, name=name, labels=labels)
 
     def delete(self) -> bool:
         """Deletes a volume. All volume data is irreversibly destroyed. The volume must not be attached to a server and it must not have delete protection enabled.
@@ -102,7 +104,7 @@ class BoundVolume(BoundModelBase, Volume):
         :param automount: boolean
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.attach(self, server, automount)
+        return self._client.attach(self, server=server, automount=automount)
 
     def detach(self) -> BoundAction:
         """Detaches a volume from the server it’s attached to. You may attach it to a server again at a later time.
@@ -118,7 +120,7 @@ class BoundVolume(BoundModelBase, Volume):
                New volume size in GB (must be greater than current size)
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.resize(self, size)
+        return self._client.resize(self, size=size)
 
     def change_protection(self, delete: bool | None = None) -> BoundAction:
         """Changes the protection configuration of a volume.
@@ -127,7 +129,7 @@ class BoundVolume(BoundModelBase, Volume):
                If True, prevents the volume from being deleted
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.change_protection(self, delete)
+        return self._client.change_protection(self, delete=delete)
 
 
 class VolumesPageResult(NamedTuple):

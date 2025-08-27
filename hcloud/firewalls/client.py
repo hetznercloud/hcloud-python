@@ -109,7 +109,13 @@ class BoundFirewall(BoundModelBase, Firewall):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        return self._client.get_actions_list(self, status, sort, page, per_page)
+        return self._client.get_actions_list(
+            self,
+            status=status,
+            sort=sort,
+            page=page,
+            per_page=per_page,
+        )
 
     def get_actions(
         self,
@@ -125,7 +131,11 @@ class BoundFirewall(BoundModelBase, Firewall):
 
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return self._client.get_actions(self, status, sort)
+        return self._client.get_actions(
+            self,
+            status=status,
+            sort=sort,
+        )
 
     def update(
         self,
@@ -140,7 +150,7 @@ class BoundFirewall(BoundModelBase, Firewall):
                New Name to set
         :return: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>`
         """
-        return self._client.update(self, labels, name)
+        return self._client.update(self, name=name, labels=labels)
 
     def delete(self) -> bool:
         """Deletes a Firewall.
@@ -155,7 +165,7 @@ class BoundFirewall(BoundModelBase, Firewall):
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
 
-        return self._client.set_rules(self, rules)
+        return self._client.set_rules(self, rules=rules)
 
     def apply_to_resources(
         self,
@@ -165,7 +175,7 @@ class BoundFirewall(BoundModelBase, Firewall):
         :param resources: List[:class:`FirewallResource <hcloud.firewalls.domain.FirewallResource>`]
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return self._client.apply_to_resources(self, resources)
+        return self._client.apply_to_resources(self, resources=resources)
 
     def remove_from_resources(
         self,
@@ -175,7 +185,7 @@ class BoundFirewall(BoundModelBase, Firewall):
         :param resources: List[:class:`FirewallResource <hcloud.firewalls.domain.FirewallResource>`]
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return self._client.remove_from_resources(self, resources)
+        return self._client.remove_from_resources(self, resources=resources)
 
 
 class FirewallsPageResult(NamedTuple):

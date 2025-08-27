@@ -43,7 +43,10 @@ class BoundPrimaryIP(BoundModelBase, PrimaryIP):
         :return: :class:`BoundPrimaryIP <hcloud.primary_ips.client.BoundPrimaryIP>`
         """
         return self._client.update(
-            self, auto_delete=auto_delete, labels=labels, name=name
+            self,
+            auto_delete=auto_delete,
+            labels=labels,
+            name=name,
         )
 
     def delete(self) -> bool:
@@ -60,7 +63,7 @@ class BoundPrimaryIP(BoundModelBase, PrimaryIP):
                If true, prevents the Primary IP from being deleted
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.change_protection(self, delete)
+        return self._client.change_protection(self, delete=delete)
 
     def assign(self, assignee_id: int, assignee_type: str) -> BoundAction:
         """Assigns a Primary IP to a assignee.
@@ -71,7 +74,9 @@ class BoundPrimaryIP(BoundModelBase, PrimaryIP):
                Assignee type (e.g server) the Primary IP shall be assigned to
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.assign(self, assignee_id, assignee_type)
+        return self._client.assign(
+            self, assignee_id=assignee_id, assignee_type=assignee_type
+        )
 
     def unassign(self) -> BoundAction:
         """Unassigns a Primary IP, resulting in it being unreachable. You may assign it to a server again at a later time.
@@ -89,7 +94,7 @@ class BoundPrimaryIP(BoundModelBase, PrimaryIP):
                Hostname to set as a reverse DNS PTR entry, will reset to original default value if `None`
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.change_dns_ptr(self, ip, dns_ptr)
+        return self._client.change_dns_ptr(self, ip=ip, dns_ptr=dns_ptr)
 
 
 class PrimaryIPsPageResult(NamedTuple):
