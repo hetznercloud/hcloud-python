@@ -22,6 +22,7 @@ class TestBoundServerType:
         assert bound_server_type.id == 1
         assert bound_server_type.name == "cx11"
         assert bound_server_type.description == "CX11"
+        assert bound_server_type.category == "Shared vCPU"
         assert bound_server_type.cores == 1
         assert bound_server_type.memory == 1
         assert bound_server_type.disk == 25

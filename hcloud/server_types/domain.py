@@ -15,6 +15,8 @@ class ServerType(BaseDomain, DomainIdentityMixin):
            Unique identifier of the server type
     :param description: str
            Description of the server type
+    :param category: str
+           Category of the Server Type.
     :param cores: int
            Number of cpu cores a server of this type will have
     :param memory: int
@@ -42,6 +44,7 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         "id",
         "name",
         "description",
+        "category",
         "cores",
         "memory",
         "disk",
@@ -66,6 +69,7 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         id: int | None = None,
         name: str | None = None,
         description: str | None = None,
+        category: str | None = None,
         cores: int | None = None,
         memory: int | None = None,
         disk: int | None = None,
@@ -80,6 +84,7 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         self.id = id
         self.name = name
         self.description = description
+        self.category = category
         self.cores = cores
         self.memory = memory
         self.disk = disk
