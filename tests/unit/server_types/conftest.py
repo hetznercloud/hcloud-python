@@ -10,6 +10,7 @@ def server_type_response():
             "id": 1,
             "name": "cx11",
             "description": "CX11",
+            "category": "Shared vCPU",
             "cores": 1,
             "memory": 1,
             "disk": 25,
