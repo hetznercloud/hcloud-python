@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.6.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.6.0)
+
+### Features
+
+- add category property to server type (#549)
+
+### Bug Fixes
+
+- rename `ClientEntityBase` to `ResourceClientBase` (#532)
+
 ## [v2.5.4](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.5.4)
 
 ### Bug Fixes
