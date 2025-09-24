@@ -66,12 +66,17 @@ Experimental features are published as part of our regular releases (e.g. a prod
 public beta). During an experimental phase, breaking changes on those features may occur
 within minor releases.
 
+The stability of experimental features is not related to the stability of its upstream API.
+
+Experimental features have different levels of maturity (e.g. experimental, alpha, beta)
+based on the maturity of the upstream API.
+
 While experimental features will be announced in the release notes, you can also find
 whether a python class or function is experimental in its docstring:
 
 ```
 Experimental:
-    $PRODUCT is experimental, breaking changes may occur within minor releases.
+    $PRODUCT is $MATURITY, breaking changes may occur within minor releases.
     See https://docs.hetzner.cloud/changelog#$SLUG for more details.
 ```
 
@@ -151,7 +156,7 @@ To publish experimental features as part of regular releases:
   ```py
   """
   Experimental:
-      $PRODUCT is experimental, breaking changes may occur within minor releases.
+      $PRODUCT is $MATURITY, breaking changes may occur within minor releases.
       See https://docs.hetzner.cloud/changelog#$SLUG for more details.
   """
   ```
