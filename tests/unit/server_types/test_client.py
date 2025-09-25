@@ -14,31 +14,44 @@ class TestBoundServerType:
     def bound_server_type(self, client: Client):
         return BoundServerType(client.server_types, data=dict(id=14))
 
-    def test_bound_server_type_init(self, server_type_response):
-        bound_server_type = BoundServerType(
+    def test_init(self, server_type_response):
+        o = BoundServerType(
             client=mock.MagicMock(), data=server_type_response["server_type"]
         )
 
-        assert bound_server_type.id == 1
-        assert bound_server_type.name == "cx11"
-        assert bound_server_type.description == "CX11"
-        assert bound_server_type.category == "Shared vCPU"
-        assert bound_server_type.cores == 1
-        assert bound_server_type.memory == 1
-        assert bound_server_type.disk == 25
-        assert bound_server_type.storage_type == "local"
-        assert bound_server_type.cpu_type == "shared"
-        assert bound_server_type.architecture == "x86"
-        assert bound_server_type.deprecated is True
-        assert bound_server_type.deprecation is not None
-        assert bound_server_type.deprecation.announced == datetime(
-            2023, 6, 1, tzinfo=timezone.utc
+        assert o.id == 1
+        assert o.name == "cx11"
+        assert o.description == "CX11"
+        assert o.category == "Shared vCPU"
+        assert o.cores == 1
+        assert o.memory == 1
+        assert o.disk == 25
+        assert o.storage_type == "local"
+        assert o.cpu_type == "shared"
+        assert o.architecture == "x86"
+        assert len(o.locations) == 2
+        assert o.locations[0].location.id == 1
+        assert o.locations[0].location.name == "nbg1"
+        assert o.locations[0].deprecation is None
+        assert o.locations[1].location.id == 2
+        assert o.locations[1].location.name == "fsn1"
+        assert (
+            o.locations[1].deprecation.announced.isoformat()
+            == "2023-06-01T00:00:00+00:00"
         )
-        assert bound_server_type.deprecation.unavailable_after == datetime(
-            2023, 9, 1, tzinfo=timezone.utc
+        assert (
+            o.locations[1].deprecation.unavailable_after.isoformat()
+            == "2023-09-01T00:00:00+00:00"
         )
+
         with pytest.deprecated_call():
-            assert bound_server_type.included_traffic == 21990232555520
+            assert o.deprecated is True
+            assert o.deprecation is not None
+            assert o.deprecation.announced == datetime(2023, 6, 1, tzinfo=timezone.utc)
+            assert o.deprecation.unavailable_after == datetime(
+                2023, 9, 1, tzinfo=timezone.utc
+            )
+            assert o.included_traffic == 21990232555520
 
 
 class TestServerTypesClient:

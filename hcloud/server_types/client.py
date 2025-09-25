@@ -3,13 +3,36 @@ from __future__ import annotations
 from typing import Any, NamedTuple
 
 from ..core import BoundModelBase, Meta, ResourceClientBase
-from .domain import ServerType
+from ..locations import BoundLocation
+from .domain import ServerType, ServerTypeLocation
 
 
 class BoundServerType(BoundModelBase, ServerType):
     _client: ServerTypesClient
 
     model = ServerType
+
+    def __init__(
+        self,
+        client: ServerTypesClient,
+        data: dict,
+        complete: bool = True,
+    ):
+        raw = data.get("locations")
+        if raw is not None:
+            data["locations"] = [
+                ServerTypeLocation.from_dict(
+                    {
+                        "location": BoundLocation(
+                            client._parent.locations, o, complete=False
+                        ),
+                        **o,
+                    }
+                )
+                for o in raw
+            ]
+
+        super().__init__(client, data, complete)
 
 
 class ServerTypesPageResult(NamedTuple):

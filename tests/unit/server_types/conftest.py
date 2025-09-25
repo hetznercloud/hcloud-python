@@ -33,9 +33,24 @@ def server_type_response():
             "included_traffic": 21990232555520,
             "deprecated": True,
             "deprecation": {
-                "announced": "2023-06-01T00:00:00+00:00",
-                "unavailable_after": "2023-09-01T00:00:00+00:00",
+                "announced": "2023-06-01T00:00:00Z",
+                "unavailable_after": "2023-09-01T00:00:00Z",
             },
+            "locations": [
+                {
+                    "id": 1,
+                    "name": "nbg1",
+                    "deprecation": None,
+                },
+                {
+                    "id": 2,
+                    "name": "fsn1",
+                    "deprecation": {
+                        "announced": "2023-06-01T00:00:00Z",
+                        "unavailable_after": "2023-09-01T00:00:00Z",
+                    },
+                },
+            ],
         }
     }
 
@@ -70,8 +85,8 @@ def two_server_types_response():
                 "included_traffic": 21990232555520,
                 "deprecated": True,
                 "deprecation": {
-                    "announced": "2023-06-01T00:00:00+00:00",
-                    "unavailable_after": "2023-09-01T00:00:00+00:00",
+                    "announced": "2023-06-01T00:00:00Z",
+                    "unavailable_after": "2023-09-01T00:00:00Z",
                 },
             },
             {
@@ -146,8 +161,8 @@ def one_server_types_response():
                 "included_traffic": 21990232555520,
                 "deprecated": True,
                 "deprecation": {
-                    "announced": "2023-06-01T00:00:00+00:00",
-                    "unavailable_after": "2023-09-01T00:00:00+00:00",
+                    "announced": "2023-06-01T00:00:00Z",
+                    "unavailable_after": "2023-09-01T00:00:00Z",
                 },
             }
         ]

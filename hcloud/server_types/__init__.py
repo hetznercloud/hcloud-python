@@ -5,11 +5,12 @@ from .client import (
     ServerTypesClient,
     ServerTypesPageResult,
 )
-from .domain import ServerType
+from .domain import ServerType, ServerTypeLocation
 
 __all__ = [
     "BoundServerType",
     "ServerType",
+    "ServerTypeLocation",
     "ServerTypesClient",
     "ServerTypesPageResult",
 ]
