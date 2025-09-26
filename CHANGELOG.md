@@ -1,5 +1,45 @@
 # Changelog
 
+## [v2.7.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.7.0)
+
+[Server Types](https://docs.hetzner.cloud/reference/cloud#server-types) now depend on [Locations](https://docs.hetzner.cloud/reference/cloud#locations).
+
+- We added a new `locations` property to the [Server Types](https://docs.hetzner.cloud/reference/cloud#server-types) resource. The new property defines a list of supported [Locations](https://docs.hetzner.cloud/reference/cloud#locations) and additional per [Locations](https://docs.hetzner.cloud/reference/cloud#locations) details such as deprecations information.
+
+- We deprecated the `deprecation` property from the [Server Types](https://docs.hetzner.cloud/reference/cloud#server-types) resource. The property will gradually be phased out as per [Locations](https://docs.hetzner.cloud/reference/cloud#locations) deprecations are being announced. Please use the new per [Locations](https://docs.hetzner.cloud/reference/cloud#locations) deprecation information instead.
+
+See our [changelog](https://docs.hetzner.cloud/changelog#2025-09-24-per-location-server-types) for more details.
+
+**Upgrading**
+
+```py
+# Before
+def validate_server_type(server_type: ServerType):
+    if server_type.deprecation is not None:
+        raise ValueError(f"server type {server_type.name} is deprecated")
+```
+
+```py
+# After
+def validate_server_type(server_type: ServerType, location: Location):
+    found = [o for o in server_type.locations if location.name == o.location.name]
+    if not found:
+        raise ValueError(
+            f"server type {server_type.name} is not supported in location {location.name}"
+        )
+
+    server_type_location = found[0]
+
+    if server_type_location.deprecation is not None:
+        raise ValueError(
+            f"server type {server_type.name} is deprecated in location {location.name}"
+        )
+```
+
+### Features
+
+- per location server types (#558)
+
 ## [v2.6.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.6.0)
 
 ### Features
