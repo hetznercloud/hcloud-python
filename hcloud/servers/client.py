@@ -424,6 +424,7 @@ class BoundServer(BoundModelBase, Server):
         network: Network | BoundNetwork,
         ip: str | None = None,
         alias_ips: list[str] | None = None,
+        ip_range: str | None = None,
     ) -> BoundAction:
         """Attaches a server to a network
 
@@ -432,9 +433,11 @@ class BoundServer(BoundModelBase, Server):
                 IP to request to be assigned to this server
         :param alias_ips: List[str]
                 New alias IPs to set for this server.
+        :param ip_range: str
+                IP range in CIDR block notation of the subnet to attach to.
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.attach_to_network(self, network, ip, alias_ips)
+        return self._client.attach_to_network(self, network, ip, alias_ips, ip_range)
 
     def detach_from_network(self, network: Network | BoundNetwork) -> BoundAction:
         """Detaches a server from a network.
@@ -1154,6 +1157,7 @@ class ServersClient(ResourceClientBase):
         network: Network | BoundNetwork,
         ip: str | None = None,
         alias_ips: list[str] | None = None,
+        ip_range: str | None = None,
     ) -> BoundAction:
         """Attaches a server to a network
 
@@ -1163,6 +1167,8 @@ class ServersClient(ResourceClientBase):
                 IP to request to be assigned to this server
         :param alias_ips: List[str]
                 New alias IPs to set for this server.
+        :param ip_range: str
+                IP range in CIDR block notation of the subnet to attach to.
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         data: dict[str, Any] = {"network": network.id}
@@ -1170,6 +1176,9 @@ class ServersClient(ResourceClientBase):
             data.update({"ip": ip})
         if alias_ips is not None:
             data.update({"alias_ips": alias_ips})
+        if ip_range is not None:
+            data.update({"ip_range": ip_range})
+
         response = self._client.request(
             url=f"{self._base_url}/{server.id}/actions/attach_to_network",
             method="POST",
