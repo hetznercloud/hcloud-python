@@ -319,15 +319,18 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
         self,
         network: Network | BoundNetwork,
         ip: str | None = None,
+        ip_range: str | None = None,
     ) -> BoundAction:
         """Attaches a Load Balancer to a Network
 
         :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
         :param ip: str
                 IP to request to be assigned to this Load Balancer
+        :param ip_range: str
+                IP range in CIDR block notation of the subnet to attach to.
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.attach_to_network(self, network, ip)
+        return self._client.attach_to_network(self, network, ip, ip_range)
 
     def detach_from_network(self, network: Network | BoundNetwork) -> BoundAction:
         """Detaches a Load Balancer from a Network.
@@ -840,6 +843,7 @@ class LoadBalancersClient(ResourceClientBase):
         load_balancer: LoadBalancer | BoundLoadBalancer,
         network: Network | BoundNetwork,
         ip: str | None = None,
+        ip_range: str | None = None,
     ) -> BoundAction:
         """Attach a Load Balancer to a Network.
 
@@ -847,11 +851,15 @@ class LoadBalancersClient(ResourceClientBase):
         :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
         :param ip: str
                 IP to request to be assigned to this Load Balancer
+        :param ip_range: str
+                IP range in CIDR block notation of the subnet to attach to.
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         data: dict[str, Any] = {"network": network.id}
         if ip is not None:
             data.update({"ip": ip})
+        if ip_range is not None:
+            data.update({"ip_range": ip_range})
 
         response = self._client.request(
             url=f"{self._base_url}/{load_balancer.id}/actions/attach_to_network",
