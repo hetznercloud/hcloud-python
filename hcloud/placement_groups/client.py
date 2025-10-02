@@ -25,7 +25,7 @@ class BoundPlacementGroup(BoundModelBase, PlacementGroup):
                New Name to set
         :return: :class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>`
         """
-        return self._client.update(self, labels, name)
+        return self._client.update(self, labels=labels, name=name)
 
     def delete(self) -> bool:
         """Deletes a Placement Group

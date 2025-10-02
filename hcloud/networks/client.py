@@ -89,7 +89,13 @@ class BoundNetwork(BoundModelBase, Network):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        return self._client.get_actions_list(self, status, sort, page, per_page)
+        return self._client.get_actions_list(
+            self,
+            status=status,
+            sort=sort,
+            page=page,
+            per_page=per_page,
+        )
 
     def get_actions(
         self,
@@ -104,7 +110,7 @@ class BoundNetwork(BoundModelBase, Network):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return self._client.get_actions(self, status, sort)
+        return self._client.get_actions(self, status=status, sort=sort)
 
     def add_subnet(self, subnet: NetworkSubnet) -> BoundAction:
         """Adds a subnet entry to a network.

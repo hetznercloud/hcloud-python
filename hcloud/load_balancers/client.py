@@ -174,7 +174,7 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
                User-defined labels (key-value pairs)
         :return: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>`
         """
-        return self._client.update(self, name, labels)
+        return self._client.update(self, name=name, labels=labels)
 
     def delete(self) -> bool:
         """Deletes a Load Balancer.
@@ -224,7 +224,13 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        return self._client.get_actions_list(self, status, sort, page, per_page)
+        return self._client.get_actions_list(
+            self,
+            status=status,
+            sort=sort,
+            page=page,
+            per_page=per_page,
+        )
 
     def get_actions(
         self,
@@ -239,7 +245,7 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return self._client.get_actions(self, status, sort)
+        return self._client.get_actions(self, status=status, sort=sort)
 
     def add_service(self, service: LoadBalancerService) -> BoundAction:
         """Adds a service to a Load Balancer.
@@ -266,7 +272,7 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
                        The LoadBalancerService you want to delete from the Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.delete_service(self, service)
+        return self._client.delete_service(self, service=service)
 
     def add_target(self, target: LoadBalancerTarget) -> BoundAction:
         """Adds a target to a Load Balancer.
@@ -275,7 +281,7 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
                        The LoadBalancerTarget you want to add to the Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.add_target(self, target)
+        return self._client.add_target(self, target=target)
 
     def remove_target(self, target: LoadBalancerTarget) -> BoundAction:
         """Removes a target from a Load Balancer.
@@ -284,7 +290,7 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
                        The LoadBalancerTarget you want to remove from the Load Balancer
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.remove_target(self, target)
+        return self._client.remove_target(self, target=target)
 
     def change_algorithm(self, algorithm: LoadBalancerAlgorithm) -> BoundAction:
         """Changes the algorithm used by the Load Balancer
@@ -293,7 +299,7 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
                        The LoadBalancerAlgorithm you want to use
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.change_algorithm(self, algorithm)
+        return self._client.change_algorithm(self, algorithm=algorithm)
 
     def change_dns_ptr(self, ip: str, dns_ptr: str) -> BoundAction:
         """Changes the hostname that will appear when getting the hostname belonging to the public IPs (IPv4 and IPv6) of this Load Balancer.
@@ -304,7 +310,7 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
                Hostname to set as a reverse DNS PTR entry, will reset to original default value if `None`
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.change_dns_ptr(self, ip, dns_ptr)
+        return self._client.change_dns_ptr(self, ip=ip, dns_ptr=dns_ptr)
 
     def change_protection(self, delete: bool) -> BoundAction:
         """Changes the protection configuration of a Load Balancer.
@@ -313,7 +319,7 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
                If True, prevents the Load Balancer from being deleted
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.change_protection(self, delete)
+        return self._client.change_protection(self, delete=delete)
 
     def attach_to_network(
         self,
@@ -330,7 +336,12 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
                 IP range in CIDR block notation of the subnet to attach to.
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.attach_to_network(self, network, ip, ip_range)
+        return self._client.attach_to_network(
+            self,
+            network=network,
+            ip=ip,
+            ip_range=ip_range,
+        )
 
     def detach_from_network(self, network: Network | BoundNetwork) -> BoundAction:
         """Detaches a Load Balancer from a Network.
@@ -338,7 +349,7 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
         :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.detach_from_network(self, network)
+        return self._client.detach_from_network(self, network=network)
 
     def enable_public_interface(self) -> BoundAction:
         """Enables the public interface of a Load Balancer.
@@ -364,7 +375,7 @@ class BoundLoadBalancer(BoundModelBase, LoadBalancer):
                Load Balancer type the Load Balancer should migrate to
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.change_type(self, load_balancer_type)
+        return self._client.change_type(self, load_balancer_type=load_balancer_type)
 
 
 class LoadBalancersPageResult(NamedTuple):

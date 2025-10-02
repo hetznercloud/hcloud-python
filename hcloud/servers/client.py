@@ -183,7 +183,13 @@ class BoundServer(BoundModelBase, Server):
                Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        return self._client.get_actions_list(self, status, sort, page, per_page)
+        return self._client.get_actions_list(
+            self,
+            status=status,
+            sort=sort,
+            page=page,
+            per_page=per_page,
+        )
 
     def get_actions(
         self,
@@ -198,7 +204,7 @@ class BoundServer(BoundModelBase, Server):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return self._client.get_actions(self, status, sort)
+        return self._client.get_actions(self, status=status, sort=sort)
 
     def update(
         self,
@@ -213,7 +219,7 @@ class BoundServer(BoundModelBase, Server):
                User-defined labels (key-value pairs)
         :return: :class:`BoundServer <hcloud.servers.client.BoundServer>`
         """
-        return self._client.update(self, name, labels)
+        return self._client.update(self, name=name, labels=labels)
 
     def get_metrics(
         self,
@@ -327,7 +333,9 @@ class BoundServer(BoundModelBase, Server):
                User-defined labels (key-value pairs)
         :return:  :class:`CreateImageResponse <hcloud.images.domain.CreateImageResponse>`
         """
-        return self._client.create_image(self, description, type, labels)
+        return self._client.create_image(
+            self, description=description, type=type, labels=labels
+        )
 
     def rebuild(
         self,
@@ -339,7 +347,7 @@ class BoundServer(BoundModelBase, Server):
 
         :param image: Image to use for the rebuilt server
         """
-        return self._client.rebuild(self, image)
+        return self._client.rebuild(self, image=image)
 
     def change_type(
         self,
@@ -354,7 +362,9 @@ class BoundServer(BoundModelBase, Server):
                If false, do not upgrade the disk. This allows downgrading the server type later.
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.change_type(self, server_type, upgrade_disk)
+        return self._client.change_type(
+            self, server_type=server_type, upgrade_disk=upgrade_disk
+        )
 
     def enable_backup(self) -> BoundAction:
         """Enables and configures the automatic daily backup option for the server. Enabling automatic backups will increase the price of the server by 20%.
@@ -376,7 +386,7 @@ class BoundServer(BoundModelBase, Server):
         :param iso: :class:`BoundIso <hcloud.isos.client.BoundIso>` or :class:`Server <hcloud.isos.domain.Iso>`
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.attach_iso(self, iso)
+        return self._client.attach_iso(self, iso=iso)
 
     def detach_iso(self) -> BoundAction:
         """Detaches an ISO from a server.
@@ -394,7 +404,7 @@ class BoundServer(BoundModelBase, Server):
                   Hostname to set as a reverse DNS PTR entry, will reset to original default value if `None`
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.change_dns_ptr(self, ip, dns_ptr)
+        return self._client.change_dns_ptr(self, ip=ip, dns_ptr=dns_ptr)
 
     def change_protection(
         self,
@@ -410,7 +420,7 @@ class BoundServer(BoundModelBase, Server):
                      If true, prevents the server from being rebuilt (currently delete and rebuild attribute needs to have the same value)
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.change_protection(self, delete, rebuild)
+        return self._client.change_protection(self, delete=delete, rebuild=rebuild)
 
     def request_console(self) -> RequestConsoleResponse:
         """Requests credentials for remote access via vnc over websocket to keyboard, monitor, and mouse for a server.
@@ -437,7 +447,13 @@ class BoundServer(BoundModelBase, Server):
                 IP range in CIDR block notation of the subnet to attach to.
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.attach_to_network(self, network, ip, alias_ips, ip_range)
+        return self._client.attach_to_network(
+            self,
+            network=network,
+            ip=ip,
+            alias_ips=alias_ips,
+            ip_range=ip_range,
+        )
 
     def detach_from_network(self, network: Network | BoundNetwork) -> BoundAction:
         """Detaches a server from a network.
@@ -445,7 +461,7 @@ class BoundServer(BoundModelBase, Server):
         :param network: :class:`BoundNetwork <hcloud.networks.client.BoundNetwork>` or :class:`Network <hcloud.networks.domain.Network>`
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.detach_from_network(self, network)
+        return self._client.detach_from_network(self, network=network)
 
     def change_alias_ips(
         self,
@@ -459,7 +475,7 @@ class BoundServer(BoundModelBase, Server):
                 New alias IPs to set for this server.
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.change_alias_ips(self, network, alias_ips)
+        return self._client.change_alias_ips(self, network=network, alias_ips=alias_ips)
 
     def add_to_placement_group(
         self,
@@ -470,7 +486,9 @@ class BoundServer(BoundModelBase, Server):
         :param placement_group: :class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>` or :class:`Network <hcloud.placement_groups.domain.PlacementGroup>`
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.add_to_placement_group(self, placement_group)
+        return self._client.add_to_placement_group(
+            self, placement_group=placement_group
+        )
 
     def remove_from_placement_group(self) -> BoundAction:
         """Removes a server from a placement group.

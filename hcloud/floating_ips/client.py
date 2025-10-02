@@ -55,7 +55,13 @@ class BoundFloatingIP(BoundModelBase, FloatingIP):
                 Specifies how many results are returned by page
         :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        return self._client.get_actions_list(self, status, sort, page, per_page)
+        return self._client.get_actions_list(
+            self,
+            status=status,
+            sort=sort,
+            page=page,
+            per_page=per_page,
+        )
 
     def get_actions(
         self,
@@ -70,7 +76,7 @@ class BoundFloatingIP(BoundModelBase, FloatingIP):
                Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
         :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
         """
-        return self._client.get_actions(self, status, sort)
+        return self._client.get_actions(self, status=status, sort=sort)
 
     def update(
         self,
@@ -88,7 +94,9 @@ class BoundFloatingIP(BoundModelBase, FloatingIP):
                New Name to set
         :return: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`
         """
-        return self._client.update(self, description, labels, name)
+        return self._client.update(
+            self, description=description, labels=labels, name=name
+        )
 
     def delete(self) -> bool:
         """Deletes a Floating IP. If it is currently assigned to a server it will automatically get unassigned.
@@ -104,7 +112,7 @@ class BoundFloatingIP(BoundModelBase, FloatingIP):
                If true, prevents the Floating IP from being deleted
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.change_protection(self, delete)
+        return self._client.change_protection(self, delete=delete)
 
     def assign(self, server: Server | BoundServer) -> BoundAction:
         """Assigns a Floating IP to a server.
@@ -113,7 +121,7 @@ class BoundFloatingIP(BoundModelBase, FloatingIP):
                Server the Floating IP shall be assigned to
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.assign(self, server)
+        return self._client.assign(self, server=server)
 
     def unassign(self) -> BoundAction:
         """Unassigns a Floating IP, resulting in it being unreachable. You may assign it to a server again at a later time.
@@ -131,7 +139,7 @@ class BoundFloatingIP(BoundModelBase, FloatingIP):
                Hostname to set as a reverse DNS PTR entry, will reset to original default value if `None`
         :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        return self._client.change_dns_ptr(self, ip, dns_ptr)
+        return self._client.change_dns_ptr(self, ip=ip, dns_ptr=dns_ptr)
 
 
 class FloatingIPsPageResult(NamedTuple):

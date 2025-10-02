@@ -24,7 +24,7 @@ class BoundSSHKey(BoundModelBase, SSHKey):
                User-defined labels (key-value pairs)
         :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`
         """
-        return self._client.update(self, name, labels)
+        return self._client.update(self, name=name, labels=labels)
 
     def delete(self) -> bool:
         """Deletes an SSH key. It cannot be used anymore.
