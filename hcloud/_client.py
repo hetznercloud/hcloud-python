@@ -26,6 +26,7 @@ from .server_types import ServerTypesClient
 from .servers import ServersClient
 from .ssh_keys import SSHKeysClient
 from .volumes import VolumesClient
+from .zones import ZonesClient
 
 
 class BackoffFunction(Protocol):
@@ -252,6 +253,12 @@ class Client:
         """PlacementGroupsClient Instance
 
         :type: :class:`PlacementGroupsClient <hcloud.placement_groups.client.PlacementGroupsClient>`
+        """
+
+        self.zones = ZonesClient(self)
+        """ZonesClient Instance
+
+        :type: :class:`ZonesClient <hcloud.zones.client.ZonesClient>`
         """
 
     def request(  # type: ignore[no-untyped-def]

@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Generator
 from unittest import mock
+from warnings import warn
 
 import pytest
 
@@ -130,3 +132,13 @@ def action_list_response(action1_running, action2_running):
             action2_running,
         ],
     }
+
+
+@pytest.fixture()
+def hetzner_client() -> Generator[Client]:
+    warn("DEPRECATED")
+    client = Client(token="token")
+    patcher = mock.patch.object(client, "request")
+    patcher.start()
+    yield client
+    patcher.stop()
