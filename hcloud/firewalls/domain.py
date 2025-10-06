@@ -97,7 +97,7 @@ class FirewallRule(BaseDomain):
         self,
         direction: str,
         protocol: str,
-        source_ips: list[str],
+        source_ips: list[str] | None = None,
         port: str | None = None,
         destination_ips: list[str] | None = None,
         description: str | None = None,
@@ -105,7 +105,7 @@ class FirewallRule(BaseDomain):
         self.direction = direction
         self.port = port
         self.protocol = protocol
-        self.source_ips = source_ips
+        self.source_ips = source_ips or []
         self.destination_ips = destination_ips or []
         self.description = description
 
@@ -116,8 +116,9 @@ class FirewallRule(BaseDomain):
         payload: dict[str, Any] = {
             "direction": self.direction,
             "protocol": self.protocol,
-            "source_ips": self.source_ips,
         }
+        if len(self.source_ips) > 0:
+            payload["source_ips"] = self.source_ips
         if len(self.destination_ips) > 0:
             payload["destination_ips"] = self.destination_ips
         if self.port is not None:
