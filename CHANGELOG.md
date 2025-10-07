@@ -1,5 +1,49 @@
 # Changelog
 
+## [v2.8.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.8.0)
+
+### DNS API Beta
+
+This release adds support for the new [DNS API](https://docs.hetzner.cloud/reference/cloud#dns).
+
+The DNS API is currently in **beta**, which will likely end on 10 November 2025. After the beta ended, it will no longer be possible to create new zones in the old DNS system. See the [DNS Beta FAQ](https://docs.hetzner.com/networking/dns/faq/beta) for more details.
+
+Future minor releases of this project may include breaking changes for features that are related to the DNS API.
+
+See the [DNS API Beta changelog](https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta) for more details.
+
+**Examples**
+
+```py
+resp = client.zones.create(
+    name="example.com",
+    mode="primary",
+    labels={"key": "value"},
+    rrsets=[
+        ZoneRRSet(
+            name="@",
+            type="A",
+            records=[
+                ZoneRecord(value="201.180.75.2", comment="server1")
+            ],
+        )
+    ],
+)
+
+resp.action.wait_until_finished()
+zone = resp.zone
+```
+
+### Features
+
+- add new `ip_range` param to load balancer `attach_to_network` (#562)
+- add new `ip_range` param to server `attach_to_network` (#561)
+- support the new DNS API (#568)
+
+### Bug Fixes
+
+- source_ips property is optional in firewall rule (#567)
+
 ## [v2.7.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.7.0)
 
 [Server Types](https://docs.hetzner.cloud/reference/cloud#server-types) now depend on [Locations](https://docs.hetzner.cloud/reference/cloud#locations).
