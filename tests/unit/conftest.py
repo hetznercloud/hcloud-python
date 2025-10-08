@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import inspect
-from typing import Callable, ClassVar
+from typing import Callable, ClassVar, TypedDict
 from unittest import mock
 
 import pytest
@@ -166,13 +166,20 @@ def pytest_generate_tests(metafunc: pytest.Metafunc):
         metafunc.parametrize("bound_model_method", metafunc.cls.methods)
 
 
+class BoundModelTestOptions(TypedDict):
+    sub_resource: bool
+
+
 class BoundModelTestCase:
-    methods: ClassVar[list[Callable]]
+    methods: ClassVar[list[Callable | tuple[Callable, BoundModelTestOptions]]]
 
     def test_method_list(self, bound_model):
         """
         Ensure the list of bound model methods is up to date.
         """
+        # Unpack methods
+        methods = [m[0] if isinstance(m, tuple) else m for m in self.__class__.methods]
+
         members_count = 0
         members_missing = []
         for name, member in inspect.getmembers(
@@ -184,7 +191,7 @@ class BoundModelTestCase:
             if name in ("__init__", "get_actions", "get_actions_list"):
                 continue
 
-            if member.__func__ in self.__class__.methods:
+            if member.__func__ in methods:
                 members_count += 1
             else:
                 members_missing.append(member.__func__.__qualname__)
@@ -196,8 +203,12 @@ class BoundModelTestCase:
         self,
         resource_client,
         bound_model,
-        bound_model_method: Callable,
+        bound_model_method: Callable | tuple[Callable, BoundModelTestOptions],
     ):
+        options = BoundModelTestOptions()
+        if isinstance(bound_model_method, tuple):
+            bound_model_method, options = bound_model_method
+
         # Check if the resource client has a method named after the bound model method.
         assert hasattr(resource_client, bound_model_method.__name__)
 
@@ -214,6 +225,9 @@ class BoundModelTestCase:
         # Call the bound model method
         result = getattr(bound_model, bound_model_method.__name__)(**kwargs)
 
-        resource_client_method_mock.assert_called_with(bound_model, **kwargs)
+        if options.get("sub_resource"):
+            resource_client_method_mock.assert_called_with(**kwargs)
+        else:
+            resource_client_method_mock.assert_called_with(bound_model, **kwargs)
 
         assert result is resource_client_method_mock.return_value
