@@ -15,31 +15,42 @@ from hcloud.firewalls import (
 )
 from hcloud.servers import Server
 
+from ..conftest import BoundModelTestCase
 
-class TestBoundFirewall:
+
+class TestBoundFirewall(BoundModelTestCase):
+    methods = [
+        BoundFirewall.update,
+        BoundFirewall.delete,
+        BoundFirewall.apply_to_resources,
+        BoundFirewall.remove_from_resources,
+        BoundFirewall.set_rules,
+    ]
+
     @pytest.fixture()
-    def bound_firewall(self, client: Client):
-        return BoundFirewall(client.firewalls, data=dict(id=1))
+    def resource_client(self, client: Client):
+        return client.firewalls
 
-    def test_bound_firewall_init(self, firewall_response):
-        bound_firewall = BoundFirewall(
-            client=mock.MagicMock(), data=firewall_response["firewall"]
-        )
+    @pytest.fixture()
+    def bound_model(self, resource_client, firewall_response):
+        return BoundFirewall(resource_client, data=firewall_response["firewall"])
 
-        assert bound_firewall.id == 38
-        assert bound_firewall.name == "Corporate Intranet Protection"
-        assert bound_firewall.labels == {}
-        assert isinstance(bound_firewall.rules, list)
-        assert len(bound_firewall.rules) == 2
+    def test_init(self, bound_model: BoundFirewall):
+        o = bound_model
+        assert o.id == 38
+        assert o.name == "Corporate Intranet Protection"
+        assert o.labels == {}
+        assert isinstance(o.rules, list)
+        assert len(o.rules) == 2
 
-        assert isinstance(bound_firewall.applied_to, list)
-        assert len(bound_firewall.applied_to) == 2
-        assert bound_firewall.applied_to[0].server.id == 42
-        assert bound_firewall.applied_to[0].type == "server"
-        assert bound_firewall.applied_to[1].label_selector.selector == "key==value"
-        assert bound_firewall.applied_to[1].type == "label_selector"
+        assert isinstance(o.applied_to, list)
+        assert len(o.applied_to) == 2
+        assert o.applied_to[0].server.id == 42
+        assert o.applied_to[0].type == "server"
+        assert o.applied_to[1].label_selector.selector == "key==value"
+        assert o.applied_to[1].type == "label_selector"
 
-        firewall_in_rule = bound_firewall.rules[0]
+        firewall_in_rule = o.rules[0]
         assert isinstance(firewall_in_rule, FirewallRule)
         assert firewall_in_rule.direction == FirewallRule.DIRECTION_IN
         assert firewall_in_rule.protocol == FirewallRule.PROTOCOL_TCP
@@ -55,7 +66,7 @@ class TestBoundFirewall:
         assert len(firewall_in_rule.destination_ips) == 0
         assert firewall_in_rule.description == "allow http in"
 
-        firewall_out_rule = bound_firewall.rules[1]
+        firewall_out_rule = o.rules[1]
         assert isinstance(firewall_out_rule, FirewallRule)
         assert firewall_out_rule.direction == FirewallRule.DIRECTION_OUT
         assert firewall_out_rule.protocol == FirewallRule.PROTOCOL_TCP
@@ -70,120 +81,6 @@ class TestBoundFirewall:
             "ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128",
         ]
         assert firewall_out_rule.description == "allow http out"
-
-    def test_update(
-        self,
-        request_mock: mock.MagicMock,
-        bound_firewall,
-        response_update_firewall,
-    ):
-        request_mock.return_value = response_update_firewall
-
-        firewall = bound_firewall.update(
-            name="New Corporate Intranet Protection", labels={}
-        )
-
-        request_mock.assert_called_with(
-            method="PUT",
-            url="/firewalls/1",
-            json={"name": "New Corporate Intranet Protection", "labels": {}},
-        )
-
-        assert firewall.id == 38
-        assert firewall.name == "New Corporate Intranet Protection"
-
-    def test_delete(
-        self,
-        request_mock: mock.MagicMock,
-        bound_firewall,
-    ):
-        delete_success = bound_firewall.delete()
-
-        request_mock.assert_called_with(
-            method="DELETE",
-            url="/firewalls/1",
-        )
-
-        assert delete_success is True
-
-    def test_set_rules(
-        self,
-        request_mock: mock.MagicMock,
-        bound_firewall,
-        response_set_rules,
-    ):
-        request_mock.return_value = response_set_rules
-
-        actions = bound_firewall.set_rules(
-            [
-                FirewallRule(
-                    direction=FirewallRule.DIRECTION_IN,
-                    protocol=FirewallRule.PROTOCOL_ICMP,
-                    source_ips=["0.0.0.0/0", "::/0"],
-                    description="New firewall description",
-                )
-            ]
-        )
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/firewalls/1/actions/set_rules",
-            json={
-                "rules": [
-                    {
-                        "direction": "in",
-                        "protocol": "icmp",
-                        "source_ips": ["0.0.0.0/0", "::/0"],
-                        "description": "New firewall description",
-                    }
-                ]
-            },
-        )
-
-        assert actions[0].id == 13
-        assert actions[0].progress == 100
-
-    def test_apply_to_resources(
-        self,
-        request_mock: mock.MagicMock,
-        bound_firewall,
-        response_set_rules,
-    ):
-        request_mock.return_value = response_set_rules
-
-        actions = bound_firewall.apply_to_resources(
-            [FirewallResource(type=FirewallResource.TYPE_SERVER, server=Server(id=5))]
-        )
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/firewalls/1/actions/apply_to_resources",
-            json={"apply_to": [{"type": "server", "server": {"id": 5}}]},
-        )
-
-        assert actions[0].id == 13
-        assert actions[0].progress == 100
-
-    def test_remove_from_resources(
-        self,
-        request_mock: mock.MagicMock,
-        bound_firewall,
-        response_set_rules,
-    ):
-        request_mock.return_value = response_set_rules
-
-        actions = bound_firewall.remove_from_resources(
-            [FirewallResource(type=FirewallResource.TYPE_SERVER, server=Server(id=5))]
-        )
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/firewalls/1/actions/remove_from_resources",
-            json={"remove_from": [{"type": "server", "server": {"id": 5}}]},
-        )
-
-        assert actions[0].id == 13
-        assert actions[0].progress == 100
 
 
 class TestFirewallsClient:
@@ -421,7 +318,15 @@ class TestFirewallsClient:
                     direction=FirewallRule.DIRECTION_IN,
                     protocol=FirewallRule.PROTOCOL_ICMP,
                     source_ips=["0.0.0.0/0", "::/0"],
-                )
+                    description="Allow ICMP from everywhere",
+                ),
+                FirewallRule(
+                    direction=FirewallRule.DIRECTION_IN,
+                    protocol=FirewallRule.PROTOCOL_TCP,
+                    port="80",
+                    source_ips=["0.0.0.0/0", "::/0"],
+                    description="Allow HTTP from everywhere",
+                ),
             ],
         )
 
@@ -434,7 +339,15 @@ class TestFirewallsClient:
                         "direction": "in",
                         "protocol": "icmp",
                         "source_ips": ["0.0.0.0/0", "::/0"],
-                    }
+                        "description": "Allow ICMP from everywhere",
+                    },
+                    {
+                        "direction": "in",
+                        "protocol": "tcp",
+                        "port": "80",
+                        "source_ips": ["0.0.0.0/0", "::/0"],
+                        "description": "Allow HTTP from everywhere",
+                    },
                 ]
             },
         )

@@ -19,7 +19,7 @@ from hcloud.zones import (
     ZonesClient,
 )
 
-from ..conftest import assert_bound_action1
+from ..conftest import BoundModelTestCase, assert_bound_action1
 
 
 def assert_bound_zone1(o: BoundZone, client: ZonesClient):
@@ -847,13 +847,35 @@ class TestZonesClient:
         assert_bound_action1(action, resource_client._parent.actions)
 
 
-class TestBoundZone:
+class TestBoundZone(BoundModelTestCase):
+    methods = [
+        BoundZone.update,
+        BoundZone.delete,
+        BoundZone.import_zonefile,
+        BoundZone.export_zonefile,
+        BoundZone.change_primary_nameservers,
+        BoundZone.change_ttl,
+        BoundZone.change_protection,
+        BoundZone.get_rrset_all,
+        BoundZone.get_rrset_list,
+        BoundZone.get_rrset,
+        BoundZone.create_rrset,
+        # With rrset sub resource
+        (BoundZone.update_rrset, {"sub_resource": True}),
+        (BoundZone.delete_rrset, {"sub_resource": True}),
+        (BoundZone.change_rrset_protection, {"sub_resource": True}),
+        (BoundZone.change_rrset_ttl, {"sub_resource": True}),
+        (BoundZone.add_rrset_records, {"sub_resource": True}),
+        (BoundZone.remove_rrset_records, {"sub_resource": True}),
+        (BoundZone.set_rrset_records, {"sub_resource": True}),
+    ]
+
     @pytest.fixture()
     def resource_client(self, client: Client):
         return client.zones
 
     @pytest.fixture()
-    def bound_model(self, resource_client, zone1):
+    def bound_model(self, resource_client: ZonesClient, zone1):
         return BoundZone(resource_client, data=zone1)
 
     def test_init(self, resource_client: ZonesClient, bound_model: BoundZone):
@@ -898,13 +920,23 @@ class TestBoundZone:
         assert o.registrar == "hetzner"
 
 
-class TestBoundZoneRRSet:
+class TestBoundZoneRRSet(BoundModelTestCase):
+    methods = [
+        BoundZoneRRSet.update_rrset,
+        BoundZoneRRSet.delete_rrset,
+        BoundZoneRRSet.change_rrset_protection,
+        BoundZoneRRSet.change_rrset_ttl,
+        BoundZoneRRSet.add_rrset_records,
+        BoundZoneRRSet.remove_rrset_records,
+        BoundZoneRRSet.set_rrset_records,
+    ]
+
     @pytest.fixture()
     def resource_client(self, client: Client):
         return client.zones
 
     @pytest.fixture()
-    def bound_model(self, resource_client, zone_rrset1):
+    def bound_model(self, resource_client: ZonesClient, zone_rrset1):
         return BoundZoneRRSet(resource_client, data=zone_rrset1)
 
     def test_init(self, resource_client: ZonesClient, bound_model: BoundZoneRRSet):

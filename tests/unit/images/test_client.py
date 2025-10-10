@@ -10,13 +10,25 @@ from hcloud import Client
 from hcloud.images import BoundImage, Image, ImagesClient
 from hcloud.servers import BoundServer
 
+from ..conftest import BoundModelTestCase
 
-class TestBoundImage:
+
+class TestBoundImage(BoundModelTestCase):
+    methods = [
+        BoundImage.update,
+        BoundImage.delete,
+        BoundImage.change_protection,
+    ]
+
     @pytest.fixture()
-    def bound_image(self, client: Client):
-        return BoundImage(client.images, data=dict(id=14))
+    def resource_client(self, client: Client):
+        return client.images
 
-    def test_bound_image_init(self, image_response):
+    @pytest.fixture()
+    def bound_model(self, resource_client):
+        return BoundImage(resource_client, data=dict(id=14))
+
+    def test_init(self, image_response):
         bound_image = BoundImage(client=mock.MagicMock(), data=image_response["image"])
 
         assert bound_image.id == 4711
@@ -45,67 +57,6 @@ class TestBoundImage:
         assert isinstance(bound_image.bound_to, BoundServer)
         assert bound_image.bound_to.id == 1
         assert bound_image.bound_to.complete is False
-
-    def test_update(
-        self,
-        request_mock: mock.MagicMock,
-        bound_image,
-        response_update_image,
-    ):
-        request_mock.return_value = response_update_image
-
-        image = bound_image.update(
-            description="My new Image description", type="snapshot", labels={}
-        )
-
-        request_mock.assert_called_with(
-            method="PUT",
-            url="/images/14",
-            json={
-                "description": "My new Image description",
-                "type": "snapshot",
-                "labels": {},
-            },
-        )
-
-        assert image.id == 4711
-        assert image.description == "My new Image description"
-
-    def test_delete(
-        self,
-        request_mock: mock.MagicMock,
-        bound_image,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        delete_success = bound_image.delete()
-
-        request_mock.assert_called_with(
-            method="DELETE",
-            url="/images/14",
-        )
-
-        assert delete_success is True
-
-    def test_change_protection(
-        self,
-        request_mock: mock.MagicMock,
-        bound_image,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        action = bound_image.change_protection(True)
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/images/14/actions/change_protection",
-            json={"delete": True},
-        )
-
-        assert action.id == 1
-        assert action.progress == 0
 
 
 class TestImagesClient:

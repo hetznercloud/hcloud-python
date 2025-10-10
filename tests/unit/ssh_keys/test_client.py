@@ -7,13 +7,24 @@ import pytest
 from hcloud import Client
 from hcloud.ssh_keys import BoundSSHKey, SSHKey, SSHKeysClient
 
+from ..conftest import BoundModelTestCase
 
-class TestBoundSSHKey:
+
+class TestBoundSSHKey(BoundModelTestCase):
+    methods = [
+        BoundSSHKey.update,
+        BoundSSHKey.delete,
+    ]
+
     @pytest.fixture()
-    def bound_ssh_key(self, client: Client):
-        return BoundSSHKey(client.ssh_keys, data=dict(id=14))
+    def resource_client(self, client: Client) -> SSHKeysClient:
+        return client.ssh_keys
 
-    def test_bound_ssh_key_init(self, ssh_key_response):
+    @pytest.fixture()
+    def bound_model(self, resource_client: SSHKeysClient) -> BoundSSHKey:
+        return BoundSSHKey(resource_client, data=dict(id=14))
+
+    def test_init(self, ssh_key_response):
         bound_ssh_key = BoundSSHKey(
             client=mock.MagicMock(), data=ssh_key_response["ssh_key"]
         )
@@ -25,42 +36,6 @@ class TestBoundSSHKey:
             == "b7:2f:30:a0:2f:6c:58:6c:21:04:58:61:ba:06:3b:2f"
         )
         assert bound_ssh_key.public_key == "ssh-rsa AAAjjk76kgf...Xt"
-
-    def test_update(
-        self,
-        request_mock: mock.MagicMock,
-        bound_ssh_key,
-        response_update_ssh_key,
-    ):
-        request_mock.return_value = response_update_ssh_key
-
-        ssh_key = bound_ssh_key.update(name="New name")
-
-        request_mock.assert_called_with(
-            method="PUT",
-            url="/ssh_keys/14",
-            json={"name": "New name"},
-        )
-
-        assert ssh_key.id == 2323
-        assert ssh_key.name == "New name"
-
-    def test_delete(
-        self,
-        request_mock: mock.MagicMock,
-        bound_ssh_key,
-        action_response,
-    ):
-        request_mock.return_value = action_response
-
-        delete_success = bound_ssh_key.delete()
-
-        request_mock.assert_called_with(
-            method="DELETE",
-            url="/ssh_keys/14",
-        )
-
-        assert delete_success is True
 
 
 class TestSSHKeysClient:

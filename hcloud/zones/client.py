@@ -352,7 +352,7 @@ class BoundZone(BoundModelBase, Zone):
             DNS API is in beta, breaking changes may occur within minor releases.
             See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
-        return self._client.update_rrset(rrset, labels=labels)
+        return self._client.update_rrset(rrset=rrset, labels=labels)
 
     def delete_rrset(
         self,
@@ -369,7 +369,7 @@ class BoundZone(BoundModelBase, Zone):
             DNS API is in beta, breaking changes may occur within minor releases.
             See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
-        return self._client.delete_rrset(rrset)
+        return self._client.delete_rrset(rrset=rrset)
 
     def change_rrset_protection(
         self,
@@ -389,7 +389,7 @@ class BoundZone(BoundModelBase, Zone):
             DNS API is in beta, breaking changes may occur within minor releases.
             See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
-        return self._client.change_rrset_protection(rrset, change=change)
+        return self._client.change_rrset_protection(rrset=rrset, change=change)
 
     def change_rrset_ttl(
         self,
@@ -408,7 +408,7 @@ class BoundZone(BoundModelBase, Zone):
             DNS API is in beta, breaking changes may occur within minor releases.
             See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
-        return self._client.change_rrset_ttl(rrset, ttl=ttl)
+        return self._client.change_rrset_ttl(rrset=rrset, ttl=ttl)
 
     def add_rrset_records(
         self,
@@ -429,7 +429,7 @@ class BoundZone(BoundModelBase, Zone):
             DNS API is in beta, breaking changes may occur within minor releases.
             See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
-        return self._client.add_rrset_records(rrset, records=records, ttl=ttl)
+        return self._client.add_rrset_records(rrset=rrset, records=records, ttl=ttl)
 
     def remove_rrset_records(
         self,
@@ -448,7 +448,7 @@ class BoundZone(BoundModelBase, Zone):
             DNS API is in beta, breaking changes may occur within minor releases.
             See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
-        return self._client.remove_rrset_records(rrset, records=records)
+        return self._client.remove_rrset_records(rrset=rrset, records=records)
 
     def set_rrset_records(
         self,
@@ -467,7 +467,7 @@ class BoundZone(BoundModelBase, Zone):
             DNS API is in beta, breaking changes may occur within minor releases.
             See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
-        return self._client.set_rrset_records(rrset, records=records)
+        return self._client.set_rrset_records(rrset=rrset, records=records)
 
 
 class BoundZoneRRSet(BoundModelBase, ZoneRRSet):
