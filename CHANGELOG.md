@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.9.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.9.0)
+
+### Features
+
+- support python 3.14 (#566)
+- drop support for python 3.9 (#574)
+
 ## [v2.8.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.8.0)
 
 ### DNS API Beta
