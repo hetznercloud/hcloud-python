@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import inspect
-from typing import Callable, ClassVar, TypedDict
+from collections.abc import Callable
+from typing import ClassVar, TypedDict
 from unittest import mock
 
 import pytest
