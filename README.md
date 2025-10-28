@@ -39,7 +39,7 @@ client = Client(token="{YOUR_API_TOKEN}")  # Please paste your API token here
 # Create a server named my-server
 response = client.servers.create(
     name="my-server",
-    server_type=ServerType(name="cx22"),
+    server_type=ServerType(name="cx23"),
     image=Image(name="ubuntu-22.04"),
 )
 server = response.server
