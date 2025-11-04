@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import datetime
 from datetime import timezone
+from unittest import mock
 
 import pytest
 
+from hcloud.networks import Network
 from hcloud.servers import (
+    BoundServer,
     IPv4Address,
     IPv6Network,
     PrivateNet,
@@ -46,3 +49,47 @@ class TestServer:
         assert server.created == datetime.datetime(
             2016, 1, 30, 23, 50, tzinfo=timezone.utc
         )
+
+    def test_private_net_for(self):
+        network1 = Network(id=1)
+        network2 = Network(id=2)
+        network3 = Network(id=3)
+
+        server = Server(
+            id=42,
+            private_net=[
+                PrivateNet(
+                    network=network1, ip="127.0.0.1", alias_ips=[], mac_address=""
+                ),
+                PrivateNet(
+                    network=network2, ip="127.0.0.1", alias_ips=[], mac_address=""
+                ),
+            ],
+        )
+
+        assert server.private_net_for(network1).network.id == 1
+        assert server.private_net_for(network3) is None
+
+        server = BoundServer(
+            client=mock.MagicMock(),
+            data={
+                "id": 42,
+                "private_net": [
+                    {
+                        "network": 1,
+                        "ip": "127.0.0.1",
+                        "alias_ips": [],
+                        "mac_address": "",
+                    },
+                    {
+                        "network": 2,
+                        "ip": "127.0.0.1",
+                        "alias_ips": [],
+                        "mac_address": "",
+                    },
+                ],
+            },
+        )
+
+        assert server.private_net_for(network1).network.id == 1
+        assert server.private_net_for(network3) is None
