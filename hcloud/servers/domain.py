@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from ..images import BoundImage
     from ..isos import BoundIso
     from ..metrics import Metrics
-    from ..networks import BoundNetwork
+    from ..networks import BoundNetwork, Network
     from ..placement_groups import BoundPlacementGroup
     from ..primary_ips import BoundPrimaryIP, PrimaryIP
     from ..server_types import BoundServerType
@@ -153,6 +153,16 @@ class Server(BaseDomain, DomainIdentityMixin):
         self.private_net = private_net
         self.primary_disk_size = primary_disk_size
         self.placement_group = placement_group
+
+    def private_net_for(self, network: BoundNetwork | Network) -> PrivateNet | None:
+        """
+        Returns the server's network attachment information in the given Network,
+        and None if no attachment was found.
+        """
+        for o in self.private_net or []:
+            if o.network.id == network.id:
+                return o
+        return None
 
 
 class CreateServerResponse(BaseDomain):

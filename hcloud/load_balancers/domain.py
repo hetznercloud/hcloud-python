@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from ..load_balancer_types import BoundLoadBalancerType
     from ..locations import BoundLocation
     from ..metrics import Metrics
-    from ..networks import BoundNetwork
+    from ..networks import BoundNetwork, Network
     from ..servers import BoundServer
     from .client import BoundLoadBalancer
 
@@ -106,6 +106,16 @@ class LoadBalancer(BaseDomain, DomainIdentityMixin):
         self.outgoing_traffic = outgoing_traffic
         self.ingoing_traffic = ingoing_traffic
         self.included_traffic = included_traffic
+
+    def private_net_for(self, network: BoundNetwork | Network) -> PrivateNet | None:
+        """
+        Returns the load balancer's network attachment information in the given Network,
+        and None if no attachment was found.
+        """
+        for o in self.private_net or []:
+            if o.network.id == network.id:
+                return o
+        return None
 
 
 class LoadBalancerService(BaseDomain):
