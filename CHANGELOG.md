@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.10.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.10.0)
+
+### Features
+
+- **exp**: add zone format txt record helper (#578)
+- add server and load balancer `private_net_for` helper method (#580)
+
 ## [v2.9.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.9.0)
 
 ### Features
