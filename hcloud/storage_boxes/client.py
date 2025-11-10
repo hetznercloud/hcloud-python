@@ -396,3 +396,28 @@ class StorageBoxesClient(ResourceClientBase):
             status=status,
             sort=sort,
         )
+
+    def change_protection(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        *,
+        delete: bool | None = None,
+    ) -> BoundAction:
+        """
+        Changes the protection of a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/cloud#TODO
+
+        :param storage_box: Storage Box to update.
+        :param delete: Prevents the Storage Box from being deleted.
+        """
+        data: dict[str, Any] = {}
+        if delete is not None:
+            data["delete"] = delete
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{storage_box.id}/actions/change_protection",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
