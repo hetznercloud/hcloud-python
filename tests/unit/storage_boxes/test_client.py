@@ -327,3 +327,24 @@ class TestStorageBoxClient:
         )
 
         assert_bound_action1(action, resource_client._parent.actions)
+
+    def test_change_type(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.change_type(
+            StorageBox(id=42),
+            StorageBoxType(name="bx21"),
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/actions/change_type",
+            json={"storage_box_type": "bx21"},
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)

@@ -421,3 +421,25 @@ class StorageBoxesClient(ResourceClientBase):
             json=data,
         )
         return BoundAction(self._parent.actions, response["action"])
+
+    def change_type(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        storage_box_type: StorageBoxType | BoundStorageBoxType,
+    ) -> BoundAction:
+        """
+        Changes the type of a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/cloud#TODO
+
+        :param storage_box: Storage Box to update.
+        :param storage_box_type: Type of Storage Box to change to.
+        """
+        data: dict[str, Any] = {"storage_box_type": storage_box_type.id_or_name}
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{storage_box.id}/actions/change_type",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
