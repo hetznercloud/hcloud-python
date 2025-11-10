@@ -14,8 +14,9 @@ from hcloud.storage_boxes import (
     BoundStorageBox,
     StorageBox,
     StorageBoxesClient,
+    StorageBoxSnapshotPlan,
 )
-from hcloud.storage_boxes.domain import StorageBoxAccessSettings
+from hcloud.storage_boxes.domain import StorageBoxAccessSettings, StorageBoxSnapshot
 
 from ..conftest import BoundModelTestCase, assert_bound_action1
 
@@ -39,7 +40,9 @@ class TestBoundStorageBox(BoundModelTestCase):
 
     @pytest.fixture()
     def bound_model(
-        self, resource_client: StorageBoxesClient, storage_box1
+        self,
+        resource_client: StorageBoxesClient,
+        storage_box1,
     ) -> BoundStorageBox:
         return BoundStorageBox(resource_client, data=storage_box1)
 
@@ -309,3 +312,164 @@ class TestStorageBoxClient:
         )
 
         assert result.folders == ["dir1", "dir2"]
+
+    def test_change_protection(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.change_protection(StorageBox(id=42), delete=True)
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/actions/change_protection",
+            json={"delete": True},
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
+
+    def test_change_type(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.change_type(
+            StorageBox(id=42),
+            StorageBoxType(name="bx21"),
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/actions/change_type",
+            json={"storage_box_type": "bx21"},
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
+
+    def test_reset_password(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.reset_password(
+            StorageBox(id=42),
+            password="password",
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/actions/reset_password",
+            json={"password": "password"},
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
+
+    def test_update_access_settings(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.update_access_settings(
+            StorageBox(id=42),
+            StorageBoxAccessSettings(
+                reachable_externally=True,
+                ssh_enabled=True,
+                webdav_enabled=False,
+            ),
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/actions/update_access_settings",
+            json={
+                "reachable_externally": True,
+                "ssh_enabled": True,
+                "webdav_enabled": False,
+            },
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
+
+    def test_rollback_snapshot(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.rollback_snapshot(
+            StorageBox(id=42),
+            StorageBoxSnapshot(id=32),
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/actions/rollback_snapshot",
+            json={"snapshot": 32},
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
+
+    def test_disable_snapshot_plan(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.disable_snapshot_plan(
+            StorageBox(id=42),
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/actions/disable_snapshot_plan",
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
+
+    def test_enable_snapshot_plan(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.enable_snapshot_plan(
+            StorageBox(id=42),
+            StorageBoxSnapshotPlan(
+                max_snapshots=10,
+                hour=3,
+                minute=30,
+                day_of_week=None,
+            ),
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/actions/enable_snapshot_plan",
+            json={
+                "max_snapshots": 10,
+                "hour": 3,
+                "minute": 30,
+                "day_of_week": None,
+                "day_of_month": None,
+            },
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)

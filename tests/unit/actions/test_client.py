@@ -22,6 +22,7 @@ from hcloud.load_balancers import BoundLoadBalancer, LoadBalancersClient
 from hcloud.networks import BoundNetwork, NetworksClient
 from hcloud.primary_ips import BoundPrimaryIP, PrimaryIPsClient
 from hcloud.servers import BoundServer, ServersClient
+from hcloud.storage_boxes import BoundStorageBox, StorageBoxesClient
 from hcloud.volumes import BoundVolume, VolumesClient
 from hcloud.zones import BoundZone, ZonesClient
 
@@ -38,6 +39,7 @@ resources_with_actions: dict[str, tuple[ResourceClientBase, BoundModelBase]] = {
     "servers": (ServersClient, BoundServer),
     "volumes": (VolumesClient, BoundVolume),
     "zones": (ZonesClient, BoundZone),
+    "storage_boxes": (StorageBoxesClient, BoundStorageBox),
 }
 
 
