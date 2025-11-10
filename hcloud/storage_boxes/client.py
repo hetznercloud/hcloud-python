@@ -497,9 +497,7 @@ class StorageBoxesClient(ResourceClientBase):
     def rollback_snapshot(
         self,
         storage_box: StorageBox | BoundStorageBox,
-        # TODO: Add BoundStorageBoxSnapshot
-        # TODO: snapshot or storage_box_snapshot argument name?
-        snapshot: StorageBoxSnapshot,
+        snapshot: StorageBoxSnapshot,  # TODO: Add BoundStorageBoxSnapshot
     ) -> BoundAction:
         """
         Rollback the Storage Box to the given snapshot.
