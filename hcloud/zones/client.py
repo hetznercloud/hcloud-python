@@ -59,10 +59,6 @@ class BoundZone(BoundModelBase, Zone):
         See https://docs.hetzner.cloud/reference/cloud#zones-update-a-zone
 
         :param labels: User-defined labels (key/value pairs) for the Resource.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.update(self, labels=labels)
 
@@ -71,10 +67,6 @@ class BoundZone(BoundModelBase, Zone):
         Deletes the Zone.
 
         See https://docs.hetzner.cloud/reference/cloud#zones-delete-a-zone
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.delete(self)
 
@@ -83,10 +75,6 @@ class BoundZone(BoundModelBase, Zone):
         Returns a generated Zone file in BIND (RFC 1034/1035) format.
 
         See https://docs.hetzner.cloud/reference/cloud#zones-export-a-zone-file
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.export_zonefile(self)
 
@@ -107,10 +95,6 @@ class BoundZone(BoundModelBase, Zone):
         :param sort: Sort resources by field and direction.
         :param page: Page number to return.
         :param per_page: Maximum number of entries returned per page.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.get_actions_list(
             self,
@@ -133,10 +117,6 @@ class BoundZone(BoundModelBase, Zone):
 
         :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
         :param sort: Sort resources by field and direction.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.get_actions(
             self,
@@ -154,10 +134,6 @@ class BoundZone(BoundModelBase, Zone):
         See https://docs.hetzner.cloud/reference/cloud#zone-actions-import-a-zone-file
 
         :param zonefile: Zone file to import.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.import_zonefile(self, zonefile=zonefile)
 
@@ -172,10 +148,6 @@ class BoundZone(BoundModelBase, Zone):
         See https://docs.hetzner.cloud/reference/cloud#zone-actions-change-a-zones-protection
 
         :param delete: Prevents the Zone from being deleted.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.change_protection(self, delete=delete)
 
@@ -189,10 +161,6 @@ class BoundZone(BoundModelBase, Zone):
         See https://docs.hetzner.cloud/reference/cloud#zone-actions-change-a-zones-default-ttl
 
         :param ttl: Default Time To Live (TTL) of the Zone.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.change_ttl(self, ttl=ttl)
 
@@ -206,10 +174,6 @@ class BoundZone(BoundModelBase, Zone):
         See https://docs.hetzner.cloud/reference/cloud#zone-actions-change-a-zones-primary-nameservers
 
         :param primary_nameservers: Primary nameservers of the Zone.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.change_primary_nameservers(
             self,
@@ -228,10 +192,6 @@ class BoundZone(BoundModelBase, Zone):
 
         :param name: Name of the RRSet.
         :param type: Type of the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.get_rrset(self, name=name, type=type)
 
@@ -256,10 +216,6 @@ class BoundZone(BoundModelBase, Zone):
         :param sort: Sort resources by field and direction.
         :param page: Page number to return.
         :param per_page: Maximum number of entries returned per page.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.get_rrset_list(
             self,
@@ -288,10 +244,6 @@ class BoundZone(BoundModelBase, Zone):
         :param type: Filter resources by their type. The response will only contain the resources matching exactly the specified type.
         :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
         :param sort: Sort resources by field and direction.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.get_rrset_all(
             self,
@@ -320,10 +272,6 @@ class BoundZone(BoundModelBase, Zone):
         :param ttl: Time To Live (TTL) of the RRSet.
         :param labels: User-defined labels (key/value pairs) for the Resource.
         :param records: Records of the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.create_rrset(
             self,
@@ -347,10 +295,6 @@ class BoundZone(BoundModelBase, Zone):
 
         :param rrset: RRSet to update.
         :param labels: User-defined labels (key/value pairs) for the Resource.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.update_rrset(rrset=rrset, labels=labels)
 
@@ -364,10 +308,6 @@ class BoundZone(BoundModelBase, Zone):
         See https://docs.hetzner.cloud/reference/cloud#zone-rrsets-delete-an-rrset
 
         :param rrset: RRSet to delete.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.delete_rrset(rrset=rrset)
 
@@ -384,10 +324,6 @@ class BoundZone(BoundModelBase, Zone):
 
         :param rrset: RRSet to update.
         :param change: Prevent the Zone from being changed (deletion and updates).
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.change_rrset_protection(rrset=rrset, change=change)
 
@@ -403,10 +339,6 @@ class BoundZone(BoundModelBase, Zone):
 
         :param rrset: RRSet to update.
         :param change: Time To Live (TTL) of the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.change_rrset_ttl(rrset=rrset, ttl=ttl)
 
@@ -424,10 +356,6 @@ class BoundZone(BoundModelBase, Zone):
         :param rrset: RRSet to update.
         :param records: Records to add to the RRSet.
         :param ttl: Time To Live (TTL) of the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.add_rrset_records(rrset=rrset, records=records, ttl=ttl)
 
@@ -443,10 +371,6 @@ class BoundZone(BoundModelBase, Zone):
 
         :param rrset: RRSet to update.
         :param records: Records to remove from the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.remove_rrset_records(rrset=rrset, records=records)
 
@@ -462,10 +386,6 @@ class BoundZone(BoundModelBase, Zone):
 
         :param rrset: RRSet to update.
         :param records: Records to set in the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.set_rrset_records(rrset=rrset, records=records)
 
@@ -497,10 +417,6 @@ class BoundZoneRRSet(BoundModelBase, ZoneRRSet):
         See https://docs.hetzner.cloud/reference/cloud#zone-rrsets-update-an-rrset
 
         :param labels: User-defined labels (key/value pairs) for the Resource.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.update_rrset(self, labels=labels)
 
@@ -511,10 +427,6 @@ class BoundZoneRRSet(BoundModelBase, ZoneRRSet):
         Deletes the ZoneRRSet.
 
         See https://docs.hetzner.cloud/reference/cloud#zone-rrsets-delete-an-rrset
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.delete_rrset(self)
 
@@ -529,10 +441,6 @@ class BoundZoneRRSet(BoundModelBase, ZoneRRSet):
         See https://docs.hetzner.cloud/reference/cloud#zone-rrset-actions-change-an-rrsets-protection
 
         :param change: Prevent the Zone from being changed (deletion and updates).
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.change_rrset_protection(self, change=change)
 
@@ -546,10 +454,6 @@ class BoundZoneRRSet(BoundModelBase, ZoneRRSet):
         See https://docs.hetzner.cloud/reference/cloud#zone-rrset-actions-change-an-rrsets-ttl
 
         :param change: Time To Live (TTL) of the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.change_rrset_ttl(self, ttl=ttl)
 
@@ -565,10 +469,6 @@ class BoundZoneRRSet(BoundModelBase, ZoneRRSet):
 
         :param records: Records to add to the RRSet.
         :param ttl: Time To Live (TTL) of the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.add_rrset_records(self, records=records, ttl=ttl)
 
@@ -582,10 +482,6 @@ class BoundZoneRRSet(BoundModelBase, ZoneRRSet):
         See https://docs.hetzner.cloud/reference/cloud#zone-rrset-actions-remove-records-from-an-rrset
 
         :param records: Records to remove from the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.remove_rrset_records(self, records=records)
 
@@ -599,10 +495,6 @@ class BoundZoneRRSet(BoundModelBase, ZoneRRSet):
         See https://docs.hetzner.cloud/reference/cloud#zone-rrset-actions-set-records-of-an-rrset
 
         :param records: Records to set in the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._client.set_rrset_records(self, records=records)
 
@@ -622,10 +514,6 @@ class ZonesClient(ResourceClientBase):
     ZoneClient is a client for the Zone (DNS) API.
 
     See https://docs.hetzner.cloud/reference/cloud#zones and https://docs.hetzner.cloud/reference/cloud#zone-rrsets.
-
-    Experimental:
-        DNS API is in beta, breaking changes may occur within minor releases.
-        See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
     """
 
     _base_url = "/zones"
@@ -647,10 +535,6 @@ class ZonesClient(ResourceClientBase):
         See https://docs.hetzner.cloud/reference/cloud#zones-get-a-zone
 
         :param id_or_name: ID or Name of the Zone.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         response = self._client.request(
             method="GET",
@@ -679,10 +563,6 @@ class ZonesClient(ResourceClientBase):
         :param sort: Sort resources by field and direction.
         :param page: Page number to return.
         :param per_page: Maximum number of entries returned per page.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         params: dict[str, Any] = {}
         if name is not None:
@@ -725,10 +605,6 @@ class ZonesClient(ResourceClientBase):
         :param mode: Filter resources by their mode. The response will only contain the resources matching exactly the specified mode.
         :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
         :param sort: Sort resources by field and direction.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._iter_pages(
             self.get_list,
@@ -763,10 +639,6 @@ class ZonesClient(ResourceClientBase):
         :param primary_nameservers: Primary nameservers of the Zone.
         :param rrsets: RRSets to be added to the Zone.
         :param zonefile: Zone file to import.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         data: dict[str, Any] = {
             "name": name,
@@ -807,10 +679,6 @@ class ZonesClient(ResourceClientBase):
 
         :param zone: Zone to update.
         :param labels: User-defined labels (key/value pairs) for the Resource.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         data: dict[str, Any] = {}
         if labels is not None:
@@ -833,10 +701,6 @@ class ZonesClient(ResourceClientBase):
         See https://docs.hetzner.cloud/reference/cloud#zones-delete-a-zone
 
         :param zone: Zone to delete.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         response = self._client.request(
             method="DELETE",
@@ -857,10 +721,6 @@ class ZonesClient(ResourceClientBase):
         See https://docs.hetzner.cloud/reference/cloud#zones-export-a-zone-file
 
         :param zone: Zone to export the zone file from.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         response = self._client.request(
             method="GET",
@@ -887,10 +747,6 @@ class ZonesClient(ResourceClientBase):
         :param sort: Sort resources by field and direction.
         :param page: Page number to return.
         :param per_page: Maximum number of entries returned per page.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         params: dict[str, Any] = {}
         if status is not None:
@@ -927,10 +783,6 @@ class ZonesClient(ResourceClientBase):
         :param zone: Zone to fetch the Actions from.
         :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
         :param sort: Sort resources by field and direction.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._iter_pages(
             self.get_actions_list,
@@ -951,10 +803,6 @@ class ZonesClient(ResourceClientBase):
 
         :param zone: Zone to import the zone file into.
         :param zonefile: Zone file to import.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         data: dict[str, Any] = {
             "zonefile": zonefile,
@@ -980,10 +828,6 @@ class ZonesClient(ResourceClientBase):
 
         :param zone: Zone to update.
         :param delete: Prevents the Zone from being deleted.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         data: dict[str, Any] = {}
         if delete is not None:
@@ -1008,10 +852,6 @@ class ZonesClient(ResourceClientBase):
 
         :param zone: Zone to update.
         :param ttl: Default Time To Live (TTL) of the Zone.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         data: dict[str, Any] = {
             "ttl": ttl,
@@ -1036,10 +876,6 @@ class ZonesClient(ResourceClientBase):
 
         :param zone: Zone to update.
         :param primary_nameservers: Primary nameservers of the Zone.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         data: dict[str, Any] = {
             "primary_nameservers": [o.to_payload() for o in primary_nameservers],
@@ -1066,10 +902,6 @@ class ZonesClient(ResourceClientBase):
         :param zone: Zone to fetch the RRSet from.
         :param name: Name of the RRSet.
         :param type: Type of the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         response = self._client.request(
             method="GET",
@@ -1100,10 +932,6 @@ class ZonesClient(ResourceClientBase):
         :param sort: Sort resources by field and direction.
         :param page: Page number to return.
         :param per_page: Maximum number of entries returned per page.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         params: dict[str, Any] = {}
         if name is not None:
@@ -1148,10 +976,6 @@ class ZonesClient(ResourceClientBase):
         :param type: Filter resources by their type. The response will only contain the resources matching exactly the specified type.
         :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
         :param sort: Sort resources by field and direction.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         return self._iter_pages(
             self.get_rrset_list,
@@ -1183,10 +1007,6 @@ class ZonesClient(ResourceClientBase):
         :param ttl: Time To Live (TTL) of the RRSet.
         :param labels: User-defined labels (key/value pairs) for the Resource.
         :param records: Records of the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         data: dict[str, Any] = {
             "name": name,
@@ -1222,10 +1042,6 @@ class ZonesClient(ResourceClientBase):
 
         :param rrset: RRSet to update.
         :param labels: User-defined labels (key/value pairs) for the Resource.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         if rrset.zone is None:
             raise ValueError("rrset zone property is none")
@@ -1251,10 +1067,6 @@ class ZonesClient(ResourceClientBase):
         See https://docs.hetzner.cloud/reference/cloud#zone-rrsets-delete-an-rrset
 
         :param rrset: RRSet to delete.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         if rrset.zone is None:
             raise ValueError("rrset zone property is none")
@@ -1280,10 +1092,6 @@ class ZonesClient(ResourceClientBase):
 
         :param rrset: RRSet to update.
         :param change: Prevent the Zone from being changed (deletion and updates).
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         if rrset.zone is None:
             raise ValueError("rrset zone property is none")
@@ -1311,10 +1119,6 @@ class ZonesClient(ResourceClientBase):
 
         :param rrset: RRSet to update.
         :param change: Time To Live (TTL) of the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         if rrset.zone is None:
             raise ValueError("rrset zone property is none")
@@ -1344,10 +1148,6 @@ class ZonesClient(ResourceClientBase):
         :param rrset: RRSet to update.
         :param records: Records to add to the RRSet.
         :param ttl: Time To Live (TTL) of the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         if rrset.zone is None:
             raise ValueError("rrset zone property is none")
@@ -1377,10 +1177,6 @@ class ZonesClient(ResourceClientBase):
 
         :param rrset: RRSet to update.
         :param records: Records to remove from the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         if rrset.zone is None:
             raise ValueError("rrset zone property is none")
@@ -1408,10 +1204,6 @@ class ZonesClient(ResourceClientBase):
 
         :param rrset: RRSet to update.
         :param records: Records to set in the RRSet.
-
-        Experimental:
-            DNS API is in beta, breaking changes may occur within minor releases.
-            See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
         """
         if rrset.zone is None:
             raise ValueError("rrset zone property is none")
