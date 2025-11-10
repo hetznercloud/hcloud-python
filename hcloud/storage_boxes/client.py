@@ -8,12 +8,15 @@ from ..locations import BoundLocation, Location
 from ..storage_box_types import BoundStorageBoxType, StorageBoxType
 from .domain import (
     CreateStorageBoxResponse,
+    CreateStorageBoxSnapshotResponse,
     DeleteStorageBoxResponse,
+    DeleteStorageBoxSnapshotResponse,
     StorageBox,
     StorageBoxAccessSettings,
     StorageBoxFoldersResponse,
     StorageBoxSnapshot,
     StorageBoxSnapshotPlan,
+    StorageBoxSnapshotStats,
     StorageBoxStats,
 )
 
@@ -105,8 +108,39 @@ class BoundStorageBox(BoundModelBase, StorageBox):
     # TODO: implement bound methods
 
 
+class BoundStorageBoxSnapshot(BoundModelBase, StorageBoxSnapshot):
+    _client: StorageBoxesClient
+
+    model = StorageBoxSnapshot
+
+    def __init__(
+        self,
+        client: StorageBoxesClient,
+        data: dict[str, Any],
+        complete: bool = True,
+    ):
+        raw = data.get("storage_box")
+        if raw is not None:
+            data["storage_box"] = BoundStorageBox(
+                client, data={"id": raw}, complete=False
+            )
+
+        raw = data.get("stats")
+        if raw is not None:
+            data["stats"] = StorageBoxSnapshotStats.from_dict(raw)
+
+        super().__init__(client, data, complete)
+
+    # TODO: implement bound methods
+
+
 class StorageBoxesPageResult(NamedTuple):
     storage_boxes: list[BoundStorageBox]
+    meta: Meta
+
+
+class StorageBoxSnapshotsPageResult(NamedTuple):
+    snapshots: list[BoundStorageBoxSnapshot]
     meta: Meta
 
 
@@ -556,3 +590,197 @@ class StorageBoxesClient(ResourceClientBase):
             json=data,
         )
         return BoundAction(self._parent.actions, response["action"])
+
+    # Snapshots
+    ###########################################################################
+
+    def get_snapshot_by_id(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        id: int,
+    ) -> BoundStorageBoxSnapshot:
+        """
+        Returns a single Snapshot from a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-snapshots-get-a-snapshot
+
+        :param storage_box: Storage Box to get the Snapshot from.
+        :param id: ID of the Snapshot.
+        """
+        response = self._client.request(
+            method="GET",
+            url=f"{self._base_url}/{storage_box.id}/snapshots/{id}",
+        )
+        return BoundStorageBoxSnapshot(self, response["snapshot"])
+
+    def get_snapshot_by_name(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        name: str,
+    ) -> BoundStorageBoxSnapshot:
+        """
+        Returns a single Snapshot from a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-snapshots-list-snapshots
+
+        :param storage_box: Storage Box to get the Snapshot from.
+        :param name: Name of the Snapshot.
+        """
+        return self._get_first_by(self.get_snapshot_list, storage_box, name=name)
+
+    def get_snapshot_list(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        *,
+        name: str | None = None,
+        is_automatic: bool | None = None,
+        label_selector: str | None = None,
+        sort: list[str] | None = None,
+    ) -> StorageBoxSnapshotsPageResult:
+        """
+        Returns all Snapshots for a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-snapshots-list-snapshots
+
+        :param storage_box: Storage Box to get the Snapshot from.
+        :param name: Filter resources by their name. The response will only contain the resources matching exactly the specified name.
+        :param is_automatic: Filter wether the snapshot was made by a Snapshot Plan.
+        :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
+        :param sort: Sort resources by field and direction.
+        """
+        params: dict[str, Any] = {}
+        if name is not None:
+            params["name"] = name
+        if is_automatic is not None:
+            params["is_automatic"] = is_automatic
+        if label_selector is not None:
+            params["label_selector"] = label_selector
+        if sort is not None:
+            params["sort"] = sort
+
+        response = self._client.request(
+            method="GET",
+            url=f"{self._base_url}/{storage_box.id}/snapshots",
+            params=params,
+        )
+        return StorageBoxSnapshotsPageResult(
+            snapshots=[
+                BoundStorageBoxSnapshot(self, item) for item in response["snapshots"]
+            ],
+            meta=Meta.parse_meta(response),
+        )
+
+    def get_snapshot_all(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        *,
+        name: str | None = None,
+        is_automatic: bool | None = None,
+        label_selector: str | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundStorageBoxSnapshot]:
+        """
+        Returns all Snapshots for a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-snapshots-list-snapshots
+
+        :param storage_box: Storage Box to get the Snapshot from.
+        :param name: Filter resources by their name. The response will only contain the resources matching exactly the specified name.
+        :param is_automatic: Filter wether the snapshot was made by a Snapshot Plan.
+        :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
+        :param sort: Sort resources by field and direction.
+        """
+        # The endpoint does not have pagination, forward to the list method.
+        result, _ = self.get_snapshot_list(
+            storage_box,
+            name=name,
+            is_automatic=is_automatic,
+            label_selector=label_selector,
+            sort=sort,
+        )
+        return result
+
+    def create_snapshot(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        *,
+        description: str | None = None,
+        labels: dict[str, str] | None = None,
+    ) -> CreateStorageBoxSnapshotResponse:
+        """
+        Creates a Snapshot of the Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-snapshots-create-a-snapshot
+
+        :param storage_box: Storage Box to create a Snapshot from.
+        :param description: Description of the Snapshot.
+        :param labels: User-defined labels (key/value pairs) for the Resource.
+        """
+        data: dict[str, Any] = {}
+        if description is not None:
+            data["description"] = description
+        if labels is not None:
+            data["labels"] = labels
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{storage_box.id}/snapshots",
+            json=data,
+        )
+        return CreateStorageBoxSnapshotResponse(
+            snapshot=BoundStorageBoxSnapshot(self, response["snapshot"]),
+            action=BoundAction(self._parent.actions, response["action"]),
+        )
+
+    def update_snapshot(
+        self,
+        snapshot: StorageBoxSnapshot | BoundStorageBoxSnapshot,
+        *,
+        description: str | None = None,
+        labels: dict[str, str] | None = None,
+    ) -> BoundStorageBoxSnapshot:
+        """
+        Updates a Storage Box Snapshot.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-snapshots-update-a-snapshot
+
+        :param snapshot: Storage Box Snapshot to update.
+        :param labels: User-defined labels (key/value pairs) for the Resource.
+        """
+        if snapshot.storage_box is None:
+            raise ValueError("snapshot storage_box property is none")
+
+        data: dict[str, Any] = {}
+        if description is not None:
+            data["description"] = description
+        if labels is not None:
+            data["labels"] = labels
+
+        response = self._client.request(
+            method="PUT",
+            url=f"{self._base_url}/{snapshot.storage_box.id}/snapshots/{snapshot.id}",
+            json=data,
+        )
+        return BoundStorageBoxSnapshot(self, response["snapshot"])
+
+    def delete_snapshot(
+        self,
+        snapshot: StorageBoxSnapshot | BoundStorageBoxSnapshot,
+    ) -> DeleteStorageBoxSnapshotResponse:
+        """
+        Deletes a Storage Box Snapshot.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-snapshots-delete-a-snapshot
+
+        :param snapshot: Storage Box Snapshot to delete.
+        """
+        if snapshot.storage_box is None:
+            raise ValueError("snapshot storage_box property is none")
+
+        response = self._client.request(
+            method="DELETE",
+            url=f"{self._base_url}/{snapshot.storage_box.id}/snapshots/{snapshot.id}",
+        )
+        return DeleteStorageBoxSnapshotResponse(
+            action=BoundAction(self._parent.actions, response["action"]),
+        )
