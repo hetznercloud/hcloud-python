@@ -67,7 +67,7 @@ class BoundStorageBox(BoundModelBase, StorageBox):
         """
         Returns all Actions for the Storage Box for a specific page.
 
-        See https://docs.hetzner.cloud/reference/hetzner#TODO
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-list-actions
 
         :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
         :param sort: Sort resources by field and direction.
@@ -91,7 +91,7 @@ class BoundStorageBox(BoundModelBase, StorageBox):
         """
         Returns all Actions for the Storage Box.
 
-        See https://docs.hetzner.cloud/reference/hetzner#TODO
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-list-actions
 
         :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
         :param sort: Sort resources by field and direction.
@@ -295,7 +295,7 @@ class StorageBoxesClient(ResourceClientBase):
         """
         Deletes a Storage Box.
 
-        See https://docs.hetzner.cloud/reference/hetzner#storage-boxes-delete-storage-box
+        See https://docs.hetzner.cloud/reference/hetzner#storage-boxes-delete-a-storage-box
 
         :param storage_box: Storage Box to delete.
         """
@@ -318,7 +318,7 @@ class StorageBoxesClient(ResourceClientBase):
 
         Files are not part of the response.
 
-        See https://docs.hetzner.cloud/reference/hetzner#storage-boxes-list-content-of-storage-box
+        See https://docs.hetzner.cloud/reference/hetzner#storage-boxes-list-folders-of-a-storage-box
 
         :param storage_box: Storage Box to list the folders from.
         :param path: Relative path to list the folders from.
@@ -407,7 +407,7 @@ class StorageBoxesClient(ResourceClientBase):
         """
         Changes the protection of a Storage Box.
 
-        See https://docs.hetzner.cloud/reference/cloud#TODO
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-change-protection
 
         :param storage_box: Storage Box to update.
         :param delete: Prevents the Storage Box from being deleted.
@@ -431,10 +431,10 @@ class StorageBoxesClient(ResourceClientBase):
         """
         Changes the type of a Storage Box.
 
-        See https://docs.hetzner.cloud/reference/cloud#TODO
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-change-type
 
         :param storage_box: Storage Box to update.
-        :param storage_box_type: Type of Storage Box to change to.
+        :param storage_box_type: Storage Box Type to change to.
         """
         data: dict[str, Any] = {
             "storage_box_type": storage_box_type.id_or_name,
@@ -456,10 +456,10 @@ class StorageBoxesClient(ResourceClientBase):
         """
         Reset the password of a Storage Box.
 
-        See https://docs.hetzner.cloud/reference/cloud#TODO
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-reset-password
 
         :param storage_box: Storage Box to update.
-        :param password: Password for the Storage Box.
+        :param password: New password.
         """
         data: dict[str, Any] = {
             "password": password,
@@ -480,10 +480,10 @@ class StorageBoxesClient(ResourceClientBase):
         """
         Reset the password of a Storage Box.
 
-        See https://docs.hetzner.cloud/reference/cloud#TODO
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-update-access-settings
 
         :param storage_box: Storage Box to update.
-        :param access_settings: Access settings for the Storage Box.
+        :param access_settings: New access settings for the Storage Box.
         """
         data: dict[str, Any] = access_settings.to_payload()
 
@@ -504,7 +504,7 @@ class StorageBoxesClient(ResourceClientBase):
         """
         Rollback the Storage Box to the given snapshot.
 
-        See https://docs.hetzner.cloud/reference/cloud#TODO
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-rollback-snapshot
 
         :param storage_box: Storage Box to update.
         :param snapshot: Snapshot to rollback to.
@@ -527,7 +527,7 @@ class StorageBoxesClient(ResourceClientBase):
         """
         Disable the snapshot plan a Storage Box.
 
-        See https://docs.hetzner.cloud/reference/cloud#TODO
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-disable-snapshot-plan
 
         :param storage_box: Storage Box to update.
         """
@@ -545,7 +545,7 @@ class StorageBoxesClient(ResourceClientBase):
         """
         Enable the snapshot plan a Storage Box.
 
-        See https://docs.hetzner.cloud/reference/cloud#TODO
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-enable-snapshot-plan
 
         :param storage_box: Storage Box to update.
         :param snapshot_plan: Snapshot Plan to enable.
