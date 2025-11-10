@@ -369,3 +369,32 @@ class TestStorageBoxClient:
         )
 
         assert_bound_action1(action, resource_client._parent.actions)
+
+    def test_update_access_settings(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.update_access_settings(
+            StorageBox(id=42),
+            StorageBoxAccessSettings(
+                reachable_externally=True,
+                ssh_enabled=True,
+                webdav_enabled=False,
+            ),
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/actions/update_access_settings",
+            json={
+                "reachable_externally": True,
+                "ssh_enabled": True,
+                "webdav_enabled": False,
+            },
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)

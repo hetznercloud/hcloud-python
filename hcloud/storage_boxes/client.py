@@ -470,3 +470,25 @@ class StorageBoxesClient(ResourceClientBase):
             json=data,
         )
         return BoundAction(self._parent.actions, response["action"])
+
+    def update_access_settings(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        access_settings: StorageBoxAccessSettings,
+    ) -> BoundAction:
+        """
+        Reset the password of a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/cloud#TODO
+
+        :param storage_box: Storage Box to update.
+        :param access_settings: Access settings for the Storage Box.
+        """
+        data: dict[str, Any] = access_settings.to_payload()
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{storage_box.id}/actions/update_access_settings",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
