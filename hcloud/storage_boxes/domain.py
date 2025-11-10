@@ -227,3 +227,28 @@ class StorageBoxFoldersResponse(BaseDomain):
         folders: list[str],
     ):
         self.folders = folders
+
+
+# Snapshots
+###############################################################################
+
+
+class StorageBoxSnapshot(BaseDomain, DomainIdentityMixin):
+    """
+    Storage Box Snapshot Domain.
+    """
+
+    # TODO: full domain
+    __api_properties__ = (
+        "id",
+        "name",
+    )
+    __slots__ = __api_properties__
+
+    def __init__(
+        self,
+        id: int | None = None,
+        name: str | None = None,
+    ):
+        self.id = id
+        self.name = name

@@ -15,7 +15,7 @@ from hcloud.storage_boxes import (
     StorageBox,
     StorageBoxesClient,
 )
-from hcloud.storage_boxes.domain import StorageBoxAccessSettings
+from hcloud.storage_boxes.domain import StorageBoxAccessSettings, StorageBoxSnapshot
 
 from ..conftest import BoundModelTestCase, assert_bound_action1
 
@@ -395,6 +395,27 @@ class TestStorageBoxClient:
                 "ssh_enabled": True,
                 "webdav_enabled": False,
             },
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
+
+    def test_rollback_snapshot(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.rollback_snapshot(
+            StorageBox(id=42),
+            StorageBoxSnapshot(id=32),
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/actions/rollback_snapshot",
+            json={"snapshot": 32},
         )
 
         assert_bound_action1(action, resource_client._parent.actions)

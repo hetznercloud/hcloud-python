@@ -12,6 +12,7 @@ from .domain import (
     StorageBox,
     StorageBoxAccessSettings,
     StorageBoxFoldersResponse,
+    StorageBoxSnapshot,
     StorageBoxSnapshotPlan,
     StorageBoxStats,
 )
@@ -489,6 +490,32 @@ class StorageBoxesClient(ResourceClientBase):
         response = self._client.request(
             method="POST",
             url=f"{self._base_url}/{storage_box.id}/actions/update_access_settings",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
+
+    def rollback_snapshot(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        # TODO: Add BoundStorageBoxSnapshot
+        # TODO: snapshot or storage_box_snapshot argument name?
+        snapshot: StorageBoxSnapshot,
+    ) -> BoundAction:
+        """
+        Rollback the Storage Box to the given snapshot.
+
+        See https://docs.hetzner.cloud/reference/cloud#TODO
+
+        :param storage_box: Storage Box to update.
+        :param snapshot: Snapshot to rollback to.
+        """
+        data: dict[str, Any] = {
+            "snapshot": snapshot.id_or_name,
+        }
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{storage_box.id}/actions/rollback_snapshot",
             json=data,
         )
         return BoundAction(self._parent.actions, response["action"])
