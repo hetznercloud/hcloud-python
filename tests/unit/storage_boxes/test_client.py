@@ -40,7 +40,9 @@ class TestBoundStorageBox(BoundModelTestCase):
 
     @pytest.fixture()
     def bound_model(
-        self, resource_client: StorageBoxesClient, storage_box1
+        self,
+        resource_client: StorageBoxesClient,
+        storage_box1,
     ) -> BoundStorageBox:
         return BoundStorageBox(resource_client, data=storage_box1)
 
