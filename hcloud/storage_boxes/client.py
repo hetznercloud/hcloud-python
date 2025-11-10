@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..actions import BoundAction
+from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
 from ..core import BoundModelBase, Meta, ResourceClientBase
 from ..locations import BoundLocation, Location
 from ..storage_box_types import BoundStorageBoxType, StorageBoxType
@@ -12,6 +12,7 @@ from .domain import (
     StorageBox,
     StorageBoxAccessSettings,
     StorageBoxFoldersResponse,
+    StorageBoxSnapshot,
     StorageBoxSnapshotPlan,
     StorageBoxStats,
 )
@@ -55,6 +56,52 @@ class BoundStorageBox(BoundModelBase, StorageBox):
 
         super().__init__(client, data, complete)
 
+    def get_actions_list(
+        self,
+        *,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
+        """
+        Returns all Actions for the Storage Box for a specific page.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-list-actions
+
+        :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
+        :param sort: Sort resources by field and direction.
+        :param page: Page number to return.
+        :param per_page: Maximum number of entries returned per page.
+        """
+        return self._client.get_actions_list(
+            self,
+            status=status,
+            sort=sort,
+            page=page,
+            per_page=per_page,
+        )
+
+    def get_actions(
+        self,
+        *,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundAction]:
+        """
+        Returns all Actions for the Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-list-actions
+
+        :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
+        :param sort: Sort resources by field and direction.
+        """
+        return self._client.get_actions(
+            self,
+            status=status,
+            sort=sort,
+        )
+
     # TODO: implement bound methods
 
 
@@ -72,9 +119,16 @@ class StorageBoxesClient(ResourceClientBase):
 
     _base_url = "/storage_boxes"
 
+    actions: ResourceActionsClient
+    """Storage Boxes scoped actions client
+
+    :type: :class:`ResourceActionsClient <hcloud.actions.client.ResourceActionsClient>`
+    """
+
     def __init__(self, client: Client):
         super().__init__(client)
         self._client = client._client_hetzner
+        self.actions = ResourceActionsClient(self, self._base_url)
 
     def get_by_id(self, id: int) -> BoundStorageBox:
         """
@@ -241,7 +295,7 @@ class StorageBoxesClient(ResourceClientBase):
         """
         Deletes a Storage Box.
 
-        See https://docs.hetzner.cloud/reference/hetzner#storage-boxes-delete-storage-box
+        See https://docs.hetzner.cloud/reference/hetzner#storage-boxes-delete-a-storage-box
 
         :param storage_box: Storage Box to delete.
         """
@@ -264,7 +318,7 @@ class StorageBoxesClient(ResourceClientBase):
 
         Files are not part of the response.
 
-        See https://docs.hetzner.cloud/reference/hetzner#storage-boxes-list-content-of-storage-box
+        See https://docs.hetzner.cloud/reference/hetzner#storage-boxes-list-folders-of-a-storage-box
 
         :param storage_box: Storage Box to list the folders from.
         :param path: Relative path to list the folders from.
@@ -280,3 +334,225 @@ class StorageBoxesClient(ResourceClientBase):
         )
 
         return StorageBoxFoldersResponse(folders=response["folders"])
+
+    def get_actions_list(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        *,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
+        """
+        Returns all Actions for a Storage Box for a specific page.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-list-actions-for-a-storage-box
+
+        :param storage_box: Storage Box to fetch the Actions from.
+        :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
+        :param sort: Sort resources by field and direction.
+        :param page: Page number to return.
+        :param per_page: Maximum number of entries returned per page.
+        """
+        params: dict[str, Any] = {}
+        if status is not None:
+            params["status"] = status
+        if sort is not None:
+            params["sort"] = sort
+        if page is not None:
+            params["page"] = page
+        if per_page is not None:
+            params["per_page"] = per_page
+
+        response = self._client.request(
+            method="GET",
+            url=f"/storage_boxes/{storage_box.id}/actions",
+            params=params,
+        )
+        return ActionsPageResult(
+            actions=[BoundAction(self._parent.actions, o) for o in response["actions"]],
+            meta=Meta.parse_meta(response),
+        )
+
+    def get_actions(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        *,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundAction]:
+        """
+        Returns all Actions for a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-list-actions-for-a-storage-box
+
+        :param storage_box: Storage Box to fetch the Actions from.
+        :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
+        :param sort: Sort resources by field and direction.
+        """
+        return self._iter_pages(
+            self.get_actions_list,
+            storage_box,
+            status=status,
+            sort=sort,
+        )
+
+    def change_protection(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        *,
+        delete: bool | None = None,
+    ) -> BoundAction:
+        """
+        Changes the protection of a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-change-protection
+
+        :param storage_box: Storage Box to update.
+        :param delete: Prevents the Storage Box from being deleted.
+        """
+        data: dict[str, Any] = {}
+        if delete is not None:
+            data["delete"] = delete
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{storage_box.id}/actions/change_protection",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
+
+    def change_type(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        storage_box_type: StorageBoxType | BoundStorageBoxType,
+    ) -> BoundAction:
+        """
+        Changes the type of a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-change-type
+
+        :param storage_box: Storage Box to update.
+        :param storage_box_type: Storage Box Type to change to.
+        """
+        data: dict[str, Any] = {
+            "storage_box_type": storage_box_type.id_or_name,
+        }
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{storage_box.id}/actions/change_type",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
+
+    def reset_password(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        *,
+        password: str,
+    ) -> BoundAction:
+        """
+        Reset the password of a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-reset-password
+
+        :param storage_box: Storage Box to update.
+        :param password: New password.
+        """
+        data: dict[str, Any] = {
+            "password": password,
+        }
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{storage_box.id}/actions/reset_password",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
+
+    def update_access_settings(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        access_settings: StorageBoxAccessSettings,
+    ) -> BoundAction:
+        """
+        Reset the password of a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-update-access-settings
+
+        :param storage_box: Storage Box to update.
+        :param access_settings: New access settings for the Storage Box.
+        """
+        data: dict[str, Any] = access_settings.to_payload()
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{storage_box.id}/actions/update_access_settings",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
+
+    def rollback_snapshot(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        snapshot: StorageBoxSnapshot,  # TODO: Add BoundStorageBoxSnapshot
+    ) -> BoundAction:
+        """
+        Rollback the Storage Box to the given snapshot.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-rollback-snapshot
+
+        :param storage_box: Storage Box to update.
+        :param snapshot: Snapshot to rollback to.
+        """
+        data: dict[str, Any] = {
+            "snapshot": snapshot.id_or_name,
+        }
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{storage_box.id}/actions/rollback_snapshot",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
+
+    def disable_snapshot_plan(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+    ) -> BoundAction:
+        """
+        Disable the snapshot plan a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-disable-snapshot-plan
+
+        :param storage_box: Storage Box to update.
+        """
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{storage_box.id}/actions/disable_snapshot_plan",
+        )
+        return BoundAction(self._parent.actions, response["action"])
+
+    def enable_snapshot_plan(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        snapshot_plan: StorageBoxSnapshotPlan,
+    ) -> BoundAction:
+        """
+        Enable the snapshot plan a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-enable-snapshot-plan
+
+        :param storage_box: Storage Box to update.
+        :param snapshot_plan: Snapshot Plan to enable.
+        """
+        data: dict[str, Any] = snapshot_plan.to_payload()
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{storage_box.id}/actions/enable_snapshot_plan",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
