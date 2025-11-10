@@ -419,3 +419,22 @@ class TestStorageBoxClient:
         )
 
         assert_bound_action1(action, resource_client._parent.actions)
+
+    def test_disable_snapshot_plan(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.disable_snapshot_plan(
+            StorageBox(id=42),
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/actions/disable_snapshot_plan",
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
