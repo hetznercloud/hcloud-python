@@ -157,8 +157,8 @@ class StorageBoxSnapshotPlan(BaseDomain):
 
     __api_properties__ = (
         "max_snapshots",
-        "minute",
         "hour",
+        "minute",
         "day_of_week",
         "day_of_month",
     )
@@ -166,17 +166,31 @@ class StorageBoxSnapshotPlan(BaseDomain):
 
     def __init__(
         self,
-        max_snapshots: int | None = None,
-        minute: int | None = None,
-        hour: int | None = None,
+        max_snapshots: int,
+        hour: int,
+        minute: int,
         day_of_week: int | None = None,
         day_of_month: int | None = None,
     ):
         self.max_snapshots = max_snapshots
-        self.minute = minute
         self.hour = hour
+        self.minute = minute
         self.day_of_week = day_of_week
         self.day_of_month = day_of_month
+
+    def to_payload(self) -> dict[str, Any]:
+        """
+        Generates the request payload from this domain object.
+        """
+        payload: dict[str, Any] = {
+            "max_snapshots": self.max_snapshots,
+            "hour": self.hour,
+            "minute": self.minute,
+            "day_of_week": self.day_of_week,  # API default is null
+            "day_of_month": self.day_of_month,  # API default is null
+        }
+
+        return payload
 
 
 class CreateStorageBoxResponse(BaseDomain):

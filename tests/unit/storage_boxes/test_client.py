@@ -14,6 +14,7 @@ from hcloud.storage_boxes import (
     BoundStorageBox,
     StorageBox,
     StorageBoxesClient,
+    StorageBoxSnapshotPlan,
 )
 from hcloud.storage_boxes.domain import StorageBoxAccessSettings, StorageBoxSnapshot
 
@@ -435,6 +436,38 @@ class TestStorageBoxClient:
         request_mock.assert_called_with(
             method="POST",
             url="/storage_boxes/42/actions/disable_snapshot_plan",
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
+
+    def test_enable_snapshot_plan(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.enable_snapshot_plan(
+            StorageBox(id=42),
+            StorageBoxSnapshotPlan(
+                max_snapshots=10,
+                hour=3,
+                minute=30,
+                day_of_week=None,
+            ),
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/actions/enable_snapshot_plan",
+            json={
+                "max_snapshots": 10,
+                "hour": 3,
+                "minute": 30,
+                "day_of_week": None,
+                "day_of_month": None,
+            },
         )
 
         assert_bound_action1(action, resource_client._parent.actions)

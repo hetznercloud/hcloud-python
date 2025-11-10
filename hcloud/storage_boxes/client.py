@@ -536,3 +536,25 @@ class StorageBoxesClient(ResourceClientBase):
             url=f"{self._base_url}/{storage_box.id}/actions/disable_snapshot_plan",
         )
         return BoundAction(self._parent.actions, response["action"])
+
+    def enable_snapshot_plan(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        snapshot_plan: StorageBoxSnapshotPlan,
+    ) -> BoundAction:
+        """
+        Enable the snapshot plan a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/cloud#TODO
+
+        :param storage_box: Storage Box to update.
+        :param snapshot_plan: Snapshot Plan to enable.
+        """
+        data: dict[str, Any] = snapshot_plan.to_payload()
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{storage_box.id}/actions/enable_snapshot_plan",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
