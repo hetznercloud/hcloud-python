@@ -435,11 +435,38 @@ class StorageBoxesClient(ResourceClientBase):
         :param storage_box: Storage Box to update.
         :param storage_box_type: Type of Storage Box to change to.
         """
-        data: dict[str, Any] = {"storage_box_type": storage_box_type.id_or_name}
+        data: dict[str, Any] = {
+            "storage_box_type": storage_box_type.id_or_name,
+        }
 
         response = self._client.request(
             method="POST",
             url=f"{self._base_url}/{storage_box.id}/actions/change_type",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
+
+    def reset_password(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        *,
+        password: str,
+    ) -> BoundAction:
+        """
+        Reset the password of a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/cloud#TODO
+
+        :param storage_box: Storage Box to update.
+        :param password: Password for the Storage Box.
+        """
+        data: dict[str, Any] = {
+            "password": password,
+        }
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{storage_box.id}/actions/reset_password",
             json=data,
         )
         return BoundAction(self._parent.actions, response["action"])
