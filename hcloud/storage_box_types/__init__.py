@@ -9,7 +9,7 @@ from .domain import StorageBoxType
 
 __all__ = [
     "BoundStorageBoxType",
+    "StorageBoxType",
     "StorageBoxTypesClient",
     "StorageBoxTypesPageResult",
-    "StorageBoxType",
 ]

@@ -17,13 +17,13 @@ from .domain import (
 
 __all__ = [
     "BoundStorageBox",
-    "StorageBoxesClient",
-    "StorageBoxesPageResult",
-    "StorageBox",
-    "StorageBoxSnapshotPlan",
-    "StorageBoxStats",
-    "StorageBoxAccessSettings",
     "CreateStorageBoxResponse",
     "DeleteStorageBoxResponse",
+    "StorageBox",
+    "StorageBoxAccessSettings",
+    "StorageBoxesClient",
+    "StorageBoxesPageResult",
     "StorageBoxFoldersResponse",
+    "StorageBoxSnapshotPlan",
+    "StorageBoxStats",
 ]
