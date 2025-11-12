@@ -46,10 +46,8 @@ class ResourceClientBase:
 
         return results
 
-    def _get_first_by(self, **kwargs):  # type: ignore[no-untyped-def]
-        assert hasattr(self, "get_list")
-        # pylint: disable=no-member
-        entities, _ = self.get_list(**kwargs)
+    def _get_first_by(self, list_function: Callable, *args, **kwargs):  # type: ignore[no-untyped-def]
+        entities, _ = list_function(*args, **kwargs)
         return entities[0] if entities else None
 
 

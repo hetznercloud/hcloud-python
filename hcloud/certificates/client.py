@@ -202,7 +202,7 @@ class CertificatesClient(ResourceClientBase):
                Used to get certificate by name.
         :return: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>`
         """
-        return self._get_first_by(name=name)
+        return self._get_first_by(self.get_list, name=name)
 
     def create(
         self,

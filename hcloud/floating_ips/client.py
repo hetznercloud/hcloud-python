@@ -293,7 +293,7 @@ class FloatingIPsClient(ResourceClientBase):
                Used to get Floating IP by name.
         :return: :class:`BoundFloatingIP <hcloud.floating_ips.client.BoundFloatingIP>`
         """
-        return self._get_first_by(name=name)
+        return self._get_first_by(self.get_list, name=name)
 
     def create(
         self,

@@ -121,7 +121,7 @@ class SSHKeysClient(ResourceClientBase):
                Used to get ssh key by name.
         :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`
         """
-        return self._get_first_by(name=name)
+        return self._get_first_by(self.get_list, name=name)
 
     def get_by_fingerprint(self, fingerprint: str) -> BoundSSHKey | None:
         """Get ssh key by fingerprint
@@ -130,7 +130,7 @@ class SSHKeysClient(ResourceClientBase):
                 Used to get ssh key by fingerprint.
         :return: :class:`BoundSSHKey <hcloud.ssh_keys.client.BoundSSHKey>`
         """
-        return self._get_first_by(fingerprint=fingerprint)
+        return self._get_first_by(self.get_list, fingerprint=fingerprint)
 
     def create(
         self,
