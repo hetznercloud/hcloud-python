@@ -745,6 +745,7 @@ class StorageBoxesClient(ResourceClientBase):
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-snapshots-update-a-snapshot
 
         :param snapshot: Storage Box Snapshot to update.
+        :param description: Description of the Snapshot.
         :param labels: User-defined labels (key/value pairs) for the Resource.
         """
         if snapshot.storage_box is None:
