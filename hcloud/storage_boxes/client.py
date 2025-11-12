@@ -152,7 +152,7 @@ class StorageBoxesClient(ResourceClientBase):
 
         :param name: Name of the Storage Box.
         """
-        return self._get_first_by(name=name)
+        return self._get_first_by(self.get_list, name=name)
 
     def get_list(
         self,
