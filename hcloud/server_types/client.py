@@ -99,4 +99,4 @@ class ServerTypesClient(ResourceClientBase):
                Used to get Server type by name.
         :return: :class:`BoundServerType <hcloud.server_types.client.BoundServerType>`
         """
-        return self._get_first_by(name=name)
+        return self._get_first_by(self.get_list, name=name)

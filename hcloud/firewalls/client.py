@@ -351,7 +351,7 @@ class FirewallsClient(ResourceClientBase):
                Used to get Firewall by name.
         :return: :class:`BoundFirewall <hcloud.firewalls.client.BoundFirewall>`
         """
-        return self._get_first_by(name=name)
+        return self._get_first_by(self.get_list, name=name)
 
     def create(
         self,

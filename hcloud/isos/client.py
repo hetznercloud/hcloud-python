@@ -99,4 +99,4 @@ class IsosClient(ResourceClientBase):
                Used to get iso by name.
         :return: :class:`BoundIso <hcloud.isos.client.BoundIso>`
         """
-        return self._get_first_by(name=name)
+        return self._get_first_by(self.get_list, name=name)

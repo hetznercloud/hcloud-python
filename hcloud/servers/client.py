@@ -596,7 +596,7 @@ class ServersClient(ResourceClientBase):
                Used to get server by name.
         :return: :class:`BoundServer <hcloud.servers.client.BoundServer>`
         """
-        return self._get_first_by(name=name)
+        return self._get_first_by(self.get_list, name=name)
 
     # pylint: disable=too-many-branches,too-many-locals
     def create(
