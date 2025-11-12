@@ -642,7 +642,7 @@ class StorageBoxesClient(ResourceClientBase):
 
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-snapshots-list-snapshots
 
-        :param storage_box: Storage Box to get the Snapshot from.
+        :param storage_box: Storage Box to get the Snapshots from.
         :param name: Filter resources by their name. The response will only contain the resources matching exactly the specified name.
         :param is_automatic: Filter wether the snapshot was made by a Snapshot Plan.
         :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
@@ -684,7 +684,7 @@ class StorageBoxesClient(ResourceClientBase):
 
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-snapshots-list-snapshots
 
-        :param storage_box: Storage Box to get the Snapshot from.
+        :param storage_box: Storage Box to get the Snapshots from.
         :param name: Filter resources by their name. The response will only contain the resources matching exactly the specified name.
         :param is_automatic: Filter wether the snapshot was made by a Snapshot Plan.
         :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
