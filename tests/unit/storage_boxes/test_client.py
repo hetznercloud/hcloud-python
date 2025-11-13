@@ -1068,3 +1068,26 @@ class TestStorageBoxClient:
         )
 
         assert_bound_action1(action, resource_client._parent.actions)
+
+    def test_reset_subaccount_password(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.reset_subaccount_password(
+            StorageBoxSubaccount(id=45, storage_box=StorageBox(42)),
+            password="password",
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/subaccounts/45/actions/reset_subaccount_password",
+            json={
+                "password": "password",
+            },
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
