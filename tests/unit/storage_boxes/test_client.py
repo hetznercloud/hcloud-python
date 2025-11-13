@@ -1045,3 +1045,26 @@ class TestStorageBoxClient:
         )
 
         assert_bound_action1(result.action, resource_client._parent.actions)
+
+    def test_change_subaccount_home_directory(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.change_subaccount_home_directory(
+            StorageBoxSubaccount(id=45, storage_box=StorageBox(42)),
+            home_directory="path",
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/subaccounts/45/actions/change_home_directory",
+            json={
+                "home_directory": "path",
+            },
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
