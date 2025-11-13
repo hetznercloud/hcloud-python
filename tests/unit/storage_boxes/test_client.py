@@ -119,6 +119,25 @@ class TestBoundStorageBoxSnapshot(BoundModelTestCase):
         assert o.stats.size_filesystem == 3949572745
         assert o.created == isoparse("2025-11-10T19:16:57Z")
 
+    def test_reload(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        storage_box_snapshot1,
+    ):
+        o = BoundStorageBoxSnapshot(resource_client, data={"id": 34, "storage_box": 42})
+
+        request_mock.return_value = {"snapshot": storage_box_snapshot1}
+
+        o.reload()
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/storage_boxes/42/snapshots/34",
+        )
+
+        assert o.labels is not None
+
 
 class TestStorageBoxClient:
     @pytest.fixture()
