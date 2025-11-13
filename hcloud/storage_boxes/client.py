@@ -1046,3 +1046,27 @@ class StorageBoxesClient(ResourceClientBase):
         return DeleteStorageBoxSubaccountResponse(
             action=BoundAction(self._parent.actions, response["action"]),
         )
+
+    def change_subaccount_home_directory(
+        self,
+        subaccount: StorageBoxSubaccount | BoundStorageBoxSubaccount,
+        home_directory: str,
+    ) -> BoundAction:
+        """
+        Change the home directory of a Storage Box Subaccount.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccount-actions-change-home-directory
+
+        :param subaccount: Storage Box Subaccount to update.
+        :param home_directory: Home directory for the Subaccount.
+        """
+        data: dict[str, Any] = {
+            "home_directory": home_directory,
+        }
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{subaccount.storage_box.id}/subaccounts/{subaccount.id}/actions/change_home_directory",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
