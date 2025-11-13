@@ -87,3 +87,45 @@ def storage_box2():
         "labels": {},
         "protection": {"delete": False},
     }
+
+
+@pytest.fixture()
+def storage_box_snapshot1():
+    return {
+        "id": 34,
+        "name": "storage-box-snapshot1",
+        "description": "",
+        "is_automatic": False,
+        "stats": {
+            "size": 394957594,
+            "size_filesystem": 3949572745,
+        },
+        "labels": {
+            "key": "value",
+        },
+        "protection": {
+            "delete": False,
+        },
+        "created": "2025-11-10T19:16:57Z",
+        "storage_box": 42,
+    }
+
+
+@pytest.fixture()
+def storage_box_snapshot2():
+    return {
+        "id": 35,
+        "name": "storage-box-snapshot2",
+        "description": "",
+        "is_automatic": True,
+        "stats": {
+            "size": 0,
+            "size_filesystem": 0,
+        },
+        "labels": {},
+        "protection": {
+            "delete": False,
+        },
+        "created": "2025-11-10T19:18:57Z",
+        "storage_box": 42,
+    }

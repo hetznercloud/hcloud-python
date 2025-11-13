@@ -12,16 +12,18 @@ from hcloud.locations import Location
 from hcloud.storage_box_types import StorageBoxType
 from hcloud.storage_boxes import (
     BoundStorageBox,
+    BoundStorageBoxSnapshot,
     StorageBox,
+    StorageBoxAccessSettings,
     StorageBoxesClient,
+    StorageBoxSnapshot,
     StorageBoxSnapshotPlan,
 )
-from hcloud.storage_boxes.domain import StorageBoxAccessSettings, StorageBoxSnapshot
 
 from ..conftest import BoundModelTestCase, assert_bound_action1
 
 
-def assert_bound_model(
+def assert_bound_storage_box(
     o: BoundStorageBox,
     resource_client: StorageBoxesClient,
 ):
@@ -29,6 +31,16 @@ def assert_bound_model(
     assert o._client is resource_client
     assert o.id == 42
     assert o.name == "storage-box1"
+
+
+def assert_bound_storage_box_snapshot(
+    o: BoundStorageBox,
+    resource_client: StorageBoxesClient,
+):
+    assert isinstance(o, BoundStorageBoxSnapshot)
+    assert o._client is resource_client
+    assert o.id == 34
+    assert o.name == "storage-box-snapshot1"
 
 
 class TestBoundStorageBox(BoundModelTestCase):
@@ -46,11 +58,66 @@ class TestBoundStorageBox(BoundModelTestCase):
     ) -> BoundStorageBox:
         return BoundStorageBox(resource_client, data=storage_box1)
 
-    def test_init(self, bound_model, resource_client):
+    def test_init(self, bound_model: BoundStorageBox, resource_client):
         o = bound_model
 
-        assert_bound_model(o, resource_client)
-        # TODO: test all properties
+        assert_bound_storage_box(o, resource_client)
+
+        assert o.storage_box_type.id == 42
+        assert o.storage_box_type.name == "bx11"
+        assert o.location.id == 1
+        assert o.location.name == "fsn1"
+        assert o.system == "FSN1-BX355"
+        assert o.server == "u1337.your-storagebox.de"
+        assert o.username == "u12345"
+        assert o.labels == {"key": "value"}
+        assert o.protection == {"delete": False}
+        assert o.snapshot_plan.max_snapshots == 20
+        assert o.snapshot_plan.minute == 0
+        assert o.snapshot_plan.hour == 7
+        assert o.snapshot_plan.day_of_week == 7
+        assert o.snapshot_plan.day_of_month is None
+        assert o.access_settings.reachable_externally is False
+        assert o.access_settings.samba_enabled is False
+        assert o.access_settings.ssh_enabled is False
+        assert o.access_settings.webdav_enabled is False
+        assert o.access_settings.zfs_enabled is False
+        assert o.stats.size == 2342236717056
+        assert o.stats.size_data == 2102612983808
+        assert o.stats.size_snapshots == 239623733248
+        assert o.status == "active"
+        assert o.created == isoparse("2025-01-30T23:55:00Z")
+
+
+class TestBoundStorageBoxSnapshot(BoundModelTestCase):
+    methods = []
+
+    @pytest.fixture()
+    def resource_client(self, client: Client) -> StorageBoxesClient:
+        return client.storage_boxes
+
+    @pytest.fixture()
+    def bound_model(
+        self,
+        resource_client: StorageBoxesClient,
+        storage_box_snapshot1,
+    ) -> BoundStorageBoxSnapshot:
+        return BoundStorageBoxSnapshot(resource_client, data=storage_box_snapshot1)
+
+    def test_init(self, bound_model: BoundStorageBoxSnapshot, resource_client):
+        o = bound_model
+
+        assert_bound_storage_box_snapshot(o, resource_client)
+
+        assert isinstance(o.storage_box, BoundStorageBox)
+        assert o.storage_box.id == 42
+
+        assert o.description == ""
+        assert o.is_automatic is False
+        assert o.labels == {"key": "value"}
+        assert o.stats.size == 394957594
+        assert o.stats.size_filesystem == 3949572745
+        assert o.created == isoparse("2025-11-10T19:16:57Z")
 
 
 class TestStorageBoxClient:
@@ -73,31 +140,7 @@ class TestStorageBoxClient:
             url="/storage_boxes/42",
         )
 
-        assert_bound_model(result, resource_client)
-        assert result.storage_box_type.id == 42
-        assert result.storage_box_type.name == "bx11"
-        assert result.location.id == 1
-        assert result.location.name == "fsn1"
-        assert result.system == "FSN1-BX355"
-        assert result.server == "u1337.your-storagebox.de"
-        assert result.username == "u12345"
-        assert result.labels == {"key": "value"}
-        assert result.protection == {"delete": False}
-        assert result.snapshot_plan.max_snapshots == 20
-        assert result.snapshot_plan.minute == 0
-        assert result.snapshot_plan.hour == 7
-        assert result.snapshot_plan.day_of_week == 7
-        assert result.snapshot_plan.day_of_month is None
-        assert result.access_settings.reachable_externally is False
-        assert result.access_settings.samba_enabled is False
-        assert result.access_settings.ssh_enabled is False
-        assert result.access_settings.webdav_enabled is False
-        assert result.access_settings.zfs_enabled is False
-        assert result.stats.size == 2342236717056
-        assert result.stats.size_data == 2102612983808
-        assert result.stats.size_snapshots == 239623733248
-        assert result.status == "active"
-        assert result.created == isoparse("2025-01-30T23:55:00Z")
+        assert_bound_storage_box(result, resource_client)
 
     @pytest.mark.parametrize(
         "params",
@@ -194,7 +237,7 @@ class TestStorageBoxClient:
             params=params,
         )
 
-        assert_bound_model(result, resource_client)
+        assert_bound_storage_box(result, resource_client)
 
     def test_create(
         self,
@@ -240,7 +283,7 @@ class TestStorageBoxClient:
             },
         )
 
-        assert_bound_model(result.storage_box, resource_client)
+        assert_bound_storage_box(result.storage_box, resource_client)
 
     def test_update(
         self,
@@ -267,7 +310,7 @@ class TestStorageBoxClient:
             },
         )
 
-        assert_bound_model(result, resource_client)
+        assert_bound_storage_box(result, resource_client)
 
     def test_delete(
         self,
@@ -473,3 +516,217 @@ class TestStorageBoxClient:
         )
 
         assert_bound_action1(action, resource_client._parent.actions)
+
+    # Snapshots
+    ###########################################################################
+
+    def test_get_snapshot_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        storage_box_snapshot1,
+    ):
+        request_mock.return_value = {"snapshot": storage_box_snapshot1}
+
+        result = resource_client.get_snapshot_by_id(StorageBox(42), 34)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/storage_boxes/42/snapshots/34",
+        )
+
+        assert_bound_storage_box_snapshot(result, resource_client)
+
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {"name": "storage-box-snapshot1"},
+            {},
+        ],
+    )
+    def test_get_snapshot_list(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        storage_box_snapshot1,
+        storage_box_snapshot2,
+        params,
+    ):
+        request_mock.return_value = {
+            "snapshots": [storage_box_snapshot1, storage_box_snapshot2]
+        }
+
+        result = resource_client.get_snapshot_list(StorageBox(42), **params)
+
+        request_mock.assert_called_with(
+            url="/storage_boxes/42/snapshots",
+            method="GET",
+            params=params,
+        )
+
+        assert result.meta is not None
+        assert len(result.snapshots) == 2
+
+        result1 = result.snapshots[0]
+        result2 = result.snapshots[1]
+
+        assert result1._client is resource_client
+        assert result1.id == 34
+        assert result1.name == "storage-box-snapshot1"
+        assert isinstance(result1.storage_box, BoundStorageBox)
+        assert result1.storage_box.id == 42
+
+        assert result2._client is resource_client
+        assert result2.id == 35
+        assert result2.name == "storage-box-snapshot2"
+        assert isinstance(result2.storage_box, BoundStorageBox)
+        assert result2.storage_box.id == 42
+
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {"name": "storage-box-snapshot1"},
+            {},
+        ],
+    )
+    def test_get_snapshot_all(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        storage_box_snapshot1,
+        storage_box_snapshot2,
+        params,
+    ):
+        request_mock.return_value = {
+            "snapshots": [storage_box_snapshot1, storage_box_snapshot2]
+        }
+
+        result = resource_client.get_snapshot_all(StorageBox(42), **params)
+
+        request_mock.assert_called_with(
+            url="/storage_boxes/42/snapshots",
+            method="GET",
+            params=params,
+        )
+
+        assert len(result) == 2
+
+        result1 = result[0]
+        result2 = result[1]
+
+        assert result1._client is resource_client
+        assert result1.id == 34
+        assert result1.name == "storage-box-snapshot1"
+        assert isinstance(result1.storage_box, BoundStorageBox)
+        assert result1.storage_box.id == 42
+
+        assert result2._client is resource_client
+        assert result2.id == 35
+        assert result2.name == "storage-box-snapshot2"
+        assert isinstance(result2.storage_box, BoundStorageBox)
+        assert result2.storage_box.id == 42
+
+    def test_get_snapshot_by_name(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        storage_box_snapshot1,
+    ):
+        request_mock.return_value = {"snapshots": [storage_box_snapshot1]}
+
+        result = resource_client.get_snapshot_by_name(
+            StorageBox(42), "storage-box-snapshot1"
+        )
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/storage_boxes/42/snapshots",
+            params={"name": "storage-box-snapshot1"},
+        )
+
+        assert_bound_storage_box_snapshot(result, resource_client)
+
+    def test_create_snapshot(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        storage_box_snapshot1: dict,
+        action1_running,
+    ):
+        request_mock.return_value = {
+            "snapshot": {
+                # Only a partial snapshot is returned
+                key: storage_box_snapshot1[key]
+                for key in ["id", "storage_box"]
+            },
+            "action": action1_running,
+        }
+
+        result = resource_client.create_snapshot(
+            StorageBox(42),
+            description="something",
+            labels={"key": "value"},
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/snapshots",
+            json={
+                "description": "something",
+                "labels": {"key": "value"},
+            },
+        )
+
+        assert isinstance(result.snapshot, BoundStorageBoxSnapshot)
+        assert result.snapshot._client is resource_client
+        assert result.snapshot.id == 34
+
+        assert_bound_action1(result.action, resource_client._parent.actions)
+
+    def test_update_snapshot(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        storage_box_snapshot1,
+    ):
+        request_mock.return_value = {
+            "snapshot": storage_box_snapshot1,
+        }
+
+        result = resource_client.update_snapshot(
+            StorageBoxSnapshot(id=34, storage_box=StorageBox(42)),
+            description="something",
+            labels={"key": "value"},
+        )
+
+        request_mock.assert_called_with(
+            method="PUT",
+            url="/storage_boxes/42/snapshots/34",
+            json={
+                "description": "something",
+                "labels": {"key": "value"},
+            },
+        )
+
+        assert_bound_storage_box_snapshot(result, resource_client)
+
+    def test_delete_snapshot(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action1_running,
+    ):
+        request_mock.return_value = {
+            "action": action1_running,
+        }
+
+        result = resource_client.delete_snapshot(
+            StorageBoxSnapshot(id=34, storage_box=StorageBox(42))
+        )
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/storage_boxes/42/snapshots/34",
+        )
+
+        assert_bound_action1(result.action, resource_client._parent.actions)
