@@ -1070,3 +1070,27 @@ class StorageBoxesClient(ResourceClientBase):
             json=data,
         )
         return BoundAction(self._parent.actions, response["action"])
+
+    def reset_subaccount_password(
+        self,
+        subaccount: StorageBoxSubaccount | BoundStorageBoxSubaccount,
+        password: str,
+    ) -> BoundAction:
+        """
+        Reset the password of a Storage Box Subaccount.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccount-actions-reset-password
+
+        :param subaccount: Storage Box Subaccount to update.
+        :param password: Password for the Subaccount.
+        """
+        data: dict[str, Any] = {
+            "password": password,
+        }
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{subaccount.storage_box.id}/subaccounts/{subaccount.id}/actions/reset_subaccount_password",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
