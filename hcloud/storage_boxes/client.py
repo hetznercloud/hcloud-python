@@ -1060,6 +1060,9 @@ class StorageBoxesClient(ResourceClientBase):
         :param subaccount: Storage Box Subaccount to update.
         :param home_directory: Home directory for the Subaccount.
         """
+        if subaccount.storage_box is None:
+            raise ValueError("subaccount storage_box property is none")
+
         data: dict[str, Any] = {
             "home_directory": home_directory,
         }
@@ -1084,6 +1087,9 @@ class StorageBoxesClient(ResourceClientBase):
         :param subaccount: Storage Box Subaccount to update.
         :param password: Password for the Subaccount.
         """
+        if subaccount.storage_box is None:
+            raise ValueError("subaccount storage_box property is none")
+
         data: dict[str, Any] = {
             "password": password,
         }
@@ -1108,6 +1114,9 @@ class StorageBoxesClient(ResourceClientBase):
         :param subaccount: Storage Box Subaccount to update.
         :param access_settings: Access settings for the Subaccount.
         """
+        if subaccount.storage_box is None:
+            raise ValueError("subaccount storage_box property is none")
+
         data: dict[str, Any] = access_settings.to_payload()
 
         response = self._client.request(
