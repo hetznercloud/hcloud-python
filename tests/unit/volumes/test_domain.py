@@ -15,7 +15,7 @@ from hcloud.volumes import Volume
     ],
 )
 def test_eq(value):
-    assert value == value
+    assert value.__eq__(value)
 
 
 class TestVolume:

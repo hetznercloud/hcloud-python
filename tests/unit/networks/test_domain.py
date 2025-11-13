@@ -17,7 +17,7 @@ from hcloud.networks import Network, NetworkRoute, NetworkSubnet
     ],
 )
 def test_eq(value):
-    assert value == value
+    assert value.__eq__(value)
 
 
 class TestNetwork:

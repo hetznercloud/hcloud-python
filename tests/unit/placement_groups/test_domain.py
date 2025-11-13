@@ -15,7 +15,7 @@ from hcloud.placement_groups import PlacementGroup
     ],
 )
 def test_eq(value):
-    assert value == value
+    assert value.__eq__(value)
 
 
 class TestPlacementGroup:

@@ -12,4 +12,4 @@ from hcloud.load_balancer_types import LoadBalancerType
     ],
 )
 def test_eq(value):
-    assert value == value
+    assert value.__eq__(value)

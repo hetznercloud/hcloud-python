@@ -13,4 +13,4 @@ from hcloud.datacenters import Datacenter, DatacenterServerTypes
     ],
 )
 def test_eq(value):
-    assert value == value
+    assert value.__eq__(value)

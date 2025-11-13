@@ -47,7 +47,7 @@ class TestBoundModelBase:
             client=client, data={"id": 1, "name": "name", "description": "description"}
         )
         with pytest.raises(AttributeError):
-            bound_model.content
+            _ = bound_model.content
         client.get_by_id.assert_not_called()
 
     def test_get_exists_model_attribute_incomplete_model(
@@ -77,7 +77,7 @@ class TestBoundModelBase:
     ):
         bound_model = bound_model_class(client=client, data={"id": 1}, complete=False)
         with pytest.raises(AttributeError):
-            bound_model.content
+            _ = bound_model.content
         client.get_by_id.assert_not_called()
         assert bound_model.complete is False
 
@@ -137,7 +137,7 @@ class TestResourceClientBase:
     def test_iter_pages_no_meta(self, client_class_constructor):
         json_content = {"candies": [1, 2]}
 
-        def json_content_function(p):
+        def json_content_function(_):
             return json_content
 
         candies_client = client_class_constructor(json_content_function)
@@ -152,7 +152,7 @@ class TestResourceClientBase:
             "meta": {"pagination": {"page": 1, "per_page": 11, "next_page": None}},
         }
 
-        def json_content_function(p):
+        def json_content_function(_):
             return json_content
 
         candies_client = client_class_constructor(json_content_function)
@@ -218,7 +218,7 @@ class TestResourceClientBase:
     def test_get_first_by_result_exists(self, client_class_constructor):
         json_content = {"candies": [1]}
 
-        def json_content_function(p):
+        def json_content_function(_):
             return json_content
 
         candies_client = client_class_constructor(json_content_function)
@@ -230,7 +230,7 @@ class TestResourceClientBase:
     def test_get_first_by_result_does_not_exist(self, client_class_constructor):
         json_content = {"candies": []}
 
-        def json_content_function(p):
+        def json_content_function(_):
             return json_content
 
         candies_client = client_class_constructor(json_content_function)

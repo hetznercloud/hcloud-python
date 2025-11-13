@@ -12,4 +12,4 @@ from hcloud.server_types import ServerType
     ],
 )
 def test_eq(value):
-    assert value == value
+    assert value.__eq__(value)

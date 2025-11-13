@@ -25,7 +25,7 @@ from hcloud.firewalls import (
     ],
 )
 def test_eq(value):
-    assert value == value
+    assert value.__eq__(value)
 
 
 class TestFirewall:
