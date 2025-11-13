@@ -131,7 +131,7 @@ class PlacementGroupsClient(ResourceClientBase):
                Used to get Placement Group by name
         :return: class:`BoundPlacementGroup <hcloud.placement_groups.client.BoundPlacementGroup>`
         """
-        return self._get_first_by(name=name)
+        return self._get_first_by(self.get_list, name=name)
 
     def create(
         self,

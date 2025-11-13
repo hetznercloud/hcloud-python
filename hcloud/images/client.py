@@ -329,7 +329,7 @@ class ImagesClient(ResourceClientBase):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self._get_first_by(name=name)
+        return self._get_first_by(self.get_list, name=name)
 
     def get_by_name_and_architecture(
         self,
@@ -349,6 +349,7 @@ class ImagesClient(ResourceClientBase):
         :return: :class:`BoundImage <hcloud.images.client.BoundImage>`
         """
         return self._get_first_by(
+            self.get_list,
             name=name,
             architecture=[architecture],
             include_deprecated=include_deprecated,

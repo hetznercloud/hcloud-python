@@ -115,4 +115,4 @@ class DatacentersClient(ResourceClientBase):
                Used to get datacenter by name.
         :return: :class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`
         """
-        return self._get_first_by(name=name)
+        return self._get_first_by(self.get_list, name=name)

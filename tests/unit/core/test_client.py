@@ -223,7 +223,7 @@ class TestResourceClientBase:
 
         candies_client = client_class_constructor(json_content_function)
 
-        result = candies_client._get_first_by(status="sweet")
+        result = candies_client._get_first_by(candies_client.get_list, status="sweet")
 
         assert result == (1, None, "sweet", None)
 
@@ -235,6 +235,6 @@ class TestResourceClientBase:
 
         candies_client = client_class_constructor(json_content_function)
 
-        result = candies_client._get_first_by(status="sweet")
+        result = candies_client._get_first_by(candies_client.get_list, status="sweet")
 
         assert result is None

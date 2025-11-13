@@ -467,7 +467,7 @@ class LoadBalancersClient(ResourceClientBase):
                Used to get Load Balancer by name.
         :return: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>`
         """
-        return self._get_first_by(name=name)
+        return self._get_first_by(self.get_list, name=name)
 
     def create(
         self,

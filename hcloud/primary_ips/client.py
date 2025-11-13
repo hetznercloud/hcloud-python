@@ -189,7 +189,7 @@ class PrimaryIPsClient(ResourceClientBase):
                Used to get Primary IP by name.
         :return: :class:`BoundPrimaryIP <hcloud.primary_ips.client.BoundPrimaryIP>`
         """
-        return self._get_first_by(name=name)
+        return self._get_first_by(self.get_list, name=name)
 
     def create(
         self,
