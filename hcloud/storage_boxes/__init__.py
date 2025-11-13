@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from .client import (
     BoundStorageBox,
+    BoundStorageBoxSnapshot,
     StorageBoxesClient,
     StorageBoxesPageResult,
+    StorageBoxSnapshotsPageResult,
 )
 from .domain import (
     CreateStorageBoxResponse,
@@ -11,12 +13,14 @@ from .domain import (
     StorageBox,
     StorageBoxAccessSettings,
     StorageBoxFoldersResponse,
+    StorageBoxSnapshot,
     StorageBoxSnapshotPlan,
     StorageBoxStats,
 )
 
 __all__ = [
     "BoundStorageBox",
+    "BoundStorageBoxSnapshot",
     "CreateStorageBoxResponse",
     "DeleteStorageBoxResponse",
     "StorageBox",
@@ -24,6 +28,8 @@ __all__ = [
     "StorageBoxesClient",
     "StorageBoxesPageResult",
     "StorageBoxFoldersResponse",
+    "StorageBoxSnapshot",
     "StorageBoxSnapshotPlan",
+    "StorageBoxSnapshotsPageResult",
     "StorageBoxStats",
 ]
