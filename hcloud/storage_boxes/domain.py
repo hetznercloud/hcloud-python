@@ -10,7 +10,7 @@ from ..locations import BoundLocation, Location
 from ..storage_box_types import BoundStorageBoxType, StorageBoxType
 
 if TYPE_CHECKING:
-    from .client import BoundStorageBox
+    from .client import BoundStorageBox, BoundStorageBoxSnapshot
 
 StorageBoxStatus = Literal[
     "active",
@@ -252,10 +252,15 @@ class StorageBoxSnapshot(BaseDomain, DomainIdentityMixin):
     Storage Box Snapshot Domain.
     """
 
-    # TODO: full domain
     __api_properties__ = (
         "id",
         "name",
+        "description",
+        "is_automatic",
+        "labels",
+        "storage_box",
+        "created",
+        "stats",
     )
     __slots__ = __api_properties__
 
@@ -263,6 +268,73 @@ class StorageBoxSnapshot(BaseDomain, DomainIdentityMixin):
         self,
         id: int | None = None,
         name: str | None = None,
+        description: str | None = None,
+        is_automatic: bool | None = None,
+        labels: dict[str, str] | None = None,
+        storage_box: BoundStorageBox | StorageBox | None = None,
+        created: str | None = None,
+        stats: StorageBoxSnapshotStats | None = None,
     ):
         self.id = id
         self.name = name
+        self.description = description
+        self.is_automatic = is_automatic
+        self.labels = labels
+        self.storage_box = storage_box
+        self.created = isoparse(created) if created else None
+        self.stats = stats
+
+
+class StorageBoxSnapshotStats(BaseDomain):
+    """
+    Storage Box Snapshot Stats Domain.
+    """
+
+    __api_properties__ = (
+        "size",
+        "size_filesystem",
+    )
+    __slots__ = __api_properties__
+
+    def __init__(
+        self,
+        size: int,
+        size_filesystem: int,
+    ):
+        self.size = size
+        self.size_filesystem = size_filesystem
+
+
+class CreateStorageBoxSnapshotResponse(BaseDomain):
+    """
+    Create Storage Box Snapshot Response Domain.
+    """
+
+    __api_properties__ = (
+        "snapshot",
+        "action",
+    )
+    __slots__ = __api_properties__
+
+    def __init__(
+        self,
+        snapshot: BoundStorageBoxSnapshot,
+        action: BoundAction,
+    ):
+        self.snapshot = snapshot
+        self.action = action
+
+
+class DeleteStorageBoxSnapshotResponse(BaseDomain):
+    """
+    Delete Storage Box Snapshot Response Domain.
+    """
+
+    __api_properties__ = ("action",)
+    __slots__ = __api_properties__
+
+    def __init__(
+        self,
+        action: BoundAction,
+    ):
+        self.action = action
