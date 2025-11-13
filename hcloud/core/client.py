@@ -103,10 +103,13 @@ class BoundModelBase:
             value = getattr(self.data_model, name)
         return value
 
-    def reload(self) -> None:
-        """Reloads the model and tries to get all data from the APIx"""
+    def _get_self(self) -> BoundModelBase:
         assert hasattr(self._client, "get_by_id")
-        bound_model = self._client.get_by_id(self.data_model.id)
+        return self._client.get_by_id(self.data_model.id)
+
+    def reload(self) -> None:
+        """Reloads the model and tries to get all data from the API"""
+        bound_model = self._get_self()
         self.data_model = bound_model.data_model
         self.complete = True
 

@@ -188,6 +188,10 @@ class BoundModelTestCase:
             lambda m: inspect.ismethod(m)
             and m.__func__ in bound_model.__class__.__dict__.values(),
         ):
+            # Ignore private methods
+            if name.startswith("_"):
+                continue
+
             # Actions methods are already tested in TestBoundModelActions.
             if name in ("__init__", "get_actions", "get_actions_list"):
                 continue
