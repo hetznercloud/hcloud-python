@@ -518,7 +518,7 @@ class StorageBoxesClient(ResourceClientBase):
         access_settings: StorageBoxAccessSettings,
     ) -> BoundAction:
         """
-        Reset the password of a Storage Box.
+        Update the access settings of a Storage Box.
 
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-update-access-settings
 
