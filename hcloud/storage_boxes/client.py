@@ -1094,3 +1094,25 @@ class StorageBoxesClient(ResourceClientBase):
             json=data,
         )
         return BoundAction(self._parent.actions, response["action"])
+
+    def update_subaccount_access_settings(
+        self,
+        subaccount: StorageBoxSubaccount | BoundStorageBoxSubaccount,
+        access_settings: StorageBoxSubaccountAccessSettings,
+    ) -> BoundAction:
+        """
+        Update the access settings of a Storage Box Subaccount.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccount-actions-update-access-settings
+
+        :param subaccount: Storage Box Subaccount to update.
+        :param access_settings: Access settings for the Subaccount.
+        """
+        data: dict[str, Any] = access_settings.to_payload()
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{subaccount.storage_box.id}/subaccounts/{subaccount.id}/actions/update_access_settings",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
