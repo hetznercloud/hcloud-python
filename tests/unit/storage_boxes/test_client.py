@@ -1091,3 +1091,32 @@ class TestStorageBoxClient:
         )
 
         assert_bound_action1(action, resource_client._parent.actions)
+
+    def test_update_subaccount_access_settings(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.update_subaccount_access_settings(
+            StorageBoxSubaccount(id=45, storage_box=StorageBox(42)),
+            access_settings=StorageBoxSubaccountAccessSettings(
+                reachable_externally=True,
+                ssh_enabled=True,
+                samba_enabled=False,
+            ),
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/subaccounts/45/actions/update_access_settings",
+            json={
+                "reachable_externally": True,
+                "ssh_enabled": True,
+                "samba_enabled": False,
+            },
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
