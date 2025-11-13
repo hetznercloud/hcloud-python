@@ -131,6 +131,12 @@ class BoundStorageBoxSnapshot(BoundModelBase, StorageBoxSnapshot):
 
         super().__init__(client, data, complete)
 
+    def _get_self(self) -> BoundStorageBoxSnapshot:
+        return self._client.get_snapshot_by_id(
+            self.data_model.storage_box,
+            self.data_model.id,
+        )
+
     # TODO: implement bound methods
 
 
@@ -728,7 +734,12 @@ class StorageBoxesClient(ResourceClientBase):
             json=data,
         )
         return CreateStorageBoxSnapshotResponse(
-            snapshot=BoundStorageBoxSnapshot(self, response["snapshot"]),
+            snapshot=BoundStorageBoxSnapshot(
+                self,
+                response["snapshot"],
+                # API only returns a partial object.
+                complete=False,
+            ),
             action=BoundAction(self._parent.actions, response["action"]),
         )
 
