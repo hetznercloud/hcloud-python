@@ -10,7 +10,11 @@ from ..locations import BoundLocation, Location
 from ..storage_box_types import BoundStorageBoxType, StorageBoxType
 
 if TYPE_CHECKING:
-    from .client import BoundStorageBox, BoundStorageBoxSnapshot
+    from .client import (
+        BoundStorageBox,
+        BoundStorageBoxSnapshot,
+        BoundStorageBoxSubaccount,
+    )
 
 StorageBoxStatus = Literal[
     "active",
@@ -328,6 +332,132 @@ class CreateStorageBoxSnapshotResponse(BaseDomain):
 class DeleteStorageBoxSnapshotResponse(BaseDomain):
     """
     Delete Storage Box Snapshot Response Domain.
+    """
+
+    __api_properties__ = ("action",)
+    __slots__ = __api_properties__
+
+    def __init__(
+        self,
+        action: BoundAction,
+    ):
+        self.action = action
+
+
+# Subaccounts
+###############################################################################
+
+
+class StorageBoxSubaccount(BaseDomain, DomainIdentityMixin):
+    """
+    Storage Box Subaccount Domain.
+    """
+
+    __api_properties__ = (
+        "id",
+        "username",
+        "description",
+        "server",
+        "home_directory",
+        "access_settings",
+        "labels",
+        "storage_box",
+        "created",
+    )
+    __slots__ = __api_properties__
+
+    def __init__(
+        self,
+        id: int | None = None,
+        username: str | None = None,
+        description: str | None = None,
+        server: str | None = None,
+        home_directory: str | None = None,
+        access_settings: StorageBoxSubaccountAccessSettings | None = None,
+        labels: dict[str, str] | None = None,
+        storage_box: BoundStorageBox | StorageBox | None = None,
+        created: str | None = None,
+    ):
+        self.id = id
+        self.username = username
+        self.description = description
+        self.server = server
+        self.home_directory = home_directory
+        self.access_settings = access_settings
+        self.labels = labels
+        self.storage_box = storage_box
+        self.created = isoparse(created) if created else None
+
+
+class StorageBoxSubaccountAccessSettings(BaseDomain):
+    """
+    Storage Box Subaccount Access Settings Domain.
+    """
+
+    __api_properties__ = (
+        "reachable_externally",
+        "samba_enabled",
+        "ssh_enabled",
+        "webdav_enabled",
+        "readonly",
+    )
+    __slots__ = __api_properties__
+
+    def __init__(
+        self,
+        reachable_externally: bool | None = None,
+        samba_enabled: bool | None = None,
+        ssh_enabled: bool | None = None,
+        webdav_enabled: bool | None = None,
+        readonly: bool | None = None,
+    ):
+        self.reachable_externally = reachable_externally
+        self.samba_enabled = samba_enabled
+        self.ssh_enabled = ssh_enabled
+        self.webdav_enabled = webdav_enabled
+        self.readonly = readonly
+
+    def to_payload(self) -> dict[str, Any]:
+        """
+        Generates the request payload from this domain object.
+        """
+        payload: dict[str, Any] = {}
+        if self.reachable_externally is not None:
+            payload["reachable_externally"] = self.reachable_externally
+        if self.samba_enabled is not None:
+            payload["samba_enabled"] = self.samba_enabled
+        if self.ssh_enabled is not None:
+            payload["ssh_enabled"] = self.ssh_enabled
+        if self.webdav_enabled is not None:
+            payload["webdav_enabled"] = self.webdav_enabled
+        if self.readonly is not None:
+            payload["readonly"] = self.readonly
+        return payload
+
+
+class CreateStorageBoxSubaccountResponse(BaseDomain):
+    """
+    Create Storage Box Subaccount Response Domain.
+    """
+
+    __api_properties__ = (
+        "subaccount",
+        "action",
+    )
+    __slots__ = __api_properties__
+
+    def __init__(
+        self,
+        subaccount: BoundStorageBoxSubaccount,
+        action: BoundAction,
+    ):
+        self.subaccount = subaccount
+        self.action = action
+
+
+class DeleteStorageBoxSubaccountResponse(BaseDomain):
+    """
+    Delete Storage Box Subaccount Response Domain.
     """
 
     __api_properties__ = ("action",)

@@ -129,3 +129,53 @@ def storage_box_snapshot2():
         "created": "2025-11-10T19:18:57Z",
         "storage_box": 42,
     }
+
+
+@pytest.fixture()
+def storage_box_subaccount1():
+    return {
+        "id": 45,
+        "username": "u42-sub1",
+        "server": "u42-sub1.your-storagebox.de",
+        "home_directory": "tmp/",
+        "description": "Required by foo",
+        "access_settings": {
+            "samba_enabled": False,
+            "ssh_enabled": True,
+            "webdav_enabled": False,
+            "reachable_externally": True,
+            "readonly": False,
+        },
+        "labels": {
+            "key": "value",
+        },
+        "protection": {
+            "delete": False,
+        },
+        "created": "2025-11-10T19:18:57Z",
+        "storage_box": 42,
+    }
+
+
+@pytest.fixture()
+def storage_box_subaccount2():
+    return {
+        "id": 46,
+        "username": "u42-sub2",
+        "server": "u42-sub2.your-storagebox.de",
+        "home_directory": "backup/",
+        "description": "",
+        "access_settings": {
+            "samba_enabled": False,
+            "ssh_enabled": True,
+            "webdav_enabled": False,
+            "reachable_externally": True,
+            "readonly": False,
+        },
+        "labels": {},
+        "protection": {
+            "delete": False,
+        },
+        "created": "2025-11-10T19:18:57Z",
+        "storage_box": 42,
+    }

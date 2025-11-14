@@ -13,11 +13,14 @@ from hcloud.storage_box_types import StorageBoxType
 from hcloud.storage_boxes import (
     BoundStorageBox,
     BoundStorageBoxSnapshot,
+    BoundStorageBoxSubaccount,
     StorageBox,
     StorageBoxAccessSettings,
     StorageBoxesClient,
     StorageBoxSnapshot,
     StorageBoxSnapshotPlan,
+    StorageBoxSubaccount,
+    StorageBoxSubaccountAccessSettings,
 )
 
 from ..conftest import BoundModelTestCase, assert_bound_action1
@@ -34,13 +37,23 @@ def assert_bound_storage_box(
 
 
 def assert_bound_storage_box_snapshot(
-    o: BoundStorageBox,
+    o: BoundStorageBoxSnapshot,
     resource_client: StorageBoxesClient,
 ):
     assert isinstance(o, BoundStorageBoxSnapshot)
     assert o._client is resource_client
     assert o.id == 34
     assert o.name == "storage-box-snapshot1"
+
+
+def assert_bound_storage_box_subaccount(
+    o: BoundStorageBoxSubaccount,
+    resource_client: StorageBoxesClient,
+):
+    assert isinstance(o, BoundStorageBoxSubaccount)
+    assert o._client is resource_client
+    assert o.id == 45
+    assert o.username == "u42-sub1"
 
 
 class TestBoundStorageBox(BoundModelTestCase):
@@ -134,6 +147,63 @@ class TestBoundStorageBoxSnapshot(BoundModelTestCase):
         request_mock.assert_called_with(
             method="GET",
             url="/storage_boxes/42/snapshots/34",
+        )
+
+        assert o.labels is not None
+
+
+class TestBoundStorageBoxSubaccount(BoundModelTestCase):
+    methods = []
+
+    @pytest.fixture()
+    def resource_client(self, client: Client) -> StorageBoxesClient:
+        return client.storage_boxes
+
+    @pytest.fixture()
+    def bound_model(
+        self,
+        resource_client: StorageBoxesClient,
+        storage_box_subaccount1,
+    ) -> BoundStorageBoxSubaccount:
+        return BoundStorageBoxSubaccount(resource_client, data=storage_box_subaccount1)
+
+    def test_init(self, bound_model: BoundStorageBoxSubaccount, resource_client):
+        o = bound_model
+
+        assert_bound_storage_box_subaccount(o, resource_client)
+
+        assert isinstance(o.storage_box, BoundStorageBox)
+        assert o.storage_box.id == 42
+
+        assert o.username == "u42-sub1"
+        assert o.description == "Required by foo"
+        assert o.server == "u42-sub1.your-storagebox.de"
+        assert o.home_directory == "tmp/"
+        assert o.access_settings.reachable_externally is True
+        assert o.access_settings.samba_enabled is False
+        assert o.access_settings.ssh_enabled is True
+        assert o.access_settings.webdav_enabled is False
+        assert o.access_settings.readonly is False
+        assert o.labels == {"key": "value"}
+        assert o.created == isoparse("2025-11-10T19:18:57Z")
+
+    def test_reload(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        storage_box_subaccount1,
+    ):
+        o = BoundStorageBoxSubaccount(
+            resource_client, data={"id": 45, "storage_box": 42}
+        )
+
+        request_mock.return_value = {"subaccount": storage_box_subaccount1}
+
+        o.reload()
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/storage_boxes/42/subaccounts/45",
         )
 
         assert o.labels is not None
@@ -674,7 +744,7 @@ class TestStorageBoxClient:
     ):
         request_mock.return_value = {
             "snapshot": {
-                # Only a partial snapshot is returned
+                # Only a partial object is returned
                 key: storage_box_snapshot1[key]
                 for key in ["id", "storage_box"]
             },
@@ -746,6 +816,232 @@ class TestStorageBoxClient:
         request_mock.assert_called_with(
             method="DELETE",
             url="/storage_boxes/42/snapshots/34",
+        )
+
+        assert_bound_action1(result.action, resource_client._parent.actions)
+
+    # Subaccounts
+    ###########################################################################
+
+    def test_get_subaccount_by_id(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        storage_box_subaccount1,
+    ):
+        request_mock.return_value = {"subaccount": storage_box_subaccount1}
+
+        result = resource_client.get_subaccount_by_id(StorageBox(42), 45)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/storage_boxes/42/subaccounts/45",
+        )
+
+        assert_bound_storage_box_subaccount(result, resource_client)
+
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {"username": "u42-sub1"},
+            {},
+        ],
+    )
+    def test_get_subaccount_list(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        storage_box_subaccount1,
+        storage_box_subaccount2,
+        params,
+    ):
+        request_mock.return_value = {
+            "subaccounts": [storage_box_subaccount1, storage_box_subaccount2]
+        }
+
+        result = resource_client.get_subaccount_list(StorageBox(42), **params)
+
+        request_mock.assert_called_with(
+            url="/storage_boxes/42/subaccounts",
+            method="GET",
+            params=params,
+        )
+
+        assert result.meta is not None
+        assert len(result.subaccounts) == 2
+
+        result1 = result.subaccounts[0]
+        result2 = result.subaccounts[1]
+
+        assert result1._client is resource_client
+        assert result1.id == 45
+        assert result1.username == "u42-sub1"
+        assert isinstance(result1.storage_box, BoundStorageBox)
+        assert result1.storage_box.id == 42
+
+        assert result2._client is resource_client
+        assert result2.id == 46
+        assert result2.username == "u42-sub2"
+        assert isinstance(result2.storage_box, BoundStorageBox)
+        assert result2.storage_box.id == 42
+
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {"username": "u42-sub1"},
+            {},
+        ],
+    )
+    def test_get_subaccount_all(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        storage_box_subaccount1,
+        storage_box_subaccount2,
+        params,
+    ):
+        request_mock.return_value = {
+            "subaccounts": [storage_box_subaccount1, storage_box_subaccount2]
+        }
+
+        result = resource_client.get_subaccount_all(StorageBox(42), **params)
+
+        request_mock.assert_called_with(
+            url="/storage_boxes/42/subaccounts",
+            method="GET",
+            params=params,
+        )
+
+        assert len(result) == 2
+
+        result1 = result[0]
+        result2 = result[1]
+
+        assert result1._client is resource_client
+        assert result1.id == 45
+        assert result1.username == "u42-sub1"
+        assert isinstance(result1.storage_box, BoundStorageBox)
+        assert result1.storage_box.id == 42
+
+        assert result2._client is resource_client
+        assert result2.id == 46
+        assert result2.username == "u42-sub2"
+        assert isinstance(result2.storage_box, BoundStorageBox)
+        assert result2.storage_box.id == 42
+
+    def test_get_subaccount_by_username(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        storage_box_subaccount1,
+    ):
+        request_mock.return_value = {"subaccounts": [storage_box_subaccount1]}
+
+        result = resource_client.get_subaccount_by_username(StorageBox(42), "u42-sub1")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/storage_boxes/42/subaccounts",
+            params={"username": "u42-sub1"},
+        )
+
+        assert_bound_storage_box_subaccount(result, resource_client)
+
+    def test_create_subaccount(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        storage_box_subaccount1: dict,
+        action1_running,
+    ):
+        request_mock.return_value = {
+            "subaccount": {
+                # Only a partial object is returned
+                key: storage_box_subaccount1[key]
+                for key in ["id", "storage_box"]
+            },
+            "action": action1_running,
+        }
+
+        result = resource_client.create_subaccount(
+            StorageBox(42),
+            home_directory="tmp",
+            password="secret",
+            access_settings=StorageBoxSubaccountAccessSettings(
+                reachable_externally=True,
+                ssh_enabled=True,
+                readonly=False,
+            ),
+            description="something",
+            labels={"key": "value"},
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/subaccounts",
+            json={
+                "home_directory": "tmp",
+                "password": "secret",
+                "access_settings": {
+                    "reachable_externally": True,
+                    "ssh_enabled": True,
+                    "readonly": False,
+                },
+                "description": "something",
+                "labels": {"key": "value"},
+            },
+        )
+
+        assert isinstance(result.subaccount, BoundStorageBoxSubaccount)
+        assert result.subaccount._client is resource_client
+        assert result.subaccount.id == 45
+
+        assert_bound_action1(result.action, resource_client._parent.actions)
+
+    def test_update_subaccount(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        storage_box_subaccount1,
+    ):
+        request_mock.return_value = {
+            "subaccount": storage_box_subaccount1,
+        }
+
+        result = resource_client.update_subaccount(
+            StorageBoxSubaccount(id=45, storage_box=StorageBox(42)),
+            description="something",
+            labels={"key": "value"},
+        )
+
+        request_mock.assert_called_with(
+            method="PUT",
+            url="/storage_boxes/42/subaccounts/45",
+            json={
+                "description": "something",
+                "labels": {"key": "value"},
+            },
+        )
+
+        assert_bound_storage_box_subaccount(result, resource_client)
+
+    def test_delete_subaccount(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action1_running,
+    ):
+        request_mock.return_value = {
+            "action": action1_running,
+        }
+
+        result = resource_client.delete_subaccount(
+            StorageBoxSubaccount(id=45, storage_box=StorageBox(42)),
+        )
+
+        request_mock.assert_called_with(
+            method="DELETE",
+            url="/storage_boxes/42/subaccounts/45",
         )
 
         assert_bound_action1(result.action, resource_client._parent.actions)
