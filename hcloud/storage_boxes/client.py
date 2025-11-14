@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, NamedTuple
 from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
 from ..core import BoundModelBase, Meta, ResourceClientBase
 from ..locations import BoundLocation, Location
+from ..ssh_keys import BoundSSHKey, SSHKey
 from ..storage_box_types import BoundStorageBoxType, StorageBoxType
 from .domain import (
     CreateStorageBoxResponse,
@@ -72,9 +73,9 @@ class BoundStorageBox(BoundModelBase, StorageBox):
         per_page: int | None = None,
     ) -> ActionsPageResult:
         """
-        Returns all Actions for the Storage Box for a specific page.
+        Returns a paginated list of Actions for a Storage Box for a specific page.
 
-        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-list-actions
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-list-actions-for-a-storage-box
 
         :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
         :param sort: Sort resources by field and direction.
@@ -96,9 +97,9 @@ class BoundStorageBox(BoundModelBase, StorageBox):
         sort: list[str] | None = None,
     ) -> list[BoundAction]:
         """
-        Returns all Actions for the Storage Box.
+        Returns all Actions for a Storage Box.
 
-        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-list-actions
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-list-actions-for-a-storage-box
 
         :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
         :param sort: Sort resources by field and direction.
@@ -243,7 +244,7 @@ class StorageBoxesClient(ResourceClientBase):
         per_page: int | None = None,
     ) -> StorageBoxesPageResult:
         """
-        Returns a list of Storage Boxes for a specific page.
+        Returns a paginated list of Storage Boxes for a specific page.
 
         See https://docs.hetzner.cloud/reference/hetzner#storage-boxes-list-storage-boxes
 
@@ -298,7 +299,7 @@ class StorageBoxesClient(ResourceClientBase):
         password: str,
         location: BoundLocation | Location,
         storage_box_type: BoundStorageBoxType | StorageBoxType,
-        ssh_keys: list[str] | None = None,
+        ssh_keys: list[str | SSHKey | BoundSSHKey] | None = None,
         access_settings: StorageBoxAccessSettings | None = None,
         labels: dict[str, str] | None = None,
     ) -> CreateStorageBoxResponse:
@@ -322,7 +323,10 @@ class StorageBoxesClient(ResourceClientBase):
             "storage_box_type": storage_box_type.id_or_name,
         }
         if ssh_keys is not None:
-            data["ssh_keys"] = ssh_keys
+            data["ssh_keys"] = [
+                o.public_key if isinstance(o, (SSHKey, BoundSSHKey)) else o
+                for o in ssh_keys
+            ]
         if access_settings is not None:
             data["access_settings"] = access_settings.to_payload()
         if labels is not None:
@@ -330,7 +334,7 @@ class StorageBoxesClient(ResourceClientBase):
 
         response = self._client.request(
             method="POST",
-            url="/storage_boxes",
+            url=f"{self._base_url}",
             json=data,
         )
 
@@ -426,7 +430,7 @@ class StorageBoxesClient(ResourceClientBase):
         per_page: int | None = None,
     ) -> ActionsPageResult:
         """
-        Returns all Actions for a Storage Box for a specific page.
+        Returns a paginated list of Actions for a Storage Box for a specific page.
 
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-list-actions-for-a-storage-box
 
@@ -578,7 +582,7 @@ class StorageBoxesClient(ResourceClientBase):
     def rollback_snapshot(
         self,
         storage_box: StorageBox | BoundStorageBox,
-        snapshot: StorageBoxSnapshot,  # TODO: Add BoundStorageBoxSnapshot
+        snapshot: StorageBoxSnapshot | BoundStorageBoxSnapshot,
     ) -> BoundAction:
         """
         Rollback the Storage Box to the given snapshot.
@@ -733,7 +737,7 @@ class StorageBoxesClient(ResourceClientBase):
 
         :param storage_box: Storage Box to get the Snapshots from.
         :param name: Filter resources by their name. The response will only contain the resources matching exactly the specified name.
-        :param is_automatic: Filter wether the snapshot was made by a Snapshot Plan.
+        :param is_automatic: Filter whether the snapshot was made by a Snapshot Plan.
         :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
         :param sort: Sort resources by field and direction.
         """
@@ -761,7 +765,7 @@ class StorageBoxesClient(ResourceClientBase):
 
         :param storage_box: Storage Box to create a Snapshot from.
         :param description: Description of the Snapshot.
-        :param labels: User-defined labels (key/value pairs) for the Resource.
+        :param labels: User-defined labels (key/value pairs) for the Snapshot.
         """
         data: dict[str, Any] = {}
         if description is not None:
@@ -798,7 +802,7 @@ class StorageBoxesClient(ResourceClientBase):
 
         :param snapshot: Storage Box Snapshot to update.
         :param description: Description of the Snapshot.
-        :param labels: User-defined labels (key/value pairs) for the Resource.
+        :param labels: User-defined labels (key/value pairs) for the Snapshot.
         """
         if snapshot.storage_box is None:
             raise ValueError("snapshot storage_box property is none")
@@ -963,9 +967,9 @@ class StorageBoxesClient(ResourceClientBase):
         :param storage_box: Storage Box to create a Subaccount for.
         :param home_directory: Home directory of the Subaccount.
         :param password: Password of the Subaccount.
-        :param access_settings: Access Settings of the Subaccount.
+        :param access_settings: Access settings of the Subaccount.
         :param description: Description of the Subaccount.
-        :param labels: User-defined labels (key/value pairs) for the Resource.
+        :param labels: User-defined labels (key/value pairs) for the Subaccount.
         """
         data: dict[str, Any] = {
             "home_directory": home_directory,
@@ -1007,7 +1011,7 @@ class StorageBoxesClient(ResourceClientBase):
 
         :param subaccount: Storage Box Subaccount to update.
         :param description: Description of the Subaccount.
-        :param labels: User-defined labels (key/value pairs) for the Resource.
+        :param labels: User-defined labels (key/value pairs) for the Subaccount.
         """
         if subaccount.storage_box is None:
             raise ValueError("subaccount storage_box property is none")
