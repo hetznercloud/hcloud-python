@@ -68,9 +68,7 @@ class TestPlacementGroupsClient:
 
         request_mock.assert_called_with(
             method="GET",
-            url="/placement_groups/{placement_group_id}".format(
-                placement_group_id=placement_group_response["placement_group"]["id"]
-            ),
+            url="/placement_groups/897",
         )
 
         assert placement_group._client is resource_client

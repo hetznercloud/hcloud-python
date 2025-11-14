@@ -14,7 +14,7 @@ from hcloud.isos import Iso
     ],
 )
 def test_eq(value):
-    assert value == value
+    assert value.__eq__(value)
 
 
 class TestIso:

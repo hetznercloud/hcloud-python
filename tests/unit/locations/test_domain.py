@@ -12,4 +12,4 @@ from hcloud.locations import Location
     ],
 )
 def test_eq(value):
-    assert value == value
+    assert value.__eq__(value)

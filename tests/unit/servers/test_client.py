@@ -68,6 +68,7 @@ class TestBoundServer(BoundModelTestCase):
     def bound_model(self, resource_client: ServersClient):
         return BoundServer(resource_client, data=dict(id=14))
 
+    # pylint: disable=too-many-statements
     def test_init(self, response_full_server):
         bound_server = BoundServer(
             client=mock.MagicMock(), data=response_full_server["server"]

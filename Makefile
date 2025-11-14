@@ -7,6 +7,7 @@ venv:
 
 lint: venv
 	venv/bin/pylint hcloud
+	venv/bin/pylint tests --disable=missing-function-docstring,use-dict-literal,protected-access,redefined-outer-name,unnecessary-dunder-call
 	venv/bin/mypy hcloud
 
 test: venv

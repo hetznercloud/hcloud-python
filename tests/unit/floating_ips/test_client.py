@@ -228,14 +228,10 @@ class TestFloatingIPsClient:
         assert bound_floating_ip.description == "Web Frontend"
         assert action.id == 13
 
-    @pytest.mark.parametrize(
-        "server", [Server(id=1), BoundServer(mock.MagicMock(), dict(id=1))]
-    )
     def test_create_with_name(
         self,
         request_mock: mock.MagicMock,
         floating_ips_client: FloatingIPsClient,
-        server,
         floating_ip_create_response,
     ):
         request_mock.return_value = floating_ip_create_response

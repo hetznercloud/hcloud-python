@@ -20,7 +20,7 @@ from hcloud.actions import (
     ],
 )
 def test_eq(value):
-    assert value == value
+    assert value.__eq__(value)
 
 
 class TestAction:
