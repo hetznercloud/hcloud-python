@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.11.1](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.11.1)
+
+### Bug Fixes
+
+- support reloading sub resource bound models (#590)
+
 ## [v2.11.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.11.0)
 
 ### DNS API is now generally available
