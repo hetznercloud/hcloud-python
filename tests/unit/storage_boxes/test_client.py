@@ -57,7 +57,30 @@ def assert_bound_storage_box_subaccount(
 
 
 class TestBoundStorageBox(BoundModelTestCase):
-    methods = []
+    methods = [
+        BoundStorageBox.update,
+        BoundStorageBox.delete,
+        BoundStorageBox.get_folders,
+        BoundStorageBox.change_protection,
+        BoundStorageBox.change_type,
+        BoundStorageBox.disable_snapshot_plan,
+        BoundStorageBox.enable_snapshot_plan,
+        BoundStorageBox.reset_password,
+        BoundStorageBox.rollback_snapshot,
+        BoundStorageBox.update_access_settings,
+        # Snapshots
+        BoundStorageBox.create_snapshot,
+        BoundStorageBox.get_snapshot_all,
+        BoundStorageBox.get_snapshot_by_id,
+        BoundStorageBox.get_snapshot_by_name,
+        BoundStorageBox.get_snapshot_list,
+        # Subaccounts
+        BoundStorageBox.create_subaccount,
+        BoundStorageBox.get_subaccount_all,
+        BoundStorageBox.get_subaccount_by_id,
+        BoundStorageBox.get_subaccount_by_username,
+        BoundStorageBox.get_subaccount_list,
+    ]
 
     @pytest.fixture()
     def resource_client(self, client: Client) -> StorageBoxesClient:
@@ -103,7 +126,10 @@ class TestBoundStorageBox(BoundModelTestCase):
 
 
 class TestBoundStorageBoxSnapshot(BoundModelTestCase):
-    methods = []
+    methods = [
+        BoundStorageBoxSnapshot.update_snapshot,
+        BoundStorageBoxSnapshot.delete_snapshot,
+    ]
 
     @pytest.fixture()
     def resource_client(self, client: Client) -> StorageBoxesClient:
@@ -153,7 +179,13 @@ class TestBoundStorageBoxSnapshot(BoundModelTestCase):
 
 
 class TestBoundStorageBoxSubaccount(BoundModelTestCase):
-    methods = []
+    methods = [
+        BoundStorageBoxSubaccount.update_subaccount,
+        BoundStorageBoxSubaccount.delete_subaccount,
+        BoundStorageBoxSubaccount.change_subaccount_home_directory,
+        BoundStorageBoxSubaccount.reset_subaccount_password,
+        BoundStorageBoxSubaccount.update_subaccount_access_settings,
+    ]
 
     @pytest.fixture()
     def resource_client(self, client: Client) -> StorageBoxesClient:
