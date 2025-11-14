@@ -406,6 +406,13 @@ class BoundZoneRRSet(BoundModelBase, ZoneRRSet):
 
         super().__init__(client, data, complete)
 
+    def _get_self(self) -> BoundZoneRRSet:
+        return self._client.get_rrset(
+            self.data_model.zone,
+            self.data_model.name,
+            self.data_model.type,
+        )
+
     def update_rrset(
         self,
         *,

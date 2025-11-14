@@ -958,3 +958,25 @@ class TestBoundZoneRRSet(BoundModelTestCase):
 
         assert isinstance(o.zone, BoundZone)
         assert o.zone.id == 42
+
+    def test_reload(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: ZonesClient,
+        zone_rrset1,
+    ):
+        o = BoundZoneRRSet(
+            resource_client,
+            data={"id": "www/A", "zone": 42},
+            complete=False,
+        )
+        request_mock.return_value = {"rrset": zone_rrset1}
+
+        o.reload()
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/zones/42/rrsets/www/A",
+        )
+
+        assert o.labels is not None
