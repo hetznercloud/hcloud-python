@@ -12,4 +12,4 @@ from hcloud.storage_box_types import StorageBoxType
     ],
 )
 def test_eq(value):
-    assert value == value
+    assert value.__eq__(value)
