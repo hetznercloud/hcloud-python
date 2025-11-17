@@ -103,9 +103,6 @@ def storage_box_snapshot1():
         "labels": {
             "key": "value",
         },
-        "protection": {
-            "delete": False,
-        },
         "created": "2025-11-10T19:16:57Z",
         "storage_box": 42,
     }
@@ -123,9 +120,6 @@ def storage_box_snapshot2():
             "size_filesystem": 0,
         },
         "labels": {},
-        "protection": {
-            "delete": False,
-        },
         "created": "2025-11-10T19:18:57Z",
         "storage_box": 42,
     }
@@ -149,9 +143,6 @@ def storage_box_subaccount1():
         "labels": {
             "key": "value",
         },
-        "protection": {
-            "delete": False,
-        },
         "created": "2025-11-10T19:18:57Z",
         "storage_box": 42,
     }
@@ -173,9 +164,6 @@ def storage_box_subaccount2():
             "readonly": False,
         },
         "labels": {},
-        "protection": {
-            "delete": False,
-        },
         "created": "2025-11-10T19:18:57Z",
         "storage_box": 42,
     }
