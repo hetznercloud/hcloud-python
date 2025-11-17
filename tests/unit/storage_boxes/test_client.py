@@ -1045,3 +1045,78 @@ class TestStorageBoxClient:
         )
 
         assert_bound_action1(result.action, resource_client._parent.actions)
+
+    def test_change_subaccount_home_directory(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.change_subaccount_home_directory(
+            StorageBoxSubaccount(id=45, storage_box=StorageBox(42)),
+            home_directory="path",
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/subaccounts/45/actions/change_home_directory",
+            json={
+                "home_directory": "path",
+            },
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
+
+    def test_reset_subaccount_password(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.reset_subaccount_password(
+            StorageBoxSubaccount(id=45, storage_box=StorageBox(42)),
+            password="password",
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/subaccounts/45/actions/reset_subaccount_password",
+            json={
+                "password": "password",
+            },
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
+
+    def test_update_subaccount_access_settings(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        action_response,
+    ):
+        request_mock.return_value = action_response
+
+        action = resource_client.update_subaccount_access_settings(
+            StorageBoxSubaccount(id=45, storage_box=StorageBox(42)),
+            access_settings=StorageBoxSubaccountAccessSettings(
+                reachable_externally=True,
+                ssh_enabled=True,
+                samba_enabled=False,
+            ),
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/storage_boxes/42/subaccounts/45/actions/update_access_settings",
+            json={
+                "reachable_externally": True,
+                "ssh_enabled": True,
+                "samba_enabled": False,
+            },
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
