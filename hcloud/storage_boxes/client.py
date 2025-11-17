@@ -9,8 +9,10 @@ from ..storage_box_types import BoundStorageBoxType, StorageBoxType
 from .domain import (
     CreateStorageBoxResponse,
     CreateStorageBoxSnapshotResponse,
+    CreateStorageBoxSubaccountResponse,
     DeleteStorageBoxResponse,
     DeleteStorageBoxSnapshotResponse,
+    DeleteStorageBoxSubaccountResponse,
     StorageBox,
     StorageBoxAccessSettings,
     StorageBoxFoldersResponse,
@@ -18,6 +20,8 @@ from .domain import (
     StorageBoxSnapshotPlan,
     StorageBoxSnapshotStats,
     StorageBoxStats,
+    StorageBoxSubaccount,
+    StorageBoxSubaccountAccessSettings,
 )
 
 if TYPE_CHECKING:
@@ -140,6 +144,38 @@ class BoundStorageBoxSnapshot(BoundModelBase, StorageBoxSnapshot):
     # TODO: implement bound methods
 
 
+class BoundStorageBoxSubaccount(BoundModelBase, StorageBoxSubaccount):
+    _client: StorageBoxesClient
+
+    model = StorageBoxSubaccount
+
+    def __init__(
+        self,
+        client: StorageBoxesClient,
+        data: dict[str, Any],
+        complete: bool = True,
+    ):
+        raw = data.get("storage_box")
+        if raw is not None:
+            data["storage_box"] = BoundStorageBox(
+                client, data={"id": raw}, complete=False
+            )
+
+        raw = data.get("access_settings")
+        if raw is not None:
+            data["access_settings"] = StorageBoxSubaccountAccessSettings.from_dict(raw)
+
+        super().__init__(client, data, complete)
+
+    def _get_self(self) -> BoundStorageBoxSubaccount:
+        return self._client.get_subaccount_by_id(
+            self.data_model.storage_box,
+            self.data_model.id,
+        )
+
+    # TODO: implement bound methods
+
+
 class StorageBoxesPageResult(NamedTuple):
     storage_boxes: list[BoundStorageBox]
     meta: Meta
@@ -147,6 +183,11 @@ class StorageBoxesPageResult(NamedTuple):
 
 class StorageBoxSnapshotsPageResult(NamedTuple):
     snapshots: list[BoundStorageBoxSnapshot]
+    meta: Meta
+
+
+class StorageBoxSubaccountsPageResult(NamedTuple):
+    subaccounts: list[BoundStorageBoxSubaccount]
     meta: Meta
 
 
@@ -794,5 +835,214 @@ class StorageBoxesClient(ResourceClientBase):
             url=f"{self._base_url}/{snapshot.storage_box.id}/snapshots/{snapshot.id}",
         )
         return DeleteStorageBoxSnapshotResponse(
+            action=BoundAction(self._parent.actions, response["action"]),
+        )
+
+    # Subaccounts
+    ###########################################################################
+
+    def get_subaccount_by_id(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        id: int,
+    ) -> BoundStorageBoxSubaccount:
+        """
+        Returns a single Subaccount from a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-get-a-subaccount
+
+        :param storage_box: Storage Box to get the Subaccount from.
+        :param id: ID of the Subaccount.
+        """
+        response = self._client.request(
+            method="GET",
+            url=f"{self._base_url}/{storage_box.id}/subaccounts/{id}",
+        )
+        return BoundStorageBoxSubaccount(self, response["subaccount"])
+
+    def get_subaccount_by_username(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        username: str,
+    ) -> BoundStorageBoxSubaccount:
+        """
+        Returns a single Subaccount from a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-list-subaccounts
+
+        :param storage_box: Storage Box to get the Subaccount from.
+        :param username: User name of the Subaccount.
+        """
+        return self._get_first_by(
+            self.get_subaccount_list,
+            storage_box,
+            username=username,
+        )
+
+    def get_subaccount_list(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        *,
+        username: str | None = None,
+        label_selector: str | None = None,
+        sort: list[str] | None = None,
+    ) -> StorageBoxSubaccountsPageResult:
+        """
+        Returns all Subaccounts for a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-list-subaccounts
+
+        :param storage_box: Storage Box to get the Subaccount from.
+        :param username: Filter resources by their username. The response will only contain the resources matching exactly the specified username.
+        :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
+        :param sort: Sort resources by field and direction.
+        """
+        params: dict[str, Any] = {}
+        if username is not None:
+            params["username"] = username
+        if label_selector is not None:
+            params["label_selector"] = label_selector
+        if sort is not None:
+            params["sort"] = sort
+
+        response = self._client.request(
+            method="GET",
+            url=f"{self._base_url}/{storage_box.id}/subaccounts",
+            params=params,
+        )
+        return StorageBoxSubaccountsPageResult(
+            subaccounts=[
+                BoundStorageBoxSubaccount(self, item)
+                for item in response["subaccounts"]
+            ],
+            meta=Meta.parse_meta(response),
+        )
+
+    def get_subaccount_all(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        *,
+        username: str | None = None,
+        label_selector: str | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundStorageBoxSubaccount]:
+        """
+        Returns all Subaccounts for a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-list-subaccounts
+
+        :param storage_box: Storage Box to get the Subaccount from.
+        :param username: Filter resources by their username. The response will only contain the resources matching exactly the specified username.
+        :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
+        :param sort: Sort resources by field and direction.
+        """
+        # The endpoint does not have pagination, forward to the list method.
+        result, _ = self.get_subaccount_list(
+            storage_box,
+            username=username,
+            label_selector=label_selector,
+            sort=sort,
+        )
+        return result
+
+    def create_subaccount(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        *,
+        home_directory: str,
+        password: str,
+        access_settings: StorageBoxSubaccountAccessSettings | None = None,
+        description: str | None = None,
+        labels: dict[str, str] | None = None,
+    ) -> CreateStorageBoxSubaccountResponse:
+        """
+        Creates a Subaccount for the Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-create-a-subaccount
+
+        :param storage_box: Storage Box to create a Subaccount for.
+        :param home_directory: Home directory of the Subaccount.
+        :param password: Password of the Subaccount.
+        :param access_settings: Access Settings of the Subaccount.
+        :param description: Description of the Subaccount.
+        :param labels: User-defined labels (key/value pairs) for the Resource.
+        """
+        data: dict[str, Any] = {
+            "home_directory": home_directory,
+            "password": password,
+        }
+        if access_settings is not None:
+            data["access_settings"] = access_settings.to_payload()
+        if description is not None:
+            data["description"] = description
+        if labels is not None:
+            data["labels"] = labels
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{storage_box.id}/subaccounts",
+            json=data,
+        )
+        return CreateStorageBoxSubaccountResponse(
+            subaccount=BoundStorageBoxSubaccount(
+                self,
+                response["subaccount"],
+                # API only returns a partial object.
+                complete=False,
+            ),
+            action=BoundAction(self._parent.actions, response["action"]),
+        )
+
+    def update_subaccount(
+        self,
+        subaccount: StorageBoxSubaccount | BoundStorageBoxSubaccount,
+        *,
+        description: str | None = None,
+        labels: dict[str, str] | None = None,
+    ) -> BoundStorageBoxSubaccount:
+        """
+        Updates a Storage Box Subaccount.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-update-a-subaccount
+
+        :param subaccount: Storage Box Subaccount to update.
+        :param description: Description of the Subaccount.
+        :param labels: User-defined labels (key/value pairs) for the Resource.
+        """
+        if subaccount.storage_box is None:
+            raise ValueError("subaccount storage_box property is none")
+
+        data: dict[str, Any] = {}
+        if description is not None:
+            data["description"] = description
+        if labels is not None:
+            data["labels"] = labels
+
+        response = self._client.request(
+            method="PUT",
+            url=f"{self._base_url}/{subaccount.storage_box.id}/subaccounts/{subaccount.id}",
+            json=data,
+        )
+        return BoundStorageBoxSubaccount(self, response["subaccount"])
+
+    def delete_subaccount(
+        self,
+        subaccount: StorageBoxSubaccount | BoundStorageBoxSubaccount,
+    ) -> DeleteStorageBoxSubaccountResponse:
+        """
+        Deletes a Storage Box Subaccount.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-delete-a-subaccount
+
+        :param subaccount: Storage Box Subaccount to delete.
+        """
+        if subaccount.storage_box is None:
+            raise ValueError("subaccount storage_box property is none")
+
+        response = self._client.request(
+            method="DELETE",
+            url=f"{self._base_url}/{subaccount.storage_box.id}/subaccounts/{subaccount.id}",
+        )
+        return DeleteStorageBoxSubaccountResponse(
             action=BoundAction(self._parent.actions, response["action"]),
         )
