@@ -266,7 +266,10 @@ class TestStorageBoxClient:
     @pytest.mark.parametrize(
         "params",
         [
-            {"name": "storage-box1", "page": 1, "per_page": 10},
+            {"name": "storage-box1"},
+            {"label_selector": "key=value"},
+            {"page": 1, "per_page": 10},
+            {"sort": ["id:asc"]},
             {},
         ],
     )
@@ -305,7 +308,9 @@ class TestStorageBoxClient:
     @pytest.mark.parametrize(
         "params",
         [
-            {"name": "bx11"},
+            {"name": "storage-box1"},
+            {"label_selector": "key=value"},
+            {"sort": ["id:asc"]},
             {},
         ],
     )
@@ -662,6 +667,10 @@ class TestStorageBoxClient:
         "params",
         [
             {"name": "storage-box-snapshot1"},
+            {"is_automatic": True},
+            {"label_selector": "key=value"},
+            # {"page": 1, "per_page": 10}  # No pagination
+            {"sort": ["id:asc"]},
             {},
         ],
     )
@@ -707,6 +716,9 @@ class TestStorageBoxClient:
         "params",
         [
             {"name": "storage-box-snapshot1"},
+            {"is_automatic": True},
+            {"label_selector": "key=value"},
+            {"sort": ["id:asc"]},
             {},
         ],
     )
@@ -876,6 +888,9 @@ class TestStorageBoxClient:
         "params",
         [
             {"username": "u42-sub1"},
+            {"label_selector": "key=value"},
+            # {"page": 1, "per_page": 10}  # No pagination
+            {"sort": ["id:asc"]},
             {},
         ],
     )
@@ -921,6 +936,8 @@ class TestStorageBoxClient:
         "params",
         [
             {"username": "u42-sub1"},
+            {"label_selector": "key=value"},
+            {"sort": ["id:asc"]},
             {},
         ],
     )

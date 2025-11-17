@@ -698,6 +698,7 @@ class StorageBoxesClient(ResourceClientBase):
         self,
         name: str | None = None,
         label_selector: str | None = None,
+        sort: list[str] | None = None,
         page: int | None = None,
         per_page: int | None = None,
     ) -> StorageBoxesPageResult:
@@ -708,6 +709,7 @@ class StorageBoxesClient(ResourceClientBase):
 
         :param name: Name of the Storage Box.
         :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
+        :param sort: Sort resources by field and direction.
         :param page: Page number to return.
         :param per_page: Maximum number of entries returned per page.
         """
@@ -720,6 +722,8 @@ class StorageBoxesClient(ResourceClientBase):
             params["page"] = page
         if per_page is not None:
             params["per_page"] = per_page
+        if sort is not None:
+            params["sort"] = sort
 
         response = self._client.request(
             method="GET",
@@ -735,6 +739,7 @@ class StorageBoxesClient(ResourceClientBase):
         self,
         name: str | None = None,
         label_selector: str | None = None,
+        sort: list[str] | None = None,
     ) -> list[BoundStorageBox]:
         """
         Returns all Storage Boxes.
@@ -743,11 +748,13 @@ class StorageBoxesClient(ResourceClientBase):
 
         :param name: Name of the Storage Box.
         :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
+        :param sort: Sort resources by field and direction.
         """
         return self._iter_pages(
             self.get_list,
             name=name,
             label_selector=label_selector,
+            sort=sort,
         )
 
     def create(
