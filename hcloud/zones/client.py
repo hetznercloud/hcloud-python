@@ -359,6 +359,21 @@ class BoundZone(BoundModelBase, Zone):
         """
         return self._client.add_rrset_records(rrset=rrset, records=records, ttl=ttl)
 
+    def update_rrset_records(
+        self,
+        rrset: ZoneRRSet | BoundZoneRRSet,
+        records: list[ZoneRecord],
+    ) -> BoundAction:
+        """
+        Updates records in a ZoneRRSet.
+
+        See https://docs.hetzner.cloud/reference/cloud#zone-rrset-actions-update-records-to-an-rrset
+
+        :param rrset: RRSet to update.
+        :param records: Records to update in the RRSet.
+        """
+        return self._client.update_rrset_records(rrset=rrset, records=records)
+
     def remove_rrset_records(
         self,
         rrset: ZoneRRSet | BoundZoneRRSet,
@@ -478,6 +493,19 @@ class BoundZoneRRSet(BoundModelBase, ZoneRRSet):
         :param ttl: Time To Live (TTL) of the RRSet.
         """
         return self._client.add_rrset_records(self, records=records, ttl=ttl)
+
+    def update_rrset_records(
+        self,
+        records: list[ZoneRecord],
+    ) -> BoundAction:
+        """
+        Updates records in a ZoneRRSet.
+
+        See https://docs.hetzner.cloud/reference/cloud#zone-rrset-actions-update-records-to-an-rrset
+
+        :param records: Records to update in the RRSet.
+        """
+        return self._client.update_rrset_records(self, records=records)
 
     def remove_rrset_records(
         self,
@@ -1168,6 +1196,33 @@ class ZonesClient(ResourceClientBase):
         response = self._client.request(
             method="POST",
             url=f"{self._base_url}/{rrset.zone.id_or_name}/rrsets/{rrset.name}/{rrset.type}/actions/add_records",
+            json=data,
+        )
+        return BoundAction(self._parent.actions, response["action"])
+
+    def update_rrset_records(
+        self,
+        rrset: ZoneRRSet | BoundZoneRRSet,
+        records: list[ZoneRecord],
+    ) -> BoundAction:
+        """
+        Updates records in a ZoneRRSet.
+
+        See https://docs.hetzner.cloud/reference/cloud#zone-rrset-actions-update-records-to-an-rrset
+
+        :param rrset: RRSet to update.
+        :param records: Records to update in the RRSet.
+        """
+        if rrset.zone is None:
+            raise ValueError("rrset zone property is none")
+
+        data: dict[str, Any] = {
+            "records": [o.to_payload() for o in records],
+        }
+
+        response = self._client.request(
+            method="POST",
+            url=f"{self._base_url}/{rrset.zone.id_or_name}/rrsets/{rrset.name}/{rrset.type}/actions/update_records",
             json=data,
         )
         return BoundAction(self._parent.actions, response["action"])

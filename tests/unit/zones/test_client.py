@@ -766,6 +766,55 @@ class TestZonesClient:
             BoundZoneRRSet(client=mock.MagicMock(), data={"id": "www/A"}),
         ],
     )
+    def test_update_rrset_records(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: ZonesClient,
+        zone: Zone,
+        rrset: ZoneRRSet,
+        action_response,
+    ):
+        rrset.zone = zone
+
+        request_mock.return_value = action_response
+
+        action = resource_client.update_rrset_records(
+            rrset,
+            records=[
+                ZoneRecord("198.51.100.1", "web server"),
+                ZoneRecord("198.51.100.2", ""),
+                ZoneRecord("127.0.0.1"),
+            ],
+        )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url=f"/zones/{zone.id_or_name}/rrsets/{rrset.name}/{rrset.type}/actions/update_records",
+            json={
+                "records": [
+                    {"value": "198.51.100.1", "comment": "web server"},
+                    {"value": "198.51.100.2", "comment": ""},
+                    {"value": "127.0.0.1"},
+                ],
+            },
+        )
+
+        assert_bound_action1(action, resource_client._parent.actions)
+
+    @pytest.mark.parametrize(
+        "zone",
+        [
+            Zone(name="example.com"),
+            BoundZone(client=mock.MagicMock(), data={"id": 42}),
+        ],
+    )
+    @pytest.mark.parametrize(
+        "rrset",
+        [
+            ZoneRRSet(name="www", type="A"),
+            BoundZoneRRSet(client=mock.MagicMock(), data={"id": "www/A"}),
+        ],
+    )
     def test_remove_rrset_records(
         self,
         request_mock: mock.MagicMock,
@@ -866,6 +915,7 @@ class TestBoundZone(BoundModelTestCase):
         (BoundZone.change_rrset_protection, {"sub_resource": True}),
         (BoundZone.change_rrset_ttl, {"sub_resource": True}),
         (BoundZone.add_rrset_records, {"sub_resource": True}),
+        (BoundZone.update_rrset_records, {"sub_resource": True}),
         (BoundZone.remove_rrset_records, {"sub_resource": True}),
         (BoundZone.set_rrset_records, {"sub_resource": True}),
     ]
@@ -927,6 +977,7 @@ class TestBoundZoneRRSet(BoundModelTestCase):
         BoundZoneRRSet.change_rrset_protection,
         BoundZoneRRSet.change_rrset_ttl,
         BoundZoneRRSet.add_rrset_records,
+        BoundZoneRRSet.update_rrset_records,
         BoundZoneRRSet.remove_rrset_records,
         BoundZoneRRSet.set_rrset_records,
     ]
