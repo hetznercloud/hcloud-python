@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.12.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.12.0)
+
+### Features
+
+- add update rrset records action to zone client (#597)
+
 ## [v2.11.1](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.11.1)
 
 ### Bug Fixes
