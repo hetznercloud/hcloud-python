@@ -191,7 +191,6 @@ class BoundStorageBox(BoundModelBase, StorageBox):
 
     def reset_password(
         self,
-        *,
         password: str,
     ) -> BoundAction:
         """
@@ -1000,7 +999,6 @@ class StorageBoxesClient(ResourceClientBase):
     def reset_password(
         self,
         storage_box: StorageBox | BoundStorageBox,
-        *,
         password: str,
     ) -> BoundAction:
         """
