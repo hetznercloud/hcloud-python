@@ -127,8 +127,8 @@ class TestBoundStorageBox(BoundModelTestCase):
 
 class TestBoundStorageBoxSnapshot(BoundModelTestCase):
     methods = [
-        BoundStorageBoxSnapshot.update_snapshot,
-        BoundStorageBoxSnapshot.delete_snapshot,
+        (BoundStorageBoxSnapshot.update, {"client_method": "update_snapshot"}),
+        (BoundStorageBoxSnapshot.delete, {"client_method": "delete_snapshot"}),
     ]
 
     @pytest.fixture()
@@ -180,11 +180,26 @@ class TestBoundStorageBoxSnapshot(BoundModelTestCase):
 
 class TestBoundStorageBoxSubaccount(BoundModelTestCase):
     methods = [
-        BoundStorageBoxSubaccount.update_subaccount,
-        BoundStorageBoxSubaccount.delete_subaccount,
-        BoundStorageBoxSubaccount.change_subaccount_home_directory,
-        BoundStorageBoxSubaccount.reset_subaccount_password,
-        BoundStorageBoxSubaccount.update_subaccount_access_settings,
+        (
+            BoundStorageBoxSubaccount.update,
+            {"client_method": "update_subaccount"},
+        ),
+        (
+            BoundStorageBoxSubaccount.delete,
+            {"client_method": "delete_subaccount"},
+        ),
+        (
+            BoundStorageBoxSubaccount.change_home_directory,
+            {"client_method": "change_subaccount_home_directory"},
+        ),
+        (
+            BoundStorageBoxSubaccount.reset_password,
+            {"client_method": "reset_subaccount_password"},
+        ),
+        (
+            BoundStorageBoxSubaccount.update_access_settings,
+            {"client_method": "update_subaccount_access_settings"},
+        ),
     ]
 
     @pytest.fixture()
