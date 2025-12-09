@@ -152,6 +152,7 @@ class BoundStorageBox(BoundModelBase, StorageBox):
 
     def get_folders(
         self,
+        *,
         path: str | None = None,
     ) -> StorageBoxFoldersResponse:
         """
@@ -271,7 +272,7 @@ class BoundStorageBox(BoundModelBase, StorageBox):
         self,
     ) -> BoundAction:
         """
-        Disable the snapshot plan a Storage Box.
+        Disable the snapshot plan of a Storage Box.
 
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-disable-snapshot-plan
 
@@ -285,7 +286,7 @@ class BoundStorageBox(BoundModelBase, StorageBox):
         snapshot_plan: StorageBoxSnapshotPlan,
     ) -> BoundAction:
         """
-        Enable the snapshot plan a Storage Box.
+        Enable the snapshot plan of a Storage Box.
 
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-enable-snapshot-plan
 
@@ -791,6 +792,7 @@ class StorageBoxesClient(ResourceClientBase):
 
     def get_list(
         self,
+        *,
         name: str | None = None,
         label_selector: str | None = None,
         sort: list[str] | None = None,
@@ -835,6 +837,7 @@ class StorageBoxesClient(ResourceClientBase):
 
     def get_all(
         self,
+        *,
         name: str | None = None,
         label_selector: str | None = None,
         sort: list[str] | None = None,
@@ -971,6 +974,7 @@ class StorageBoxesClient(ResourceClientBase):
     def get_folders(
         self,
         storage_box: BoundStorageBox | StorageBox,
+        *,
         path: str | None = None,
     ) -> StorageBoxFoldersResponse:
         """
@@ -1206,7 +1210,7 @@ class StorageBoxesClient(ResourceClientBase):
         storage_box: StorageBox | BoundStorageBox,
     ) -> BoundAction:
         """
-        Disable the snapshot plan a Storage Box.
+        Disable the snapshot plan of a Storage Box.
 
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-disable-snapshot-plan
 
@@ -1227,7 +1231,7 @@ class StorageBoxesClient(ResourceClientBase):
         snapshot_plan: StorageBoxSnapshotPlan,
     ) -> BoundAction:
         """
-        Enable the snapshot plan a Storage Box.
+        Enable the snapshot plan of a Storage Box.
 
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-enable-snapshot-plan
 
