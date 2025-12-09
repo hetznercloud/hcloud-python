@@ -499,7 +499,7 @@ class BoundStorageBoxSnapshot(BoundModelBase, StorageBoxSnapshot):
             self.data_model.id,
         )
 
-    def update_snapshot(
+    def update(
         self,
         *,
         description: str | None = None,
@@ -519,7 +519,7 @@ class BoundStorageBoxSnapshot(BoundModelBase, StorageBoxSnapshot):
             labels=labels,
         )
 
-    def delete_snapshot(
+    def delete(
         self,
     ) -> DeleteStorageBoxSnapshotResponse:
         """
@@ -559,7 +559,7 @@ class BoundStorageBoxSubaccount(BoundModelBase, StorageBoxSubaccount):
             self.data_model.id,
         )
 
-    def update_subaccount(
+    def update(
         self,
         *,
         description: str | None = None,
@@ -579,7 +579,7 @@ class BoundStorageBoxSubaccount(BoundModelBase, StorageBoxSubaccount):
             labels=labels,
         )
 
-    def delete_subaccount(
+    def delete(
         self,
     ) -> DeleteStorageBoxSubaccountResponse:
         """
@@ -589,7 +589,7 @@ class BoundStorageBoxSubaccount(BoundModelBase, StorageBoxSubaccount):
         """
         return self._client.delete_subaccount(self)
 
-    def change_subaccount_home_directory(
+    def change_home_directory(
         self,
         home_directory: str,
     ) -> BoundAction:
@@ -604,7 +604,7 @@ class BoundStorageBoxSubaccount(BoundModelBase, StorageBoxSubaccount):
             self, home_directory=home_directory
         )
 
-    def reset_subaccount_password(
+    def reset_password(
         self,
         password: str,
     ) -> BoundAction:
@@ -617,7 +617,7 @@ class BoundStorageBoxSubaccount(BoundModelBase, StorageBoxSubaccount):
         """
         return self._client.reset_subaccount_password(self, password=password)
 
-    def update_subaccount_access_settings(
+    def update_access_settings(
         self,
         access_settings: StorageBoxSubaccountAccessSettings,
     ) -> BoundAction:
