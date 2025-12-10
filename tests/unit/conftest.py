@@ -33,6 +33,7 @@ def client(request_mock) -> Client:
         poll_max_retries=3,
     )
     c._client.request = request_mock
+    c._client_hetzner.request = request_mock
     return c
 
 
@@ -169,6 +170,7 @@ def pytest_generate_tests(metafunc: pytest.Metafunc):
 
 class BoundModelTestOptions(TypedDict):
     sub_resource: bool
+    client_method: str
 
 
 class BoundModelTestCase:
@@ -214,14 +216,19 @@ class BoundModelTestCase:
         if isinstance(bound_model_method, tuple):
             bound_model_method, options = bound_model_method
 
+        resource_client_method_name = options.get(
+            "client_method",
+            bound_model_method.__name__,
+        )
+
         # Check if the resource client has a method named after the bound model method.
-        assert hasattr(resource_client, bound_model_method.__name__)
+        assert hasattr(resource_client, resource_client_method_name)
 
         # Mock the resource client method.
         resource_client_method_mock = mock.MagicMock()
         setattr(
             resource_client,
-            bound_model_method.__name__,
+            resource_client_method_name,
             resource_client_method_mock,
         )
 
