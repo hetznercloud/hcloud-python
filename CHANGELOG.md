@@ -1,5 +1,48 @@
 # Changelog
 
+## [v2.12.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.12.0)
+
+### Storage Box API Experimental
+
+This release adds support for the [Storage Box API](https://docs.hetzner.cloud/reference/hetzner#storage-boxes).
+
+The Storage Box integration will be introduced as an **experimental** feature. This experimental phase is expected to last at least until **12 January 2026**. During this period, upcoming minor releases of the project may include breaking changes to features related to Storage Boxes.
+
+This release includes all changes from the recent [Storage Box API changelog](https://docs.hetzner.cloud/changelog#2025-10-21-storage-box-api-update) entry.
+
+#### Examples
+
+```python
+response = client.storage_boxes.create(
+    name="string",
+    location=Location(name="fsn1"),
+    storage_box_type=StorageBoxType(name="bx11"),
+    labels={
+        "environment": "prod",
+        "example.com/my": "label",
+        "just-a-key": "",
+    },
+    password="my-password",
+    access_settings=StorageBoxAccessSettings(
+        reachable_externally=False,
+        samba_enabled=False,
+        ssh_enabled=False,
+        webdav_enabled=False,
+        zfs_enabled=False,
+    ),
+    ssh_keys=[SSHKey(public_key="ssh-rsa AAAjjk76kgf...Xt")],
+)
+
+response.action.wait_until_finished()
+
+storage_box = response.storage_box
+```
+
+### Features
+
+- add update rrset records action to zone client (#597)
+- add support for Storage Boxes (#524)
+
 ## [v2.11.1](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.11.1)
 
 ### Bug Fixes
