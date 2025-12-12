@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from unittest import mock
 
 import pytest
-from dateutil.parser import isoparse
 
 from hcloud import Client
 from hcloud.zones import (
@@ -73,7 +73,7 @@ class TestZonesClient:
         )
 
         assert_bound_zone1(result, resource_client)
-        assert result.created == isoparse("2016-01-30T23:55:00+00:00")
+        assert result.created == datetime(2016, 1, 30, 23, 55, 00, tzinfo=timezone.utc)
         assert result.mode == "primary"
         assert result.ttl == 10800
         assert result.protection == {"delete": False}
@@ -89,8 +89,8 @@ class TestZonesClient:
         assert (
             result.authoritative_nameservers.delegated[0] == "hydrogen.ns.hetzner.com."
         )
-        assert result.authoritative_nameservers.delegation_last_check == isoparse(
-            "2016-01-30T23:55:00+00:00"
+        assert result.authoritative_nameservers.delegation_last_check == datetime(
+            2016, 1, 30, 23, 55, 0, tzinfo=timezone.utc
         )
         assert result.authoritative_nameservers.delegation_status == "valid"
 
@@ -935,7 +935,7 @@ class TestBoundZone(BoundModelTestCase):
 
         assert o.id == 42
         assert o.name == "example1.com"
-        assert o.created == isoparse("2016-01-30T23:55:00+00:00")
+        assert o.created == datetime(2016, 1, 30, 23, 55, 0, tzinfo=timezone.utc)
         assert o.mode == "primary"
         assert o.ttl == 10800
         assert o.protection == {"delete": False}
@@ -960,8 +960,8 @@ class TestBoundZone(BoundModelTestCase):
             "oxygen.ns.hetzner.com.",
             "helium.ns.hetzner.de.",
         ]
-        assert o.authoritative_nameservers.delegation_last_check == isoparse(
-            "2016-01-30T23:55:00+00:00"
+        assert o.authoritative_nameservers.delegation_last_check == datetime(
+            2016, 1, 30, 23, 55, 0, tzinfo=timezone.utc
         )
         assert o.authoritative_nameservers.delegation_status == "valid"
 

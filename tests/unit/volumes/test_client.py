@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from unittest import mock
 
 import pytest
-from dateutil.parser import isoparse
 
 from hcloud import Client
 from hcloud.locations import BoundLocation, Location
@@ -37,7 +37,9 @@ class TestBoundVolume(BoundModelTestCase):
         )
 
         assert bound_volume.id == 1
-        assert bound_volume.created == isoparse("2016-01-30T23:50:11+00:00")
+        assert bound_volume.created == datetime(
+            2016, 1, 30, 23, 50, 11, tzinfo=timezone.utc
+        )
         assert bound_volume.name == "database-storage"
         assert isinstance(bound_volume.server, BoundServer)
         assert bound_volume.server.id == 12

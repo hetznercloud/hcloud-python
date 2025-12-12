@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from unittest import mock
 
 import pytest
-from dateutil.parser import isoparse
 
 from hcloud import Client
 from hcloud.locations import Location
@@ -122,7 +122,7 @@ class TestBoundStorageBox(BoundModelTestCase):
         assert o.stats.size_data == 2102612983808
         assert o.stats.size_snapshots == 239623733248
         assert o.status == "active"
-        assert o.created == isoparse("2025-01-30T23:55:00Z")
+        assert o.created == datetime(2025, 1, 30, 23, 50, 00, tzinfo=timezone.utc)
 
 
 class TestBoundStorageBoxSnapshot(BoundModelTestCase):
@@ -156,7 +156,7 @@ class TestBoundStorageBoxSnapshot(BoundModelTestCase):
         assert o.labels == {"key": "value"}
         assert o.stats.size == 394957594
         assert o.stats.size_filesystem == 3949572745
-        assert o.created == isoparse("2025-11-10T19:16:57Z")
+        assert o.created == datetime(2025, 11, 10, 19, 16, 57, tzinfo=timezone.utc)
 
     def test_reload(
         self,
@@ -232,7 +232,7 @@ class TestBoundStorageBoxSubaccount(BoundModelTestCase):
         assert o.access_settings.webdav_enabled is False
         assert o.access_settings.readonly is False
         assert o.labels == {"key": "value"}
-        assert o.created == isoparse("2025-11-10T19:18:57Z")
+        assert o.created == datetime(2025, 11, 10, 19, 18, 57, tzinfo=timezone.utc)
 
     def test_reload(
         self,
