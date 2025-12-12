@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal, TypedDict
 
-from dateutil.parser import isoparse
-
 from ..core import BaseDomain, DomainIdentityMixin
 
 if TYPE_CHECKING:
@@ -78,7 +76,7 @@ class Zone(BaseDomain, DomainIdentityMixin):
     ):
         self.id = id
         self.name = name
-        self.created = isoparse(created) if created else None
+        self.created = self._parse_datetime(created)
         self.mode = mode
         self.ttl = ttl
         self.labels = labels
@@ -185,11 +183,7 @@ class ZoneAuthoritativeNameservers(BaseDomain):
     ):
         self.assigned = assigned
         self.delegated = delegated
-        self.delegation_last_check = (
-            isoparse(delegation_last_check)
-            if delegation_last_check is not None
-            else None
-        )
+        self.delegation_last_check = self._parse_datetime(delegation_last_check)
         self.delegation_status = delegation_status
 
 

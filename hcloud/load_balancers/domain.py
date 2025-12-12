@@ -3,8 +3,6 @@ from __future__ import annotations
 import warnings
 from typing import TYPE_CHECKING, Any, Literal
 
-from dateutil.parser import isoparse
-
 from ..core import BaseDomain, DomainIdentityMixin
 
 if TYPE_CHECKING:
@@ -93,7 +91,7 @@ class LoadBalancer(BaseDomain, DomainIdentityMixin):
     ):
         self.id = id
         self.name = name
-        self.created = isoparse(created) if created else None
+        self.created = self._parse_datetime(created)
         self.public_net = public_net
         self.private_net = private_net
         self.location = location

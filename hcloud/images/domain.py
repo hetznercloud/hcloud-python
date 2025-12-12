@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from dateutil.parser import isoparse
-
 from ..core import BaseDomain, DomainIdentityMixin
 
 if TYPE_CHECKING:
@@ -96,11 +94,11 @@ class Image(BaseDomain, DomainIdentityMixin):
         self.id = id
         self.name = name
         self.type = type
-        self.created = isoparse(created) if created else None
+        self.created = self._parse_datetime(created)
         self.description = description
         self.image_size = image_size
         self.disk_size = disk_size
-        self.deprecated = isoparse(deprecated) if deprecated else None
+        self.deprecated = self._parse_datetime(deprecated)
         self.bound_to = bound_to
         self.os_flavor = os_flavor
         self.os_version = os_version

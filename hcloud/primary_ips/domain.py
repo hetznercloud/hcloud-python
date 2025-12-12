@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from dateutil.parser import isoparse
-
 from ..core import BaseDomain, DomainIdentityMixin
 
 if TYPE_CHECKING:
@@ -84,7 +82,7 @@ class PrimaryIP(BaseDomain, DomainIdentityMixin):
         self.blocked = blocked
         self.protection = protection
         self.labels = labels
-        self.created = isoparse(created) if created else None
+        self.created = self._parse_datetime(created)
         self.name = name
         self.assignee_id = assignee_id
         self.assignee_type = assignee_type
