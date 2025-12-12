@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from dateutil.parser import isoparse
-
 from ..core import BaseDomain, DomainIdentityMixin
 
 if TYPE_CHECKING:
@@ -69,9 +67,9 @@ class Certificate(BaseDomain, DomainIdentityMixin):
         self.certificate = certificate
         self.domain_names = domain_names
         self.fingerprint = fingerprint
-        self.not_valid_before = isoparse(not_valid_before) if not_valid_before else None
-        self.not_valid_after = isoparse(not_valid_after) if not_valid_after else None
-        self.created = isoparse(created) if created else None
+        self.not_valid_before = self._parse_datetime(not_valid_before)
+        self.not_valid_after = self._parse_datetime(not_valid_after)
+        self.created = self._parse_datetime(created)
         self.labels = labels
         self.status = status
 

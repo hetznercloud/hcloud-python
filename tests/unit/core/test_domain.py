@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from datetime import datetime
+
 import pytest
-from dateutil.parser import isoparse
 
 from hcloud.core import BaseDomain, DomainIdentityMixin, Meta, Pagination
 
@@ -99,7 +100,7 @@ class ActionDomain(BaseDomain, DomainIdentityMixin):
     def __init__(self, id, name="name1", started=None):
         self.id = id
         self.name = name
-        self.started = isoparse(started) if started else None
+        self.started = self._parse_datetime(started)
 
 
 class SomeOtherDomain(BaseDomain):
@@ -133,7 +134,7 @@ class TestBaseDomain:
                 {
                     "id": 4,
                     "name": "name-name3",
-                    "started": isoparse("2016-01-30T23:50+00:00"),
+                    "started": datetime.fromisoformat("2016-01-30T23:50+00:00"),
                 },
             ),
         ],

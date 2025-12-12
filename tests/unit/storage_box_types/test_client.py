@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from unittest import mock
 
 import pytest
-from dateutil.parser import isoparse
 
 from hcloud import Client
 from hcloud.storage_box_types import (
@@ -58,9 +58,11 @@ class TestClient:
                 "setup_fee": {"gross": "0.0000", "net": "0.0000"},
             }
         ]
-        assert result.deprecation.announced == isoparse("2023-06-01T00:00:00+00:00")
-        assert result.deprecation.unavailable_after == isoparse(
-            "2023-09-01T00:00:00+00:00"
+        assert result.deprecation.announced == datetime(
+            2023, 6, 1, 0, 0, 0, tzinfo=timezone.utc
+        )
+        assert result.deprecation.unavailable_after == datetime(
+            2023, 9, 1, 0, 0, 0, tzinfo=timezone.utc
         )
 
     @pytest.mark.parametrize(

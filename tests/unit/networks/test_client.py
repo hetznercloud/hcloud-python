@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from unittest import mock
 
 import pytest
-from dateutil.parser import isoparse
 
 from hcloud import Client
 from hcloud.networks import (
@@ -44,7 +44,9 @@ class TestBoundNetwork(BoundModelTestCase):
         )
 
         assert bound_network.id == 1
-        assert bound_network.created == isoparse("2016-01-30T23:50:11+00:00")
+        assert bound_network.created == datetime(
+            2026, 1, 30, 23, 50, 11, tzinfo=timezone.utc
+        )
         assert bound_network.name == "mynet"
         assert bound_network.ip_range == "10.0.0.0/16"
         assert bound_network.protection["delete"] is False

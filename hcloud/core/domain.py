@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from typing import Any
+from datetime import datetime
+from typing import Any, overload
+
+from dateutil.parser import isoparse
 
 
 class BaseDomain:
@@ -26,6 +29,16 @@ class BaseDomain:
             if getattr(self, key) != getattr(other, key):
                 return False
         return True
+
+    @overload
+    def _parse_datetime(self, value: str) -> datetime: ...
+    @overload
+    def _parse_datetime(self, value: None) -> None: ...
+
+    def _parse_datetime(self, value: str | None) -> datetime | None:
+        if value is None:
+            return None
+        return isoparse(value)
 
 
 class DomainIdentityMixin:

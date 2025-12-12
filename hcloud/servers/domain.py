@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
-from dateutil.parser import isoparse
-
 from ..core import BaseDomain, DomainIdentityMixin
 
 if TYPE_CHECKING:
@@ -135,7 +133,7 @@ class Server(BaseDomain, DomainIdentityMixin):
         self.id = id
         self.name = name
         self.status = status
-        self.created = isoparse(created) if created else None
+        self.created = self._parse_datetime(created)
         self.public_net = public_net
         self.server_type = server_type
         self.datacenter = datacenter
