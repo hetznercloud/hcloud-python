@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from dateutil.parser import isoparse
-
 from ..core import BaseDomain
 
 
@@ -28,7 +26,5 @@ class DeprecationInfo(BaseDomain):
         announced: str | None = None,
         unavailable_after: str | None = None,
     ):
-        self.announced = isoparse(announced) if announced else None
-        self.unavailable_after = (
-            isoparse(unavailable_after) if unavailable_after else None
-        )
+        self.announced = self._parse_datetime(announced)
+        self.unavailable_after = self._parse_datetime(unavailable_after)

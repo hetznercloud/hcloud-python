@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from dateutil.parser import isoparse
-
 from ..core import BaseDomain, DomainIdentityMixin
 
 if TYPE_CHECKING:
@@ -77,7 +75,7 @@ class Volume(BaseDomain, DomainIdentityMixin):
         self.id = id
         self.name = name
         self.server = server
-        self.created = isoparse(created) if created else None
+        self.created = self._parse_datetime(created)
         self.location = location
         self.size = size
         self.linux_device = linux_device

@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from dateutil.parser import isoparse
-
 from .._exceptions import HCloudException
 from ..core import BaseDomain
 
@@ -59,8 +57,8 @@ class Action(BaseDomain):
 
         self.status = status
         self.progress = progress
-        self.started = isoparse(started) if started else None
-        self.finished = isoparse(finished) if finished else None
+        self.started = self._parse_datetime(started)
+        self.finished = self._parse_datetime(finished)
         self.resources = resources
         self.error = error
 
