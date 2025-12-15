@@ -78,6 +78,7 @@ class TestBoundStorageBox(BoundModelTestCase):
         BoundStorageBox.create_subaccount,
         BoundStorageBox.get_subaccount_all,
         BoundStorageBox.get_subaccount_by_id,
+        BoundStorageBox.get_subaccount_by_name,
         BoundStorageBox.get_subaccount_by_username,
         BoundStorageBox.get_subaccount_list,
     ]
@@ -899,9 +900,28 @@ class TestStorageBoxClient:
 
         assert_bound_storage_box_subaccount(result, resource_client)
 
+    def test_get_subaccount_by_name(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: StorageBoxesClient,
+        storage_box_subaccount1,
+    ):
+        request_mock.return_value = {"subaccounts": [storage_box_subaccount1]}
+
+        result = resource_client.get_subaccount_by_name(StorageBox(42), "subaccount1")
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/storage_boxes/42/subaccounts",
+            params={"name": "subaccount1"},
+        )
+
+        assert_bound_storage_box_subaccount(result, resource_client)
+
     @pytest.mark.parametrize(
         "params",
         [
+            {"name": "subaccount1"},
             {"username": "u42-sub1"},
             {"label_selector": "key=value"},
             # {"page": 1, "per_page": 10}  # No pagination
@@ -950,6 +970,7 @@ class TestStorageBoxClient:
     @pytest.mark.parametrize(
         "params",
         [
+            {"name": "subaccount1"},
             {"username": "u42-sub1"},
             {"label_selector": "key=value"},
             {"sort": ["id:asc"]},
@@ -1029,6 +1050,7 @@ class TestStorageBoxClient:
 
         result = resource_client.create_subaccount(
             StorageBox(42),
+            name="subaccount1",
             home_directory="tmp",
             password="secret",
             access_settings=StorageBoxSubaccountAccessSettings(
@@ -1044,6 +1066,7 @@ class TestStorageBoxClient:
             method="POST",
             url="/storage_boxes/42/subaccounts",
             json={
+                "name": "subaccount1",
                 "home_directory": "tmp",
                 "password": "secret",
                 "access_settings": {

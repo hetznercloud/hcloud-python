@@ -452,6 +452,22 @@ class BoundStorageBox(BoundModelBase[StorageBox], StorageBox):
         """
         return self._client.get_subaccount_by_id(self, id=id)
 
+    def get_subaccount_by_name(
+        self,
+        name: str,
+    ) -> BoundStorageBoxSubaccount | None:
+        """
+        Returns a single Subaccount from a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-list-subaccounts
+
+        :param name: Name of the Subaccount.
+
+        Experimental:
+            Storage Box support is experimental, breaking changes may occur within minor releases.
+        """
+        return self._client.get_subaccount_by_name(self, name=name)
+
     def get_subaccount_by_username(
         self,
         username: str,
@@ -471,6 +487,7 @@ class BoundStorageBox(BoundModelBase[StorageBox], StorageBox):
     def get_subaccount_list(
         self,
         *,
+        name: str | None = None,
         username: str | None = None,
         label_selector: str | None = None,
         sort: list[str] | None = None,
@@ -480,6 +497,7 @@ class BoundStorageBox(BoundModelBase[StorageBox], StorageBox):
 
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-list-subaccounts
 
+        :param name: Filter resources by their name. The response will only contain the resources matching exactly the specified name.
         :param username: Filter resources by their username. The response will only contain the resources matching exactly the specified username.
         :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
         :param sort: Sort resources by field and direction.
@@ -489,6 +507,7 @@ class BoundStorageBox(BoundModelBase[StorageBox], StorageBox):
         """
         return self._client.get_subaccount_list(
             self,
+            name=name,
             username=username,
             label_selector=label_selector,
             sort=sort,
@@ -497,6 +516,7 @@ class BoundStorageBox(BoundModelBase[StorageBox], StorageBox):
     def get_subaccount_all(
         self,
         *,
+        name: str | None = None,
         username: str | None = None,
         label_selector: str | None = None,
         sort: list[str] | None = None,
@@ -506,6 +526,7 @@ class BoundStorageBox(BoundModelBase[StorageBox], StorageBox):
 
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-list-subaccounts
 
+        :param name: Filter resources by their name. The response will only contain the resources matching exactly the specified name.
         :param username: Filter resources by their username. The response will only contain the resources matching exactly the specified username.
         :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
         :param sort: Sort resources by field and direction.
@@ -515,6 +536,7 @@ class BoundStorageBox(BoundModelBase[StorageBox], StorageBox):
         """
         return self._client.get_subaccount_all(
             self,
+            name=name,
             username=username,
             label_selector=label_selector,
             sort=sort,
@@ -523,6 +545,7 @@ class BoundStorageBox(BoundModelBase[StorageBox], StorageBox):
     def create_subaccount(
         self,
         *,
+        name: str | None = None,
         home_directory: str,
         password: str,
         access_settings: StorageBoxSubaccountAccessSettings | None = None,
@@ -535,6 +558,7 @@ class BoundStorageBox(BoundModelBase[StorageBox], StorageBox):
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-create-a-subaccount
 
         :param storage_box: Storage Box to create a Subaccount for.
+        :param name: Name of the Subaccount.
         :param home_directory: Home directory of the Subaccount.
         :param password: Password of the Subaccount.
         :param access_settings: Access settings of the Subaccount.
@@ -546,6 +570,7 @@ class BoundStorageBox(BoundModelBase[StorageBox], StorageBox):
         """
         return self._client.create_subaccount(
             self,
+            name=name,
             home_directory=home_directory,
             password=password,
             access_settings=access_settings,
@@ -658,6 +683,7 @@ class BoundStorageBoxSubaccount(
     def update(
         self,
         *,
+        name: str | None = None,
         description: str | None = None,
         labels: dict[str, str] | None = None,
     ) -> BoundStorageBoxSubaccount:
@@ -666,6 +692,7 @@ class BoundStorageBoxSubaccount(
 
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-update-a-subaccount
 
+        :param name: Name of the Subaccount.
         :param description: Description of the Subaccount.
         :param labels: User-defined labels (key/value pairs) for the Subaccount.
 
@@ -674,6 +701,7 @@ class BoundStorageBoxSubaccount(
         """
         return self._client.update_subaccount(
             self,
+            name=name,
             description=description,
             labels=labels,
         )
@@ -1510,6 +1538,28 @@ class StorageBoxesClient(
         )
         return BoundStorageBoxSubaccount(self, response["subaccount"])
 
+    def get_subaccount_by_name(
+        self,
+        storage_box: StorageBox | BoundStorageBox,
+        name: str,
+    ) -> BoundStorageBoxSubaccount | None:
+        """
+        Returns a single Subaccount from a Storage Box.
+
+        See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-list-subaccounts
+
+        :param storage_box: Storage Box to get the Subaccount from.
+        :param name: Name of the Subaccount.
+
+        Experimental:
+            Storage Box support is experimental, breaking changes may occur within minor releases.
+        """
+        return self._get_first_by(
+            self.get_subaccount_list,
+            storage_box,
+            name=name,
+        )
+
     def get_subaccount_by_username(
         self,
         storage_box: StorageBox | BoundStorageBox,
@@ -1536,6 +1586,7 @@ class StorageBoxesClient(
         self,
         storage_box: StorageBox | BoundStorageBox,
         *,
+        name: str | None = None,
         username: str | None = None,
         label_selector: str | None = None,
         sort: list[str] | None = None,
@@ -1546,6 +1597,7 @@ class StorageBoxesClient(
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-list-subaccounts
 
         :param storage_box: Storage Box to get the Subaccount from.
+        :param name: Filter resources by their name. The response will only contain the resources matching exactly the specified name.
         :param username: Filter resources by their username. The response will only contain the resources matching exactly the specified username.
         :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
         :param sort: Sort resources by field and direction.
@@ -1554,6 +1606,8 @@ class StorageBoxesClient(
             Storage Box support is experimental, breaking changes may occur within minor releases.
         """
         params: dict[str, Any] = {}
+        if name is not None:
+            params["name"] = name
         if username is not None:
             params["username"] = username
         if label_selector is not None:
@@ -1578,6 +1632,7 @@ class StorageBoxesClient(
         self,
         storage_box: StorageBox | BoundStorageBox,
         *,
+        name: str | None = None,
         username: str | None = None,
         label_selector: str | None = None,
         sort: list[str] | None = None,
@@ -1588,6 +1643,7 @@ class StorageBoxesClient(
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-list-subaccounts
 
         :param storage_box: Storage Box to get the Subaccount from.
+        :param name: Filter resources by their name. The response will only contain the resources matching exactly the specified name.
         :param username: Filter resources by their username. The response will only contain the resources matching exactly the specified username.
         :param label_selector: Filter resources by labels. The response will only contain resources matching the label selector.
         :param sort: Sort resources by field and direction.
@@ -1598,6 +1654,7 @@ class StorageBoxesClient(
         # The endpoint does not have pagination, forward to the list method.
         result, _ = self.get_subaccount_list(
             storage_box,
+            name=name,
             username=username,
             label_selector=label_selector,
             sort=sort,
@@ -1608,6 +1665,7 @@ class StorageBoxesClient(
         self,
         storage_box: StorageBox | BoundStorageBox,
         *,
+        name: str | None = None,
         home_directory: str,
         password: str,
         access_settings: StorageBoxSubaccountAccessSettings | None = None,
@@ -1620,6 +1678,7 @@ class StorageBoxesClient(
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-create-a-subaccount
 
         :param storage_box: Storage Box to create a Subaccount for.
+        :param name: Name of the Subaccount.
         :param home_directory: Home directory of the Subaccount.
         :param password: Password of the Subaccount.
         :param access_settings: Access settings of the Subaccount.
@@ -1633,6 +1692,8 @@ class StorageBoxesClient(
             "home_directory": home_directory,
             "password": password,
         }
+        if name is not None:
+            data["name"] = name
         if access_settings is not None:
             data["access_settings"] = access_settings.to_payload()
         if description is not None:
@@ -1659,6 +1720,7 @@ class StorageBoxesClient(
         self,
         subaccount: StorageBoxSubaccount | BoundStorageBoxSubaccount,
         *,
+        name: str | None = None,
         description: str | None = None,
         labels: dict[str, str] | None = None,
     ) -> BoundStorageBoxSubaccount:
@@ -1668,6 +1730,7 @@ class StorageBoxesClient(
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccounts-update-a-subaccount
 
         :param subaccount: Storage Box Subaccount to update.
+        :param name: Name of the Subaccount.
         :param description: Description of the Subaccount.
         :param labels: User-defined labels (key/value pairs) for the Subaccount.
 
@@ -1678,6 +1741,8 @@ class StorageBoxesClient(
             raise ValueError("subaccount storage_box property is none")
 
         data: dict[str, Any] = {}
+        if name is not None:
+            data["name"] = name
         if description is not None:
             data["description"] = description
         if labels is not None:

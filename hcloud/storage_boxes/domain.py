@@ -373,6 +373,7 @@ class StorageBoxSubaccount(BaseDomain, DomainIdentityMixin):
 
     __api_properties__ = (
         "id",
+        "name",
         "username",
         "description",
         "server",
@@ -387,6 +388,7 @@ class StorageBoxSubaccount(BaseDomain, DomainIdentityMixin):
     def __init__(
         self,
         id: int | None = None,
+        name: str | None = None,
         username: str | None = None,
         description: str | None = None,
         server: str | None = None,
@@ -397,6 +399,7 @@ class StorageBoxSubaccount(BaseDomain, DomainIdentityMixin):
         created: str | None = None,
     ):
         self.id = id
+        self.name = name
         self.username = username
         self.description = description
         self.server = server
