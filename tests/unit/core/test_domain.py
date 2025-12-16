@@ -99,7 +99,7 @@ class ActionDomain(BaseDomain, DomainIdentityMixin):
     def __init__(self, id, name="name1", started=None):
         self.id = id
         self.name = name
-        self.started = isoparse(started) if started else None
+        self.started = self._parse_datetime(started)
 
 
 class SomeOtherDomain(BaseDomain):
