@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, NamedTuple
 
@@ -12,6 +13,7 @@ from ..firewalls import BoundFirewall
 from ..floating_ips import BoundFloatingIP
 from ..images import BoundImage, CreateImageResponse
 from ..isos import BoundIso
+from ..locations import BoundLocation, Location
 from ..metrics import Metrics
 from ..placement_groups import BoundPlacementGroup
 from ..primary_ips import BoundPrimaryIP
@@ -39,7 +41,6 @@ if TYPE_CHECKING:
     from ..firewalls import Firewall
     from ..images import Image
     from ..isos import Iso
-    from ..locations import BoundLocation, Location
     from ..networks import BoundNetwork, Network
     from ..placement_groups import PlacementGroup
     from ..server_types import ServerType
@@ -60,9 +61,13 @@ class BoundServer(BoundModelBase[Server], Server):
         data: dict[str, Any],
         complete: bool = True,
     ):
-        datacenter = data.get("datacenter")
-        if datacenter is not None:
-            data["datacenter"] = BoundDatacenter(client._parent.datacenters, datacenter)
+        raw = data.get("datacenter")
+        if raw:
+            data["datacenter"] = BoundDatacenter(client._parent.datacenters, raw)
+
+        raw = data.get("location")
+        if raw:
+            data["location"] = BoundLocation(client._parent.locations, raw)
 
         volumes = data.get("volumes", [])
         if volumes:
@@ -662,6 +667,13 @@ class ServersClient(ResourceClientBase):
         if location is not None:
             data["location"] = location.id_or_name
         if datacenter is not None:
+            warnings.warn(
+                "The 'datacenter' argument is deprecated and will be removed after 1 July 2026. "
+                "Please use the 'location' argument instead. "
+                "See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters",
+                DeprecationWarning,
+                stacklevel=2,
+            )
             data["datacenter"] = datacenter.id_or_name
         if ssh_keys is not None:
             data["ssh_keys"] = [ssh_key.id_or_name for ssh_key in ssh_keys]
