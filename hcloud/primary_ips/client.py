@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..actions import BoundAction, ResourceActionsClient
+from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
 from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import CreatePrimaryIPResponse, PrimaryIP
 
@@ -25,6 +25,52 @@ class BoundPrimaryIP(BoundModelBase, PrimaryIP):
             data["datacenter"] = BoundDatacenter(client._parent.datacenters, datacenter)
 
         super().__init__(client, data, complete)
+
+    def get_actions_list(
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
+        """
+        Returns a paginated list of Actions for a Primary IP.
+
+        See https://docs.hetzner.cloud/reference/cloud#zones-list-zones
+
+        :param primary_ip: Primary IP to fetch the Actions from.
+        :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
+        :param sort: Sort resources by field and direction.
+        :param page: Page number to return.
+        :param per_page: Maximum number of entries returned per page.
+        """
+        return self._client.get_actions_list(
+            self,
+            status=status,
+            sort=sort,
+            page=page,
+            per_page=per_page,
+        )
+
+    def get_actions(
+        self,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundAction]:
+        """
+        Returns all Actions for a Primary IP.
+
+        See https://docs.hetzner.cloud/reference/cloud#zones-list-zones
+
+        :param primary_ip: Primary IP to fetch the Actions from.
+        :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
+        :param sort: Sort resources by field and direction.
+        """
+        return self._client.get_actions(
+            self,
+            status=status,
+            sort=sort,
+        )
 
     def update(
         self,
@@ -114,6 +160,68 @@ class PrimaryIPsClient(ResourceClientBase):
     def __init__(self, client: Client):
         super().__init__(client)
         self.actions = ResourceActionsClient(client, self._base_url)
+
+    def get_actions_list(
+        self,
+        primary_ip: PrimaryIP | BoundPrimaryIP,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
+        """
+        Returns a paginated list of Actions for a Primary IP.
+
+        See https://docs.hetzner.cloud/reference/cloud#zones-list-zones
+
+        :param primary_ip: Primary IP to fetch the Actions from.
+        :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
+        :param sort: Sort resources by field and direction.
+        :param page: Page number to return.
+        :param per_page: Maximum number of entries returned per page.
+        """
+        params: dict[str, Any] = {}
+        if status is not None:
+            params["status"] = status
+        if sort is not None:
+            params["sort"] = sort
+        if page is not None:
+            params["page"] = page
+        if per_page is not None:
+            params["per_page"] = per_page
+
+        response = self._client.request(
+            url=f"{self._base_url}/{primary_ip.id}/actions",
+            method="GET",
+            params=params,
+        )
+        actions = [
+            BoundAction(self._parent.actions, action_data)
+            for action_data in response["actions"]
+        ]
+        return ActionsPageResult(actions, Meta.parse_meta(response))
+
+    def get_actions(
+        self,
+        primary_ip: PrimaryIP | BoundPrimaryIP,
+        status: list[str] | None = None,
+        sort: list[str] | None = None,
+    ) -> list[BoundAction]:
+        """
+        Returns all Actions for a Primary IP.
+
+        See https://docs.hetzner.cloud/reference/cloud#zones-list-zones
+
+        :param primary_ip: Primary IP to fetch the Actions from.
+        :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
+        :param sort: Sort resources by field and direction.
+        """
+        return self._iter_pages(
+            self.get_actions_list,
+            primary_ip,
+            status=status,
+            sort=sort,
+        )
 
     def get_by_id(self, id: int) -> BoundPrimaryIP:
         """Returns a specific Primary IP object.

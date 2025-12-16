@@ -237,8 +237,6 @@ class TestResourceObjectActionsClient:
 
     @pytest.fixture(params=resources_with_actions.keys())
     def resource(self, request):
-        if request.param == "primary_ips":
-            pytest.skip("not implemented yet")
         return request.param
 
     @pytest.fixture()
@@ -322,8 +320,6 @@ class TestBoundModelActions:
 
     @pytest.fixture(params=resources_with_actions.keys())
     def resource(self, request):
-        if request.param == "primary_ips":
-            pytest.skip("not implemented yet")
         return request.param
 
     @pytest.fixture()
