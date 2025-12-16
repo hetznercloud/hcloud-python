@@ -100,12 +100,13 @@ class TestBoundServer(BoundModelTestCase):
         assert bound_server.public_net.floating_ips[0].id == 478
         assert bound_server.public_net.floating_ips[0].complete is False
 
-        assert isinstance(bound_server.datacenter, BoundDatacenter)
-        assert (
-            bound_server.datacenter._client == bound_server._client._parent.datacenters
-        )
-        assert bound_server.datacenter.id == 1
-        assert bound_server.datacenter.complete is True
+        with pytest.deprecated_call():
+            datacenter = bound_server.datacenter
+
+        assert isinstance(datacenter, BoundDatacenter)
+        assert datacenter._client == bound_server._client._parent.datacenters
+        assert datacenter.id == 1
+        assert datacenter.complete is True
 
         assert isinstance(bound_server.server_type, BoundServerType)
         assert (
@@ -288,12 +289,13 @@ class TestServersClient:
     ):
         request_mock.return_value = response_create_simple_server
 
-        response = servers_client.create(
-            "my-server",
-            server_type=ServerType(name="cx11"),
-            image=Image(id=4711),
-            datacenter=Datacenter(id=1),
-        )
+        with pytest.deprecated_call():
+            response = servers_client.create(
+                "my-server",
+                server_type=ServerType(name="cx11"),
+                image=Image(id=4711),
+                datacenter=Datacenter(id=1),
+            )
 
         request_mock.assert_called_with(
             method="POST",
