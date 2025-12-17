@@ -53,6 +53,7 @@ class PrimaryIP(BaseDomain, DomainIdentityMixin):
         "dns_ptr",
         "blocked",
         "protection",
+        "location",
         "labels",
         "created",
         "name",
