@@ -118,6 +118,7 @@ class BoundModelBase(Generic[Domain]):
 
     def _get_self(self) -> BoundModelBase[Domain]:
         assert hasattr(self._client, "get_by_id")
+        assert hasattr(self.data_model, "id")
         return self._client.get_by_id(self.data_model.id)  # type: ignore
 
     def reload(self) -> None:
