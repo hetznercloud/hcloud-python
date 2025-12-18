@@ -6,7 +6,7 @@ from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import Iso
 
 
-class BoundIso(BoundModelBase, Iso):
+class BoundIso(BoundModelBase[Iso], Iso):
     _client: IsosClient
 
     model = Iso

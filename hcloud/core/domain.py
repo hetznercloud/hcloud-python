@@ -7,10 +7,10 @@ from dateutil.parser import isoparse
 
 
 class BaseDomain:
-    __api_properties__: tuple
+    __api_properties__: tuple[str, ...]
 
     @classmethod
-    def from_dict(cls, data: dict):  # type: ignore[no-untyped-def]
+    def from_dict(cls, data: dict[str, Any]):  # type: ignore[no-untyped-def]
         """
         Build the domain object from the data dict.
         """
@@ -18,7 +18,7 @@ class BaseDomain:
         return cls(**supported_data)
 
     def __repr__(self) -> str:
-        kwargs = [f"{key}={getattr(self, key)!r}" for key in self.__api_properties__]  # type: ignore[var-annotated]
+        kwargs = [f"{key}={getattr(self, key)!r}" for key in self.__api_properties__]
         return f"{self.__class__.__qualname__}({', '.join(kwargs)})"
 
     def __eq__(self, other: Any) -> bool:
@@ -119,7 +119,7 @@ class Meta(BaseDomain):
         self.pagination = pagination
 
     @classmethod
-    def parse_meta(cls, response: dict) -> Meta:
+    def parse_meta(cls, response: dict[str, Any]) -> Meta:
         """
         If present, extract the meta details from the response and return a meta object.
         """

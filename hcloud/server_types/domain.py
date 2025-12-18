@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import warnings
+from typing import Any
 
 from ..core import BaseDomain, DomainIdentityMixin
 from ..deprecation import DeprecationInfo
@@ -79,12 +80,12 @@ class ServerType(BaseDomain, DomainIdentityMixin):
         cores: int | None = None,
         memory: int | None = None,
         disk: int | None = None,
-        prices: list[dict] | None = None,
+        prices: list[dict[str, Any]] | None = None,
         storage_type: str | None = None,
         cpu_type: str | None = None,
         architecture: str | None = None,
         deprecated: bool | None = None,
-        deprecation: dict | None = None,
+        deprecation: dict[str, Any] | None = None,
         included_traffic: int | None = None,
         locations: list[ServerTypeLocation] | None = None,
     ):
@@ -191,7 +192,7 @@ class ServerTypeLocation(BaseDomain):
         self,
         *,
         location: BoundLocation,
-        deprecation: dict | None,
+        deprecation: dict[str, Any] | None,
     ):
         self.location = location
         self.deprecation = (

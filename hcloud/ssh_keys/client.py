@@ -6,7 +6,7 @@ from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import SSHKey
 
 
-class BoundSSHKey(BoundModelBase, SSHKey):
+class BoundSSHKey(BoundModelBase[SSHKey], SSHKey):
     _client: SSHKeysClient
 
     model = SSHKey

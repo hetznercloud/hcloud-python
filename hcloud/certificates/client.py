@@ -15,12 +15,17 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundCertificate(BoundModelBase, Certificate):
+class BoundCertificate(BoundModelBase[Certificate], Certificate):
     _client: CertificatesClient
 
     model = Certificate
 
-    def __init__(self, client: CertificatesClient, data: dict, complete: bool = True):
+    def __init__(
+        self,
+        client: CertificatesClient,
+        data: dict[str, Any],
+        complete: bool = True,
+    ):
         status = data.get("status")
         if status is not None:
             error_data = status.get("error")

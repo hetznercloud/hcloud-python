@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Any
 from warnings import warn
 
 from ..core import BaseDomain, DomainIdentityMixin
@@ -45,7 +46,7 @@ class Iso(BaseDomain, DomainIdentityMixin):
         architecture: str | None = None,
         description: str | None = None,
         deprecated: str | None = None,  # pylint: disable=unused-argument
-        deprecation: dict | None = None,
+        deprecation: dict[str, Any] | None = None,
     ):
         self.id = id
         self.name = name
@@ -67,4 +68,4 @@ class Iso(BaseDomain, DomainIdentityMixin):
         )
         if self.deprecation is None:
             return None
-        return self.deprecation.unavailable_after
+        return self.deprecation.unavailable_after  # type: ignore[no-any-return]

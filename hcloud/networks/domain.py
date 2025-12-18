@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 
 from ..core import BaseDomain, DomainIdentityMixin
 
@@ -58,7 +58,7 @@ class Network(BaseDomain, DomainIdentityMixin):
         routes: list[NetworkRoute] | None = None,
         expose_routes_to_vswitch: bool | None = None,
         servers: list[BoundServer] | None = None,
-        protection: dict | None = None,
+        protection: NetworkProtection | None = None,
         labels: dict[str, str] | None = None,
     ):
         self.id = id
@@ -71,6 +71,10 @@ class Network(BaseDomain, DomainIdentityMixin):
         self.servers = servers
         self.protection = protection
         self.labels = labels
+
+
+class NetworkProtection(TypedDict):
+    delete: bool
 
 
 class NetworkSubnet(BaseDomain):

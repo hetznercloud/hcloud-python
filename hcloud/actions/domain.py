@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, TypedDict
 
 from .._exceptions import HCloudException
 from ..core import BaseDomain
@@ -49,8 +49,8 @@ class Action(BaseDomain):
         progress: int | None = None,
         started: str | None = None,
         finished: str | None = None,
-        resources: list[dict] | None = None,
-        error: dict | None = None,
+        resources: list[ActionResource] | None = None,
+        error: ActionError | None = None,
     ):
         self.id = id
         self.command = command
@@ -61,6 +61,17 @@ class Action(BaseDomain):
         self.finished = self._parse_datetime(finished)
         self.resources = resources
         self.error = error
+
+
+class ActionResource(TypedDict):
+    id: int
+    type: str
+
+
+class ActionError(TypedDict):
+    code: str
+    message: str
+    details: dict[str, Any]
 
 
 class ActionException(HCloudException):
@@ -80,7 +91,8 @@ class ActionException(HCloudException):
 
             extras.append(action.error["code"])
         else:
-            extras.append(action.command)
+            if action.command is not None:
+                extras.append(action.command)
 
         extras.append(str(action.id))
         message += f" ({', '.join(extras)})"

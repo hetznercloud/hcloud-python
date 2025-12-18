@@ -13,12 +13,17 @@ if TYPE_CHECKING:
     from ..servers import BoundServer, Server
 
 
-class BoundFloatingIP(BoundModelBase, FloatingIP):
+class BoundFloatingIP(BoundModelBase[FloatingIP], FloatingIP):
     _client: FloatingIPsClient
 
     model = FloatingIP
 
-    def __init__(self, client: FloatingIPsClient, data: dict, complete: bool = True):
+    def __init__(
+        self,
+        client: FloatingIPsClient,
+        data: dict[str, Any],
+        complete: bool = True,
+    ):
         # pylint: disable=import-outside-toplevel
         from ..servers import BoundServer
 

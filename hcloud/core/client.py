@@ -2,11 +2,16 @@ from __future__ import annotations
 
 import warnings
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any, ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar, Generic, TypeVar
+
+from .domain import BaseDomain
 
 if TYPE_CHECKING:
     from .._client import Client, ClientBase
-    from .domain import BaseDomain
+    from .domain import Meta
+
+
+T = TypeVar("T")
 
 
 class ResourceClientBase:
@@ -23,10 +28,10 @@ class ResourceClientBase:
 
     def _iter_pages(  # type: ignore[no-untyped-def]
         self,
-        list_function: Callable,
+        list_function: Callable[..., tuple[list[T], Meta]],
         *args,
         **kwargs,
-    ) -> list:
+    ) -> list[T]:
         results = []
 
         page = 1
@@ -46,7 +51,12 @@ class ResourceClientBase:
 
         return results
 
-    def _get_first_by(self, list_function: Callable, *args, **kwargs):  # type: ignore[no-untyped-def]
+    def _get_first_by(  # type: ignore[no-untyped-def]
+        self,
+        list_function: Callable[..., tuple[list[T], Meta]],
+        *args,
+        **kwargs,
+    ) -> T | None:
         entities, _ = list_function(*args, **kwargs)
         return entities[0] if entities else None
 
@@ -69,15 +79,18 @@ class ClientEntityBase(ResourceClientBase):
         super().__init__(client)
 
 
-class BoundModelBase:
+Domain = TypeVar("Domain", bound=BaseDomain)
+
+
+class BoundModelBase(Generic[Domain]):
     """Bound Model Base"""
 
-    model: type[BaseDomain]
+    model: type[Domain]
 
     def __init__(
         self,
         client: ResourceClientBase,
-        data: dict,
+        data: dict[str, Any],
         complete: bool = True,
     ):
         """
@@ -90,7 +103,7 @@ class BoundModelBase:
         """
         self._client = client
         self.complete = complete
-        self.data_model = self.model.from_dict(data)
+        self.data_model: Domain = self.model.from_dict(data)
 
     def __getattr__(self, name: str):  # type: ignore[no-untyped-def]
         """Allow magical access to the properties of the model
@@ -103,9 +116,9 @@ class BoundModelBase:
             value = getattr(self.data_model, name)
         return value
 
-    def _get_self(self) -> BoundModelBase:
+    def _get_self(self) -> BoundModelBase[Domain]:
         assert hasattr(self._client, "get_by_id")
-        return self._client.get_by_id(self.data_model.id)
+        return self._client.get_by_id(self.data_model.id)  # type: ignore
 
     def reload(self) -> None:
         """Reloads the model and tries to get all data from the API"""

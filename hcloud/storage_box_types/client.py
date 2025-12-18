@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundStorageBoxType(BoundModelBase, StorageBoxType):
+class BoundStorageBoxType(BoundModelBase[StorageBoxType], StorageBoxType):
     _client: StorageBoxTypesClient
 
     model = StorageBoxType

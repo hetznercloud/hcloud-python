@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 
 from ..core import BaseDomain, DomainIdentityMixin
 
 if TYPE_CHECKING:
     from ..actions import BoundAction
     from ..datacenters import BoundDatacenter
+    from ..rdns import DNSPtr
     from .client import BoundPrimaryIP
 
 
@@ -63,11 +64,11 @@ class PrimaryIP(BaseDomain, DomainIdentityMixin):
         id: int | None = None,
         type: str | None = None,
         ip: str | None = None,
-        dns_ptr: list[dict] | None = None,
+        dns_ptr: list[DNSPtr] | None = None,
         datacenter: BoundDatacenter | None = None,
         blocked: bool | None = None,
-        protection: dict | None = None,
-        labels: dict[str, dict] | None = None,
+        protection: PrimaryIPProtection | None = None,
+        labels: dict[str, str] | None = None,
         created: str | None = None,
         name: str | None = None,
         assignee_id: int | None = None,
@@ -87,6 +88,10 @@ class PrimaryIP(BaseDomain, DomainIdentityMixin):
         self.assignee_id = assignee_id
         self.assignee_type = assignee_type
         self.auto_delete = auto_delete
+
+
+class PrimaryIPProtection(TypedDict):
+    delete: bool
 
 
 class CreatePrimaryIPResponse(BaseDomain):

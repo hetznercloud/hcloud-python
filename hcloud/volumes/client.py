@@ -13,12 +13,17 @@ if TYPE_CHECKING:
     from ..servers import BoundServer, Server
 
 
-class BoundVolume(BoundModelBase, Volume):
+class BoundVolume(BoundModelBase[Volume], Volume):
     _client: VolumesClient
 
     model = Volume
 
-    def __init__(self, client: VolumesClient, data: dict, complete: bool = True):
+    def __init__(
+        self,
+        client: VolumesClient,
+        data: dict[str, Any],
+        complete: bool = True,
+    ):
         location = data.get("location")
         if location is not None:
             data["location"] = BoundLocation(client._parent.locations, location)

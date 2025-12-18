@@ -6,7 +6,7 @@ from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import Location
 
 
-class BoundLocation(BoundModelBase, Location):
+class BoundLocation(BoundModelBase[Location], Location):
     _client: LocationsClient
 
     model = Location

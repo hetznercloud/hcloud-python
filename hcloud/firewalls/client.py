@@ -17,12 +17,17 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundFirewall(BoundModelBase, Firewall):
+class BoundFirewall(BoundModelBase[Firewall], Firewall):
     _client: FirewallsClient
 
     model = Firewall
 
-    def __init__(self, client: FirewallsClient, data: dict, complete: bool = True):
+    def __init__(
+        self,
+        client: FirewallsClient,
+        data: dict[str, Any],
+        complete: bool = True,
+    ):
         rules = data.get("rules", [])
         if rules:
             rules = [
