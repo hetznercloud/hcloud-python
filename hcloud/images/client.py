@@ -3,7 +3,14 @@ from __future__ import annotations
 import warnings
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
+from ..actions import (
+    ActionSort,
+    ActionsPageResult,
+    ActionStatus,
+    BoundAction,
+    ResourceActionsClient,
+)
+from ..actions.client import ResourceClientBaseActionsMixin
 from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import Image
 
@@ -39,22 +46,18 @@ class BoundImage(BoundModelBase[Image], Image):
 
     def get_actions_list(
         self,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
         page: int | None = None,
         per_page: int | None = None,
-        status: list[str] | None = None,
     ) -> ActionsPageResult:
-        """Returns a list of action objects for the image.
+        """
+        Returns a paginated list of Actions for a Image.
 
-        :param status: List[str] (optional)
-               Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
-        :param page: int (optional)
-               Specifies the page to fetch
-        :param per_page: int (optional)
-               Specifies how many results are returned by page
-        :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
+        :param page: Page number to get.
+        :param per_page: Maximum number of Actions returned per page.
         """
         return self._client.get_actions_list(
             self,
@@ -66,16 +69,14 @@ class BoundImage(BoundModelBase[Image], Image):
 
     def get_actions(
         self,
-        sort: list[str] | None = None,
-        status: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
     ) -> list[BoundAction]:
-        """Returns all action objects for the image.
+        """
+        Returns all Actions for a Image.
 
-        :param status: List[str] (optional)
-               Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
-        :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
         """
         return self._client.get_actions(
             self,
@@ -126,7 +127,10 @@ class ImagesPageResult(NamedTuple):
     meta: Meta
 
 
-class ImagesClient(ResourceClientBase):
+class ImagesClient(
+    ResourceClientBaseActionsMixin,
+    ResourceClientBase,
+):
     _base_url = "/images"
 
     actions: ResourceActionsClient
@@ -142,64 +146,46 @@ class ImagesClient(ResourceClientBase):
     def get_actions_list(
         self,
         image: Image | BoundImage,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
         page: int | None = None,
         per_page: int | None = None,
-        status: list[str] | None = None,
     ) -> ActionsPageResult:
-        """Returns a list of action objects for an image.
-
-        :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
-        :param status: List[str] (optional)
-               Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
-        :param page: int (optional)
-               Specifies the page to fetch
-        :param per_page: int (optional)
-               Specifies how many results are returned by page
-        :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params: dict[str, Any] = {}
-        if sort is not None:
-            params["sort"] = sort
-        if status is not None:
-            params["status"] = status
-        if page is not None:
-            params["page"] = page
-        if per_page is not None:
-            params["per_page"] = per_page
-        response = self._client.request(
-            url=f"{self._base_url}/{image.id}/actions",
-            method="GET",
-            params=params,
+        Returns a paginated list of Actions for a Image.
+
+        :param image: Image to get the Actions for.
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
+        :param page: Page number to get.
+        :param per_page: Maximum number of Actions returned per page.
+        """
+        return self._get_actions_list(
+            f"{self._base_url}/{image.id}",
+            status=status,
+            sort=sort,
+            page=page,
+            per_page=per_page,
         )
-        actions = [
-            BoundAction(self._parent.actions, action_data)
-            for action_data in response["actions"]
-        ]
-        return ActionsPageResult(actions, Meta.parse_meta(response))
 
     def get_actions(
         self,
         image: Image | BoundImage,
-        sort: list[str] | None = None,
-        status: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
     ) -> list[BoundAction]:
-        """Returns all action objects for an image.
+        """
+        Returns all Actions for a Image.
 
-        :param image: :class:`BoundImage <hcloud.images.client.BoundImage>` or :class:`Image <hcloud.images.domain.Image>`
-        :param status: List[str] (optional)
-               Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `command` `status` `progress`  `started` `finished` . You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default)
-        :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
+        :param image: Image to get the Actions for.
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
         """
         return self._iter_pages(
             self.get_actions_list,
             image,
-            sort=sort,
             status=status,
+            sort=sort,
         )
 
     def get_by_id(self, id: int) -> BoundImage:

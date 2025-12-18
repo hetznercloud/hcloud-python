@@ -2,7 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
+from ..actions import (
+    ActionSort,
+    ActionsPageResult,
+    ActionStatus,
+    BoundAction,
+    ResourceActionsClient,
+)
+from ..actions.client import ResourceClientBaseActionsMixin
 from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import (
     Certificate,
@@ -41,22 +48,18 @@ class BoundCertificate(BoundModelBase[Certificate], Certificate):
 
     def get_actions_list(
         self,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
         page: int | None = None,
         per_page: int | None = None,
     ) -> ActionsPageResult:
-        """Returns all action objects for a Certificate.
+        """
+        Returns a paginated list of Actions for a Certificate.
 
-        :param status: List[str] (optional)
-               Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
-        :param page: int (optional)
-               Specifies the page to fetch
-        :param per_page: int (optional)
-               Specifies how many results are returned by page
-        :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
+        :param page: Page number to get.
+        :param per_page: Maximum number of Actions returned per page.
         """
         return self._client.get_actions_list(
             self,
@@ -68,16 +71,14 @@ class BoundCertificate(BoundModelBase[Certificate], Certificate):
 
     def get_actions(
         self,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
     ) -> list[BoundAction]:
-        """Returns all action objects for a Certificate.
+        """
+        Returns all Actions for a Certificate.
 
-        :param status: List[str] (optional)
-               Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
-        :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
         """
         return self._client.get_actions(
             self,
@@ -122,7 +123,10 @@ class CertificatesPageResult(NamedTuple):
     meta: Meta
 
 
-class CertificatesClient(ResourceClientBase):
+class CertificatesClient(
+    ResourceClientBaseActionsMixin,
+    ResourceClientBase,
+):
     _base_url = "/certificates"
 
     actions: ResourceActionsClient
@@ -311,59 +315,40 @@ class CertificatesClient(ResourceClientBase):
     def get_actions_list(
         self,
         certificate: Certificate | BoundCertificate,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
         page: int | None = None,
         per_page: int | None = None,
     ) -> ActionsPageResult:
-        """Returns all action objects for a Certificate.
-
-        :param certificate: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>` or :class:`Certificate <hcloud.certificates.domain.Certificate>`
-        :param status: List[str] (optional)
-               Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
-        :param page: int (optional)
-               Specifies the page to fetch
-        :param per_page: int (optional)
-               Specifies how many results are returned by page
-        :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params: dict[str, Any] = {}
-        if status is not None:
-            params["status"] = status
-        if sort is not None:
-            params["sort"] = sort
-        if page is not None:
-            params["page"] = page
-        if per_page is not None:
-            params["per_page"] = per_page
+        Returns a paginated list of Actions for a Certificate.
 
-        response = self._client.request(
-            url=f"{self._base_url}/{certificate.id}/actions",
-            method="GET",
-            params=params,
+        :param certificate: Certificate to get the Actions for.
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
+        :param page: Page number to get.
+        :param per_page: Maximum number of Actions returned per page.
+        """
+        return self._get_actions_list(
+            f"{self._base_url}/{certificate.id}",
+            status=status,
+            sort=sort,
+            page=page,
+            per_page=per_page,
         )
-        actions = [
-            BoundAction(self._parent.actions, action_data)
-            for action_data in response["actions"]
-        ]
-        return ActionsPageResult(actions, Meta.parse_meta(response))
 
     def get_actions(
         self,
         certificate: Certificate | BoundCertificate,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
     ) -> list[BoundAction]:
-        """Returns all action objects for a Certificate.
+        """
+        Returns all Actions for a Certificate.
 
-        :param certificate: :class:`BoundCertificate <hcloud.certificates.client.BoundCertificate>` or :class:`Certificate <hcloud.certificates.domain.Certificate>`
-        :param status: List[str] (optional)
-               Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
-        :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
+        :param certificate: Certificate to get the Actions for.
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
         """
         return self._iter_pages(
             self.get_actions_list,

@@ -1,12 +1,18 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, TypedDict
+from typing import TYPE_CHECKING, Any, Literal, TypedDict
 
 from .._exceptions import HCloudException
 from ..core import BaseDomain
 
 if TYPE_CHECKING:
     from .client import BoundAction
+
+ActionStatus = Literal[
+    "running",
+    "success",
+    "error",
+]
 
 
 class Action(BaseDomain):
@@ -45,7 +51,7 @@ class Action(BaseDomain):
         self,
         id: int,
         command: str | None = None,
-        status: str | None = None,
+        status: ActionStatus | None = None,
         progress: int | None = None,
         started: str | None = None,
         finished: str | None = None,
