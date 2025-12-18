@@ -55,7 +55,7 @@ storage_box = response.storage_box
 
 The DNS API is now generally available, as well as support for features in this project that are related to the DNS API.
 
-To migrate existing zones to the new DNS API, see the [DNS migration guide](https://docs.hetzner.com/networking/dns/migration-to-hetzner-console/process).
+To migrate existing zones to the new DNS API, see the [DNS migration guide](https://docs.hetzner.com/networking/dns/migration-to-hetzner-console/process/).
 
 See the [changelog](https://docs.hetzner.cloud/changelog#2025-11-10-dns-ga) for more details.
 
@@ -83,7 +83,7 @@ See the [changelog](https://docs.hetzner.cloud/changelog#2025-11-10-dns-ga) for 
 
 This release adds support for the new [DNS API](https://docs.hetzner.cloud/reference/cloud#dns).
 
-The DNS API is currently in **beta**, which will likely end on 10 November 2025. After the beta ended, it will no longer be possible to create new zones in the old DNS system. See the [DNS Beta FAQ](https://docs.hetzner.com/networking/dns/faq/beta) for more details.
+The DNS API is currently in **beta**, which will likely end on 10 November 2025. After the beta ended, it will no longer be possible to create new zones in the old DNS system. See the [DNS Beta FAQ](https://docs.hetzner.com/networking/dns/faq/beta/) for more details.
 
 Future minor releases of this project may include breaking changes for features that are related to the DNS API.
 
@@ -782,7 +782,7 @@ Fix: Ignore unknown fields in API response instead of raising an error
 
 - First stable release.
 
-  You can find the documentation under https://hcloud-python.readthedocs.io/en/latest/
+  You can find the documentation under https://hcloud-python.readthedocs.io/en/stable/
 
 ## 0.1.0 (2018-12-20)
 

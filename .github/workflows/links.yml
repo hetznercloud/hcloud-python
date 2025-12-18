@@ -33,7 +33,5 @@ jobs:
             --exclude 'api.hetzner.com'
             --exclude 'codecov.io'
             --exclude 'github.com'
-            --exclude '169.254.169.254'
-            --exclude 'https://docs.hetzner.cloud/changelog#new-product'
             '**/*.md'
             '**/*.py'

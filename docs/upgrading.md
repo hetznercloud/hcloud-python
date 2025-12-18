@@ -20,7 +20,7 @@ Before upgrading, make sure to resolve any deprecation warnings.
 +from hcloud import Client
 ```
 
-- [#398](https://github.com/hetznercloud/hcloud-python/pull/398): The [`Client.poll_interval`](#hcloud.Client) property is now private, make sure to configure it while creating the [`Client`](#hcloud.Client):
+- [#398](https://github.com/hetznercloud/hcloud-python/pull/398): The [`Client.poll_interval`](https://hcloud-python.readthedocs.io/en/stable/api.html#hcloud.Client) property is now private, make sure to configure it while creating the [`Client`](https://hcloud-python.readthedocs.io/en/stable/api.html#hcloud.Client):
 
 ```diff
 -client = Client(token=token)
@@ -31,7 +31,7 @@ Before upgrading, make sure to resolve any deprecation warnings.
 +)
 ```
 
-- [#400](https://github.com/hetznercloud/hcloud-python/pull/400): The [`Client.request`](#hcloud.Client.request) method now returns an empty dict instead of an empty string when the API response is empty:
+- [#400](https://github.com/hetznercloud/hcloud-python/pull/400): The [`Client.request`](https://hcloud-python.readthedocs.io/en/stable/api.html#hcloud.Client.request) method now returns an empty dict instead of an empty string when the API response is empty:
 
 ```diff
  response = client.request(method="DELETE", url="/primary_ips/123456")
@@ -39,7 +39,7 @@ Before upgrading, make sure to resolve any deprecation warnings.
 +assert response == {}
 ```
 
-- [#402](https://github.com/hetznercloud/hcloud-python/pull/402): In the [`Client.isos.get_list`](#hcloud.isos.client.IsosClient.get_list) and [`Client.isos.get_all`](#hcloud.isos.client.IsosClient.get_all) methods, the deprecated `include_wildcard_architecture` argument was removed, make sure to use the `include_architecture_wildcard` argument instead:
+- [#402](https://github.com/hetznercloud/hcloud-python/pull/402): In the [`Client.isos.get_list`](https://hcloud-python.readthedocs.io/en/stable/api.clients.isos.html#hcloud.isos.client.IsosClient.get_list) and [`Client.isos.get_all`](https://hcloud-python.readthedocs.io/en/stable/api.clients.isos.html#hcloud.isos.client.IsosClient.get_all) methods, the deprecated `include_wildcard_architecture` argument was removed, make sure to use the `include_architecture_wildcard` argument instead:
 
 ```diff
  client.isos.get_all(
@@ -48,7 +48,7 @@ Before upgrading, make sure to resolve any deprecation warnings.
  )
 ```
 
-- [#363](https://github.com/hetznercloud/hcloud-python/pull/363): In the [`Client.primary_ips.create`](#hcloud.primary_ips.client.PrimaryIPsClient.create) method, the `datacenter` argument was moved after `name` argument and is now optional:
+- [#363](https://github.com/hetznercloud/hcloud-python/pull/363): In the [`Client.primary_ips.create`](https://hcloud-python.readthedocs.io/en/stable/api.clients.primary_ips.html#hcloud.primary_ips.client.PrimaryIPsClient.create) method, the `datacenter` argument was moved after `name` argument and is now optional:
 
 ```diff
  client.primary_ips.create(
@@ -68,7 +68,7 @@ Before upgrading, make sure to resolve any deprecation warnings.
  )
 ```
 
-- [#406](https://github.com/hetznercloud/hcloud-python/pull/406): In the [`Client.servers.rebuild`](#hcloud.servers.client.ServersClient.rebuild) method, the single action return value was deprecated and is now removed. The method now returns a full response wrapping the action and an optional root password:
+- [#406](https://github.com/hetznercloud/hcloud-python/pull/406): In the [`Client.servers.rebuild`](https://hcloud-python.readthedocs.io/en/stable/api.clients.servers.html#hcloud.servers.client.ServersClient.rebuild) method, the single action return value was deprecated and is now removed. The method now returns a full response wrapping the action and an optional root password:
 
 ```diff
 -action = client.servers.rebuild(server, image)

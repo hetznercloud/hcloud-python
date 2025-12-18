@@ -115,7 +115,7 @@ class NetworkSubnet(BaseDomain):
     """
     Used to connect cloud servers and load balancers with dedicated servers.
 
-    See https://docs.hetzner.com/cloud/networks/connect-dedi-vswitch/
+    See https://docs.hetzner.com/networking/networks/connect-dedi-vswitch/
     """
 
     __api_properties__ = ("type", "ip_range", "network_zone", "gateway", "vswitch_id")
