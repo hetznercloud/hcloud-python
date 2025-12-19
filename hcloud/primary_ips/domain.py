@@ -25,7 +25,13 @@ class PrimaryIP(BaseDomain, DomainIdentityMixin):
     :param dns_ptr: List[Dict]
            Array of reverse DNS entries
     :param datacenter: :class:`Datacenter <hcloud.datacenters.client.BoundDatacenter>`
-           Datacenter the Primary IP was created in.
+        Datacenter the Primary IP was created in.
+
+        This property is deprecated and will be removed after 1 July 2026.
+        Please use the ``location`` property instead.
+
+        See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.
+
     :param location: :class:`Location <hcloud.locations.client.BoundLocation>`
            Location the Primary IP was created in.
     :param blocked: boolean
@@ -51,9 +57,9 @@ class PrimaryIP(BaseDomain, DomainIdentityMixin):
         "ip",
         "type",
         "dns_ptr",
+        "location",
         "blocked",
         "protection",
-        "location",
         "labels",
         "created",
         "name",
@@ -105,15 +111,12 @@ class PrimaryIP(BaseDomain, DomainIdentityMixin):
     @property
     def datacenter(self) -> BoundDatacenter | None:
         """
-        Datacenter the Primary IP was created in.
-
-        .. deprecated:: 2.13
-            See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters
+        :meta private:
         """
         warnings.warn(
             "The 'datacenter' property is deprecated and will be removed after 1 July 2026. "
             "Please use the 'location' property instead. "
-            "",
+            "See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.",
             DeprecationWarning,
             stacklevel=2,
         )

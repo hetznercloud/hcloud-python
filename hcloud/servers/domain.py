@@ -38,6 +38,11 @@ class Server(BaseDomain, DomainIdentityMixin):
            Public network information.
     :param server_type: :class:`BoundServerType <hcloud.server_types.client.BoundServerType>`
     :param datacenter: :class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`
+
+        This property is deprecated and will be removed after 1 July 2026.
+        Please use the ``location`` property instead.
+
+        See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.
     :param location: :class:`BoundLocation <hcloud.locations.client.BoundLocation>`
     :param image: :class:`BoundImage <hcloud.images.client.BoundImage>`, None
     :param iso: :class:`BoundIso <hcloud.isos.client.BoundIso>`, None
@@ -178,15 +183,12 @@ class Server(BaseDomain, DomainIdentityMixin):
     @property
     def datacenter(self) -> BoundDatacenter | None:
         """
-        Datacenter the Server was created in.
-
-        .. deprecated:: 2.13
-            See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters
+        :meta private:
         """
         warnings.warn(
             "The 'datacenter' property is deprecated and will be removed after 1 July 2026. "
             "Please use the 'location' property instead. "
-            "See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters",
+            "See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.",
             DeprecationWarning,
             stacklevel=2,
         )
