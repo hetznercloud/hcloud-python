@@ -45,14 +45,17 @@ class TestBoundPrimaryIP(BoundModelTestCase):
         assert bound_primary_ip.assignee_id == 17
         assert bound_primary_ip.assignee_type == "server"
 
-        assert isinstance(bound_primary_ip.datacenter, BoundDatacenter)
-        assert bound_primary_ip.datacenter.id == 42
-        assert bound_primary_ip.datacenter.name == "fsn1-dc8"
-        assert bound_primary_ip.datacenter.description == "Falkenstein DC Park 8"
-        assert bound_primary_ip.datacenter.location.country == "DE"
-        assert bound_primary_ip.datacenter.location.city == "Falkenstein"
-        assert bound_primary_ip.datacenter.location.latitude == 50.47612
-        assert bound_primary_ip.datacenter.location.longitude == 12.370071
+        with pytest.deprecated_call():
+            datacenter = bound_primary_ip.datacenter
+
+        assert isinstance(datacenter, BoundDatacenter)
+        assert datacenter.id == 42
+        assert datacenter.name == "fsn1-dc8"
+        assert datacenter.description == "Falkenstein DC Park 8"
+        assert datacenter.location.country == "DE"
+        assert datacenter.location.city == "Falkenstein"
+        assert datacenter.location.latitude == 50.47612
+        assert datacenter.location.longitude == 12.370071
 
 
 class TestPrimaryIPsClient:
@@ -132,9 +135,12 @@ class TestPrimaryIPsClient:
     ):
         request_mock.return_value = primary_ip_response
 
-        response = primary_ips_client.create(
-            type="ipv6", name="my-resource", datacenter=Datacenter(name="datacenter")
-        )
+        with pytest.deprecated_call():
+            response = primary_ips_client.create(
+                type="ipv6",
+                name="my-resource",
+                datacenter=Datacenter(name="datacenter"),
+            )
 
         request_mock.assert_called_with(
             method="POST",

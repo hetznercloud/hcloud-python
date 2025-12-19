@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import inspect
+import warnings
 from collections.abc import Callable
 from typing import ClassVar, TypedDict
 from unittest import mock
@@ -185,11 +186,17 @@ class BoundModelTestCase:
 
         members_count = 0
         members_missing = []
-        for name, member in inspect.getmembers(
-            bound_model,
-            lambda m: inspect.ismethod(m)
-            and m.__func__ in bound_model.__class__.__dict__.values(),
-        ):
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+            members = inspect.getmembers(
+                bound_model,
+                lambda m: inspect.ismethod(m)
+                and m.__func__ in bound_model.__class__.__dict__.values(),
+            )
+
+        for name, member in members:
             # Ignore private methods
             if name.startswith("_"):
                 continue
