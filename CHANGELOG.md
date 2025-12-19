@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.13.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.13.0)
+
+### Features
+
+- add per primary ip actions list operations (#608)
+- deprecate datacenter in `primary ips` and `servers` (#609)
+
 ## [v2.12.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.12.0)
 
 ### Storage Box API Experimental
