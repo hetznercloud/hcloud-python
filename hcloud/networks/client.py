@@ -10,12 +10,17 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundNetwork(BoundModelBase, Network):
+class BoundNetwork(BoundModelBase[Network], Network):
     _client: NetworksClient
 
     model = Network
 
-    def __init__(self, client: NetworksClient, data: dict, complete: bool = True):
+    def __init__(
+        self,
+        client: NetworksClient,
+        data: dict[str, Any],
+        complete: bool = True,
+    ):
         subnets = data.get("subnets", [])
         if subnets is not None:
             subnets = [NetworkSubnet.from_dict(subnet) for subnet in subnets]

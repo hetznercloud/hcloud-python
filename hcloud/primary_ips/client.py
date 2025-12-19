@@ -11,12 +11,17 @@ if TYPE_CHECKING:
     from ..datacenters import BoundDatacenter, Datacenter
 
 
-class BoundPrimaryIP(BoundModelBase, PrimaryIP):
+class BoundPrimaryIP(BoundModelBase[PrimaryIP], PrimaryIP):
     _client: PrimaryIPsClient
 
     model = PrimaryIP
 
-    def __init__(self, client: PrimaryIPsClient, data: dict, complete: bool = True):
+    def __init__(
+        self,
+        client: PrimaryIPsClient,
+        data: dict[str, Any],
+        complete: bool = True,
+    ):
         # pylint: disable=import-outside-toplevel
         from ..datacenters import BoundDatacenter
 
@@ -307,7 +312,7 @@ class PrimaryIPsClient(ResourceClientBase):
         assignee_type: str | None = "server",
         assignee_id: int | None = None,
         auto_delete: bool | None = False,
-        labels: dict | None = None,
+        labels: dict[str, str] | None = None,
     ) -> CreatePrimaryIPResponse:
         """Creates a new Primary IP assigned to a server.
 

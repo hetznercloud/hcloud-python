@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 
 from ..core import BaseDomain, DomainIdentityMixin
 
@@ -87,7 +87,7 @@ class Image(BaseDomain, DomainIdentityMixin):
         architecture: str | None = None,
         rapid_deploy: bool | None = None,
         created_from: Server | BoundServer | None = None,
-        protection: dict | None = None,
+        protection: ImageProtection | None = None,
         labels: dict[str, str] | None = None,
         status: str | None = None,
     ):
@@ -108,6 +108,10 @@ class Image(BaseDomain, DomainIdentityMixin):
         self.protection = protection
         self.labels = labels
         self.status = status
+
+
+class ImageProtection(TypedDict):
+    delete: bool
 
 
 class CreateImageResponse(BaseDomain):

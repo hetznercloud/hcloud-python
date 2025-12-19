@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundZone(BoundModelBase, Zone):
+class BoundZone(BoundModelBase[Zone], Zone):
     _client: ZonesClient
 
     model = Zone
@@ -405,12 +405,17 @@ class BoundZone(BoundModelBase, Zone):
         return self._client.set_rrset_records(rrset=rrset, records=records)
 
 
-class BoundZoneRRSet(BoundModelBase, ZoneRRSet):
+class BoundZoneRRSet(BoundModelBase[ZoneRRSet], ZoneRRSet):
     _client: ZonesClient
 
     model = ZoneRRSet
 
-    def __init__(self, client: ZonesClient, data: dict, complete: bool = True):
+    def __init__(
+        self,
+        client: ZonesClient,
+        data: dict[str, Any],
+        complete: bool = True,
+    ):
         raw = data.get("zone")
         if raw is not None:
             data["zone"] = BoundZone(client, data={"id": raw}, complete=False)
@@ -422,6 +427,8 @@ class BoundZoneRRSet(BoundModelBase, ZoneRRSet):
         super().__init__(client, data, complete)
 
     def _get_self(self) -> BoundZoneRRSet:
+        assert self.data_model.zone is not None
+        assert self.data_model.type is not None
         return self._client.get_rrset(
             self.data_model.zone,
             self.data_model.name,

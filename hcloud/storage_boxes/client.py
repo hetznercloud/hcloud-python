@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
-class BoundStorageBox(BoundModelBase, StorageBox):
+class BoundStorageBox(BoundModelBase[StorageBox], StorageBox):
     _client: StorageBoxesClient
 
     model = StorageBox
@@ -322,7 +322,7 @@ class BoundStorageBox(BoundModelBase, StorageBox):
     def get_snapshot_by_name(
         self,
         name: str,
-    ) -> BoundStorageBoxSnapshot:
+    ) -> BoundStorageBoxSnapshot | None:
         """
         Returns a single Snapshot from a Storage Box.
 
@@ -438,7 +438,7 @@ class BoundStorageBox(BoundModelBase, StorageBox):
     def get_subaccount_by_username(
         self,
         username: str,
-    ) -> BoundStorageBoxSubaccount:
+    ) -> BoundStorageBoxSubaccount | None:
         """
         Returns a single Subaccount from a Storage Box.
 
@@ -537,7 +537,7 @@ class BoundStorageBox(BoundModelBase, StorageBox):
         )
 
 
-class BoundStorageBoxSnapshot(BoundModelBase, StorageBoxSnapshot):
+class BoundStorageBoxSnapshot(BoundModelBase[StorageBoxSnapshot], StorageBoxSnapshot):
     _client: StorageBoxesClient
 
     model = StorageBoxSnapshot
@@ -561,6 +561,8 @@ class BoundStorageBoxSnapshot(BoundModelBase, StorageBoxSnapshot):
         super().__init__(client, data, complete)
 
     def _get_self(self) -> BoundStorageBoxSnapshot:
+        assert self.data_model.storage_box is not None
+        assert self.data_model.id is not None
         return self._client.get_snapshot_by_id(
             self.data_model.storage_box,
             self.data_model.id,
@@ -603,7 +605,9 @@ class BoundStorageBoxSnapshot(BoundModelBase, StorageBoxSnapshot):
         return self._client.delete_snapshot(self)
 
 
-class BoundStorageBoxSubaccount(BoundModelBase, StorageBoxSubaccount):
+class BoundStorageBoxSubaccount(
+    BoundModelBase[StorageBoxSubaccount], StorageBoxSubaccount
+):
     _client: StorageBoxesClient
 
     model = StorageBoxSubaccount
@@ -627,6 +631,8 @@ class BoundStorageBoxSubaccount(BoundModelBase, StorageBoxSubaccount):
         super().__init__(client, data, complete)
 
     def _get_self(self) -> BoundStorageBoxSubaccount:
+        assert self.data_model.storage_box is not None
+        assert self.data_model.id is not None
         return self._client.get_subaccount_by_id(
             self.data_model.storage_box,
             self.data_model.id,
@@ -1279,7 +1285,7 @@ class StorageBoxesClient(ResourceClientBase):
         self,
         storage_box: StorageBox | BoundStorageBox,
         name: str,
-    ) -> BoundStorageBoxSnapshot:
+    ) -> BoundStorageBoxSnapshot | None:
         """
         Returns a single Snapshot from a Storage Box.
 
@@ -1500,7 +1506,7 @@ class StorageBoxesClient(ResourceClientBase):
         self,
         storage_box: StorageBox | BoundStorageBox,
         username: str,
-    ) -> BoundStorageBoxSubaccount:
+    ) -> BoundStorageBoxSubaccount | None:
         """
         Returns a single Subaccount from a Storage Box.
 

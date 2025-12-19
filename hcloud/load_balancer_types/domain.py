@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from ..core import BaseDomain, DomainIdentityMixin
 
 
@@ -46,7 +48,7 @@ class LoadBalancerType(BaseDomain, DomainIdentityMixin):
         max_services: int | None = None,
         max_targets: int | None = None,
         max_assigned_certificates: int | None = None,
-        prices: list[dict] | None = None,
+        prices: list[dict[str, Any]] | None = None,
     ):
         self.id = id
         self.name = name

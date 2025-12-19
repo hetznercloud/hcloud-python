@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Literal, TypedDict
 
 from ..core import BaseDomain, DomainIdentityMixin
 
@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from ..networks import BoundNetwork, Network
     from ..placement_groups import BoundPlacementGroup
     from ..primary_ips import BoundPrimaryIP, PrimaryIP
+    from ..rdns import DNSPtr
     from ..server_types import BoundServerType
     from ..volumes import BoundVolume
     from .client import BoundServer
@@ -123,7 +124,7 @@ class Server(BaseDomain, DomainIdentityMixin):
         outgoing_traffic: int | None = None,
         ingoing_traffic: int | None = None,
         included_traffic: int | None = None,
-        protection: dict | None = None,
+        protection: ServerProtection | None = None,
         labels: dict[str, str] | None = None,
         volumes: list[BoundVolume] | None = None,
         private_net: list[PrivateNet] | None = None,
@@ -161,6 +162,11 @@ class Server(BaseDomain, DomainIdentityMixin):
             if o.network.id == network.id:
                 return o
         return None
+
+
+class ServerProtection(TypedDict):
+    rebuild: bool
+    delete: bool
 
 
 class CreateServerResponse(BaseDomain):
@@ -387,7 +393,7 @@ class IPv6Network(BaseDomain):
         self,
         ip: str,
         blocked: bool,
-        dns_ptr: list,
+        dns_ptr: list[DNSPtr],
     ):
         self.ip = ip
         self.blocked = blocked

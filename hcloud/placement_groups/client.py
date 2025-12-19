@@ -7,7 +7,7 @@ from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import CreatePlacementGroupResponse, PlacementGroup
 
 
-class BoundPlacementGroup(BoundModelBase, PlacementGroup):
+class BoundPlacementGroup(BoundModelBase[PlacementGroup], PlacementGroup):
     _client: PlacementGroupsClient
 
     model = PlacementGroup

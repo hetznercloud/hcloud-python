@@ -3,7 +3,7 @@ from __future__ import annotations
 import time
 from http import HTTPStatus
 from random import uniform
-from typing import Protocol
+from typing import Any, Protocol
 
 import requests
 
@@ -72,7 +72,7 @@ def exponential_backoff_function(
     """
 
     def func(retries: int) -> float:
-        interval = base * multiplier**retries  # Exponential backoff
+        interval: float = base * multiplier**retries  # Exponential backoff
         interval = min(cap, interval)  # Cap backoff
         if jitter:
             interval = uniform(base, interval)  # Add jitter
@@ -292,7 +292,7 @@ class Client:
         method: str,
         url: str,
         **kwargs,
-    ) -> dict:
+    ) -> dict[str, Any]:
         """Perform a request to the Hetzner Cloud API.
 
         :param method: Method to perform the request.
@@ -345,7 +345,7 @@ class ClientBase:
         method: str,
         url: str,
         **kwargs,
-    ) -> dict:
+    ) -> dict[str, Any]:
         """Perform a request to the provided URL.
 
         :param method: Method to perform the request.
@@ -381,7 +381,7 @@ class ClientBase:
                     continue
                 raise
 
-    def _read_response(self, response: requests.Response) -> dict:
+    def _read_response(self, response: requests.Response) -> dict[str, Any]:
         correlation_id = response.headers.get("X-Correlation-Id")
         payload = {}
         try:
@@ -404,7 +404,7 @@ class ClientBase:
                     correlation_id=correlation_id,
                 )
 
-            error: dict = payload["error"]
+            error: dict[str, Any] = payload["error"]
             raise APIException(
                 code=error["code"],
                 message=error["message"],

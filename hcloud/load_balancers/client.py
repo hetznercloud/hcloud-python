@@ -40,13 +40,18 @@ if TYPE_CHECKING:
     from ..networks import Network
 
 
-class BoundLoadBalancer(BoundModelBase, LoadBalancer):
+class BoundLoadBalancer(BoundModelBase[LoadBalancer], LoadBalancer):
     _client: LoadBalancersClient
 
     model = LoadBalancer
 
     # pylint: disable=too-many-branches,too-many-locals
-    def __init__(self, client: LoadBalancersClient, data: dict, complete: bool = True):
+    def __init__(
+        self,
+        client: LoadBalancersClient,
+        data: dict[str, Any],
+        complete: bool = True,
+    ):
         algorithm = data.get("algorithm")
         if algorithm:
             data["algorithm"] = LoadBalancerAlgorithm(type=algorithm["type"])

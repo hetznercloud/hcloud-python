@@ -4,6 +4,7 @@ combine_as_imports = true
 add_imports = ["from __future__ import annotations"]
 
 [tool.mypy]
+strict = true
 disallow_untyped_defs = true
 implicit_reexport = false
 

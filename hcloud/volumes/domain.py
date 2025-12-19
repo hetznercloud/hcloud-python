@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 
 from ..core import BaseDomain, DomainIdentityMixin
 
@@ -68,7 +68,7 @@ class Volume(BaseDomain, DomainIdentityMixin):
         size: int | None = None,
         linux_device: str | None = None,
         format: str | None = None,
-        protection: dict | None = None,
+        protection: VolumeProtection | None = None,
         labels: dict[str, str] | None = None,
         status: str | None = None,
     ):
@@ -83,6 +83,10 @@ class Volume(BaseDomain, DomainIdentityMixin):
         self.protection = protection
         self.labels = labels
         self.status = status
+
+
+class VolumeProtection(TypedDict):
+    delete: bool
 
 
 class CreateVolumeResponse(BaseDomain):

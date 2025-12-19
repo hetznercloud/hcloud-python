@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, TypedDict
 
 from ..core import BaseDomain, DomainIdentityMixin
 
@@ -81,7 +81,7 @@ class LoadBalancer(BaseDomain, DomainIdentityMixin):
         algorithm: LoadBalancerAlgorithm | None = None,
         services: list[LoadBalancerService] | None = None,
         load_balancer_type: BoundLoadBalancerType | None = None,
-        protection: dict | None = None,
+        protection: LoadBalancerProtection | None = None,
         labels: dict[str, str] | None = None,
         targets: list[LoadBalancerTarget] | None = None,
         created: str | None = None,
@@ -114,6 +114,10 @@ class LoadBalancer(BaseDomain, DomainIdentityMixin):
             if o.network.id == network.id:
                 return o
         return None
+
+
+class LoadBalancerProtection(TypedDict):
+    delete: bool
 
 
 class LoadBalancerService(BaseDomain):
@@ -334,7 +338,7 @@ class LoadBalancerHealthCheckHttp(BaseDomain):
         domain: str | None = None,
         path: str | None = None,
         response: str | None = None,
-        status_codes: list | None = None,
+        status_codes: list[str] | None = None,
         tls: bool | None = None,
     ):
         self.domain = domain
@@ -357,7 +361,7 @@ class LoadBalancerHealtCheckHttp(LoadBalancerHealthCheckHttp):
         domain: str | None = None,
         path: str | None = None,
         response: str | None = None,
-        status_codes: list | None = None,
+        status_codes: list[str] | None = None,
         tls: bool | None = None,
     ):
         warnings.warn(

@@ -6,7 +6,7 @@ from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import LoadBalancerType
 
 
-class BoundLoadBalancerType(BoundModelBase, LoadBalancerType):
+class BoundLoadBalancerType(BoundModelBase[LoadBalancerType], LoadBalancerType):
     _client: LoadBalancerTypesClient
 
     model = LoadBalancerType

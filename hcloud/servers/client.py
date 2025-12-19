@@ -48,13 +48,18 @@ if TYPE_CHECKING:
     from .domain import ServerCreatePublicNetwork
 
 
-class BoundServer(BoundModelBase, Server):
+class BoundServer(BoundModelBase[Server], Server):
     _client: ServersClient
 
     model = Server
 
     # pylint: disable=too-many-locals
-    def __init__(self, client: ServersClient, data: dict, complete: bool = True):
+    def __init__(
+        self,
+        client: ServersClient,
+        data: dict[str, Any],
+        complete: bool = True,
+    ):
         datacenter = data.get("datacenter")
         if datacenter is not None:
             data["datacenter"] = BoundDatacenter(client._parent.datacenters, datacenter)
