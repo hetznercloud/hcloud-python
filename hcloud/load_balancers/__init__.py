@@ -15,12 +15,14 @@ from .domain import (
     LoadBalancerHealtCheckHttp,
     LoadBalancerHealthCheck,
     LoadBalancerHealthCheckHttp,
+    LoadBalancerProtection,
     LoadBalancerService,
     LoadBalancerServiceHttp,
     LoadBalancerTarget,
     LoadBalancerTargetHealthStatus,
     LoadBalancerTargetIP,
     LoadBalancerTargetLabelSelector,
+    MetricsType,
     PrivateNet,
     PublicNetwork,
 )
@@ -32,6 +34,7 @@ __all__ = [
     "IPv4Address",
     "IPv6Network",
     "LoadBalancer",
+    "LoadBalancerProtection",
     "LoadBalancerAlgorithm",
     "LoadBalancerHealtCheckHttp",
     "LoadBalancerHealthCheckHttp",
@@ -46,4 +49,5 @@ __all__ = [
     "LoadBalancersPageResult",
     "PrivateNet",
     "PublicNetwork",
+    "MetricsType",
 ]

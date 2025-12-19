@@ -5,12 +5,13 @@ from .client import (
     FloatingIPsClient,
     FloatingIPsPageResult,
 )
-from .domain import CreateFloatingIPResponse, FloatingIP
+from .domain import CreateFloatingIPResponse, FloatingIP, FloatingIPProtection
 
 __all__ = [
     "BoundFloatingIP",
     "CreateFloatingIPResponse",
     "FloatingIP",
+    "FloatingIPProtection",
     "FloatingIPsClient",
     "FloatingIPsPageResult",
 ]
