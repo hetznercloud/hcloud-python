@@ -367,7 +367,7 @@ class BoundZone(BoundModelBase[Zone], Zone):
         """
         Updates records in a ZoneRRSet.
 
-        See https://docs.hetzner.cloud/reference/cloud#zone-rrset-actions-update-records-to-an-rrset
+        See https://docs.hetzner.cloud/reference/cloud#zone-rrset-actions-update-records-of-an-rrset
 
         :param rrset: RRSet to update.
         :param records: Records to update in the RRSet.
@@ -508,7 +508,7 @@ class BoundZoneRRSet(BoundModelBase[ZoneRRSet], ZoneRRSet):
         """
         Updates records in a ZoneRRSet.
 
-        See https://docs.hetzner.cloud/reference/cloud#zone-rrset-actions-update-records-to-an-rrset
+        See https://docs.hetzner.cloud/reference/cloud#zone-rrset-actions-update-records-of-an-rrset
 
         :param records: Records to update in the RRSet.
         """
@@ -1215,7 +1215,7 @@ class ZonesClient(ResourceClientBase):
         """
         Updates records in a ZoneRRSet.
 
-        See https://docs.hetzner.cloud/reference/cloud#zone-rrset-actions-update-records-to-an-rrset
+        See https://docs.hetzner.cloud/reference/cloud#zone-rrset-actions-update-records-of-an-rrset
 
         :param rrset: RRSet to update.
         :param records: Records to update in the RRSet.
