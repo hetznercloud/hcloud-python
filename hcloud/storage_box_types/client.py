@@ -8,6 +8,12 @@ from .domain import StorageBoxType
 if TYPE_CHECKING:
     from .._client import Client
 
+__all__ = [
+    "BoundStorageBoxType",
+    "StorageBoxTypesPageResult",
+    "StorageBoxTypesClient",
+]
+
 
 class BoundStorageBoxType(BoundModelBase[StorageBoxType], StorageBoxType):
     _client: StorageBoxTypesClient

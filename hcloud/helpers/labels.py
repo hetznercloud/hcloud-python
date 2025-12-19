@@ -2,6 +2,10 @@ from __future__ import annotations
 
 import re
 
+__all__ = [
+    "LabelValidator",
+]
+
 
 class LabelValidator:
     KEY_REGEX = re.compile(

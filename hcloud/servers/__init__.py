@@ -7,13 +7,16 @@ from .domain import (
     GetMetricsResponse,
     IPv4Address,
     IPv6Network,
+    MetricsType,
     PrivateNet,
     PublicNetwork,
     PublicNetworkFirewall,
+    RebuildResponse,
     RequestConsoleResponse,
     ResetPasswordResponse,
     Server,
     ServerCreatePublicNetwork,
+    ServerProtection,
 )
 
 __all__ = [
@@ -29,7 +32,10 @@ __all__ = [
     "RequestConsoleResponse",
     "ResetPasswordResponse",
     "Server",
+    "ServerProtection",
     "ServerCreatePublicNetwork",
     "ServersClient",
     "ServersPageResult",
+    "RebuildResponse",
+    "MetricsType",
 ]

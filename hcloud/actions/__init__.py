@@ -9,21 +9,25 @@ from .client import (
 )
 from .domain import (
     Action,
+    ActionError,
     ActionException,
     ActionFailedException,
+    ActionResource,
     ActionStatus,
     ActionTimeoutException,
 )
 
 __all__ = [
-    "Action",
-    "ActionStatus",
-    "ActionException",
-    "ActionFailedException",
-    "ActionTimeoutException",
     "ActionsClient",
-    "ActionSort",
     "ActionsPageResult",
     "BoundAction",
     "ResourceActionsClient",
+    "ActionSort",
+    "ActionStatus",
+    "Action",
+    "ActionResource",
+    "ActionError",
+    "ActionException",
+    "ActionFailedException",
+    "ActionTimeoutException",
 ]

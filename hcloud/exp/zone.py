@@ -5,6 +5,11 @@ library, breaking changes may occur within minor releases.
 
 from __future__ import annotations
 
+__all__ = [
+    "is_txt_record_quoted",
+    "format_txt_record",
+]
+
 
 def is_txt_record_quoted(value: str) -> bool:
     """

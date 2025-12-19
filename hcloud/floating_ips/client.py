@@ -19,6 +19,12 @@ if TYPE_CHECKING:
     from ..locations import Location
     from ..servers import BoundServer, Server
 
+__all__ = [
+    "BoundFloatingIP",
+    "FloatingIPsPageResult",
+    "FloatingIPsClient",
+]
+
 
 class BoundFloatingIP(BoundModelBase[FloatingIP], FloatingIP):
     _client: FloatingIPsClient

@@ -2,6 +2,10 @@ from __future__ import annotations
 
 from ..core import BaseDomain, DomainIdentityMixin
 
+__all__ = [
+    "Location",
+]
+
 
 class Location(BaseDomain, DomainIdentityMixin):
     """Location Domain

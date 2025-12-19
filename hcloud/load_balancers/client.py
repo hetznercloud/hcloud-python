@@ -47,6 +47,13 @@ if TYPE_CHECKING:
     from ..networks import Network
 
 
+__all__ = [
+    "BoundLoadBalancer",
+    "LoadBalancersPageResult",
+    "LoadBalancersClient",
+]
+
+
 class BoundLoadBalancer(BoundModelBase[LoadBalancer], LoadBalancer):
     _client: LoadBalancersClient
 

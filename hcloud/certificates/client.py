@@ -22,6 +22,13 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
+__all__ = [
+    "BoundCertificate",
+    "CertificatesPageResult",
+    "CertificatesClient",
+]
+
+
 class BoundCertificate(BoundModelBase[Certificate], Certificate):
     _client: CertificatesClient
 

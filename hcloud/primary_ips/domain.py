@@ -12,6 +12,12 @@ if TYPE_CHECKING:
     from ..rdns import DNSPtr
     from .client import BoundPrimaryIP
 
+__all__ = [
+    "PrimaryIP",
+    "PrimaryIPProtection",
+    "CreatePrimaryIPResponse",
+]
+
 
 class PrimaryIP(BaseDomain, DomainIdentityMixin):
     """Primary IP Domain

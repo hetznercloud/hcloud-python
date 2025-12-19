@@ -10,6 +10,12 @@ if TYPE_CHECKING:
     from .._client import Client, ClientBase
     from .domain import Meta
 
+__all__ = [
+    "ResourceClientBase",
+    "ClientEntityBase",
+    "BoundModelBase",
+]
+
 
 T = TypeVar("T")
 

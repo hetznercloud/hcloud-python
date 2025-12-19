@@ -6,6 +6,12 @@ from ..actions import BoundAction
 from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import CreatePlacementGroupResponse, PlacementGroup
 
+__all__ = [
+    "BoundPlacementGroup",
+    "PlacementGroupsPageResult",
+    "PlacementGroupsClient",
+]
+
 
 class BoundPlacementGroup(BoundModelBase[PlacementGroup], PlacementGroup):
     _client: PlacementGroupsClient

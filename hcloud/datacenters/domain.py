@@ -8,6 +8,11 @@ if TYPE_CHECKING:
     from ..locations import Location
     from ..server_types import BoundServerType
 
+__all__ = [
+    "Datacenter",
+    "DatacenterServerTypes",
+]
+
 
 class Datacenter(BaseDomain, DomainIdentityMixin):
     """Datacenter Domain

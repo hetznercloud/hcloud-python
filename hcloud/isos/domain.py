@@ -7,6 +7,10 @@ from warnings import warn
 from ..core import BaseDomain, DomainIdentityMixin
 from ..deprecation import DeprecationInfo
 
+__all__ = [
+    "Iso",
+]
+
 
 class Iso(BaseDomain, DomainIdentityMixin):
     """Iso Domain

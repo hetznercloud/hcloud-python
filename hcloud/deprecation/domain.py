@@ -2,6 +2,10 @@ from __future__ import annotations
 
 from ..core import BaseDomain
 
+__all__ = [
+    "DeprecationInfo",
+]
+
 
 class DeprecationInfo(BaseDomain):
     """Describes if, when & how the resources was deprecated. If this field is set to ``None`` the resource is not

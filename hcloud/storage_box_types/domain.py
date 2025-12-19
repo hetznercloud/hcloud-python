@@ -5,6 +5,10 @@ from typing import Any
 from ..core import BaseDomain, DomainIdentityMixin
 from ..deprecation import DeprecationInfo
 
+__all__ = [
+    "StorageBoxType",
+]
+
 
 class StorageBoxType(BaseDomain, DomainIdentityMixin):
     """

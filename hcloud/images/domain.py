@@ -10,6 +10,13 @@ if TYPE_CHECKING:
     from .client import BoundImage
 
 
+__all__ = [
+    "Image",
+    "ImageProtection",
+    "CreateImageResponse",
+]
+
+
 class Image(BaseDomain, DomainIdentityMixin):
     """Image Domain
 

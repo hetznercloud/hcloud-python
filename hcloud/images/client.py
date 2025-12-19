@@ -18,6 +18,13 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
+__all__ = [
+    "BoundImage",
+    "ImagesPageResult",
+    "ImagesClient",
+]
+
+
 class BoundImage(BoundModelBase[Image], Image):
     _client: ImagesClient
 

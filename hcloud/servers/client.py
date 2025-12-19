@@ -56,6 +56,13 @@ if TYPE_CHECKING:
     from .domain import ServerCreatePublicNetwork
 
 
+__all__ = [
+    "BoundServer",
+    "ServersPageResult",
+    "ServersClient",
+]
+
+
 class BoundServer(BoundModelBase[Server], Server):
     _client: ServersClient
 
