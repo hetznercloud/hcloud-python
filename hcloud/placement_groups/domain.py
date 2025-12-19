@@ -8,6 +8,11 @@ if TYPE_CHECKING:
     from ..actions import BoundAction
     from .client import BoundPlacementGroup
 
+__all__ = [
+    "PlacementGroup",
+    "CreatePlacementGroupResponse",
+]
+
 
 class PlacementGroup(BaseDomain, DomainIdentityMixin):
     """Placement Group Domain

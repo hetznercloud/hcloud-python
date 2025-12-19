@@ -5,6 +5,12 @@ from typing import Literal
 
 from ..core import BaseDomain
 
+__all__ = [
+    "TimeSeries",
+    "Metrics",
+]
+
+
 TimeSeries = dict[str, dict[Literal["values"], list[tuple[float, str]]]]
 
 

@@ -24,6 +24,13 @@ if TYPE_CHECKING:
     from .._client import Client
 
 
+__all__ = [
+    "BoundFirewall",
+    "FirewallsPageResult",
+    "FirewallsClient",
+]
+
+
 class BoundFirewall(BoundModelBase[Firewall], Firewall):
     _client: FirewallsClient
 

@@ -12,6 +12,13 @@ if TYPE_CHECKING:
     from .client import BoundFloatingIP
 
 
+__all__ = [
+    "FloatingIP",
+    "FloatingIPProtection",
+    "CreateFloatingIPResponse",
+]
+
+
 class FloatingIP(BaseDomain, DomainIdentityMixin):
     """Floating IP Domain
 

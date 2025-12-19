@@ -5,6 +5,12 @@ from typing import Any, NamedTuple
 from ..core import BoundModelBase, Meta, ResourceClientBase
 from .domain import Location
 
+__all__ = [
+    "BoundLocation",
+    "LocationsPageResult",
+    "LocationsClient",
+]
+
 
 class BoundLocation(BoundModelBase[Location], Location):
     _client: LocationsClient

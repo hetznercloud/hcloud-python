@@ -20,6 +20,13 @@ if TYPE_CHECKING:
     from ..locations import BoundLocation, Location
 
 
+__all__ = [
+    "BoundPrimaryIP",
+    "PrimaryIPsPageResult",
+    "PrimaryIPsClient",
+]
+
+
 class BoundPrimaryIP(BoundModelBase[PrimaryIP], PrimaryIP):
     _client: PrimaryIPsClient
 

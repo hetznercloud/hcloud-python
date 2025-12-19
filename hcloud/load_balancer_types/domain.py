@@ -4,6 +4,10 @@ from typing import Any
 
 from ..core import BaseDomain, DomainIdentityMixin
 
+__all__ = [
+    "LoadBalancerType",
+]
+
 
 class LoadBalancerType(BaseDomain, DomainIdentityMixin):
     """LoadBalancerType Domain

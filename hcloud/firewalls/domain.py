@@ -10,6 +10,16 @@ if TYPE_CHECKING:
     from .client import BoundFirewall
 
 
+__all__ = [
+    "Firewall",
+    "FirewallRule",
+    "FirewallResource",
+    "FirewallResourceAppliedToResources",
+    "FirewallResourceLabelSelector",
+    "CreateFirewallResponse",
+]
+
+
 class Firewall(BaseDomain, DomainIdentityMixin):
     """Firewall Domain
 

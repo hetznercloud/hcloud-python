@@ -20,6 +20,13 @@ if TYPE_CHECKING:
     from ..servers import BoundServer, Server
 
 
+__all__ = [
+    "BoundVolume",
+    "VolumesPageResult",
+    "VolumesClient",
+]
+
+
 class BoundVolume(BoundModelBase[Volume], Volume):
     _client: VolumesClient
 

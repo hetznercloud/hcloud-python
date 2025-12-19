@@ -7,6 +7,11 @@ from ..core import BaseDomain, DomainIdentityMixin
 from ..deprecation import DeprecationInfo
 from ..locations import BoundLocation
 
+__all__ = [
+    "ServerType",
+    "ServerTypeLocation",
+]
+
 
 class ServerType(BaseDomain, DomainIdentityMixin):
     """ServerType Domain

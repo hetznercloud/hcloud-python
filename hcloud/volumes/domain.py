@@ -10,6 +10,12 @@ if TYPE_CHECKING:
     from ..servers import BoundServer, Server
     from .client import BoundVolume
 
+__all__ = [
+    "Volume",
+    "VolumeProtection",
+    "CreateVolumeResponse",
+]
+
 
 class Volume(BaseDomain, DomainIdentityMixin):
     """Volume Domain
