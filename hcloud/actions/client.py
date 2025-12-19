@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import time
 import warnings
-from typing import TYPE_CHECKING, Any, NamedTuple
+from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 
 from ..core import BoundModelBase, Meta, ResourceClientBase
-from .domain import Action, ActionFailedException, ActionTimeoutException
+from .domain import Action, ActionFailedException, ActionStatus, ActionTimeoutException
 
 if TYPE_CHECKING:
     from .._client import Client
@@ -45,12 +45,78 @@ class BoundAction(BoundModelBase[Action], Action):
             raise ActionFailedException(action=self)
 
 
+ActionSort = Literal[
+    "id",
+    "id:asc",
+    "id:desc",
+    "command",
+    "command:asc",
+    "command:desc",
+    "status",
+    "status:asc",
+    "status:desc",
+    "started",
+    "started:asc",
+    "started:desc",
+    "finished",
+    "finished:asc",
+    "finished:desc",
+]
+
+
 class ActionsPageResult(NamedTuple):
     actions: list[BoundAction]
     meta: Meta
 
 
-class ResourceActionsClient(ResourceClientBase):
+class ResourceClientBaseActionsMixin(ResourceClientBase):
+    def _get_action_by_id(
+        self,
+        base_url: str,
+        id: int,
+    ) -> BoundAction:
+        response = self._client.request(
+            method="GET",
+            url=f"{base_url}/actions/{id}",
+        )
+        return BoundAction(
+            client=self._parent.actions,
+            data=response["action"],
+        )
+
+    def _get_actions_list(
+        self,
+        base_url: str,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> ActionsPageResult:
+        params: dict[str, Any] = {}
+        if status is not None:
+            params["status"] = status
+        if sort is not None:
+            params["sort"] = sort
+        if page is not None:
+            params["page"] = page
+        if per_page is not None:
+            params["per_page"] = per_page
+
+        response = self._client.request(
+            method="GET",
+            url=f"{base_url}/actions",
+            params=params,
+        )
+        return ActionsPageResult(
+            actions=[BoundAction(self._parent.actions, o) for o in response["actions"]],
+            meta=Meta.parse_meta(response),
+        )
+
+
+class ResourceActionsClient(
+    ResourceClientBaseActionsMixin,
+    ResourceClientBase,
+):
     _resource: str
 
     def __init__(self, client: ResourceClientBase | Client, resource: str | None):
@@ -66,69 +132,46 @@ class ResourceActionsClient(ResourceClientBase):
         self._resource = resource or ""
 
     def get_by_id(self, id: int) -> BoundAction:
-        """Get a specific action by its ID.
-
-        :param id: int
-        :return: :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
-        response = self._client.request(
-            url=f"{self._resource}/actions/{id}",
-            method="GET",
-        )
-        return BoundAction(self._parent.actions, response["action"])
+        Returns a specific Action by its ID.
+
+        :param id: ID of the Action.
+        """
+        return self._get_action_by_id(self._resource, id)
 
     def get_list(
         self,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
         page: int | None = None,
         per_page: int | None = None,
     ) -> ActionsPageResult:
-        """Get a list of actions.
-
-        :param status: List[str] (optional)
-               Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `command` `status` `progress`  `started` `finished` . You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default)
-        :param page: int (optional)
-               Specifies the page to fetch
-        :param per_page: int (optional)
-               Specifies how many results are returned by page
-        :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params: dict[str, Any] = {}
-        if status is not None:
-            params["status"] = status
-        if sort is not None:
-            params["sort"] = sort
-        if page is not None:
-            params["page"] = page
-        if per_page is not None:
-            params["per_page"] = per_page
+        Returns a paginated list of Actions.
 
-        response = self._client.request(
-            url=f"{self._resource}/actions",
-            method="GET",
-            params=params,
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
+        :param page: Page number to get.
+        :param per_page: Maximum number of Actions returned per page.
+        """
+        return self._get_actions_list(
+            self._resource,
+            status=status,
+            sort=sort,
+            page=page,
+            per_page=per_page,
         )
-        actions = [
-            BoundAction(self._parent.actions, action_data)
-            for action_data in response["actions"]
-        ]
-        return ActionsPageResult(actions, Meta.parse_meta(response))
 
     def get_all(
         self,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
     ) -> list[BoundAction]:
-        """Get all actions.
+        """
+        Returns all Actions.
 
-        :param status: List[str] (optional)
-               Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `command` `status` `progress`  `started` `finished` . You can add one of ":asc", ":desc" to modify sort order. ( ":asc" is default)
-        :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
         """
         return self._iter_pages(self.get_list, status=status, sort=sort)
 
@@ -139,8 +182,8 @@ class ActionsClient(ResourceActionsClient):
 
     def get_list(
         self,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
         page: int | None = None,
         per_page: int | None = None,
     ) -> ActionsPageResult:
@@ -162,8 +205,8 @@ class ActionsClient(ResourceActionsClient):
 
     def get_all(
         self,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
     ) -> list[BoundAction]:
         """
         .. deprecated:: 1.28

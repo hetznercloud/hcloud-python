@@ -5,7 +5,14 @@ from typing import TYPE_CHECKING, Any, NamedTuple
 
 from dateutil.parser import isoparse
 
-from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
+from ..actions import (
+    ActionSort,
+    ActionsPageResult,
+    ActionStatus,
+    BoundAction,
+    ResourceActionsClient,
+)
+from ..actions.client import ResourceClientBaseActionsMixin
 from ..certificates import BoundCertificate
 from ..core import BoundModelBase, Meta, ResourceClientBase
 from ..load_balancer_types import BoundLoadBalancerType
@@ -212,22 +219,18 @@ class BoundLoadBalancer(BoundModelBase[LoadBalancer], LoadBalancer):
 
     def get_actions_list(
         self,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
         page: int | None = None,
         per_page: int | None = None,
     ) -> ActionsPageResult:
-        """Returns all action objects for a Load Balancer.
+        """
+        Returns a paginated list of Actions for a Load Balancer.
 
-        :param status: List[str] (optional)
-               Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
-        :param page: int (optional)
-               Specifies the page to fetch
-        :param per_page: int (optional)
-               Specifies how many results are returned by page
-        :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
+        :param page: Page number to get.
+        :param per_page: Maximum number of Actions returned per page.
         """
         return self._client.get_actions_list(
             self,
@@ -239,16 +242,14 @@ class BoundLoadBalancer(BoundModelBase[LoadBalancer], LoadBalancer):
 
     def get_actions(
         self,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
     ) -> list[BoundAction]:
-        """Returns all action objects for a Load Balancer.
+        """
+        Returns all Actions for a Load Balancer.
 
-        :param status: List[str] (optional)
-               Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
-        :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
         """
         return self._client.get_actions(self, status=status, sort=sort)
 
@@ -388,7 +389,10 @@ class LoadBalancersPageResult(NamedTuple):
     meta: Meta
 
 
-class LoadBalancersClient(ResourceClientBase):
+class LoadBalancersClient(
+    ResourceClientBaseActionsMixin,
+    ResourceClientBase,
+):
     _base_url = "/load_balancers"
 
     actions: ResourceActionsClient
@@ -621,59 +625,40 @@ class LoadBalancersClient(ResourceClientBase):
     def get_actions_list(
         self,
         load_balancer: LoadBalancer | BoundLoadBalancer,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
         page: int | None = None,
         per_page: int | None = None,
     ) -> ActionsPageResult:
-        """Returns all action objects for a Load Balancer.
-
-        :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
-        :param status: List[str] (optional)
-               Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
-        :param page: int (optional)
-               Specifies the page to fetch
-        :param per_page: int (optional)
-               Specifies how many results are returned by page
-        :return: (List[:class:`BoundAction <hcloud.actions.client.BoundAction>`], :class:`Meta <hcloud.core.domain.Meta>`)
         """
-        params: dict[str, Any] = {}
-        if status is not None:
-            params["status"] = status
-        if sort is not None:
-            params["sort"] = sort
-        if page is not None:
-            params["page"] = page
-        if per_page is not None:
-            params["per_page"] = per_page
+        Returns a paginated list of Actions for a Load Balancer.
 
-        response = self._client.request(
-            url=f"{self._base_url}/{load_balancer.id}/actions",
-            method="GET",
-            params=params,
+        :param load_balancer: Load Balancer to get the Actions for.
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
+        :param page: Page number to get.
+        :param per_page: Maximum number of Actions returned per page.
+        """
+        return self._get_actions_list(
+            f"{self._base_url}/{load_balancer.id}",
+            status=status,
+            sort=sort,
+            page=page,
+            per_page=per_page,
         )
-        actions = [
-            BoundAction(self._parent.actions, action_data)
-            for action_data in response["actions"]
-        ]
-        return ActionsPageResult(actions, Meta.parse_meta(response))
 
     def get_actions(
         self,
         load_balancer: LoadBalancer | BoundLoadBalancer,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
     ) -> list[BoundAction]:
-        """Returns all action objects for a Load Balancer.
+        """
+        Returns all Actions for a Load Balancer.
 
-        :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
-        :param status: List[str] (optional)
-               Response will have only actions with specified statuses. Choices: `running` `success` `error`
-        :param sort: List[str] (optional)
-               Specify how the results are sorted. Choices: `id` `id:asc` `id:desc` `command` `command:asc` `command:desc` `status` `status:asc` `status:desc` `progress` `progress:asc` `progress:desc` `started` `started:asc` `started:desc` `finished` `finished:asc` `finished:desc`
-        :return: List[:class:`BoundAction <hcloud.actions.client.BoundAction>`]
+        :param load_balancer: Load Balancer to get the Actions for.
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
         """
         return self._iter_pages(
             self.get_actions_list,

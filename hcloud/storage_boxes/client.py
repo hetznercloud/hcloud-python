@@ -2,7 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 
-from ..actions import ActionsPageResult, BoundAction, ResourceActionsClient
+from ..actions import (
+    ActionSort,
+    ActionsPageResult,
+    ActionStatus,
+    BoundAction,
+    ResourceActionsClient,
+)
+from ..actions.client import ResourceClientBaseActionsMixin
 from ..core import BoundModelBase, Meta, ResourceClientBase
 from ..locations import BoundLocation, Location
 from ..ssh_keys import BoundSSHKey, SSHKey
@@ -67,20 +74,20 @@ class BoundStorageBox(BoundModelBase[StorageBox], StorageBox):
     def get_actions_list(
         self,
         *,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
         page: int | None = None,
         per_page: int | None = None,
     ) -> ActionsPageResult:
         """
-        Returns a paginated list of Actions for a Storage Box for a specific page.
+        Returns a paginated list of Actions for a Storage Box.
 
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-list-actions-for-a-storage-box
 
-        :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
-        :param sort: Sort resources by field and direction.
-        :param page: Page number to return.
-        :param per_page: Maximum number of entries returned per page.
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
+        :param page: Page number to get.
+        :param per_page: Maximum number of Actions returned per page.
 
         Experimental:
             Storage Box support is experimental, breaking changes may occur within minor releases.
@@ -96,8 +103,8 @@ class BoundStorageBox(BoundModelBase[StorageBox], StorageBox):
     def get_actions(
         self,
         *,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
     ) -> list[BoundAction]:
         """
         Returns all Actions for a Storage Box.
@@ -743,7 +750,10 @@ class StorageBoxSubaccountsPageResult(NamedTuple):
     meta: Meta
 
 
-class StorageBoxesClient(ResourceClientBase):
+class StorageBoxesClient(
+    ResourceClientBaseActionsMixin,
+    ResourceClientBase,
+):
     """
     A client for the Storage Boxes API.
 
@@ -1012,58 +1022,46 @@ class StorageBoxesClient(ResourceClientBase):
         self,
         storage_box: StorageBox | BoundStorageBox,
         *,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
         page: int | None = None,
         per_page: int | None = None,
     ) -> ActionsPageResult:
         """
-        Returns a paginated list of Actions for a Storage Box for a specific page.
+        Returns a paginated list of Actions for a Storage Box.
 
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-list-actions-for-a-storage-box
 
-        :param storage_box: Storage Box to fetch the Actions from.
-        :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
-        :param sort: Sort resources by field and direction.
-        :param page: Page number to return.
-        :param per_page: Maximum number of entries returned per page.
+        :param storage_box: Storage Box to get the Actions for.
+        :param status: Filter the Actions by status.
+        :param sort: Sort Actions by field and direction.
+        :param page: Page number to get.
+        :param per_page: Maximum number of Actions returned per page.
 
         Experimental:
             Storage Box support is experimental, breaking changes may occur within minor releases.
         """
-        params: dict[str, Any] = {}
-        if status is not None:
-            params["status"] = status
-        if sort is not None:
-            params["sort"] = sort
-        if page is not None:
-            params["page"] = page
-        if per_page is not None:
-            params["per_page"] = per_page
-
-        response = self._client.request(
-            method="GET",
-            url=f"/storage_boxes/{storage_box.id}/actions",
-            params=params,
-        )
-        return ActionsPageResult(
-            actions=[BoundAction(self._parent.actions, o) for o in response["actions"]],
-            meta=Meta.parse_meta(response),
+        return self._get_actions_list(
+            f"{self._base_url}/{storage_box.id}",
+            status=status,
+            sort=sort,
+            page=page,
+            per_page=per_page,
         )
 
     def get_actions(
         self,
         storage_box: StorageBox | BoundStorageBox,
         *,
-        status: list[str] | None = None,
-        sort: list[str] | None = None,
+        status: list[ActionStatus] | None = None,
+        sort: list[ActionSort] | None = None,
     ) -> list[BoundAction]:
         """
         Returns all Actions for a Storage Box.
 
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-actions-list-actions-for-a-storage-box
 
-        :param storage_box: Storage Box to fetch the Actions from.
+        :param storage_box: Storage Box to get the Actions for.
         :param status: Filter the actions by status. The response will only contain actions matching the specified statuses.
         :param sort: Sort resources by field and direction.
 
