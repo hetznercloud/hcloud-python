@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.14.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.14.0)
+
+### Features
+
+- retry requests when the api returns a `timeout` error (#617)
+
 ## [v2.13.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.13.0)
 
 ### Features
