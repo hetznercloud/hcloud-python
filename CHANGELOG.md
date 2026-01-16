@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.15.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.15.0)
+
+### Features
+
+- add name to Storage Box Subaccount (#621)
+
 ## [v2.14.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.14.0)
 
 ### Features
