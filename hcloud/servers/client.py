@@ -358,14 +358,16 @@ class BoundServer(BoundModelBase[Server], Server):
     def rebuild(
         self,
         image: Image | BoundImage,
+        user_data: str | None = None,
         # pylint: disable=unused-argument
         **kwargs: Any,
     ) -> RebuildResponse:
         """Rebuilds a server overwriting its disk with the content of an image, thereby destroying all data on the target server.
 
         :param image: Image to use for the rebuilt server
+        :param user_data: Cloud-Init user data to use during Server rebuild (optional)
         """
-        return self._client.rebuild(self, image=image)
+        return self._client.rebuild(self, image=image, user_data=user_data)
 
     def change_type(
         self,
@@ -1036,6 +1038,7 @@ class ServersClient(
         self,
         server: Server | BoundServer,
         image: Image | BoundImage,
+        user_data: str | None = None,
         # pylint: disable=unused-argument
         **kwargs: Any,
     ) -> RebuildResponse:
@@ -1043,8 +1046,12 @@ class ServersClient(
 
         :param server: Server to rebuild
         :param image: Image to use for the rebuilt server
+        :param user_data: Cloud-Init user data to use during Server rebuild (optional)
         """
         data: dict[str, Any] = {"image": image.id_or_name}
+        if user_data is not None:
+            data.update({"user_data": user_data})
+
         response = self._client.request(
             url=f"{self._base_url}/{server.id}/actions/rebuild",
             method="POST",
