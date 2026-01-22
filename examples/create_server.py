@@ -11,7 +11,11 @@ assert (
 ), "Please export your API token in the HCLOUD_TOKEN environment variable"
 token = environ["HCLOUD_TOKEN"]
 
-client = Client(token=token)
+client = Client(
+    token=token,
+    application_name="examples",
+    application_version="unknown",
+)
 
 response = client.servers.create(
     name="my-server",

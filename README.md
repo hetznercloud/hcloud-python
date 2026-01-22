@@ -34,7 +34,11 @@ from hcloud import Client
 from hcloud.images import Image
 from hcloud.server_types import ServerType
 
-client = Client(token="{YOUR_API_TOKEN}")  # Please paste your API token here
+client = Client(
+    token="{YOUR_API_TOKEN}", # Please paste your API token here
+    application_name="my-app",
+    application_version="v1.0.0",
+)
 
 # Create a server named my-server
 response = client.servers.create(
