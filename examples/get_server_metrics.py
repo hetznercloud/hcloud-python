@@ -12,7 +12,11 @@ assert (
 ), "Please export your API token in the HCLOUD_TOKEN environment variable"
 token = environ["HCLOUD_TOKEN"]
 
-client = Client(token=token)
+client = Client(
+    token=token,
+    application_name="examples",
+    application_version="unknown",
+)
 
 server = client.servers.get_by_name("my-server")
 if server is None:

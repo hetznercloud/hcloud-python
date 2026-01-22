@@ -12,7 +12,11 @@ assert (
 token = environ["HCLOUD_TOKEN"]
 
 # Create a client
-client = Client(token=token)
+client = Client(
+    token=token,
+    application_name="examples",
+    application_version="unknown",
+)
 
 # Create 2 servers
 # Create 2 servers
