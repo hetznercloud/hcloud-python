@@ -1050,7 +1050,7 @@ class ServersClient(
         """
         data: dict[str, Any] = {"image": image.id_or_name}
         if user_data is not None:
-            data.update({"user_data": user_data})
+            data["user_data"] = user_data
 
         response = self._client.request(
             url=f"{self._base_url}/{server.id}/actions/rebuild",
