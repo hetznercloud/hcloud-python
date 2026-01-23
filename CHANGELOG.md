@@ -1,5 +1,16 @@
 # Changelog
 
+## [v2.16.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.16.0)
+
+### Storage Boxes support is now generally available
+
+The experimental phase for Storage Boxes is over, and Storage Boxes support is now generally available.
+
+### Features
+
+- **servers**: allow setting user_data for rebuild (#627)
+- Storage Box support no longer experimental (#626)
+
 ## [v2.15.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.15.0)
 
 ### Features
