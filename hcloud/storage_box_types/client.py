@@ -31,9 +31,6 @@ class StorageBoxTypesClient(ResourceClientBase):
     A client for the Storage Box Types API.
 
     See https://docs.hetzner.cloud/reference/hetzner#storage-box-types.
-
-    Experimental:
-        Storage Box support is experimental, breaking changes may occur within minor releases.
     """
 
     _base_url = "/storage_box_types"
@@ -49,9 +46,6 @@ class StorageBoxTypesClient(ResourceClientBase):
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-types-get-a-storage-box-type
 
         :param id: ID of the Storage Box Type.
-
-        Experimental:
-            Storage Box support is experimental, breaking changes may occur within minor releases.
         """
         response = self._client.request(
             method="GET",
@@ -66,9 +60,6 @@ class StorageBoxTypesClient(ResourceClientBase):
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-types-list-storage-box-types
 
         :param name: Name of the Storage Box Type.
-
-        Experimental:
-            Storage Box support is experimental, breaking changes may occur within minor releases.
         """
         return self._get_first_by(self.get_list, name=name)
 
@@ -86,9 +77,6 @@ class StorageBoxTypesClient(ResourceClientBase):
         :param name: Name of the Storage Box Type.
         :param page: Page number to return.
         :param per_page: Maximum number of entries returned per page.
-
-        Experimental:
-            Storage Box support is experimental, breaking changes may occur within minor releases.
         """
         params: dict[str, Any] = {}
         if name is not None:
@@ -120,9 +108,6 @@ class StorageBoxTypesClient(ResourceClientBase):
         See https://docs.hetzner.cloud/reference/hetzner#storage-box-types-list-storage-box-types
 
         :param name: Name of the Storage Box Type.
-
-        Experimental:
-            Storage Box support is experimental, breaking changes may occur within minor releases.
         """
         return self._iter_pages(
             self.get_list,
