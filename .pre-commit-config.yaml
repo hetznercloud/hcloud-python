@@ -35,7 +35,7 @@ repos:
         args: [--py310-plus]
 
   - repo: https://github.com/pycqa/isort
-    rev: 7.0.0
+    rev: 8.0.0
     hooks:
       - id: isort
 
