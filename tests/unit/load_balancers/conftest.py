@@ -89,7 +89,7 @@ def response_load_balancer():
                 },
                 {
                     "type": "label_selector",
-                    "label_selector": {"selector": "eu"},
+                    "label_selector": {"selector": "env=prod"},
                     "use_private_ip": True,
                     "targets": [
                         {

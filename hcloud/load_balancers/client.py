@@ -93,63 +93,51 @@ class BoundLoadBalancer(BoundModelBase[LoadBalancer], LoadBalancer):
             ]
             data["private_net"] = private_nets
 
-        targets = data.get("targets")
-        if targets:
-            tmp_targets = []
-            for target in targets:
-                tmp_target = LoadBalancerTarget(type=target["type"])
-                if target["type"] == "server":
-                    tmp_target.server = BoundServer(
-                        client._parent.servers, data=target["server"], complete=False
-                    )
-                    tmp_target.use_private_ip = target["use_private_ip"]
-                elif target["type"] == "label_selector":
-                    tmp_target.label_selector = LoadBalancerTargetLabelSelector(
-                        selector=target["label_selector"]["selector"]
-                    )
-                    tmp_target.use_private_ip = target["use_private_ip"]
-                    nested_targets = target.get("targets", [])
-                    if nested_targets:
-                        tmp_nested = []
-                        for nested in nested_targets:
-                            nested_target = LoadBalancerTarget(type=nested["type"])
-                            if nested["type"] == "server":
-                                nested_target.server = BoundServer(
-                                    client._parent.servers,
-                                    data=nested["server"],
-                                    complete=False,
-                                )
-                            elif nested["type"] == "ip":
-                                nested_target.ip = LoadBalancerTargetIP(
-                                    ip=nested["ip"]["ip"]
-                                )
-                            nested_target.use_private_ip = nested.get("use_private_ip")
-                            nested_health_status = nested.get("health_status")
-                            if nested_health_status is not None:
-                                nested_target.health_status = [
-                                    LoadBalancerTargetHealthStatus(
-                                        listen_port=hs["listen_port"],
-                                        status=hs["status"],
-                                    )
-                                    for hs in nested_health_status
-                                ]
-                            tmp_nested.append(nested_target)
-                        tmp_target.targets = tmp_nested
-                elif target["type"] == "ip":
-                    tmp_target.ip = LoadBalancerTargetIP(ip=target["ip"]["ip"])
+        def _load_balancer_targets(
+            raw_targets: list[dict[str, Any]],
+        ) -> list[LoadBalancerTarget]:
+            return [_load_balancer_target(raw_target) for raw_target in raw_targets]
 
-                target_health_status = target.get("health_status")
-                if target_health_status is not None:
-                    tmp_target.health_status = [
-                        LoadBalancerTargetHealthStatus(
-                            listen_port=target_health_status_item["listen_port"],
-                            status=target_health_status_item["status"],
-                        )
-                        for target_health_status_item in target_health_status
-                    ]
+        def _load_balancer_target(
+            raw_target: dict[str, Any],
+        ) -> LoadBalancerTarget:
+            result = LoadBalancerTarget(type=raw_target["type"])
 
-                tmp_targets.append(tmp_target)
-            data["targets"] = tmp_targets
+            if raw_target["type"] == "ip":
+                result.ip = LoadBalancerTargetIP(
+                    ip=raw_target["ip"]["ip"],
+                )
+
+            elif raw_target["type"] == "server":
+                result.server = BoundServer(
+                    client._parent.servers,  # pylint: disable=protected-access
+                    data=raw_target["server"],
+                    complete=False,
+                )
+                result.use_private_ip = raw_target["use_private_ip"]
+
+            elif raw_target["type"] == "label_selector":
+                result.label_selector = LoadBalancerTargetLabelSelector(
+                    selector=raw_target["label_selector"]["selector"]
+                )
+                result.use_private_ip = raw_target["use_private_ip"]
+
+                if (raw_nested_targets := raw_target.get("targets")) is not None:
+                    result.targets = _load_balancer_targets(raw_nested_targets)
+
+            if (raw_health_status := raw_target.get("health_status")) is not None:
+                result.health_status = [
+                    LoadBalancerTargetHealthStatus(
+                        listen_port=item["listen_port"],
+                        status=item["status"],
+                    )
+                    for item in raw_health_status
+                ]
+
+            return result
+
+        if (raw_targets := data.get("targets")) is not None:
+            data["targets"] = _load_balancer_targets(raw_targets)
 
         services = data.get("services")
         if services:

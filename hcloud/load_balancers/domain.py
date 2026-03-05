@@ -411,6 +411,8 @@ class LoadBalancerTarget(BaseDomain):
             use the private IP instead of primary public IP
     :param health_status: list
             List of health statuses of the services on this target. Only present for target types "server" and "ip".
+    :param targets: list
+            List of resolved label selector targets. Only present for target types "label_selector".
     """
 
     __api_properties__ = (
