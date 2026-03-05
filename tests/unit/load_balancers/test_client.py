@@ -60,6 +60,29 @@ class TestBoundLoadBalancer(BoundModelTestCase):
         assert bound_load_balancer.id == 4711
         assert bound_load_balancer.name == "Web Frontend"
 
+    def test_init_label_selector_nested_targets(self, response_load_balancer):
+        bound_load_balancer = BoundLoadBalancer(
+            client=mock.MagicMock(), data=response_load_balancer["load_balancer"]
+        )
+
+        label_selector_target = bound_load_balancer.targets[1]
+        assert label_selector_target.type == "label_selector"
+        assert label_selector_target.label_selector.selector == "eu"
+        assert label_selector_target.use_private_ip is True
+        assert label_selector_target.targets is not None
+        assert len(label_selector_target.targets) == 1
+
+        nested = label_selector_target.targets[0]
+        assert nested.type == "server"
+        assert nested.server.id == 105054278
+        assert nested.use_private_ip is True
+        assert nested.health_status is not None
+        assert len(nested.health_status) == 2
+        assert nested.health_status[0].listen_port == 443
+        assert nested.health_status[0].status == "healthy"
+        assert nested.health_status[1].listen_port == 3000
+        assert nested.health_status[1].status == "healthy"
+
 
 class TestLoadBalancerslient:
     @pytest.fixture()

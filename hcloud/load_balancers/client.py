@@ -108,6 +108,33 @@ class BoundLoadBalancer(BoundModelBase[LoadBalancer], LoadBalancer):
                         selector=target["label_selector"]["selector"]
                     )
                     tmp_target.use_private_ip = target["use_private_ip"]
+                    nested_targets = target.get("targets", [])
+                    if nested_targets:
+                        tmp_nested = []
+                        for nested in nested_targets:
+                            nested_target = LoadBalancerTarget(type=nested["type"])
+                            if nested["type"] == "server":
+                                nested_target.server = BoundServer(
+                                    client._parent.servers,
+                                    data=nested["server"],
+                                    complete=False,
+                                )
+                            elif nested["type"] == "ip":
+                                nested_target.ip = LoadBalancerTargetIP(
+                                    ip=nested["ip"]["ip"]
+                                )
+                            nested_target.use_private_ip = nested.get("use_private_ip")
+                            nested_health_status = nested.get("health_status")
+                            if nested_health_status is not None:
+                                nested_target.health_status = [
+                                    LoadBalancerTargetHealthStatus(
+                                        listen_port=hs["listen_port"],
+                                        status=hs["status"],
+                                    )
+                                    for hs in nested_health_status
+                                ]
+                            tmp_nested.append(nested_target)
+                        tmp_target.targets = tmp_nested
                 elif target["type"] == "ip":
                     tmp_target.ip = LoadBalancerTargetIP(ip=target["ip"]["ip"])
 
