@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.17.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.17.0)
+
+### Features
+
+- parse nested load balancer `label_selector` targets (#633)
+
 ## [v2.16.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.16.0)
 
 ### Storage Boxes support is now generally available
