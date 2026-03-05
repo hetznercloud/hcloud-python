@@ -86,7 +86,23 @@ def response_load_balancer():
                     "health_status": [{"listen_port": 443, "status": "healthy"}],
                     "label_selector": None,
                     "use_private_ip": False,
-                }
+                },
+                {
+                    "type": "label_selector",
+                    "label_selector": {"selector": "env=prod"},
+                    "use_private_ip": True,
+                    "targets": [
+                        {
+                            "type": "server",
+                            "server": {"id": 105054278},
+                            "use_private_ip": True,
+                            "health_status": [
+                                {"listen_port": 443, "status": "healthy"},
+                                {"listen_port": 3000, "status": "healthy"},
+                            ],
+                        }
+                    ],
+                },
             ],
             "algorithm": {"type": "round_robin"},
         }
