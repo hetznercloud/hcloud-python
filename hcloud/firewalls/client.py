@@ -210,6 +210,8 @@ class FirewallsClient(
     ResourceClientBase,
 ):
     _base_url = "/firewalls"
+    _name_singular = "Firewall"
+    _name_plural = "Firewalls"
 
     actions: ResourceActionsClient
     """Firewalls scoped actions client

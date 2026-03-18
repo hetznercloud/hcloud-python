@@ -164,6 +164,8 @@ class FloatingIPsClient(
     ResourceClientBase,
 ):
     _base_url = "/floating_ips"
+    _name_singular = "Floating IP"
+    _name_plural = "Floating IPs"
 
     actions: ResourceActionsClient
     """Floating IPs scoped actions client

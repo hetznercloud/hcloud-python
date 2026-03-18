@@ -190,6 +190,8 @@ class NetworksClient(
     ResourceClientBase,
 ):
     _base_url = "/networks"
+    _name_singular = "Network"
+    _name_plural = "Networks"
 
     actions: ResourceActionsClient
     """Networks scoped actions client

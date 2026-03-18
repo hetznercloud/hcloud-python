@@ -416,6 +416,8 @@ class LoadBalancersClient(
     ResourceClientBase,
 ):
     _base_url = "/load_balancers"
+    _name_singular = "Load Balancer"
+    _name_plural = "Load Balancers"
 
     actions: ResourceActionsClient
     """Load Balancers scoped actions client

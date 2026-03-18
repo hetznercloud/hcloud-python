@@ -577,6 +577,8 @@ class ZonesClient(
     """
 
     _base_url = "/zones"
+    _name_singular = "Zone"
+    _name_plural = "Zones"
 
     actions: ResourceActionsClient
     """Zones scoped actions client

@@ -127,6 +127,8 @@ class ResourceActionsClient(
     ResourceClientBase,
 ):
     _resource: str
+    _name_singular = "Action"
+    _name_plural = "Actions"
 
     def __init__(self, client: ResourceClientBase | Client, resource: str | None):
         if isinstance(client, ResourceClientBase):

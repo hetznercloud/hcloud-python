@@ -155,6 +155,8 @@ class VolumesClient(
     ResourceClientBase,
 ):
     _base_url = "/volumes"
+    _name_singular = "Volume"
+    _name_plural = "Volumes"
 
     actions: ResourceActionsClient
     """Volumes scoped actions client

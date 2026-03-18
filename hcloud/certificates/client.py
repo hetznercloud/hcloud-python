@@ -135,6 +135,8 @@ class CertificatesClient(
     ResourceClientBase,
 ):
     _base_url = "/certificates"
+    _name_singular = "Certificate"
+    _name_plural = "Certificates"
 
     actions: ResourceActionsClient
     """Certificates scoped actions client

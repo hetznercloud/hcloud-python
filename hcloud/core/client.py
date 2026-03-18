@@ -22,6 +22,9 @@ T = TypeVar("T")
 
 class ResourceClientBase:
     _base_url: ClassVar[str]
+    _name_singular: ClassVar[str]
+    _name_plural: ClassVar[str]
+
     _parent: Client
     _client: ClientBase
 

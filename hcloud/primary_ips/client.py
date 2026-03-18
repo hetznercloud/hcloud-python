@@ -173,6 +173,8 @@ class PrimaryIPsClient(
     ResourceClientBase,
 ):
     _base_url = "/primary_ips"
+    _name_singular = "Primary IP"
+    _name_plural = "Primary IPs"
 
     actions: ResourceActionsClient
     """Primary IPs scoped actions client

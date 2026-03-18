@@ -139,6 +139,8 @@ class ImagesClient(
     ResourceClientBase,
 ):
     _base_url = "/images"
+    _name_singular = "Image"
+    _name_plural = "Images"
 
     actions: ResourceActionsClient
     """Images scoped actions client

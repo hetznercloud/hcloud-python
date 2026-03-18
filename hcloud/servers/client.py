@@ -528,6 +528,8 @@ class ServersClient(
     ResourceClientBase,
 ):
     _base_url = "/servers"
+    _name_singular = "Server"
+    _name_plural = "Servers"
 
     actions: ResourceActionsClient
     """Servers scoped actions client

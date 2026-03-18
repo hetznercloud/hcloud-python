@@ -710,6 +710,8 @@ class StorageBoxesClient(
     """
 
     _base_url = "/storage_boxes"
+    _name_singular = "Storage Box"
+    _name_plural = "Storage Boxes"
 
     actions: ResourceActionsClient
     """Storage Boxes scoped actions client
