@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.17.1](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.17.1)
+
+### Bug Fixes
+
+- missing `__api_properties__` on LoadBalancerService (#639)
+
 ## [v2.17.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.17.0)
 
 ### Features
