@@ -160,6 +160,16 @@ class LoadBalancerService(BaseDomain):
             Configuration for http/https protocols, required when protocol is http/https
     """
 
+    __api_properties__ = (
+        "protocol",
+        "listen_port",
+        "destination_port",
+        "proxyprotocol",
+        "health_check",
+        "http",
+    )
+    __slots__ = __api_properties__
+
     def __init__(
         self,
         protocol: str | None = None,
