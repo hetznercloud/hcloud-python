@@ -191,3 +191,9 @@ class TestBaseDomain:
         d2.child = [ActionDomain(id=2, name="child2")]
 
         assert d1 != d2
+
+
+def test_base_domain_subclasses():
+    for c in BaseDomain.__subclasses__():
+        assert len(c.__api_properties__) > 0
+        assert len(c.__slots__) > 0
