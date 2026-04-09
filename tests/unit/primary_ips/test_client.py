@@ -162,7 +162,6 @@ class TestPrimaryIPsClient:
             json={
                 "name": "primary-ip1",
                 "type": "ipv4",
-                "assignee_type": "server",
                 "location": "fsn1",
                 "auto_delete": False,
             },
@@ -194,7 +193,6 @@ class TestPrimaryIPsClient:
             json={
                 "name": "primary-ip1",
                 "type": "ipv4",
-                "assignee_type": "server",
                 "datacenter": "fsn1-dc14",
                 "auto_delete": False,
             },
@@ -235,6 +233,37 @@ class TestPrimaryIPsClient:
 
         assert_bound_primary_ip1(result.primary_ip, resource_client)
         assert_bound_action1(result.action, resource_client._parent.actions)
+
+    def test_create_with_assignee_type_deprecation(
+        self,
+        request_mock: mock.MagicMock,
+        resource_client: PrimaryIPsClient,
+        primary_ip1,
+        action1_running,
+    ):
+        request_mock.return_value = {
+            "primary_ip": primary_ip1,
+            "action": action1_running,
+        }
+
+        with pytest.deprecated_call():
+            resource_client.create(
+                type="ipv4",
+                name="primary-ip1",
+                assignee_id=17,
+            )
+
+        request_mock.assert_called_with(
+            method="POST",
+            url="/primary_ips",
+            json={
+                "name": "primary-ip1",
+                "type": "ipv4",
+                "assignee_id": 17,
+                "assignee_type": "server",
+                "auto_delete": False,
+            },
+        )
 
     @pytest.mark.parametrize(
         "primary_ip",
