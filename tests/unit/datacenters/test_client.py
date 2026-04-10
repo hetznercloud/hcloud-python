@@ -46,15 +46,18 @@ class TestBoundDatacenter:
             assert len(bound_datacenter.server_types.available_for_migration) == 3
             assert bound_datacenter.server_types.available_for_migration[0].id == 1
             assert (
-                bound_datacenter.server_types.available_for_migration[0].complete is False
+                bound_datacenter.server_types.available_for_migration[0].complete
+                is False
             )
             assert bound_datacenter.server_types.available_for_migration[1].id == 2
             assert (
-                bound_datacenter.server_types.available_for_migration[1].complete is False
+                bound_datacenter.server_types.available_for_migration[1].complete
+                is False
             )
             assert bound_datacenter.server_types.available_for_migration[2].id == 3
             assert (
-                bound_datacenter.server_types.available_for_migration[2].complete is False
+                bound_datacenter.server_types.available_for_migration[2].complete
+                is False
             )
 
 

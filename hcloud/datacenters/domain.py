@@ -64,6 +64,7 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
     def server_types(self, value: DatacenterServerTypes | None) -> None:
         self._server_types = value
 
+
 class DatacenterServerTypes(BaseDomain):
     """DatacenterServerTypes Domain
 
