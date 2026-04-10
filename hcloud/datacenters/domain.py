@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from typing import TYPE_CHECKING
 
 from ..core import BaseDomain, DomainIdentityMixin
@@ -25,7 +26,7 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
     """
 
     __api_properties__ = ("id", "name", "description", "location", "server_types")
-    __slots__ = __api_properties__
+    __slots__ = ("id", "name", "description", "location", "_server_types")
 
     def __init__(
         self,
@@ -39,8 +40,29 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
         self.name = name
         self.description = description
         self.location = location
-        self.server_types = server_types
+        self._server_types = server_types
 
+    @property
+    def server_types(self) -> DatacenterServerTypes | None:
+        """
+        .. deprecated:: 2.18.0
+            The 'server_types' property is deprecated and will not be supported after 2026-10-01.
+            Please use 'server_type.locations[]' instead.
+
+            See https://docs.hetzner.cloud/changelog#2026-04-01-datacenter-deprecations.
+        """
+        warnings.warn(
+            "The 'server_types' property is deprecated and will not be supported after 2026-10-01. "
+            "Please use 'server_type.locations[]' instead. "
+            "See https://docs.hetzner.cloud/changelog#2026-04-01-datacenter-deprecations",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self._server_types
+
+    @server_types.setter
+    def server_types(self, value: DatacenterServerTypes | None) -> None:
+        self._server_types = value
 
 class DatacenterServerTypes(BaseDomain):
     """DatacenterServerTypes Domain
