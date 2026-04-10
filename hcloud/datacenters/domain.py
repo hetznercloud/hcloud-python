@@ -25,8 +25,9 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
     :param server_types: :class:`DatacenterServerTypes <hcloud.datacenters.domain.DatacenterServerTypes>`
     """
 
-    __api_properties__ = ("id", "name", "description", "location", "server_types")
-    __slots__ = ("id", "name", "description", "location", "_server_types")
+    __properties__ = ("id", "name", "description", "location")
+    __api_properties__ = (*__properties__, "server_types")
+    __slots__ = (*__properties__, "_server_types")
 
     def __init__(
         self,

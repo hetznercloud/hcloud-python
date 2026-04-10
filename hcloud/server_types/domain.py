@@ -185,8 +185,8 @@ class ServerTypeLocation(BaseDomain):
 
     :param location: Location of the Server Type.
     :param deprecation: Wether the Server Type is deprecated in this Location.
-    :param available: True if the Server Type is currently available in this Location.
-    :param recommended: True if the Server Type is currently recommended in this Location.
+    :param available: Whether the Server Type is currently available in this Location.
+    :param recommended: Whether the Server Type is currently recommended in this Location.
     """
 
     __api_properties__ = (
