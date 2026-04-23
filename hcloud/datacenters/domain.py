@@ -55,7 +55,7 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
         warnings.warn(
             "The 'server_types' property is deprecated and will not be supported after 2026-10-01. "
             "Please use 'server_type.locations[]' instead. "
-            "See https://docs.hetzner.cloud/changelog#2026-04-01-datacenter-deprecations",
+            "See https://docs.hetzner.cloud/changelog#2026-04-01-datacenter-deprecations.",
             DeprecationWarning,
             stacklevel=2,
         )
