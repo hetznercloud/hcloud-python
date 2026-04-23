@@ -41,6 +41,8 @@ def server_type_response():
                     "id": 1,
                     "name": "nbg1",
                     "deprecation": None,
+                    "available": True,
+                    "recommended": False,
                 },
                 {
                     "id": 2,
@@ -49,6 +51,8 @@ def server_type_response():
                         "announced": "2023-06-01T00:00:00Z",
                         "unavailable_after": "2023-09-01T00:00:00Z",
                     },
+                    "available": True,
+                    "recommended": True,
                 },
             ],
         }

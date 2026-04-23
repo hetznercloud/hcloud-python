@@ -33,6 +33,8 @@ class TestBoundServerType:
         assert o.locations[0].location.id == 1
         assert o.locations[0].location.name == "nbg1"
         assert o.locations[0].deprecation is None
+        assert o.locations[0].available is True
+        assert o.locations[0].recommended is False
         assert o.locations[1].location.id == 2
         assert o.locations[1].location.name == "fsn1"
         assert (
@@ -43,6 +45,8 @@ class TestBoundServerType:
             o.locations[1].deprecation.unavailable_after.isoformat()
             == "2023-09-01T00:00:00+00:00"
         )
+        assert o.locations[1].available is True
+        assert o.locations[1].recommended is True
 
         with pytest.deprecated_call():
             assert o.deprecated is True

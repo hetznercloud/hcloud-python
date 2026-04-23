@@ -25,36 +25,40 @@ class TestBoundDatacenter:
         assert bound_datacenter.location.name == "fsn1"
         assert bound_datacenter.location.complete is True
 
-        assert isinstance(bound_datacenter.server_types, DatacenterServerTypes)
-        assert len(bound_datacenter.server_types.supported) == 3
-        assert bound_datacenter.server_types.supported[0].id == 1
-        assert bound_datacenter.server_types.supported[0].complete is False
-        assert bound_datacenter.server_types.supported[1].id == 2
-        assert bound_datacenter.server_types.supported[1].complete is False
-        assert bound_datacenter.server_types.supported[2].id == 3
-        assert bound_datacenter.server_types.supported[2].complete is False
+        with pytest.deprecated_call():
+            assert isinstance(bound_datacenter.server_types, DatacenterServerTypes)
+            assert len(bound_datacenter.server_types.supported) == 3
+            assert bound_datacenter.server_types.supported[0].id == 1
+            assert bound_datacenter.server_types.supported[0].complete is False
+            assert bound_datacenter.server_types.supported[1].id == 2
+            assert bound_datacenter.server_types.supported[1].complete is False
+            assert bound_datacenter.server_types.supported[2].id == 3
+            assert bound_datacenter.server_types.supported[2].complete is False
 
-        assert len(bound_datacenter.server_types.available) == 3
-        assert bound_datacenter.server_types.available[0].id == 1
-        assert bound_datacenter.server_types.available[0].complete is False
-        assert bound_datacenter.server_types.available[1].id == 2
-        assert bound_datacenter.server_types.available[1].complete is False
-        assert bound_datacenter.server_types.available[2].id == 3
-        assert bound_datacenter.server_types.available[2].complete is False
+            assert len(bound_datacenter.server_types.available) == 3
+            assert bound_datacenter.server_types.available[0].id == 1
+            assert bound_datacenter.server_types.available[0].complete is False
+            assert bound_datacenter.server_types.available[1].id == 2
+            assert bound_datacenter.server_types.available[1].complete is False
+            assert bound_datacenter.server_types.available[2].id == 3
+            assert bound_datacenter.server_types.available[2].complete is False
 
-        assert len(bound_datacenter.server_types.available_for_migration) == 3
-        assert bound_datacenter.server_types.available_for_migration[0].id == 1
-        assert (
-            bound_datacenter.server_types.available_for_migration[0].complete is False
-        )
-        assert bound_datacenter.server_types.available_for_migration[1].id == 2
-        assert (
-            bound_datacenter.server_types.available_for_migration[1].complete is False
-        )
-        assert bound_datacenter.server_types.available_for_migration[2].id == 3
-        assert (
-            bound_datacenter.server_types.available_for_migration[2].complete is False
-        )
+            assert len(bound_datacenter.server_types.available_for_migration) == 3
+            assert bound_datacenter.server_types.available_for_migration[0].id == 1
+            assert (
+                bound_datacenter.server_types.available_for_migration[0].complete
+                is False
+            )
+            assert bound_datacenter.server_types.available_for_migration[1].id == 2
+            assert (
+                bound_datacenter.server_types.available_for_migration[1].complete
+                is False
+            )
+            assert bound_datacenter.server_types.available_for_migration[2].id == 3
+            assert (
+                bound_datacenter.server_types.available_for_migration[2].complete
+                is False
+            )
 
 
 class TestDatacentersClient:
