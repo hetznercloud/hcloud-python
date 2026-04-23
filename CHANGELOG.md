@@ -1,5 +1,17 @@
 # Changelog
 
+## [v2.18.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.18.0)
+
+### Available and recommended Server Types have been moved
+
+`Datacenter.server_types` has been deprecated in favor of the new `ServerType.locations[].available` and `ServerType.locations[].recommended` properties.
+
+See the [changelog](https://docs.hetzner.cloud/changelog#2026-04-01-datacenter-deprecations) for more details.
+
+### Features
+
+- **datacenter, server_type**: move available and recommended to server_type (#645)
+
 ## [v2.17.1](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.17.1)
 
 ### Bug Fixes
