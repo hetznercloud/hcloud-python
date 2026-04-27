@@ -62,6 +62,7 @@ def response_load_balancer():
                         "certificates": [897],
                         "redirect_http": True,
                         "sticky_sessions": True,
+                        "timeout_idle": 60,
                     },
                     "health_check": {
                         "protocol": "http",
@@ -155,6 +156,7 @@ def response_create_load_balancer():
                         "certificates": [897],
                         "redirect_http": True,
                         "sticky_sessions": True,
+                        "timeout_idle": 60,
                     },
                     "health_check": {
                         "protocol": "http",
@@ -253,6 +255,7 @@ def response_update_load_balancer():
                         "certificates": [897],
                         "redirect_http": True,
                         "sticky_sessions": True,
+                        "timeout_idle": 60,
                     },
                     "health_check": {
                         "protocol": "http",
@@ -344,6 +347,7 @@ def response_simple_load_balancers():
                             "cookie_lifetime": 300,
                             "certificates": [897],
                             "redirect_http": True,
+                            "timeout_idle": 60,
                         },
                         "health_check": {
                             "protocol": "http",
@@ -428,6 +432,7 @@ def response_simple_load_balancers():
                             "cookie_lifetime": 300,
                             "certificates": [897],
                             "redirect_http": True,
+                            "timeout_idle": 60,
                         },
                         "health_check": {
                             "protocol": "http",
