@@ -1,3 +1,3 @@
 from __future__ import annotations
 
-__version__ = "2.18.0"  # x-releaser-pleaser-version
+__version__ = "2.19.0"  # x-releaser-pleaser-version
