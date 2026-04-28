@@ -311,7 +311,7 @@ class PrimaryIPsClient(
         name: str,
         datacenter: Datacenter | BoundDatacenter | None = None,
         location: Location | BoundLocation | None = None,
-        assignee_type: str | None = "server",
+        assignee_type: str | None = None,
         assignee_id: int | None = None,
         auto_delete: bool | None = False,
         labels: dict[str, str] | None = None,
@@ -328,13 +328,12 @@ class PrimaryIPsClient(
         :param labels: Dict[str, str] (optional) User-defined labels (key-value pairs)
         :return: :class:`CreatePrimaryIPResponse <hcloud.primary_ips.domain.CreatePrimaryIPResponse>`
         """
-
         data: dict[str, Any] = {
             "name": name,
             "type": type,
-            "assignee_type": assignee_type,
             "auto_delete": auto_delete,
         }
+
         if datacenter is not None:
             warnings.warn(
                 "The 'datacenter' argument is deprecated and will be removed after 1 July 2026. "
@@ -348,10 +347,24 @@ class PrimaryIPsClient(
             data["location"] = location.id_or_name
         if assignee_id is not None:
             data["assignee_id"] = assignee_id
+            if assignee_type is None:
+                assignee_type = "server"
+                warnings.warn(
+                    "The 'assignee_type' argument will no longer default to 'server' "
+                    "and will be required together with the 'assignee_id' argument. "
+                    "Please explicitly set the 'assignee_type' argument.",
+                    DeprecationWarning,
+                    stacklevel=2,
+                )
+            data["assignee_type"] = assignee_type
         if labels is not None:
             data["labels"] = labels
 
-        response = self._client.request(url=self._base_url, json=data, method="POST")
+        response = self._client.request(
+            method="POST",
+            url=self._base_url,
+            json=data,
+        )
 
         action = None
         if response.get("action") is not None:
