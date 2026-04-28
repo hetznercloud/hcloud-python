@@ -1,5 +1,23 @@
 # Changelog
 
+## [v2.19.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.19.0)
+
+### Primary IPs `assignee_type` behavior change
+
+In the create Primary IP call, the `assignee_type` argument is now only send when the `assignee_id` argument is set. The `assignee_type` argument will stop defaulting to `server` in the near future, consider explicitly setting this argument when needed.
+
+As of 1 August 2026, the behavior of the Primary IP `assignee_type` property will change, and will return `unassigned` when the Primary IP is not assigned (when `assignee_id` is `null`). The goal is to eventually assign Primary IPs to other resource types, not only to `server`.
+
+See the [changelog](https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-will-return-unassigned) for more details.
+
+In addition, the Primary IP request body `assignee_type` property of the operation [`POST /v1/primary_ips`](https://docs.hetzner.cloud/reference/cloud#tag/primary-ips/create_primary_ip) is now optional. Primary IPs created without `assignee_type` return `server` until 1 August 2026, after this date, its value will be `unassigned`.
+
+See the [changelog](https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-make-assignee_type-optional) for more details.
+
+### Features
+
+- **primary-ip**: `assignee_type` behavior changed when creating a primary ip (#647)
+
 ## [v2.18.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.18.0)
 
 ### Available and recommended Server Types have been moved
