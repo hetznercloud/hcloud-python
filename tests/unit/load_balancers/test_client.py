@@ -13,6 +13,7 @@ from hcloud.load_balancers import (
     LoadBalancerHealthCheck,
     LoadBalancersClient,
     LoadBalancerService,
+    LoadBalancerServiceHttp,
     LoadBalancerTarget,
     LoadBalancerTargetIP,
     LoadBalancerTargetLabelSelector,
@@ -383,13 +384,38 @@ class TestLoadBalancerslient:
     ):
         request_mock.return_value = response_add_service
 
-        service = LoadBalancerService(listen_port=80, protocol="http")
+        service = LoadBalancerService(
+            listen_port=80,
+            protocol="http",
+            destination_port=8080,
+            proxyprotocol=False,
+            http=LoadBalancerServiceHttp(
+                cookie_name="HCLBSTICKY",
+                cookie_lifetime=300,
+                redirect_http=True,
+                sticky_sessions=True,
+                timeout_idle=60,
+            ),
+        )
         action = resource_client.add_service(load_balancer, service)
 
         request_mock.assert_called_with(
             method="POST",
             url="/load_balancers/1/actions/add_service",
-            json={"protocol": "http", "listen_port": 80},
+            json={
+                "protocol": "http",
+                "listen_port": 80,
+                "destination_port": 8080,
+                "proxyprotocol": False,
+                "http": {
+                    "cookie_name": "HCLBSTICKY",
+                    "cookie_lifetime": 300,
+                    "redirect_http": True,
+                    "sticky_sessions": True,
+                    "timeout_idle": 60,
+                    "certificates": [],
+                },
+            },
         )
 
         assert action.id == 13
