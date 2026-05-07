@@ -212,6 +212,8 @@ class LoadBalancerService(BaseDomain):
                 http["redirect_http"] = self.http.redirect_http
             if self.http.sticky_sessions is not None:
                 http["sticky_sessions"] = self.http.sticky_sessions
+            if self.http.timeout_idle is not None:
+                http["timeout_idle"] = self.http.timeout_idle
 
             http["certificates"] = [
                 certificate.id for certificate in self.http.certificates or []
@@ -272,6 +274,8 @@ class LoadBalancerServiceHttp(BaseDomain):
            Redirect traffic from http port 80 to port 443
     :param sticky_sessions: bool
            Use sticky sessions. Only available if protocol is "http" or "https".
+    :param timeout_idle: int
+           Idle timeout in seconds for HTTP connections. Must be between 30 and 300 seconds.
     """
 
     __api_properties__ = (
@@ -280,6 +284,7 @@ class LoadBalancerServiceHttp(BaseDomain):
         "certificates",
         "redirect_http",
         "sticky_sessions",
+        "timeout_idle",
     )
     __slots__ = __api_properties__
 
@@ -290,12 +295,14 @@ class LoadBalancerServiceHttp(BaseDomain):
         certificates: list[BoundCertificate] | None = None,
         redirect_http: bool | None = None,
         sticky_sessions: bool | None = None,
+        timeout_idle: int | None = None,
     ):
         self.cookie_name = cookie_name
         self.cookie_lifetime = cookie_lifetime
         self.certificates = certificates
         self.redirect_http = redirect_http
         self.sticky_sessions = sticky_sessions
+        self.timeout_idle = timeout_idle
 
 
 class LoadBalancerHealthCheck(BaseDomain):

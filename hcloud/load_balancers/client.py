@@ -155,6 +155,7 @@ class BoundLoadBalancer(BoundModelBase[LoadBalancer], LoadBalancer):
                         redirect_http=service["http"]["redirect_http"],
                         cookie_name=service["http"]["cookie_name"],
                         cookie_lifetime=service["http"]["cookie_lifetime"],
+                        timeout_idle=service["http"]["timeout_idle"],
                     )
                     tmp_service.http.certificates = [
                         BoundCertificate(
