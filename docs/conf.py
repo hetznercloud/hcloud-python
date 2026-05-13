@@ -40,7 +40,7 @@ source_suffix = {
 add_module_names = False
 
 # Myst Parser
-myst_enable_extensions = ["colon_fence"]
+myst_enable_extensions = ["colon_fence", "alert"]
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
