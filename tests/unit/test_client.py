@@ -107,6 +107,10 @@ class TestBaseClient:
                 True,
             ),
             (
+                APIException(code="bad_gateway", message="Error", details=None),
+                True,
+            ),
+            (
                 APIException(code=409, message="Conflict", details=None),
                 False,
             ),
