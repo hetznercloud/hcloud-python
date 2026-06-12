@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.21.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.21.0)
+
+### Features
+
+- retry requests on api bad_gateway error (#658)
+
 ## [v2.20.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.20.0)
 
 ### Load Balancer HTTP Services now support `timeout_idle`
