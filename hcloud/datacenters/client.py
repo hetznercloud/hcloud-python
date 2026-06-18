@@ -1,11 +1,15 @@
 from __future__ import annotations
 
-from typing import Any, NamedTuple
+import warnings
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from ..core import BoundModelBase, Meta, ResourceClientBase
 from ..locations import BoundLocation
 from ..server_types import BoundServerType
 from .domain import Datacenter, DatacenterServerTypes
+
+if TYPE_CHECKING:
+    from .._client import Client
 
 __all__ = [
     "BoundDatacenter",
@@ -15,6 +19,12 @@ __all__ = [
 
 
 class BoundDatacenter(BoundModelBase[Datacenter], Datacenter):
+    """
+    .. deprecated:: 2.22.0
+        The bound datacenter class is deprecated and will be removed after the 2026-10-01.
+        See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated.
+    """
+
     _client: DatacentersClient
 
     model = Datacenter
@@ -54,12 +64,33 @@ class BoundDatacenter(BoundModelBase[Datacenter], Datacenter):
 
 
 class DatacentersPageResult(NamedTuple):
+    """
+    .. deprecated:: 2.22.0
+        The datacenters page result class is deprecated and will be removed after the 2026-10-01.
+        See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated.
+    """
+
     datacenters: list[BoundDatacenter]
     meta: Meta
 
 
 class DatacentersClient(ResourceClientBase):
+    """
+    .. deprecated:: 2.22.0
+        The datacenters client class is deprecated and will be removed after the 2026-10-01.
+        See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated.
+    """
+
     _base_url = "/datacenters"
+
+    def __init__(self, client: Client):
+        warnings.warn(
+            "The datacenters client class is deprecated and will be removed after the 2026-10-01. "
+            "See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(client)
 
     def get_by_id(self, id: int) -> BoundDatacenter:
         """Get a specific datacenter by its ID.

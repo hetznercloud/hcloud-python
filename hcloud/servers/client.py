@@ -77,7 +77,9 @@ class BoundServer(BoundModelBase[Server], Server):
     ):
         raw = data.get("datacenter")
         if raw:
-            data["datacenter"] = BoundDatacenter(client._parent.datacenters, raw)
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=DeprecationWarning)
+                data["datacenter"] = BoundDatacenter(client._parent.datacenters, raw)
 
         raw = data.get("location")
         if raw:

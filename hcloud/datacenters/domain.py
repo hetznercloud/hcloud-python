@@ -18,6 +18,10 @@ __all__ = [
 class Datacenter(BaseDomain, DomainIdentityMixin):
     """Datacenter Domain
 
+    .. deprecated:: 2.22.0
+        The datacenters domain class is deprecated and will be removed after the 2026-10-01.
+        See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated.
+
     :param id: int ID of Datacenter
     :param name: str Name of Datacenter
     :param description: str Description of Datacenter
@@ -37,6 +41,12 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
         location: Location | None = None,
         server_types: DatacenterServerTypes | None = None,
     ):
+        warnings.warn(
+            "The datacenter domain class is deprecated and will be removed after the 2026-10-01. "
+            "See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.id = id
         self.name = name
         self.description = description
@@ -68,6 +78,10 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
 
 class DatacenterServerTypes(BaseDomain):
     """DatacenterServerTypes Domain
+
+    .. deprecated:: 2.22.0
+        The datacenters domain class is deprecated and will be removed after the 2026-10-01.
+        See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated.
 
     :param available: List[:class:`BoundServerTypes <hcloud.server_types.client.BoundServerTypes>`]
            All available server types for this datacenter

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import inspect
+import warnings
 from unittest import mock
 
 import pytest
@@ -47,10 +48,15 @@ def test_resources_with_actions(client: Client):
     """
     Ensure that the list of resource clients above is up to date.
     """
-    members = inspect.getmembers(
-        client,
-        predicate=lambda p: isinstance(p, ResourceClientBase) and hasattr(p, "actions"),
-    )
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+        members = inspect.getmembers(
+            client,
+            predicate=lambda p: isinstance(p, ResourceClientBase)
+            and hasattr(p, "actions"),
+        )
+
     for name, member in members:
         assert name in resources_with_actions
 
