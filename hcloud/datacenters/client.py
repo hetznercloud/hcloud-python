@@ -17,52 +17,50 @@ __all__ = [
     "DatacentersClient",
 ]
 
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-    class BoundDatacenter(BoundModelBase[Datacenter], Datacenter):
-        """
-        .. deprecated:: 2.22.0
-            The bound datacenter class is deprecated and will be removed after the 2026-10-01.
-            See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated.
-        """
+class BoundDatacenter(BoundModelBase[Datacenter], Datacenter):
+    """
+    .. deprecated:: 2.22.0
+        The bound datacenter class is deprecated and will be removed after the 2026-10-01.
+        See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated.
+    """
 
-        _client: DatacentersClient
+    _client: DatacentersClient
 
-        model = Datacenter
+    model = Datacenter
 
-        def __init__(self, client: DatacentersClient, data: dict[str, Any]):
-            location = data.get("location")
-            if location is not None:
-                data["location"] = BoundLocation(client._parent.locations, location)
+    def __init__(self, client: DatacentersClient, data: dict[str, Any]):
+        location = data.get("location")
+        if location is not None:
+            data["location"] = BoundLocation(client._parent.locations, location)
 
-            server_types = data.get("server_types")
-            if server_types is not None:
-                available = [
-                    BoundServerType(
-                        client._parent.server_types, {"id": server_type}, complete=False
-                    )
-                    for server_type in server_types["available"]
-                ]
-                supported = [
-                    BoundServerType(
-                        client._parent.server_types, {"id": server_type}, complete=False
-                    )
-                    for server_type in server_types["supported"]
-                ]
-                available_for_migration = [
-                    BoundServerType(
-                        client._parent.server_types, {"id": server_type}, complete=False
-                    )
-                    for server_type in server_types["available_for_migration"]
-                ]
-                data["server_types"] = DatacenterServerTypes(
-                    available=available,
-                    supported=supported,
-                    available_for_migration=available_for_migration,
+        server_types = data.get("server_types")
+        if server_types is not None:
+            available = [
+                BoundServerType(
+                    client._parent.server_types, {"id": server_type}, complete=False
                 )
+                for server_type in server_types["available"]
+            ]
+            supported = [
+                BoundServerType(
+                    client._parent.server_types, {"id": server_type}, complete=False
+                )
+                for server_type in server_types["supported"]
+            ]
+            available_for_migration = [
+                BoundServerType(
+                    client._parent.server_types, {"id": server_type}, complete=False
+                )
+                for server_type in server_types["available_for_migration"]
+            ]
+            data["server_types"] = DatacenterServerTypes(
+                available=available,
+                supported=supported,
+                available_for_migration=available_for_migration,
+            )
 
-            super().__init__(client, data)
+        super().__init__(client, data)
 
 
 class DatacentersPageResult(NamedTuple):
