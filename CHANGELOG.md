@@ -1,5 +1,19 @@
 # Changelog
 
+## [v2.22.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.22.0)
+
+### Datacenters resource is now deprecated
+
+The endpoints `GET /v1/datacenters` and `GET /v1/datacenters/{id}` are now deprecated and will be removed after 1 Oct. 2026. After this date, requests to these endpoints will return `HTTP 410 Gone`.
+
+The `DatacentersClient`, `Datacenter` and related classes are now deprecated.
+
+See the [changelog](https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated) for more details.
+
+### Features
+
+- deprecate datacenters (#656)
+
 ## [v2.21.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.21.0)
 
 ### Features
