@@ -15,10 +15,6 @@ __all__ = [
 ]
 
 
-@warnings.deprecated(
-    "The datacenter domain class is deprecated and will be removed after the 2026-10-01. "
-    "See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated.",
-)
 class Datacenter(BaseDomain, DomainIdentityMixin):
     """Datacenter Domain
 
@@ -45,6 +41,12 @@ class Datacenter(BaseDomain, DomainIdentityMixin):
         location: Location | None = None,
         server_types: DatacenterServerTypes | None = None,
     ):
+        warnings.warn(
+            "The datacenter domain class is deprecated and will be removed after the 2026-10-01. "
+            "See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.id = id
         self.name = name
         self.description = description
