@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from unittest import mock  # noqa: F401
 
 import pytest  # noqa: F401
@@ -7,6 +8,8 @@ import pytest  # noqa: F401
 from hcloud import Client
 from hcloud.datacenters import BoundDatacenter, DatacentersClient, DatacenterServerTypes
 from hcloud.locations import BoundLocation
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 class TestBoundDatacenter:
@@ -64,7 +67,9 @@ class TestBoundDatacenter:
 class TestDatacentersClient:
     @pytest.fixture()
     def datacenters_client(self, client: Client):
-        return DatacentersClient(client)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=DeprecationWarning)
+            return DatacentersClient(client)
 
     def test_get_by_id(
         self,

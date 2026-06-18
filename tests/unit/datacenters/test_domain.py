@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import warnings
+
 import pytest
 
 from hcloud.datacenters import Datacenter, DatacenterServerTypes
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 @pytest.mark.parametrize(
