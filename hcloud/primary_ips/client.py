@@ -16,7 +16,6 @@ from .domain import CreatePrimaryIPResponse, PrimaryIP
 
 if TYPE_CHECKING:
     from .._client import Client
-    from ..datacenters import BoundDatacenter, Datacenter
     from ..locations import BoundLocation, Location
 
 
@@ -39,14 +38,7 @@ class BoundPrimaryIP(BoundModelBase[PrimaryIP], PrimaryIP):
         complete: bool = True,
     ):
         # pylint: disable=import-outside-toplevel
-        from ..datacenters import BoundDatacenter
         from ..locations import BoundLocation
-
-        raw = data.get("datacenter", {})
-        if raw:
-            with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", category=DeprecationWarning)
-                data["datacenter"] = BoundDatacenter(client._parent.datacenters, raw)
 
         raw = data.get("location", {})
         if raw:
@@ -311,7 +303,6 @@ class PrimaryIPsClient(
         self,
         type: str,
         name: str,
-        datacenter: Datacenter | BoundDatacenter | None = None,
         location: Location | BoundLocation | None = None,
         assignee_type: str | None = None,
         assignee_id: int | None = None,
@@ -322,7 +313,6 @@ class PrimaryIPsClient(
 
         :param type: str Primary IP type Choices: ipv4, ipv6
         :param name: str
-        :param datacenter: Datacenter (optional)
         :param location: Location (optional)
         :param assignee_type: str (optional)
         :param assignee_id: int (optional)
@@ -336,15 +326,6 @@ class PrimaryIPsClient(
             "auto_delete": auto_delete,
         }
 
-        if datacenter is not None:
-            warnings.warn(
-                "The 'datacenter' argument is deprecated and will be removed after 1 July 2026. "
-                "Please use the 'location' argument instead. "
-                "See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-            data["datacenter"] = datacenter.id_or_name
         if location is not None:
             data["location"] = location.id_or_name
         if assignee_id is not None:

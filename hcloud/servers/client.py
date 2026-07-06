@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import warnings
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, NamedTuple
 
@@ -15,7 +14,6 @@ from ..actions import (
 )
 from ..actions.client import ResourceClientBaseActionsMixin
 from ..core import BoundModelBase, Meta, ResourceClientBase
-from ..datacenters import BoundDatacenter
 from ..firewalls import BoundFirewall
 from ..floating_ips import BoundFloatingIP
 from ..images import BoundImage, CreateImageResponse
@@ -44,7 +42,6 @@ from .domain import (
 
 if TYPE_CHECKING:
     from .._client import Client
-    from ..datacenters import Datacenter
     from ..firewalls import Firewall
     from ..images import Image
     from ..isos import Iso
@@ -75,12 +72,6 @@ class BoundServer(BoundModelBase[Server], Server):
         data: dict[str, Any],
         complete: bool = True,
     ):
-        raw = data.get("datacenter")
-        if raw:
-            with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", category=DeprecationWarning)
-                data["datacenter"] = BoundDatacenter(client._parent.datacenters, raw)
-
         raw = data.get("location")
         if raw:
             data["location"] = BoundLocation(client._parent.locations, raw)
@@ -636,7 +627,6 @@ class ServersClient(
         user_data: str | None = None,
         labels: dict[str, str] | None = None,
         location: Location | BoundLocation | None = None,
-        datacenter: Datacenter | BoundDatacenter | None = None,
         start_after_create: bool | None = True,
         automount: bool | None = None,
         placement_group: PlacementGroup | BoundPlacementGroup | None = None,
@@ -661,7 +651,6 @@ class ServersClient(
         :param labels: Dict[str,str] (optional)
                User-defined labels (key-value pairs)
         :param location: :class:`BoundLocation <hcloud.locations.client.BoundLocation>` or :class:`Location <hcloud.locations.domain.Location>`
-        :param datacenter: :class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>` or :class:`Datacenter <hcloud.datacenters.domain.Datacenter>`
         :param start_after_create: boolean (optional)
                Start Server right after creation. Defaults to True.
         :param automount: boolean (optional)
@@ -681,15 +670,6 @@ class ServersClient(
 
         if location is not None:
             data["location"] = location.id_or_name
-        if datacenter is not None:
-            warnings.warn(
-                "The 'datacenter' argument is deprecated and will be removed after 1 July 2026. "
-                "Please use the 'location' argument instead. "
-                "See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-            data["datacenter"] = datacenter.id_or_name
         if ssh_keys is not None:
             data["ssh_keys"] = [ssh_key.id_or_name for ssh_key in ssh_keys]
         if volumes is not None:

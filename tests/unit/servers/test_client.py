@@ -6,7 +6,6 @@ import pytest
 
 from hcloud import Client
 from hcloud.actions import BoundAction
-from hcloud.datacenters import BoundDatacenter, Datacenter
 from hcloud.firewalls import BoundFirewall, Firewall
 from hcloud.floating_ips import BoundFloatingIP
 from hcloud.images import BoundImage, Image
@@ -99,14 +98,6 @@ class TestBoundServer(BoundModelTestCase):
         assert isinstance(bound_server.public_net.floating_ips[0], BoundFloatingIP)
         assert bound_server.public_net.floating_ips[0].id == 478
         assert bound_server.public_net.floating_ips[0].complete is False
-
-        with pytest.deprecated_call():
-            datacenter = bound_server.datacenter
-
-        assert isinstance(datacenter, BoundDatacenter)
-        assert datacenter._client == bound_server._client._parent.datacenters
-        assert datacenter.id == 1
-        assert datacenter.complete is True
 
         assert isinstance(bound_server.server_type, BoundServerType)
         assert (
@@ -280,46 +271,6 @@ class TestServersClient:
         assert bound_server._client is servers_client
         assert bound_server.id == 1
         assert bound_server.name == "my-server"
-
-    def test_create_with_datacenter(
-        self,
-        request_mock: mock.MagicMock,
-        servers_client: ServersClient,
-        response_create_simple_server,
-    ):
-        request_mock.return_value = response_create_simple_server
-
-        with pytest.deprecated_call():
-            response = servers_client.create(
-                "my-server",
-                server_type=ServerType(name="cx11"),
-                image=Image(id=4711),
-                datacenter=Datacenter(id=1),
-            )
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/servers",
-            json={
-                "name": "my-server",
-                "server_type": "cx11",
-                "image": 4711,
-                "datacenter": 1,
-                "start_after_create": True,
-            },
-        )
-
-        bound_server = response.server
-        bound_action = response.action
-
-        assert bound_server._client is servers_client
-        assert bound_server.id == 1
-        assert bound_server.name == "my-server"
-
-        assert isinstance(bound_action, BoundAction)
-        assert bound_action._client == servers_client._parent.actions
-        assert bound_action.id == 1
-        assert bound_action.command == "create_server"
 
     def test_create_with_location(
         self,
