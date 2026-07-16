@@ -14,10 +14,6 @@ def primary_ip1():
         "assignee_type": "server",
         "auto_delete": True,
         "blocked": False,
-        "datacenter": {
-            "id": 4,
-            "name": "fsn1-dc14",
-        },
         "location": {
             "id": 1,
             "name": "fsn1",
@@ -42,10 +38,6 @@ def primary_ip2():
         "assignee_type": "server",
         "auto_delete": True,
         "blocked": False,
-        "datacenter": {
-            "id": 4,
-            "name": "fsn1-dc14",
-        },
         "location": {
             "id": 1,
             "name": "fsn1",

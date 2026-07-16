@@ -5,7 +5,6 @@ from unittest import mock
 import pytest
 
 from hcloud import Client
-from hcloud.datacenters import BoundDatacenter, Datacenter
 from hcloud.locations import BoundLocation, Location
 from hcloud.primary_ips import BoundPrimaryIP, PrimaryIP, PrimaryIPsClient
 
@@ -61,13 +60,6 @@ class TestBoundPrimaryIP(BoundModelTestCase):
         assert isinstance(o.location, BoundLocation)
         assert o.location.id == 1
         assert o.location.name == "fsn1"
-
-        with pytest.deprecated_call():
-            datacenter = o.datacenter
-
-        assert isinstance(datacenter, BoundDatacenter)
-        assert datacenter.id == 4
-        assert datacenter.name == "fsn1-dc14"
 
 
 class TestPrimaryIPsClient:
@@ -163,37 +155,6 @@ class TestPrimaryIPsClient:
                 "name": "primary-ip1",
                 "type": "ipv4",
                 "location": "fsn1",
-                "auto_delete": False,
-            },
-        )
-        assert_bound_primary_ip1(result.primary_ip, resource_client)
-        assert result.action is None
-
-    def test_create_with_datacenter(
-        self,
-        request_mock: mock.MagicMock,
-        resource_client: PrimaryIPsClient,
-        primary_ip1,
-    ):
-        request_mock.return_value = {
-            "primary_ip": primary_ip1,
-            "action": None,
-        }
-
-        with pytest.deprecated_call():
-            result = resource_client.create(
-                type="ipv4",
-                name="primary-ip1",
-                datacenter=Datacenter(name="fsn1-dc14"),
-            )
-
-        request_mock.assert_called_with(
-            method="POST",
-            url="/primary_ips",
-            json={
-                "name": "primary-ip1",
-                "type": "ipv4",
-                "datacenter": "fsn1-dc14",
                 "auto_delete": False,
             },
         )

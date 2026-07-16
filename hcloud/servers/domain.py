@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-import warnings
 from typing import TYPE_CHECKING, Literal, TypedDict
 
 from ..core import BaseDomain, DomainIdentityMixin
 
 if TYPE_CHECKING:
     from ..actions import BoundAction
-    from ..datacenters import BoundDatacenter
     from ..firewalls import BoundFirewall
     from ..floating_ips import BoundFloatingIP
     from ..images import BoundImage
@@ -56,12 +54,6 @@ class Server(BaseDomain, DomainIdentityMixin):
     :param public_net: :class:`PublicNetwork <hcloud.servers.domain.PublicNetwork>`
            Public network information.
     :param server_type: :class:`BoundServerType <hcloud.server_types.client.BoundServerType>`
-    :param datacenter: :class:`BoundDatacenter <hcloud.datacenters.client.BoundDatacenter>`
-
-        This property is deprecated and will be removed after 1 July 2026.
-        Please use the ``location`` property instead.
-
-        See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.
     :param location: :class:`BoundLocation <hcloud.locations.client.BoundLocation>`
     :param image: :class:`BoundImage <hcloud.images.client.BoundImage>`, None
     :param iso: :class:`BoundIso <hcloud.isos.client.BoundIso>`, None
@@ -108,7 +100,7 @@ class Server(BaseDomain, DomainIdentityMixin):
     STATUS_UNKNOWN = "unknown"
     """Server Status unknown"""
 
-    __properties__ = (
+    __api_properties__ = (
         "id",
         "name",
         "status",
@@ -131,14 +123,7 @@ class Server(BaseDomain, DomainIdentityMixin):
         "primary_disk_size",
         "placement_group",
     )
-    __api_properties__ = (
-        *__properties__,
-        "datacenter",
-    )
-    __slots__ = (
-        *__properties__,
-        "_datacenter",
-    )
+    __slots__ = __api_properties__
 
     # pylint: disable=too-many-locals
     def __init__(
@@ -149,7 +134,6 @@ class Server(BaseDomain, DomainIdentityMixin):
         created: str | None = None,
         public_net: PublicNetwork | None = None,
         server_type: BoundServerType | None = None,
-        datacenter: BoundDatacenter | None = None,
         location: BoundLocation | None = None,
         image: BoundImage | None = None,
         iso: BoundIso | None = None,
@@ -172,7 +156,6 @@ class Server(BaseDomain, DomainIdentityMixin):
         self.created = self._parse_datetime(created)
         self.public_net = public_net
         self.server_type = server_type
-        self.datacenter = datacenter
         self.location = location
         self.image = image
         self.iso = iso
@@ -198,24 +181,6 @@ class Server(BaseDomain, DomainIdentityMixin):
             if o.network.id == network.id:
                 return o
         return None
-
-    @property
-    def datacenter(self) -> BoundDatacenter | None:
-        """
-        :meta private:
-        """
-        warnings.warn(
-            "The 'datacenter' property is deprecated and will be removed after 1 July 2026. "
-            "Please use the 'location' property instead. "
-            "See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self._datacenter
-
-    @datacenter.setter
-    def datacenter(self, value: BoundDatacenter | None) -> None:
-        self._datacenter = value
 
 
 class ServerProtection(TypedDict):
