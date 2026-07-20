@@ -17,31 +17,51 @@ class TestLoadBalancerTypesClient:
         self,
         request_mock: mock.MagicMock,
         load_balancer_types_client: LoadBalancerTypesClient,
-        load_balancer_type_response,
+        load_balancer_type1,
     ):
-        request_mock.return_value = load_balancer_type_response
+        request_mock.return_value = {
+            "load_balancer_type": load_balancer_type1,
+        }
 
-        load_balancer_type = load_balancer_types_client.get_by_id(1)
+        result = load_balancer_types_client.get_by_id(1)
 
         request_mock.assert_called_with(
             method="GET",
             url="/load_balancer_types/1",
         )
-        assert load_balancer_type._client is load_balancer_types_client
-        assert load_balancer_type.id == 1
-        assert load_balancer_type.name == "LB11"
+
+        assert result._client is load_balancer_types_client
+        assert result.id == 1
+        assert result.name == "lb11"
+        assert result.description == "LB11"
+        assert result.max_connections == 10000
+        assert result.max_services == 5
+        assert result.max_targets == 25
+        assert result.max_assigned_certificates == 10
+        assert result.prices == [
+            {
+                "location": "fsn1",
+                "price_hourly": {"net": "0.0120", "gross": "0.0120"},
+                "price_monthly": {"net": "7.4900", "gross": "7.4900"},
+                "price_per_tb_traffic": {"net": "1.0000", "gross": "1.0000"},
+                "included_traffic": 21990232555520,
+            }
+        ]
 
     @pytest.mark.parametrize(
-        "params", [{"name": "LB11", "page": 1, "per_page": 10}, {"name": ""}, {}]
+        "params", [{"name": "lb11", "page": 1, "per_page": 10}, {"name": ""}, {}]
     )
     def test_get_list(
         self,
         request_mock: mock.MagicMock,
         load_balancer_types_client: LoadBalancerTypesClient,
-        two_load_balancer_types_response,
+        load_balancer_type1,
+        load_balancer_type2,
         params,
     ):
-        request_mock.return_value = two_load_balancer_types_response
+        request_mock.return_value = {
+            "load_balancer_types": [load_balancer_type1, load_balancer_type2],
+        }
 
         result = load_balancer_types_client.get_list(**params)
 
@@ -51,33 +71,31 @@ class TestLoadBalancerTypesClient:
             params=params,
         )
 
-        load_balancer_types = result.load_balancer_types
         assert result.meta is not None
+        assert len(result.load_balancer_types) == 2
 
-        assert len(load_balancer_types) == 2
+        assert result.load_balancer_types[0]._client is load_balancer_types_client
+        assert result.load_balancer_types[0].id == 1
+        assert result.load_balancer_types[0].name == "lb11"
 
-        load_balancer_types1 = load_balancer_types[0]
-        load_balancer_types2 = load_balancer_types[1]
+        assert result.load_balancer_types[1]._client is load_balancer_types_client
+        assert result.load_balancer_types[1].id == 2
+        assert result.load_balancer_types[1].name == "lb21"
 
-        assert load_balancer_types1._client is load_balancer_types_client
-        assert load_balancer_types1.id == 1
-        assert load_balancer_types1.name == "LB11"
-
-        assert load_balancer_types2._client is load_balancer_types_client
-        assert load_balancer_types2.id == 2
-        assert load_balancer_types2.name == "LB21"
-
-    @pytest.mark.parametrize("params", [{"name": "LB21"}])
+    @pytest.mark.parametrize("params", [{"name": "lb11"}])
     def test_get_all(
         self,
         request_mock: mock.MagicMock,
         load_balancer_types_client: LoadBalancerTypesClient,
-        two_load_balancer_types_response,
+        load_balancer_type1,
+        load_balancer_type2,
         params,
     ):
-        request_mock.return_value = two_load_balancer_types_response
+        request_mock.return_value = {
+            "load_balancer_types": [load_balancer_type1, load_balancer_type2]
+        }
 
-        load_balancer_types = load_balancer_types_client.get_all(**params)
+        result = load_balancer_types_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
@@ -87,37 +105,34 @@ class TestLoadBalancerTypesClient:
             params=params,
         )
 
-        assert len(load_balancer_types) == 2
+        assert len(result) == 2
 
-        load_balancer_types1 = load_balancer_types[0]
-        load_balancer_types2 = load_balancer_types[1]
+        assert result[0]._client is load_balancer_types_client
+        assert result[0].id == 1
+        assert result[0].name == "lb11"
 
-        assert load_balancer_types1._client is load_balancer_types_client
-        assert load_balancer_types1.id == 1
-        assert load_balancer_types1.name == "LB11"
-
-        assert load_balancer_types2._client is load_balancer_types_client
-        assert load_balancer_types2.id == 2
-        assert load_balancer_types2.name == "LB21"
+        assert result[1]._client is load_balancer_types_client
+        assert result[1].id == 2
+        assert result[1].name == "lb21"
 
     def test_get_by_name(
         self,
         request_mock: mock.MagicMock,
         load_balancer_types_client: LoadBalancerTypesClient,
-        one_load_balancer_types_response,
+        load_balancer_type1,
     ):
-        request_mock.return_value = one_load_balancer_types_response
+        request_mock.return_value = {
+            "load_balancer_types": [load_balancer_type1],
+        }
 
-        load_balancer_type = load_balancer_types_client.get_by_name("LB21")
-
-        params = {"name": "LB21"}
+        result = load_balancer_types_client.get_by_name("lb11")
 
         request_mock.assert_called_with(
             method="GET",
             url="/load_balancer_types",
-            params=params,
+            params={"name": "lb11"},
         )
 
-        assert load_balancer_type._client is load_balancer_types_client
-        assert load_balancer_type.id == 2
-        assert load_balancer_type.name == "LB21"
+        assert result._client is load_balancer_types_client
+        assert result.id == 1
+        assert result.name == "lb11"
