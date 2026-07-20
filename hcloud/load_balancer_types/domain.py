@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from ..core import BaseDomain, DomainIdentityMixin
+from ..deprecation import DeprecationInfo
 
 __all__ = [
     "LoadBalancerType",
@@ -28,7 +29,7 @@ class LoadBalancerType(BaseDomain, DomainIdentityMixin):
            Max amount of certificates the Load Balancer can serve
     :param prices: List of dict
            Prices in different locations
-
+    :param deprecation: Define if and when the Load Balancer Type is deprecated.
     """
 
     __api_properties__ = (
@@ -40,6 +41,7 @@ class LoadBalancerType(BaseDomain, DomainIdentityMixin):
         "max_targets",
         "max_assigned_certificates",
         "prices",
+        "deprecation",
     )
     __slots__ = __api_properties__
 
@@ -53,6 +55,7 @@ class LoadBalancerType(BaseDomain, DomainIdentityMixin):
         max_targets: int | None = None,
         max_assigned_certificates: int | None = None,
         prices: list[dict[str, Any]] | None = None,
+        deprecation: dict[str, Any] | None = None,
     ):
         self.id = id
         self.name = name
@@ -62,3 +65,4 @@ class LoadBalancerType(BaseDomain, DomainIdentityMixin):
         self.max_targets = max_targets
         self.max_assigned_certificates = max_assigned_certificates
         self.prices = prices
+        self.deprecation = deprecation and DeprecationInfo.from_dict(deprecation)
