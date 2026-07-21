@@ -1,5 +1,41 @@
 # Changelog
 
+## [v2.23.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.23.0)
+
+[Compare to previous version](https://github.com/hetznercloud/hcloud-python/compare/v2.22.0...v2.23.0)
+
+### Removed deprecated Datacenter property from Server and PrimaryIP
+
+Removed the deprecated Datacenter property from the Server and PrimaryIP resources. Since the property was already removed from the Hetzner Cloud API, we do not consider this a breaking change (see [changelog entry](https://docs.hetzner.cloud/changelog#2026-07-01-removing-datacenters)).
+
+> [!IMPORTANT]
+> **Action required:** Please update all code that accesses `server.datacenter` or `primary_ip.datacenter` to use the `location` property instead, as shown below.
+
+**Before:**
+
+```python
+server = client.server.get_by_id(5)
+print(server.datacenter)
+
+primary_ip = client.primary_ip.get_by_id(5)
+print(primary_ip.datacenter)
+```
+
+**After:**
+
+```python
+server = client.server.get_by_id(5)
+print(server.location)
+
+primary_ip = client.primary_ip.get_by_id(5)
+print(primary_ip.location)
+```
+
+### Features
+
+- remove datacenter property from server and primary_ip (#668) ([abdadf3](https://github.com/hetznercloud/hcloud-python/commit/abdadf3e7cc5d0edeb38f369955fa83f71b102e5))
+- add deprecation info to load balancer type (#674) ([aeebcf8](https://github.com/hetznercloud/hcloud-python/commit/aeebcf8bd32df390163089a33c57815bb7214763))
+
 ## [v2.22.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.22.0)
 
 ### Datacenters resource is now deprecated
