@@ -3,6 +3,7 @@ from __future__ import annotations
 from unittest import mock
 
 import pytest
+from dateutil.parser import isoparse
 
 from hcloud import Client
 from hcloud.load_balancer_types import LoadBalancerTypesClient
@@ -47,6 +48,10 @@ class TestLoadBalancerTypesClient:
                 "included_traffic": 21990232555520,
             }
         ]
+        assert result.deprecation.announced == isoparse("2023-06-01T00:00:00+00:00")
+        assert result.deprecation.unavailable_after == isoparse(
+            "2023-09-01T00:00:00+00:00"
+        )
 
     @pytest.mark.parametrize(
         "params", [{"name": "lb11", "page": 1, "per_page": 10}, {"name": ""}, {}]
