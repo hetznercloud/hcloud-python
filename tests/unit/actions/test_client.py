@@ -8,6 +8,7 @@ import pytest
 
 from hcloud import Client
 from hcloud.actions import (
+    Action,
     ActionFailedException,
     ActionsClient,
     ActionTimeoutException,
@@ -79,15 +80,25 @@ class TestBoundAction:
         action1_success,
     ):
         request_mock.side_effect = [
-            {"action": action1_running},
-            {"action": action1_success},
+            {"actions": [action1_running]},
+            {"actions": [action1_success]},
         ]
 
         bound_running_action.wait_until_finished()
 
-        request_mock.assert_called_with(
-            method="GET",
-            url="/actions/1",
+        request_mock.assert_has_calls(
+            [
+                mock.call(
+                    method="GET",
+                    url="/actions",
+                    params={"id": [1], "sort": ["status", "id"]},
+                ),
+                mock.call(
+                    method="GET",
+                    url="/actions",
+                    params={"id": [1], "sort": ["status", "id"]},
+                ),
+            ]
         )
 
         assert bound_running_action.status == "success"
@@ -103,8 +114,8 @@ class TestBoundAction:
         action1_error,
     ):
         request_mock.side_effect = [
-            {"action": action1_running},
-            {"action": action1_error},
+            {"actions": [action1_running]},
+            {"actions": [action1_error]},
         ]
 
         with pytest.raises(ActionFailedException) as exc:
@@ -124,9 +135,9 @@ class TestBoundAction:
         action1_success,
     ):
         request_mock.side_effect = [
-            {"action": action1_running},
-            {"action": action1_running},
-            {"action": action1_success},
+            {"actions": [action1_running]},
+            {"actions": [action1_running]},
+            {"actions": [action1_success]},
         ]
 
         with pytest.raises(ActionTimeoutException) as exc:
@@ -136,7 +147,7 @@ class TestBoundAction:
         assert bound_running_action.id == 1
         assert exc.value.action.id == 1
 
-        assert request_mock.call_count == 1
+        assert request_mock.call_count == 2
 
 
 class TestResourceActionsClient:
@@ -477,3 +488,106 @@ class TestActionsClient:
         assert len(actions) == 2
         assert_bound_action1(actions[0], actions_client)
         assert_bound_action2(actions[1], actions_client)
+
+    def test_wait_for(
+        self,
+        request_mock: mock.MagicMock,
+        actions_client: ActionsClient,
+    ):
+        actions = [Action(id=1), Action(id=2)]
+
+        request_mock.side_effect = [
+            {
+                "actions": [
+                    {"id": 1, "status": "running"},
+                    {"id": 2, "status": "success"},
+                ]
+            },
+            {
+                "actions": [
+                    {"id": 1, "status": "success"},
+                ]
+            },
+        ]
+
+        actions = actions_client.wait_for(actions)
+
+        request_mock.assert_has_calls(
+            [
+                mock.call(
+                    method="GET",
+                    url="/actions",
+                    params={"id": [1, 2], "sort": ["status", "id"]},
+                ),
+                mock.call(
+                    method="GET",
+                    url="/actions",
+                    params={"id": [1], "sort": ["status", "id"]},
+                ),
+            ]
+        )
+
+        assert len(actions) == 2
+
+    def test_wait_for_error(
+        self,
+        request_mock: mock.MagicMock,
+        actions_client: ActionsClient,
+    ):
+        actions = [Action(id=1), Action(id=2)]
+
+        request_mock.side_effect = [
+            {
+                "actions": [
+                    {"id": 1, "status": "running"},
+                    {
+                        "id": 2,
+                        "status": "error",
+                        "error": {"code": "failed", "message": "Action failed"},
+                    },
+                ]
+            },
+        ]
+
+        with pytest.raises(ActionFailedException):
+            actions_client.wait_for(actions)
+
+        request_mock.assert_has_calls(
+            [
+                mock.call(
+                    method="GET",
+                    url="/actions",
+                    params={"id": [1, 2], "sort": ["status", "id"]},
+                ),
+            ]
+        )
+
+    def test_wait_for_timeout(
+        self,
+        request_mock: mock.MagicMock,
+        actions_client: ActionsClient,
+    ):
+        actions = [
+            Action(id=1, status="running", command="create_server"),
+            Action(id=2, status="running", command="start_server"),
+        ]
+
+        request_mock.return_value = {
+            "actions": [
+                {"id": 1, "status": "running", "command": "create_server"},
+                {"id": 2, "status": "running", "command": "start_server"},
+            ]
+        }
+
+        with pytest.raises(ExceptionGroup):
+            actions_client.wait_for(actions, timeout=0.2)
+
+        request_mock.assert_has_calls(
+            [
+                mock.call(
+                    method="GET",
+                    url="/actions",
+                    params={"id": [1, 2], "sort": ["status", "id"]},
+                ),
+            ]
+        )
