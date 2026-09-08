@@ -1,8 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypedDict
+import warnings
+from datetime import datetime
+from typing import TYPE_CHECKING, Any, TypedDict
 
 from ..core import BaseDomain, DomainIdentityMixin
+from ..deprecation import DeprecationInfo
 
 if TYPE_CHECKING:
     from ..actions import BoundAction
@@ -52,8 +55,10 @@ class Image(BaseDomain, DomainIdentityMixin):
            Protection configuration for the image
     :param deprecated: datetime, None
            Point in time when the image is considered to be deprecated (in ISO-8601 format)
+    :param deprecation:
+           Describes wether the resources is deprecated.
     :param labels: Dict
-            User-defined labels (key-value pairs)
+           User-defined labels (key-value pairs)
     """
 
     __api_properties__ = (
@@ -73,11 +78,11 @@ class Image(BaseDomain, DomainIdentityMixin):
         "protection",
         "labels",
         "created",
-        "deprecated",
+        "deprecation",
     )
     __slots__ = __api_properties__
 
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,unused-argument
     def __init__(
         self,
         id: int | None = None,
@@ -87,7 +92,7 @@ class Image(BaseDomain, DomainIdentityMixin):
         description: str | None = None,
         image_size: int | None = None,
         disk_size: int | None = None,
-        deprecated: str | None = None,
+        deprecated: str | None = None,  # Preserved for backward compatibility
         bound_to: Server | BoundServer | None = None,
         os_flavor: str | None = None,
         os_version: str | None = None,
@@ -97,6 +102,7 @@ class Image(BaseDomain, DomainIdentityMixin):
         protection: ImageProtection | None = None,
         labels: dict[str, str] | None = None,
         status: str | None = None,
+        deprecation: dict[str, Any] | None = None,
     ):
         self.id = id
         self.name = name
@@ -105,7 +111,6 @@ class Image(BaseDomain, DomainIdentityMixin):
         self.description = description
         self.image_size = image_size
         self.disk_size = disk_size
-        self.deprecated = self._parse_datetime(deprecated)
         self.bound_to = bound_to
         self.os_flavor = os_flavor
         self.os_version = os_version
@@ -115,6 +120,27 @@ class Image(BaseDomain, DomainIdentityMixin):
         self.protection = protection
         self.labels = labels
         self.status = status
+        self.deprecation = (
+            None if deprecation is None else DeprecationInfo.from_dict(deprecation)
+        )
+
+    @property
+    def deprecated(self) -> datetime | None:
+        """
+        .. deprecated:: 2.24.0
+            The 'deprecated' property is deprecated. Please use to the '.deprecation' property instead.
+
+            See https://docs.hetzner.cloud/changelog#2026-09-08-removing-the-deprecated-field.
+        """
+        warnings.warn(
+            "The 'deprecated' property is deprecated. Please use to the '.deprecation' property instead. "
+            "See https://docs.hetzner.cloud/changelog#2026-09-08-removing-the-deprecated-field.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        if self.deprecation is None:
+            return None
+        return self.deprecation.announced
 
 
 class ImageProtection(TypedDict):

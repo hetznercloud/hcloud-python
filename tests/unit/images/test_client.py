@@ -64,7 +64,10 @@ class TestBoundImage(BoundModelTestCase):
         assert o.rapid_deploy is True
         assert o.labels == {}
         assert o.protection == {"delete": False}
-        assert o.deprecated == isoparse("2026-08-31T06:21:44Z")
+        with pytest.deprecated_call():
+            assert o.deprecated == isoparse("2026-08-31T06:21:44Z")
+        assert o.deprecation.announced == isoparse("2026-08-31T06:21:44Z")
+        assert o.deprecation.unavailable_after == isoparse("2026-12-01T00:00:00Z")
 
         o = BoundImage(client=mock.MagicMock(), data=image2)
 
@@ -87,7 +90,9 @@ class TestBoundImage(BoundModelTestCase):
         assert o.rapid_deploy is False
         assert o.labels == {"key": "value"}
         assert o.protection == {"delete": True}
-        assert o.deprecated is None
+        with pytest.deprecated_call():
+            assert o.deprecated is None
+        assert o.deprecation is None
 
 
 class TestImagesClient:
