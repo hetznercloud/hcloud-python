@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, overload
+from typing import Any, TypeVar, overload
 
 from dateutil.parser import isoparse
 
@@ -12,12 +12,14 @@ __all__ = [
     "Meta",
 ]
 
+T = TypeVar("T", bound="BaseDomain")
+
 
 class BaseDomain:
     __api_properties__: tuple[str, ...]
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]):  # type: ignore[no-untyped-def]
+    def from_dict(cls: type[T], data: dict[str, Any]) -> T:
         """
         Build the domain object from the data dict.
         """

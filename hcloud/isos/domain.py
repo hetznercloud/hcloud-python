@@ -72,4 +72,4 @@ class Iso(BaseDomain, DomainIdentityMixin):
         )
         if self.deprecation is None:
             return None
-        return self.deprecation.unavailable_after  # type: ignore[no-any-return]
+        return self.deprecation.unavailable_after
