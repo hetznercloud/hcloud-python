@@ -1,16 +1,33 @@
 from __future__ import annotations
 
-import datetime
-from datetime import timezone
 from unittest import mock
 
 import pytest
+from dateutil.parser import isoparse
 
 from hcloud import Client
 from hcloud.images import BoundImage, Image, ImagesClient
 from hcloud.servers import BoundServer
 
-from ..conftest import BoundModelTestCase
+from ..conftest import BoundModelTestCase, assert_bound_action1
+
+
+def assert_bound_image1(
+    o: BoundImage,
+    client: ImagesClient,
+):
+    assert isinstance(o, BoundImage)
+    assert o._client is client
+    assert o.id == 45557056
+
+
+def assert_bound_image2(
+    o: BoundImage,
+    client: ImagesClient,
+):
+    assert isinstance(o, BoundImage)
+    assert o._client is client
+    assert o.id == 429564329
 
 
 class TestBoundImage(BoundModelTestCase):
@@ -25,62 +42,75 @@ class TestBoundImage(BoundModelTestCase):
         return client.images
 
     @pytest.fixture()
-    def bound_model(self, resource_client):
-        return BoundImage(resource_client, data=dict(id=14))
+    def bound_model(self, resource_client, image1):
+        return BoundImage(resource_client, data=image1)
 
-    def test_init(self, image_response):
-        bound_image = BoundImage(client=mock.MagicMock(), data=image_response["image"])
+    def test_init(self, image1, image2):
+        o = BoundImage(client=mock.MagicMock(), data=image1)
 
-        assert bound_image.id == 4711
-        assert bound_image.type == "snapshot"
-        assert bound_image.status == "available"
-        assert bound_image.name == "ubuntu-20.04"
-        assert bound_image.description == "Ubuntu 20.04 Standard 64 bit"
-        assert bound_image.image_size == 2.3
-        assert bound_image.disk_size == 10
-        assert bound_image.created == datetime.datetime(
-            2016, 1, 30, 23, 50, tzinfo=timezone.utc
-        )
-        assert bound_image.os_flavor == "ubuntu"
-        assert bound_image.os_version == "16.04"
-        assert bound_image.architecture == "x86"
-        assert bound_image.rapid_deploy is False
-        assert bound_image.deprecated == datetime.datetime(
-            2018, 2, 28, 0, 0, tzinfo=timezone.utc
-        )
+        assert o.id == 45557056
+        assert o.type == "system"
+        assert o.name == "debian-11"
+        assert o.architecture == "x86"
+        assert o.status == "available"
+        assert o.description == "Debian 11"
+        assert o.image_size is None
+        assert o.disk_size == 5
+        assert o.created == isoparse("2021-08-16T11:12:01Z")
+        assert o.created_from is None
+        assert o.bound_to is None
+        assert o.os_flavor == "debian"
+        assert o.os_version == "11"
+        assert o.rapid_deploy is True
+        assert o.labels == {}
+        assert o.protection == {"delete": False}
+        assert o.deprecated == isoparse("2026-08-31T06:21:44Z")
 
-        assert isinstance(bound_image.created_from, BoundServer)
-        assert bound_image.created_from.id == 1
-        assert bound_image.created_from.name == "Server"
-        assert bound_image.created_from.complete is False
+        o = BoundImage(client=mock.MagicMock(), data=image2)
 
-        assert isinstance(bound_image.bound_to, BoundServer)
-        assert bound_image.bound_to.id == 1
-        assert bound_image.bound_to.complete is False
+        assert o.id == 429564329
+        assert o.type == "snapshot"
+        assert o.name is None
+        assert o.architecture == "x86"
+        assert o.status == "available"
+        assert o.description == "snapshot 2026-09-08T13:44:08Z"
+        assert o.image_size == 0.7237785009765625
+        assert o.disk_size == 80
+        assert o.created == isoparse("2026-09-08T13:44:08Z")
+        assert isinstance(o.created_from, BoundServer)
+        assert o.created_from.id == 159969127
+        assert o.created_from.name == "server1"
+        assert isinstance(o.bound_to, BoundServer)
+        assert o.bound_to.id == 159969127
+        assert o.os_flavor == "debian"
+        assert o.os_version == "13"
+        assert o.rapid_deploy is False
+        assert o.labels == {"key": "value"}
+        assert o.protection == {"delete": True}
+        assert o.deprecated is None
 
 
 class TestImagesClient:
     @pytest.fixture()
-    def images_client(self, client: Client):
-        return ImagesClient(client)
+    def resource_client(self, client: Client):
+        return client.images
 
     def test_get_by_id(
         self,
         request_mock: mock.MagicMock,
-        images_client: ImagesClient,
-        image_response,
+        resource_client: ImagesClient,
+        image1,
     ):
-        request_mock.return_value = image_response
+        request_mock.return_value = {"image": image1}
 
-        image = images_client.get_by_id(1)
+        result = resource_client.get_by_id(1)
 
         request_mock.assert_called_with(
             method="GET",
             url="/images/1",
         )
-        assert image._client is images_client
-        assert image.id == 4711
-        assert image.name == "ubuntu-20.04"
+
+        assert_bound_image1(result, resource_client)
 
     @pytest.mark.parametrize(
         "params",
@@ -102,13 +132,14 @@ class TestImagesClient:
     def test_get_list(
         self,
         request_mock: mock.MagicMock,
-        images_client: ImagesClient,
-        two_images_response,
+        resource_client: ImagesClient,
+        image1,
+        image2,
         params,
     ):
-        request_mock.return_value = two_images_response
+        request_mock.return_value = {"images": [image1, image2]}
 
-        result = images_client.get_list(**params)
+        result = resource_client.get_list(**params)
 
         request_mock.assert_called_with(
             method="GET",
@@ -116,21 +147,11 @@ class TestImagesClient:
             params=params,
         )
 
-        images = result.images
         assert result.meta is not None
+        assert len(result.images) == 2
 
-        assert len(images) == 2
-
-        images1 = images[0]
-        images2 = images[1]
-
-        assert images1._client is images_client
-        assert images1.id == 4711
-        assert images1.name == "ubuntu-20.04"
-
-        assert images2._client is images_client
-        assert images2.id == 4712
-        assert images2.name == "ubuntu-18.10"
+        assert_bound_image1(result.images[0], resource_client)
+        assert_bound_image2(result.images[1], resource_client)
 
     @pytest.mark.parametrize(
         "params",
@@ -149,13 +170,14 @@ class TestImagesClient:
     def test_get_all(
         self,
         request_mock: mock.MagicMock,
-        images_client: ImagesClient,
-        two_images_response,
+        resource_client: ImagesClient,
+        image1,
+        image2,
         params,
     ):
-        request_mock.return_value = two_images_response
+        request_mock.return_value = {"images": [image1, image2]}
 
-        images = images_client.get_all(**params)
+        result = resource_client.get_all(**params)
 
         params.update({"page": 1, "per_page": 50})
 
@@ -165,64 +187,46 @@ class TestImagesClient:
             params=params,
         )
 
-        assert len(images) == 2
-
-        images1 = images[0]
-        images2 = images[1]
-
-        assert images1._client is images_client
-        assert images1.id == 4711
-        assert images1.name == "ubuntu-20.04"
-
-        assert images2._client is images_client
-        assert images2.id == 4712
-        assert images2.name == "ubuntu-18.10"
+        assert len(result) == 2
+        assert_bound_image1(result[0], resource_client)
+        assert_bound_image2(result[1], resource_client)
 
     def test_get_by_name(
         self,
         request_mock: mock.MagicMock,
-        images_client: ImagesClient,
-        one_images_response,
+        resource_client: ImagesClient,
+        image1,
     ):
-        request_mock.return_value = one_images_response
+        request_mock.return_value = {"images": [image1]}
 
         with pytest.deprecated_call():
-            image = images_client.get_by_name("ubuntu-20.04")
-
-        params = {"name": "ubuntu-20.04"}
+            result = resource_client.get_by_name("debian-11")
 
         request_mock.assert_called_with(
             method="GET",
             url="/images",
-            params=params,
+            params={"name": "debian-11"},
         )
 
-        assert image._client is images_client
-        assert image.id == 4711
-        assert image.name == "ubuntu-20.04"
+        assert_bound_image1(result, resource_client)
 
     def test_get_by_name_and_architecture(
         self,
         request_mock: mock.MagicMock,
-        images_client: ImagesClient,
-        one_images_response,
+        resource_client: ImagesClient,
+        image1,
     ):
-        request_mock.return_value = one_images_response
+        request_mock.return_value = {"images": [image1]}
 
-        image = images_client.get_by_name_and_architecture("ubuntu-20.04", "x86")
-
-        params = {"name": "ubuntu-20.04", "architecture": ["x86"]}
+        result = resource_client.get_by_name_and_architecture("debian-11", "x86")
 
         request_mock.assert_called_with(
             method="GET",
             url="/images",
-            params=params,
+            params={"name": "debian-11", "architecture": ["x86"]},
         )
 
-        assert image._client is images_client
-        assert image.id == 4711
-        assert image.name == "ubuntu-20.04"
-        assert image.architecture == "x86"
+        assert_bound_image1(result, resource_client)
 
     @pytest.mark.parametrize(
         "image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))]
@@ -230,14 +234,17 @@ class TestImagesClient:
     def test_update(
         self,
         request_mock: mock.MagicMock,
-        images_client: ImagesClient,
+        resource_client: ImagesClient,
         image,
-        response_update_image,
+        image1,
     ):
-        request_mock.return_value = response_update_image
+        request_mock.return_value = {"image": image1}
 
-        image = images_client.update(
-            image, description="My new Image description", type="snapshot", labels={}
+        image = resource_client.update(
+            image,
+            description="My new Image description",
+            type="snapshot",
+            labels={},
         )
 
         request_mock.assert_called_with(
@@ -250,8 +257,7 @@ class TestImagesClient:
             },
         )
 
-        assert image.id == 4711
-        assert image.description == "My new Image description"
+        assert_bound_image1(image, resource_client)
 
     @pytest.mark.parametrize(
         "image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))]
@@ -259,22 +265,23 @@ class TestImagesClient:
     def test_change_protection(
         self,
         request_mock: mock.MagicMock,
-        images_client: ImagesClient,
+        resource_client: ImagesClient,
         image,
-        action_response,
+        action1_running,
     ):
-        request_mock.return_value = action_response
+        request_mock.return_value = {"action": action1_running}
 
-        action = images_client.change_protection(image, True)
+        action = resource_client.change_protection(image, True)
 
         request_mock.assert_called_with(
             method="POST",
             url="/images/1/actions/change_protection",
-            json={"delete": True},
+            json={
+                "delete": True,
+            },
         )
 
-        assert action.id == 1
-        assert action.progress == 0
+        assert_bound_action1(action, resource_client._parent.actions)
 
     @pytest.mark.parametrize(
         "image", [Image(id=1), BoundImage(mock.MagicMock(), dict(id=1))]
@@ -282,17 +289,16 @@ class TestImagesClient:
     def test_delete(
         self,
         request_mock: mock.MagicMock,
-        images_client: ImagesClient,
+        resource_client: ImagesClient,
         image,
-        action_response,
     ):
-        request_mock.return_value = action_response
+        request_mock.return_value = {}
 
-        delete_success = images_client.delete(image)
+        result = resource_client.delete(image)
 
         request_mock.assert_called_with(
             method="DELETE",
             url="/images/1",
         )
 
-        assert delete_success is True
+        assert result is True
