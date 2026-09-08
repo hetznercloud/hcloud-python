@@ -4,141 +4,57 @@ import pytest
 
 
 @pytest.fixture()
-def image_response():
+def image1():
     return {
-        "image": {
-            "id": 4711,
-            "type": "snapshot",
-            "status": "available",
-            "name": "ubuntu-20.04",
-            "description": "Ubuntu 20.04 Standard 64 bit",
-            "image_size": 2.3,
-            "disk_size": 10,
-            "created": "2016-01-30T23:50+00:00",
-            "created_from": {"id": 1, "name": "Server"},
-            "bound_to": 1,
-            "os_flavor": "ubuntu",
-            "os_version": "16.04",
-            "architecture": "x86",
-            "rapid_deploy": False,
-            "protection": {"delete": False},
-            "deprecated": "2018-02-28T00:00:00+00:00",
-            "labels": {},
-        }
+        "id": 45557056,
+        "name": "debian-11",
+        "architecture": "x86",
+        "bound_to": None,
+        "created": "2021-08-16T11:12:01Z",
+        "created_from": None,
+        "deleted": None,
+        "deprecated": "2026-08-31T06:21:44Z",
+        "description": "Debian 11",
+        "disk_size": 5,
+        "image_size": None,
+        "labels": {},
+        "os_flavor": "debian",
+        "os_version": "11",
+        "protection": {
+            "delete": False,
+        },
+        "rapid_deploy": True,
+        "status": "available",
+        "type": "system",
     }
 
 
 @pytest.fixture()
-def two_images_response():
+def image2():
     return {
-        "images": [
-            {
-                "id": 4711,
-                "type": "snapshot",
-                "status": "available",
-                "name": "ubuntu-20.04",
-                "description": "Ubuntu 20.04 Standard 64 bit",
-                "image_size": 2.3,
-                "disk_size": 10,
-                "created": "2016-01-30T23:50+00:00",
-                "created_from": {"id": 1, "name": "Server"},
-                "bound_to": None,
-                "os_flavor": "ubuntu",
-                "os_version": "16.04",
-                "architecture": "x86",
-                "rapid_deploy": False,
-                "protection": {"delete": False},
-                "deprecated": "2018-02-28T00:00:00+00:00",
-                "labels": {},
-            },
-            {
-                "id": 4712,
-                "type": "system",
-                "status": "available",
-                "name": "ubuntu-18.10",
-                "description": "Ubuntu 18.10 Standard 64 bit",
-                "image_size": 2.3,
-                "disk_size": 10,
-                "created": "2016-01-30T23:50+00:00",
-                "created_from": {"id": 1, "name": "Server"},
-                "bound_to": None,
-                "os_flavor": "ubuntu",
-                "os_version": "16.04",
-                "architecture": "x86",
-                "rapid_deploy": False,
-                "protection": {"delete": False},
-                "deprecated": "2018-02-28T00:00:00+00:00",
-                "labels": {},
-            },
-        ]
-    }
-
-
-@pytest.fixture()
-def one_images_response():
-    return {
-        "images": [
-            {
-                "id": 4711,
-                "type": "snapshot",
-                "status": "available",
-                "name": "ubuntu-20.04",
-                "description": "Ubuntu 20.04 Standard 64 bit",
-                "image_size": 2.3,
-                "disk_size": 10,
-                "created": "2016-01-30T23:50+00:00",
-                "created_from": {"id": 1, "name": "Server"},
-                "bound_to": None,
-                "os_flavor": "ubuntu",
-                "os_version": "16.04",
-                "architecture": "x86",
-                "rapid_deploy": False,
-                "protection": {"delete": False},
-                "deprecated": "2018-02-28T00:00:00+00:00",
-                "labels": {},
-            }
-        ]
-    }
-
-
-@pytest.fixture()
-def response_update_image():
-    return {
-        "image": {
-            "id": 4711,
-            "type": "snapshot",
-            "status": "available",
-            "name": None,
-            "description": "My new Image description",
-            "image_size": 2.3,
-            "disk_size": 10,
-            "created": "2016-01-30T23:50+00:00",
-            "created_from": {"id": 1, "name": "Server"},
-            "bound_to": None,
-            "os_flavor": "ubuntu",
-            "os_version": "16.04",
-            "architecture": "arm",
-            "rapid_deploy": False,
-            "protection": {"delete": False},
-            "deprecated": "2018-02-28T00:00:00+00:00",
-            "labels": {},
-        }
-    }
-
-
-@pytest.fixture()
-def response_get_actions():
-    return {
-        "actions": [
-            {
-                "id": 13,
-                "command": "change_protection",
-                "status": "success",
-                "progress": 100,
-                "started": "2016-01-30T23:55:00+00:00",
-                "finished": "2016-01-30T23:56:00+00:00",
-                "resources": [{"id": 42, "type": "image"}],
-                "error": {"code": "action_failed", "message": "Action failed"},
-            }
-        ]
+        "id": 429564329,
+        "name": None,
+        "architecture": "x86",
+        "bound_to": 159969127,
+        "created": "2026-09-08T13:44:08Z",
+        "created_from": {
+            "id": 159969127,
+            "name": "server1",
+        },
+        "deleted": None,
+        "deprecated": None,
+        "description": "snapshot 2026-09-08T13:44:08Z",
+        "disk_size": 80,
+        "image_size": 0.7237785009765625,
+        "labels": {
+            "key": "value",
+        },
+        "os_flavor": "debian",
+        "os_version": "13",
+        "protection": {
+            "delete": True,
+        },
+        "rapid_deploy": False,
+        "status": "available",
+        "type": "snapshot",
     }
