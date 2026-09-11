@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.24.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.24.0)
+
+[Compare to previous version](https://github.com/hetznercloud/hcloud-python/compare/v2.23.0...v2.24.0)
+
+### Features
+
+- add deprecation info to image (#683) ([3bddb0d](https://github.com/hetznercloud/hcloud-python/commit/3bddb0d1d5726b8628152fcf1e5ef4104150b8b7))
+
 ## [v2.23.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.23.0)
 
 [Compare to previous version](https://github.com/hetznercloud/hcloud-python/compare/v2.22.0...v2.23.0)
