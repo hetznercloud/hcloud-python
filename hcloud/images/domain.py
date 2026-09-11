@@ -56,7 +56,7 @@ class Image(BaseDomain, DomainIdentityMixin):
     :param deprecated: datetime, None
            Point in time when the image is considered to be deprecated (in ISO-8601 format)
     :param deprecation:
-           Describes wether the resources is deprecated.
+           Describes whether the resource is deprecated.
     :param labels: Dict
            User-defined labels (key-value pairs)
     """
