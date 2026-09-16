@@ -96,6 +96,60 @@ class BoundNetwork(BoundModelBase[Network], Network):
         """
         return self._client.delete(self)
 
+    def get_member_list(
+        self,
+        *,
+        type: list[NetworkMemberType] | None = None,
+        status: list[NetworkMemberStatus] | None = None,
+        subnet: list[str] | None = None,
+        sort: list[NetworkMemberSort] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> NetworkMembersPageResult:
+        """
+        Returns a paginated list of Members for the Network.
+
+        :param type: Filter the Members by type.
+        :param status: Filter the Members by status.
+        :param subnet: Filter the Members by the subnet they are attached to.
+        :param sort: Sort Members by field and direction.
+        :param page: Page number to get.
+        :param per_page: Maximum number of Members returned per page.
+        """
+        return self._client.get_member_list(
+            self,
+            type=type,
+            status=status,
+            subnet=subnet,
+            sort=sort,
+            page=page,
+            per_page=per_page,
+        )
+
+    def get_member_all(
+        self,
+        *,
+        type: list[NetworkMemberType] | None = None,
+        status: list[NetworkMemberStatus] | None = None,
+        subnet: list[str] | None = None,
+        sort: list[NetworkMemberSort] | None = None,
+    ) -> list[NetworkMember]:
+        """
+        Returns all of Members for the Network.
+
+        :param type: Filter the Members by type.
+        :param status: Filter the Members by status.
+        :param subnet: Filter the Members by the subnet they are attached to.
+        :param sort: Sort Members by field and direction.
+        """
+        return self._client.get_member_all(
+            self,
+            type=type,
+            status=status,
+            subnet=subnet,
+            sort=sort,
+        )
+
     def get_actions_list(
         self,
         status: list[ActionStatus] | None = None,
@@ -464,8 +518,6 @@ class NetworksClient(
         :param status: Filter the Members by status.
         :param subnet: Filter the Members by the subnet they are attached to.
         :param sort: Sort Members by field and direction.
-        :param page: Page number to get.
-        :param per_page: Maximum number of Members returned per page.
         """
         return self._iter_pages(
             self.get_member_list,
