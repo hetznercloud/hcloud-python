@@ -395,6 +395,7 @@ class TestLoadBalancerslient:
                 redirect_http=True,
                 sticky_sessions=True,
                 timeout_idle=60,
+                certificates=[],
             ),
         )
         action = resource_client.add_service(load_balancer, service)
