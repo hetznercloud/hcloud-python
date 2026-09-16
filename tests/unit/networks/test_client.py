@@ -22,6 +22,8 @@ class TestBoundNetwork(BoundModelTestCase):
     methods = [
         BoundNetwork.update,
         BoundNetwork.delete,
+        BoundNetwork.get_member_list,
+        BoundNetwork.get_member_all,
         BoundNetwork.add_subnet,
         BoundNetwork.delete_subnet,
         BoundNetwork.add_route,
