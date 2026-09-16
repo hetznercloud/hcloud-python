@@ -186,7 +186,7 @@ class LoadBalancerService(BaseDomain):
         self.health_check = health_check
         self.http = http
 
-    # pylint: disable=too-many-branches
+    # pylint: disable=too-many-branches,too-many-statements
     def to_payload(self) -> dict[str, Any]:
         """
         Generates the request payload from this domain object.
