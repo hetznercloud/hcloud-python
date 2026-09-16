@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING, Literal, TypedDict
 
 from ..core import BaseDomain, DomainIdentityMixin
 
@@ -16,6 +16,9 @@ __all__ = [
     "NetworkSubnet",
     "NetworkRoute",
     "CreateNetworkResponse",
+    "NetworkMemberType",
+    "NetworkMemberStatus",
+    "NetworkMember",
 ]
 
 
@@ -180,3 +183,74 @@ class CreateNetworkResponse(BaseDomain):
     ):
         self.network = network
         self.action = action
+
+
+NetworkMemberType = Literal[
+    "server",
+    "load_balancer",
+]
+
+NetworkMemberStatus = Literal[
+    "ok",
+    "attaching",
+    "detaching",
+    "updating",
+    "error",
+]
+
+
+class NetworkMember(BaseDomain):
+    """Network Member Domain
+
+    :param id: ID of the resource attached to the Network.
+    :param type: Type of the resource attached to the Network.
+    :param ip: IP address of the resource within the Network.
+    :param alias_ips: Additional IP address of the resource within the Network.
+    :param subnet: IP range of the subnet the resource is attached to.
+    :param status: Status of the resource within the Network.
+    """
+
+    TYPE_SERVER: NetworkMemberType = "server"
+    """The member is a Server."""
+    TYPE_LOAD_BALANCER: NetworkMemberType = "load_balancer"
+    """The member is a Load Balancer."""
+
+    STATUS_OK: NetworkMemberStatus = "ok"
+    """The resource is attached and its network configuration is up to date."""
+    STATUS_ATTACHING: NetworkMemberStatus = "attaching"
+    """The resource is being attached to the Network."""
+    STATUS_DETACHING: NetworkMemberStatus = "detaching"
+    """The resource is being detached from the Network."""
+    STATUS_UPDATING: NetworkMemberStatus = "updating"
+    """The resource network configuration is being updated."""
+    STATUS_ERROR: NetworkMemberStatus = "error"
+    """
+    The last operation on this member failed. Its network configuration might be out of date,
+    and the resource might not be reachable within the Network.
+    """
+
+    __api_properties__ = (
+        "id",
+        "type",
+        "ip",
+        "alias_ips",
+        "subnet",
+        "status",
+    )
+    __slots__ = __api_properties__
+
+    def __init__(
+        self,
+        id: int,
+        type: NetworkMemberType,
+        ip: str,
+        alias_ips: list[str],
+        subnet: str,
+        status: NetworkMemberStatus,
+    ):
+        self.id = id
+        self.type = type
+        self.ip = ip
+        self.alias_ips = alias_ips
+        self.subnet = subnet
+        self.status = status

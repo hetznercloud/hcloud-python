@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, NamedTuple
+from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 
 from ..actions import (
     ActionSort,
@@ -11,7 +11,14 @@ from ..actions import (
 )
 from ..actions.client import ResourceClientBaseActionsMixin
 from ..core import BoundModelBase, Meta, ResourceClientBase
-from .domain import Network, NetworkRoute, NetworkSubnet
+from .domain import (
+    Network,
+    NetworkMember,
+    NetworkMemberStatus,
+    NetworkMemberType,
+    NetworkRoute,
+    NetworkSubnet,
+)
 
 if TYPE_CHECKING:
     from .._client import Client
@@ -182,6 +189,27 @@ class BoundNetwork(BoundModelBase[Network], Network):
 
 class NetworksPageResult(NamedTuple):
     networks: list[BoundNetwork]
+    meta: Meta
+
+
+NetworkMemberSort = Literal[
+    "id",
+    "id:asc",
+    "id:desc",
+    "type",
+    "type:asc",
+    "type:desc",
+    "status",
+    "status:asc",
+    "status:desc",
+    "ip",
+    "ip:asc",
+    "ip:desc",
+]
+
+
+class NetworkMembersPageResult(NamedTuple):
+    members: list[NetworkMember]
     meta: Meta
 
 
@@ -371,6 +399,82 @@ class NetworksClient(
         """
         self._client.request(url=f"{self._base_url}/{network.id}", method="DELETE")
         return True
+
+    def get_member_list(
+        self,
+        network: Network | BoundNetwork,
+        *,
+        type: list[NetworkMemberType] | None = None,
+        status: list[NetworkMemberStatus] | None = None,
+        subnet: list[str] | None = None,
+        sort: list[NetworkMemberSort] | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> NetworkMembersPageResult:
+        """
+        Returns a paginated list of Members for a Network.
+
+        :param network: Network to get the Members for.
+        :param type: Filter the Members by type.
+        :param status: Filter the Members by status.
+        :param subnet: Filter the Members by the subnet they are attached to.
+        :param sort: Sort Members by field and direction.
+        :param page: Page number to get.
+        :param per_page: Maximum number of Members returned per page.
+        """
+        params: dict[str, Any] = {}
+        if type is not None:
+            params["type"] = type
+        if status is not None:
+            params["status"] = status
+        if subnet is not None:
+            params["subnet"] = subnet
+        if sort is not None:
+            params["sort"] = sort
+        if page is not None:
+            params["page"] = page
+        if per_page is not None:
+            params["per_page"] = per_page
+
+        response = self._client.request(
+            url=f"{self._base_url}/{network.id}/members",
+            method="GET",
+            params=params,
+        )
+
+        return NetworkMembersPageResult(
+            members=[NetworkMember(**o) for o in response["members"]],
+            meta=Meta.parse_meta(response),
+        )
+
+    def get_member_all(
+        self,
+        network: Network | BoundNetwork,
+        *,
+        type: list[NetworkMemberType] | None = None,
+        status: list[NetworkMemberStatus] | None = None,
+        subnet: list[str] | None = None,
+        sort: list[NetworkMemberSort] | None = None,
+    ) -> list[NetworkMember]:
+        """
+        Returns all of Members for a Network.
+
+        :param network: Network to get the Members for.
+        :param type: Filter the Members by type.
+        :param status: Filter the Members by status.
+        :param subnet: Filter the Members by the subnet they are attached to.
+        :param sort: Sort Members by field and direction.
+        :param page: Page number to get.
+        :param per_page: Maximum number of Members returned per page.
+        """
+        return self._iter_pages(
+            self.get_member_list,
+            network,
+            type=type,
+            status=status,
+            subnet=subnet,
+            sort=sort,
+        )
 
     def get_actions_list(
         self,
