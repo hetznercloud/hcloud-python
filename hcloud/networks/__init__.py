@@ -4,6 +4,9 @@ from .client import BoundNetwork, NetworksClient, NetworksPageResult
 from .domain import (
     CreateNetworkResponse,
     Network,
+    NetworkMember,
+    NetworkMemberStatus,
+    NetworkMemberType,
     NetworkProtection,
     NetworkRoute,
     NetworkSubnet,
@@ -18,4 +21,7 @@ __all__ = [
     "NetworkSubnet",
     "NetworksClient",
     "NetworksPageResult",
+    "NetworkMemberType",
+    "NetworkMemberStatus",
+    "NetworkMember",
 ]

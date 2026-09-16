@@ -459,6 +459,92 @@ class TestNetworksClient:
         assert delete_success is True
 
     @pytest.mark.parametrize(
+        "params",
+        [
+            {"type": ["server"]},
+            {"status": ["ok"]},
+            {"subnet": ["10.0.1.0/24"]},
+            {"sort": ["ip:asc"]},
+            {"page": 1, "per_page": 50},
+            {},
+        ],
+    )
+    @pytest.mark.parametrize(
+        "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
+    )
+    def test_get_member_list(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network,
+        network_member1,
+        network_member2,
+        params,
+    ):
+        request_mock.return_value = {"members": [network_member1, network_member2]}
+
+        result = networks_client.get_member_list(network, **params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/networks/1/members",
+            params=params,
+        )
+
+        assert result.meta is not None
+        assert len(result.members) == 2
+
+        assert result.members[0].id == 123
+        assert result.members[0].type == "server"
+
+        assert result.members[0].ip == "10.0.1.2"
+        assert result.members[0].alias_ips == ["10.0.1.20"]
+        assert result.members[0].subnet == "10.0.1.0/24"
+        assert result.members[0].status == "attaching"
+
+        assert result.members[1].id == 456
+        assert result.members[1].type == "load_balancer"
+
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {"type": ["server"]},
+            {"status": ["ok"]},
+            {"subnet": ["10.0.1.0/24"]},
+            {"sort": ["ip:asc"]},
+            {},
+        ],
+    )
+    @pytest.mark.parametrize(
+        "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
+    )
+    def test_get_member_all(
+        self,
+        request_mock: mock.MagicMock,
+        networks_client: NetworksClient,
+        network,
+        network_member1,
+        network_member2,
+        params,
+    ):
+        request_mock.return_value = {"members": [network_member1, network_member2]}
+
+        result = networks_client.get_member_all(network, **params)
+
+        request_mock.assert_called_with(
+            method="GET",
+            url="/networks/1/members",
+            params={**params, "page": 1, "per_page": 50},
+        )
+
+        assert len(result) == 2
+        assert result[0].id == 123
+        assert result[0].type == "server"
+
+        assert result[1].id == 456
+        assert result[1].type == "load_balancer"
+
+    @pytest.mark.parametrize(
         "network", [Network(id=1), BoundNetwork(mock.MagicMock(), dict(id=1))]
     )
     def test_add_subnet(

@@ -210,3 +210,27 @@ def response_get_actions():
             }
         ]
     }
+
+
+@pytest.fixture()
+def network_member1():
+    return {
+        "type": "server",
+        "id": 123,
+        "ip": "10.0.1.2",
+        "status": "attaching",
+        "alias_ips": ["10.0.1.20"],
+        "subnet": "10.0.1.0/24",
+    }
+
+
+@pytest.fixture()
+def network_member2():
+    return {
+        "type": "load_balancer",
+        "id": 456,
+        "ip": "10.0.1.3",
+        "status": "updating",
+        "alias_ips": [],
+        "subnet": "10.0.1.0/24",
+    }
