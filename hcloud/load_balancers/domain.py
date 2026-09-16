@@ -186,7 +186,7 @@ class LoadBalancerService(BaseDomain):
         self.health_check = health_check
         self.http = http
 
-    # pylint: disable=too-many-branches
+    # pylint: disable=too-many-branches,too-many-statements
     def to_payload(self) -> dict[str, Any]:
         """
         Generates the request payload from this domain object.
@@ -214,10 +214,10 @@ class LoadBalancerService(BaseDomain):
                 http["sticky_sessions"] = self.http.sticky_sessions
             if self.http.timeout_idle is not None:
                 http["timeout_idle"] = self.http.timeout_idle
-
-            http["certificates"] = [
-                certificate.id for certificate in self.http.certificates or []
-            ]
+            if self.http.certificates is not None:
+                http["certificates"] = [
+                    certificate.id for certificate in self.http.certificates
+                ]
 
             payload["http"] = http
 
