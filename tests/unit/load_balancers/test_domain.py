@@ -89,3 +89,57 @@ class TestLoadBalancers:
 
         assert load_balancer.private_net_for(network1).network.id == 1
         assert load_balancer.private_net_for(network3) is None
+
+
+def test_load_balancer_service_to_payload_keeps_set_properties():
+    health_check = LoadBalancerHealthCheck()
+    health_check.protocol = "tcp"
+    health_check.port = 80
+    health_check.interval = 15
+    health_check.timeout = 10
+    health_check.retries = 3
+
+    service = LoadBalancerService(
+        protocol="tcp",
+        listen_port=80,
+        destination_port=80,
+        health_check=health_check,
+    )
+
+    payload = service.to_payload()
+
+    assert payload["health_check"] == {
+        "protocol": "tcp",
+        "port": 80,
+        "interval": 15,
+        "timeout": 10,
+        "retries": 3,
+    }
+
+
+def test_load_balancer_service_to_payload_omits_unset_properties():
+    # Regression test for https://github.com/ansible-collections/hetzner.hcloud/issues/158
+    #
+    # When only some of the health_check fields are set, the payload must not
+    # include the unset ones as `null`, otherwise the Hetzner Cloud API rejects
+    # the request with "invalid input in field 'health_check'".
+    health_check = LoadBalancerHealthCheck()
+    health_check.http = LoadBalancerHealthCheckHttp()
+    health_check.http.status_codes = ["404"]
+    health_check.http.tls = False
+
+    service = LoadBalancerService(
+        protocol="https",
+        listen_port=443,
+        proxyprotocol=False,
+        health_check=health_check,
+    )
+
+    payload = service.to_payload()
+
+    assert payload["health_check"] == {
+        "http": {
+            "status_codes": ["404"],
+            "tls": False,
+        },
+    }
