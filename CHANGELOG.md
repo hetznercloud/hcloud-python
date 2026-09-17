@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.25.1](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.25.1)
+
+[Compare to previous version](https://github.com/hetznercloud/hcloud-python/compare/v2.25.0...v2.25.1)
+
+### Bug Fixes
+
+- only send load balancer service health_check properties when defined (#691) ([e3bf6f2](https://github.com/hetznercloud/hcloud-python/commit/e3bf6f2bcdb407607d7659ca4fe54bb47f6104c5))
+
 ## [v2.25.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.25.0)
 
 [Compare to previous version](https://github.com/hetznercloud/hcloud-python/compare/v2.24.0...v2.25.0)
