@@ -222,13 +222,7 @@ class LoadBalancerService(BaseDomain):
             payload["http"] = http
 
         if self.health_check is not None:
-            health_check: dict[str, Any] = {
-                "protocol": self.health_check.protocol,
-                "port": self.health_check.port,
-                "interval": self.health_check.interval,
-                "timeout": self.health_check.timeout,
-                "retries": self.health_check.retries,
-            }
+            health_check: dict[str, Any] = {}
             if self.health_check.protocol is not None:
                 health_check["protocol"] = self.health_check.protocol
             if self.health_check.port is not None:
