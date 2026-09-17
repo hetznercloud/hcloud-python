@@ -1,5 +1,17 @@
 # Changelog
 
+## [v2.25.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.25.0)
+
+[Compare to previous version](https://github.com/hetznercloud/hcloud-python/compare/v2.24.0...v2.25.0)
+
+### Features
+
+- list network members (#687) ([9d5d21d](https://github.com/hetznercloud/hcloud-python/commit/9d5d21db356c00fd09ef524d844a93c16552dc89))
+
+### Bug Fixes
+
+- only send load balancer service certificates when defined (#690) ([c6bc24a](https://github.com/hetznercloud/hcloud-python/commit/c6bc24a0e733c84a91404677195fe237a859e495))
+
 ## [v2.24.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.24.0)
 
 [Compare to previous version](https://github.com/hetznercloud/hcloud-python/compare/v2.23.0...v2.24.0)
