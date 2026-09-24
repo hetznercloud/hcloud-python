@@ -145,6 +145,7 @@ class Client:
         application_version: str | None = None,
         poll_interval: int | float | BackoffFunction = 1.0,
         poll_max_retries: int = 120,
+        poll_timeout: float | None = None,
         timeout: float | tuple[float, float] | None = None,
         *,
         api_endpoint_hetzner: str = "https://api.hetzner.com/v1",
@@ -161,6 +162,8 @@ class Client:
             You may pass a function to compute a custom poll interval.
         :param poll_max_retries:
             Max retries before timeout when polling actions from the API.
+        :param poll_timeout:
+            Duration in seconds before timeout when polling actions from the API.
         :param timeout: Requests timeout in seconds
         """
         self._client = ClientBase(
@@ -170,6 +173,7 @@ class Client:
             application_version=application_version,
             poll_interval=poll_interval,
             poll_max_retries=poll_max_retries,
+            poll_timeout=poll_timeout,
             timeout=timeout,
         )
         self._client_hetzner = ClientBase(
@@ -179,6 +183,7 @@ class Client:
             application_version=application_version,
             poll_interval=poll_interval,
             poll_max_retries=poll_max_retries,
+            poll_timeout=poll_timeout,
             timeout=timeout,
         )
 
@@ -336,6 +341,7 @@ class ClientBase:
         application_version: str | None = None,
         poll_interval: int | float | BackoffFunction = 1.0,
         poll_max_retries: int = 120,
+        poll_timeout: float | None = None,
         timeout: float | tuple[float, float] | None = None,
     ):
         self._token = token
@@ -355,6 +361,7 @@ class ClientBase:
 
         self._poll_interval_func = poll_interval_func
         self._poll_max_retries = poll_max_retries
+        self._poll_timeout = poll_timeout
 
         self._retry_interval_func = exponential_backoff_function(
             base=1.0, multiplier=2, cap=60.0, jitter=True
