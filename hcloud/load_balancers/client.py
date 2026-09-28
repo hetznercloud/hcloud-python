@@ -19,6 +19,7 @@ from ..load_balancer_types import BoundLoadBalancerType
 from ..locations import BoundLocation
 from ..metrics import Metrics
 from ..networks import BoundNetwork
+from ..primary_ips import BoundPrimaryIP
 from ..servers import BoundServer
 from .domain import (
     CreateLoadBalancerResponse,
@@ -73,10 +74,23 @@ class BoundLoadBalancer(BoundModelBase[LoadBalancer], LoadBalancer):
 
         public_net = data.get("public_net")
         if public_net:
-            ipv4_address = IPv4Address.from_dict(public_net["ipv4"])
-            ipv6_network = IPv6Network.from_dict(public_net["ipv6"])
+            if public_net_ipv4_id := public_net["ipv4"].get("id"):
+                public_net["ipv4"]["primary_ip"] = BoundPrimaryIP(
+                    client._parent.primary_ips,
+                    {"id": public_net_ipv4_id},
+                    complete=False,
+                )
+            if public_net_ipv6_id := public_net["ipv6"].get("id"):
+                public_net["ipv6"]["primary_ip"] = BoundPrimaryIP(
+                    client._parent.primary_ips,
+                    {"id": public_net_ipv6_id},
+                    complete=False,
+                )
+
             data["public_net"] = PublicNetwork(
-                ipv4=ipv4_address, ipv6=ipv6_network, enabled=public_net["enabled"]
+                ipv4=IPv4Address.from_dict(public_net["ipv4"]),
+                ipv6=IPv6Network.from_dict(public_net["ipv6"]),
+                enabled=public_net["enabled"],
             )
 
         private_nets = data.get("private_net")
