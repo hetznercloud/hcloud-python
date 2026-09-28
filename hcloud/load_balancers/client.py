@@ -27,6 +27,7 @@ from .domain import (
     IPv6Network,
     LoadBalancer,
     LoadBalancerAlgorithm,
+    LoadBalancerCreatePublicNetwork,
     LoadBalancerHealthCheck,
     LoadBalancerHealthCheckHttp,
     LoadBalancerService,
@@ -514,6 +515,7 @@ class LoadBalancersClient(
         location: Location | BoundLocation | None = None,
         network_zone: str | None = None,
         public_interface: bool | None = None,
+        public_net: LoadBalancerCreatePublicNetwork | None = None,
         network: Network | BoundNetwork | None = None,
     ) -> CreateLoadBalancerResponse:
         """Creates a Load Balancer .
@@ -536,6 +538,8 @@ class LoadBalancersClient(
                 The targets the Load Balancer is currently serving
         :param public_interface: bool
                 Enable or disable the public interface of the Load Balancer
+        :param public_net:
+                Public network configuration for the Load Balancer.
         :param network: Network
                 Adds the Load Balancer to a Network
         :return: :class:`CreateLoadBalancerResponse <hcloud.load_balancers.domain.CreateLoadBalancerResponse>`
@@ -548,6 +552,8 @@ class LoadBalancersClient(
             data["network"] = network.id
         if public_interface is not None:
             data["public_interface"] = public_interface
+        if public_net is not None:
+            data["public_net"] = public_net.to_payload()
         if labels is not None:
             data["labels"] = labels
         if algorithm is not None:

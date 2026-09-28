@@ -10,6 +10,7 @@ from hcloud.load_balancers import (
     BoundLoadBalancer,
     LoadBalancer,
     LoadBalancerAlgorithm,
+    LoadBalancerCreatePublicNetwork,
     LoadBalancerHealthCheck,
     LoadBalancersClient,
     LoadBalancerService,
@@ -20,6 +21,7 @@ from hcloud.load_balancers import (
 )
 from hcloud.locations import Location
 from hcloud.networks import Network
+from hcloud.primary_ips import PrimaryIP
 from hcloud.servers import BoundServer, Server
 
 from ..conftest import BoundModelTestCase
@@ -231,12 +233,22 @@ class TestLoadBalancerslient:
             "my-balancer",
             load_balancer_type=LoadBalancerType(name="lb11"),
             location=Location(id=1),
+            public_net=LoadBalancerCreatePublicNetwork(
+                ipv6=PrimaryIP(id=56367),
+            ),
         )
 
         request_mock.assert_called_with(
             method="POST",
             url="/load_balancers",
-            json={"name": "my-balancer", "load_balancer_type": "lb11", "location": 1},
+            json={
+                "name": "my-balancer",
+                "load_balancer_type": "lb11",
+                "location": 1,
+                "public_net": {
+                    "ipv6": 56367,
+                },
+            },
         )
 
         bound_load_balancer = response.load_balancer
