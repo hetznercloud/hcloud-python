@@ -9,8 +9,22 @@ def response_load_balancer():
         "load_balancer": {
             "id": 4711,
             "name": "Web Frontend",
-            "ipv4": "131.232.99.1",
-            "ipv6": "2001:db8::1",
+            "public_net": {
+                "enabled": True,
+                "ipv4": {
+                    "id": 4712,
+                    "ip": "131.232.99.1",
+                    "blocked": False,
+                    "dns_ptr": "lb1.example.com",
+                },
+                "ipv6": {
+                    "id": 4713,
+                    "ip": "2001:db8::1",
+                    "blocked": False,
+                    "dns_ptr": "lb1.example.com",
+                },
+            },
+            "private_net": [{"network": 4711, "ip": "10.0.255.1"}],
             "location": {
                 "id": 1,
                 "name": "fsn1",
