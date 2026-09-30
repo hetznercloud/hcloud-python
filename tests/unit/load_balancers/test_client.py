@@ -31,7 +31,7 @@ from hcloud.networks import BoundNetwork, Network
 from hcloud.primary_ips import BoundPrimaryIP, PrimaryIP
 from hcloud.servers import BoundServer, Server
 
-from ..conftest import BoundModelTestCase
+from ..conftest import BoundModelTestCase, assert_bound_action1
 
 
 class TestBoundLoadBalancer(BoundModelTestCase):
@@ -435,18 +435,18 @@ class TestLoadBalancerslient:
         request_mock: mock.MagicMock,
         resource_client: LoadBalancersClient,
         load_balancer,
-        action_response,
+        action1_running,
     ):
-        request_mock.return_value = action_response
+        request_mock.return_value = {"action": action1_running}
 
-        delete_success = resource_client.delete(load_balancer)
+        result = resource_client.delete(load_balancer)
 
         request_mock.assert_called_with(
             method="DELETE",
             url="/load_balancers/1",
         )
 
-        assert delete_success is True
+        assert_bound_action1(result.action, resource_client._parent.actions)
 
     @pytest.mark.parametrize(
         "load_balancer",

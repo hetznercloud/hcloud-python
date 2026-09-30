@@ -23,6 +23,7 @@ from ..primary_ips import BoundPrimaryIP
 from ..servers import BoundServer
 from .domain import (
     CreateLoadBalancerResponse,
+    DeleteLoadBalancerResponse,
     GetMetricsResponse,
     IPv4Address,
     IPv6Network,
@@ -228,11 +229,8 @@ class BoundLoadBalancer(BoundModelBase[LoadBalancer], LoadBalancer):
         """
         return self._client.update(self, name=name, labels=labels)
 
-    def delete(self) -> bool:
-        """Deletes a Load Balancer.
-
-        :return: boolean
-        """
+    def delete(self) -> DeleteLoadBalancerResponse:
+        """Deletes a Load Balancer."""
         return self._client.delete(self)
 
     def get_metrics(
@@ -615,17 +613,20 @@ class LoadBalancersClient(
         )
         return BoundLoadBalancer(self, response["load_balancer"])
 
-    def delete(self, load_balancer: LoadBalancer | BoundLoadBalancer) -> bool:
+    def delete(
+        self, load_balancer: LoadBalancer | BoundLoadBalancer
+    ) -> DeleteLoadBalancerResponse:
         """Deletes a Load Balancer.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
-        :return: boolean
         """
-        self._client.request(
-            url=f"{self._base_url}/{load_balancer.id}",
+        response = self._client.request(
             method="DELETE",
+            url=f"{self._base_url}/{load_balancer.id}",
         )
-        return True
+        return DeleteLoadBalancerResponse(
+            action=BoundAction(self._parent.actions, response["action"])
+        )
 
     def get_metrics(
         self,

@@ -714,6 +714,21 @@ class CreateLoadBalancerResponse(BaseDomain):
         self.action = action
 
 
+class DeleteLoadBalancerResponse(BaseDomain):
+    """
+    Delete Load Balancer Response Domain.
+    """
+
+    __api_properties__ = ("action",)
+    __slots__ = __api_properties__
+
+    def __init__(
+        self,
+        action: BoundAction,
+    ):
+        self.action = action
+
+
 MetricsType = Literal[
     "open_connections",
     "connections_per_second",
