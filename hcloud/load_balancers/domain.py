@@ -488,11 +488,18 @@ class LoadBalancerTargetHealthStatus(BaseDomain):
 
     :param listen_port: Load Balancer Target listen port
     :param status: Load Balancer Target status. Choices: healthy, unhealthy, unknown
+    :param detail: Additional details about why the health check failed. Only present when `status` is `unhealthy`.
+            Choices: unspecified, layer4_no_connection, layer4_timeout, layer7_timeout, unexpected_http_status,
+            unexpected_http_content
+    :param http_status_code: HTTP status code returned by the target during the last health check. Only present when
+            `status` is `unhealthy` and `detail` is `unexpected_http_status`.
     """
 
     __api_properties__ = (
         "listen_port",
         "status",
+        "detail",
+        "http_status_code",
     )
     __slots__ = __api_properties__
 
@@ -500,9 +507,13 @@ class LoadBalancerTargetHealthStatus(BaseDomain):
         self,
         listen_port: int | None = None,
         status: str | None = None,
+        detail: str | None = None,
+        http_status_code: int | None = None,
     ):
         self.listen_port = listen_port
         self.status = status
+        self.detail = detail
+        self.http_status_code = http_status_code
 
 
 class LoadBalancerTargetLabelSelector(BaseDomain):
