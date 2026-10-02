@@ -130,6 +130,8 @@ class BoundLoadBalancer(BoundModelBase[LoadBalancer], LoadBalancer):
                     LoadBalancerTargetHealthStatus(
                         listen_port=item["listen_port"],
                         status=item["status"],
+                        detail=item.get("detail"),
+                        http_status_code=item.get("http_status_code"),
                     )
                     for item in raw_health_status
                 ]

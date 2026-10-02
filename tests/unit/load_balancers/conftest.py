@@ -84,7 +84,15 @@ def response_load_balancer():
                 {
                     "type": "server",
                     "server": {"id": 80},
-                    "health_status": [{"listen_port": 443, "status": "healthy"}],
+                    "health_status": [
+                        {"listen_port": 443, "status": "healthy"},
+                        {
+                            "listen_port": 80,
+                            "status": "unhealthy",
+                            "detail": "unexpected_http_status",
+                            "http_status_code": 503,
+                        },
+                    ],
                     "label_selector": None,
                     "use_private_ip": False,
                 },
@@ -99,7 +107,12 @@ def response_load_balancer():
                             "use_private_ip": True,
                             "health_status": [
                                 {"listen_port": 443, "status": "healthy"},
-                                {"listen_port": 3000, "status": "healthy"},
+                                {
+                                    "listen_port": 3000,
+                                    "status": "unhealthy",
+                                    "detail": "unexpected_http_status",
+                                    "http_status_code": 503,
+                                },
                             ],
                         }
                     ],

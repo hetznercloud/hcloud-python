@@ -82,8 +82,12 @@ class TestBoundLoadBalancer(BoundModelTestCase):
         assert len(nested.health_status) == 2
         assert nested.health_status[0].listen_port == 443
         assert nested.health_status[0].status == "healthy"
+        assert nested.health_status[0].detail is None
+        assert nested.health_status[0].http_status_code is None
         assert nested.health_status[1].listen_port == 3000
-        assert nested.health_status[1].status == "healthy"
+        assert nested.health_status[1].status == "unhealthy"
+        assert nested.health_status[1].detail == "unexpected_http_status"
+        assert nested.health_status[1].http_status_code == 503
 
 
 class TestLoadBalancerslient:
