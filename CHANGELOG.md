@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.26.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.26.0)
+
+[Compare to previous version](https://github.com/hetznercloud/hcloud-python/compare/v2.25.1...v2.26.0)
+
+### Features
+
+- **load-balancer**: add health check diagnostic details (#696) ([80b74c9](https://github.com/hetznercloud/hcloud-python/commit/80b74c9a48091089f18160a083c447e04cb3eda7))
+
 ## [v2.25.1](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.25.1)
 
 [Compare to previous version](https://github.com/hetznercloud/hcloud-python/compare/v2.25.0...v2.25.1)
