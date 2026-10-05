@@ -152,7 +152,7 @@ class TestBoundLoadBalancer(BoundModelTestCase):
         assert target.server.id == 80
         assert target.server.complete is False
         assert target.use_private_ip is False
-        assert len(target.health_status) == 1
+        assert len(target.health_status) == 2
         assert target.health_status[0].listen_port == 443
         assert target.health_status[0].status == "healthy"
 
