@@ -1,28 +1,37 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from unittest import mock
 
 import pytest
 
 from hcloud import Client
-from hcloud.load_balancer_types import LoadBalancerType
+from hcloud.certificates import BoundCertificate
+from hcloud.load_balancer_types import BoundLoadBalancerType, LoadBalancerType
 from hcloud.load_balancers import (
     BoundLoadBalancer,
+    IPv4Address,
+    IPv6Network,
     LoadBalancer,
     LoadBalancerAlgorithm,
+    LoadBalancerCreatePublicNetwork,
     LoadBalancerHealthCheck,
+    LoadBalancerHealthCheckHttp,
     LoadBalancersClient,
     LoadBalancerService,
     LoadBalancerServiceHttp,
     LoadBalancerTarget,
     LoadBalancerTargetIP,
     LoadBalancerTargetLabelSelector,
+    PrivateNet,
+    PublicNetwork,
 )
-from hcloud.locations import Location
-from hcloud.networks import Network
+from hcloud.locations import BoundLocation, Location
+from hcloud.networks import BoundNetwork, Network
+from hcloud.primary_ips import BoundPrimaryIP, PrimaryIP
 from hcloud.servers import BoundServer, Server
 
-from ..conftest import BoundModelTestCase
+from ..conftest import BoundModelTestCase, assert_bound_action1
 
 
 class TestBoundLoadBalancer(BoundModelTestCase):
@@ -53,13 +62,99 @@ class TestBoundLoadBalancer(BoundModelTestCase):
     def bound_model(self, resource_client: LoadBalancersClient):
         return BoundLoadBalancer(resource_client, data=dict(id=1))
 
+    # pylint: disable=too-many-statements
     def test_init(self, response_load_balancer):
-        bound_load_balancer = BoundLoadBalancer(
+        o = BoundLoadBalancer(
             client=mock.MagicMock(), data=response_load_balancer["load_balancer"]
         )
 
-        assert bound_load_balancer.id == 4711
-        assert bound_load_balancer.name == "Web Frontend"
+        assert o.id == 4711
+        assert o.name == "Web Frontend"
+        assert o.created == datetime(2016, 1, 30, 23, 50, tzinfo=timezone.utc)
+        assert o.labels == {}
+        assert o.protection == {"delete": False}
+        assert o.outgoing_traffic == 123456
+        assert o.ingoing_traffic == 123456
+        assert o.included_traffic == 654321
+
+        assert isinstance(o.public_net, PublicNetwork)
+        assert o.public_net.enabled is True
+        assert isinstance(o.public_net.ipv4, IPv4Address)
+        assert isinstance(o.public_net.ipv4.primary_ip, BoundPrimaryIP)
+        assert o.public_net.ipv4.primary_ip.id == 4712
+        assert o.public_net.ipv4.primary_ip.complete is False
+        assert o.public_net.ipv4.ip == "131.232.99.1"
+        assert o.public_net.ipv4.blocked is False
+        assert o.public_net.ipv4.dns_ptr == "lb1.example.com"
+        assert isinstance(o.public_net.ipv6, IPv6Network)
+        assert isinstance(o.public_net.ipv6.primary_ip, BoundPrimaryIP)
+        assert o.public_net.ipv6.primary_ip.id == 4713
+        assert o.public_net.ipv6.primary_ip.complete is False
+        assert o.public_net.ipv6.ip == "2001:db8::1"
+        assert o.public_net.ipv6.blocked is False
+        assert o.public_net.ipv6.dns_ptr == "lb1.example.com"
+
+        assert len(o.private_net) == 1
+        assert isinstance(o.private_net[0], PrivateNet)
+        assert isinstance(o.private_net[0].network, BoundNetwork)
+        assert o.private_net[0].network.id == 4711
+        assert o.private_net[0].network.complete is False
+        assert o.private_net[0].ip == "10.0.255.1"
+
+        assert isinstance(o.location, BoundLocation)
+        assert o.location.id == 1
+        assert o.location.name == "fsn1"
+        assert o.location.complete is True
+
+        assert isinstance(o.load_balancer_type, BoundLoadBalancerType)
+        assert o.load_balancer_type.id == 1
+        assert o.load_balancer_type.name == "lb11"
+        assert o.load_balancer_type.complete is True
+
+        assert isinstance(o.algorithm, LoadBalancerAlgorithm)
+        assert o.algorithm.type == "round_robin"
+
+        assert len(o.services) == 1
+        service = o.services[0]
+        assert isinstance(service, LoadBalancerService)
+        assert service.protocol == "https"
+        assert service.listen_port == 443
+        assert service.destination_port == 80
+        assert service.proxyprotocol is False
+        assert isinstance(service.http, LoadBalancerServiceHttp)
+        assert service.http.cookie_name == "HCLBSTICKY"
+        assert service.http.cookie_lifetime == 300
+        assert service.http.redirect_http is True
+        assert service.http.sticky_sessions is True
+        assert service.http.timeout_idle == 60
+        assert len(service.http.certificates) == 1
+        assert isinstance(service.http.certificates[0], BoundCertificate)
+        assert service.http.certificates[0].id == 897
+        assert service.http.certificates[0].complete is False
+        assert isinstance(service.health_check, LoadBalancerHealthCheck)
+        assert service.health_check.protocol == "http"
+        assert service.health_check.port == 4711
+        assert service.health_check.interval == 15
+        assert service.health_check.timeout == 10
+        assert service.health_check.retries == 3
+        assert isinstance(service.health_check.http, LoadBalancerHealthCheckHttp)
+        assert service.health_check.http.domain == "example.com"
+        assert service.health_check.http.path == "/"
+        assert service.health_check.http.response == '{"status": "ok"}'
+        assert service.health_check.http.status_codes == [200]
+        assert service.health_check.http.tls is False
+
+        assert len(o.targets) == 2
+        target = o.targets[0]
+        assert isinstance(target, LoadBalancerTarget)
+        assert target.type == "server"
+        assert isinstance(target.server, BoundServer)
+        assert target.server.id == 80
+        assert target.server.complete is False
+        assert target.use_private_ip is False
+        assert len(target.health_status) == 2
+        assert target.health_status[0].listen_port == 443
+        assert target.health_status[0].status == "healthy"
 
     def test_init_label_selector_nested_targets(self, response_load_balancer):
         bound_load_balancer = BoundLoadBalancer(
@@ -231,12 +326,22 @@ class TestLoadBalancerslient:
             "my-balancer",
             load_balancer_type=LoadBalancerType(name="lb11"),
             location=Location(id=1),
+            public_net=LoadBalancerCreatePublicNetwork(
+                ipv6=PrimaryIP(id=56367),
+            ),
         )
 
         request_mock.assert_called_with(
             method="POST",
             url="/load_balancers",
-            json={"name": "my-balancer", "load_balancer_type": "lb11", "location": 1},
+            json={
+                "name": "my-balancer",
+                "load_balancer_type": "lb11",
+                "location": 1,
+                "public_net": {
+                    "ipv6": 56367,
+                },
+            },
         )
 
         bound_load_balancer = response.load_balancer
@@ -330,18 +435,18 @@ class TestLoadBalancerslient:
         request_mock: mock.MagicMock,
         resource_client: LoadBalancersClient,
         load_balancer,
-        action_response,
+        action1_running,
     ):
-        request_mock.return_value = action_response
+        request_mock.return_value = {"action": action1_running}
 
-        delete_success = resource_client.delete(load_balancer)
+        result = resource_client.delete(load_balancer)
 
         request_mock.assert_called_with(
             method="DELETE",
             url="/load_balancers/1",
         )
 
-        assert delete_success is True
+        assert_bound_action1(result.action, resource_client._parent.actions)
 
     @pytest.mark.parametrize(
         "load_balancer",

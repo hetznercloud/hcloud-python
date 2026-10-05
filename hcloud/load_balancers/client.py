@@ -19,14 +19,17 @@ from ..load_balancer_types import BoundLoadBalancerType
 from ..locations import BoundLocation
 from ..metrics import Metrics
 from ..networks import BoundNetwork
+from ..primary_ips import BoundPrimaryIP
 from ..servers import BoundServer
 from .domain import (
     CreateLoadBalancerResponse,
+    DeleteLoadBalancerResponse,
     GetMetricsResponse,
     IPv4Address,
     IPv6Network,
     LoadBalancer,
     LoadBalancerAlgorithm,
+    LoadBalancerCreatePublicNetwork,
     LoadBalancerHealthCheck,
     LoadBalancerHealthCheckHttp,
     LoadBalancerService,
@@ -72,10 +75,23 @@ class BoundLoadBalancer(BoundModelBase[LoadBalancer], LoadBalancer):
 
         public_net = data.get("public_net")
         if public_net:
-            ipv4_address = IPv4Address.from_dict(public_net["ipv4"])
-            ipv6_network = IPv6Network.from_dict(public_net["ipv6"])
+            if public_net_ipv4_id := public_net["ipv4"].get("id"):
+                public_net["ipv4"]["primary_ip"] = BoundPrimaryIP(
+                    client._parent.primary_ips,
+                    {"id": public_net_ipv4_id},
+                    complete=False,
+                )
+            if public_net_ipv6_id := public_net["ipv6"].get("id"):
+                public_net["ipv6"]["primary_ip"] = BoundPrimaryIP(
+                    client._parent.primary_ips,
+                    {"id": public_net_ipv6_id},
+                    complete=False,
+                )
+
             data["public_net"] = PublicNetwork(
-                ipv4=ipv4_address, ipv6=ipv6_network, enabled=public_net["enabled"]
+                ipv4=IPv4Address.from_dict(public_net["ipv4"]),
+                ipv6=IPv6Network.from_dict(public_net["ipv6"]),
+                enabled=public_net["enabled"],
             )
 
         private_nets = data.get("private_net")
@@ -213,11 +229,8 @@ class BoundLoadBalancer(BoundModelBase[LoadBalancer], LoadBalancer):
         """
         return self._client.update(self, name=name, labels=labels)
 
-    def delete(self) -> bool:
-        """Deletes a Load Balancer.
-
-        :return: boolean
-        """
+    def delete(self) -> DeleteLoadBalancerResponse:
+        """Deletes a Load Balancer."""
         return self._client.delete(self)
 
     def get_metrics(
@@ -514,6 +527,7 @@ class LoadBalancersClient(
         location: Location | BoundLocation | None = None,
         network_zone: str | None = None,
         public_interface: bool | None = None,
+        public_net: LoadBalancerCreatePublicNetwork | None = None,
         network: Network | BoundNetwork | None = None,
     ) -> CreateLoadBalancerResponse:
         """Creates a Load Balancer .
@@ -536,6 +550,8 @@ class LoadBalancersClient(
                 The targets the Load Balancer is currently serving
         :param public_interface: bool
                 Enable or disable the public interface of the Load Balancer
+        :param public_net:
+                Public network configuration for the Load Balancer.
         :param network: Network
                 Adds the Load Balancer to a Network
         :return: :class:`CreateLoadBalancerResponse <hcloud.load_balancers.domain.CreateLoadBalancerResponse>`
@@ -548,6 +564,8 @@ class LoadBalancersClient(
             data["network"] = network.id
         if public_interface is not None:
             data["public_interface"] = public_interface
+        if public_net is not None:
+            data["public_net"] = public_net.to_payload()
         if labels is not None:
             data["labels"] = labels
         if algorithm is not None:
@@ -595,17 +613,20 @@ class LoadBalancersClient(
         )
         return BoundLoadBalancer(self, response["load_balancer"])
 
-    def delete(self, load_balancer: LoadBalancer | BoundLoadBalancer) -> bool:
+    def delete(
+        self, load_balancer: LoadBalancer | BoundLoadBalancer
+    ) -> DeleteLoadBalancerResponse:
         """Deletes a Load Balancer.
 
         :param load_balancer: :class:`BoundLoadBalancer <hcloud.load_balancers.client.BoundLoadBalancer>` or :class:`LoadBalancer <hcloud.load_balancers.domain.LoadBalancer>`
-        :return: boolean
         """
-        self._client.request(
-            url=f"{self._base_url}/{load_balancer.id}",
+        response = self._client.request(
             method="DELETE",
+            url=f"{self._base_url}/{load_balancer.id}",
         )
-        return True
+        return DeleteLoadBalancerResponse(
+            action=BoundAction(self._parent.actions, response["action"])
+        )
 
     def get_metrics(
         self,
