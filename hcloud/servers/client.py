@@ -348,11 +348,11 @@ class BoundServer(BoundModelBase[Server], Server):
             self, description=description, type=type, labels=labels
         )
 
+    # pylint: disable=unused-argument
     def rebuild(
         self,
         image: Image | BoundImage,
         user_data: str | None = None,
-        # pylint: disable=unused-argument
         **kwargs: Any,
     ) -> RebuildResponse:
         """Rebuilds a server overwriting its disk with the content of an image, thereby destroying all data on the target server.
@@ -1016,12 +1016,12 @@ class ServersClient(
             image=BoundImage(self._parent.images, response["image"]),
         )
 
+    # pylint: disable=unused-argument
     def rebuild(
         self,
         server: Server | BoundServer,
         image: Image | BoundImage,
         user_data: str | None = None,
-        # pylint: disable=unused-argument
         **kwargs: Any,
     ) -> RebuildResponse:
         """Rebuilds a server overwriting its disk with the content of an image, thereby destroying all data on the target server.
