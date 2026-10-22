@@ -31,6 +31,7 @@ test:
           - "3.12"
           - "3.13"
           - "3.14"
+          - "3.15"
 
   image: python:${python_version}-alpine
   before_script:
