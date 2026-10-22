@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.28.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.28.0)
+
+[Compare to previous version](https://github.com/hetznercloud/hcloud-python/compare/v2.27.0...v2.28.0)
+
+### Features
+
+- drop support for python 3.10 (#706) ([605a260](https://github.com/hetznercloud/hcloud-python/commit/605a2602f753760977b224a404a7a5aba46d6d09))
+- support python 3.15 (#709) ([62cbd25](https://github.com/hetznercloud/hcloud-python/commit/62cbd25d87ae91dcae89633764484f1bae795269))
+
 ## [v2.27.0](https://github.com/hetznercloud/hcloud-python/releases/tag/v2.27.0)
 
 [Compare to previous version](https://github.com/hetznercloud/hcloud-python/compare/v2.26.0...v2.27.0)
