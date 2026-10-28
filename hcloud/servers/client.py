@@ -279,6 +279,10 @@ class BoundServer(BoundModelBase[Server], Server):
     def reboot(self) -> BoundAction:
         """Reboots a server gracefully by sending an ACPI request.
 
+        The returned action finishes when the request has been sent. Waiting
+        for it does not guarantee that the guest operating system has rebooted
+        or that its services are ready. The guest may ignore ACPI requests.
+
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
         return self._client.reboot(self)
@@ -292,6 +296,12 @@ class BoundServer(BoundModelBase[Server], Server):
 
     def shutdown(self) -> BoundAction:
         """Shuts down a server gracefully by sending an ACPI shutdown request.
+
+        The returned action finishes when the request has been sent, not when
+        the guest operating system has stopped. After waiting for the action,
+        reload the server and poll its status until it is ``off`` before an
+        operation that requires a stopped server. The guest may ignore ACPI,
+        so polling should have a timeout.
 
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
@@ -861,6 +871,10 @@ class ServersClient(
     def reboot(self, server: Server | BoundServer) -> BoundAction:
         """Reboots a server gracefully by sending an ACPI request.
 
+        The returned action finishes when the request has been sent. Waiting
+        for it does not guarantee that the guest operating system has rebooted
+        or that its services are ready. The guest may ignore ACPI requests.
+
         :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
         """
@@ -884,6 +898,12 @@ class ServersClient(
 
     def shutdown(self, server: Server | BoundServer) -> BoundAction:
         """Shuts down a server gracefully by sending an ACPI shutdown request.
+
+        The returned action finishes when the request has been sent, not when
+        the guest operating system has stopped. After waiting for the action,
+        reload the server and poll its status until it is ``off`` before an
+        operation that requires a stopped server. The guest may ignore ACPI,
+        so polling should have a timeout.
 
         :param server: :class:`BoundServer <hcloud.servers.client.BoundServer>` or :class:`Server <hcloud.servers.domain.Server>`
         :return:  :class:`BoundAction <hcloud.actions.client.BoundAction>`
