@@ -14,7 +14,7 @@ pre-commit:
 lint:
   stage: test
 
-  image: python:3.14-alpine
+  image: python:3.15-alpine
   before_script:
     - apk add make bash
     - make venv
